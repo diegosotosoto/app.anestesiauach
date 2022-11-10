@@ -29,7 +29,7 @@
 
 		$boton_toggler="<button class='btn btn-lg shadow-sm' type='submit' name='lista_v' value='$rut_v'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></button>";
 		$titulo_navbar=" ";
-		$boton_navbar="<button class='btn btn-lg shadow-sm' type='submit' name='editar' value='Submit'><div class='text-white'></div></button>";
+		$boton_navbar="<a></a><a></a>";
 
 		require("navbar.php");
 	?>
