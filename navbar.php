@@ -1,5 +1,4 @@
 
-
 <nav class="navbar fixed-top navbar-dark" style="background-color: #0096FF;">
   <div class="container-fluid ">
 

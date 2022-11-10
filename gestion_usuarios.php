@@ -1,23 +1,18 @@
 <?php
-
+	//Ve si están activas AMBAS cookies o redirige al login
 	if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
 		header('Location: login.php');
 	}elseif($_COOKIE['hkjh41lu4l1k23jhlkj13']!="diegosotosoto@gmail.com"){
 		header('Location: login.php');
 	}
-?>
-<?php
 	//Conexión
 	require("conectar.php");
 	$conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
 	$conexion->set_charset("utf8");
+	
+	//Carga Head de la página
+	require("head.php");
 ?>
-<!-  HEAD  ->	
-	<?php
-		//Conexión
-		require("head.php");
-
-	?>
 
 </head>
 <body>
@@ -144,10 +139,7 @@
 
 
 
-	<?php 
-		//Cierre Conexión
-		$conexion->close();
-	?>
+
 
 <!-  FOOTER  ->
 
