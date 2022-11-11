@@ -125,8 +125,8 @@
 		echo "<div class='col'>Email<input class='form-control mb-2' type='text' name='email_usuario' id='email_usuario' value='$email' required/></div>";
 		echo "<div class='col'>Verificado <input class='form-check-input' type='checkbox' name='verified' id='verified' value='1' $verified/></div>";
 		echo "<div class='col'>Administrador <input class='form-check-input' type='checkbox' name='admin' id='admin' value='1' $admin/></div>";
-		echo "<input type='hidden' name='email_init' value='$email'/>";
-		echo "<div class='col'><button type='submit' value'Submit'>OK</button></div></form></div><hr><div class='row'>";
+		echo "</br><input type='hidden' name='email_init' value='$email'/>";
+		echo "<div class='col'><button type='submit' value'Submit'>OK</button></div></form></div></br><hr></br><div class='row'>";
 
 	}
 

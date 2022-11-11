@@ -20,22 +20,25 @@
 <!-  NAVBAR  ->	
 
 	<?php
+		//Botones del Toggle NAVBAR
 
-		$boton_toggler="<button class='navbar-toggler shadow-sm btn-lg' type='button' data-bs-toggle='offcanvas' data-bs-target='#offcanvas' aria-controls='offcanvas'>
-      	<i class='fa-solid fa-bars' style='color:white'></i></button>";
+
+		$boton_toggler="<button class='navbar-toggler shadow-sm' type='button' data-bs-toggle='offcanvas' data-bs-target='#offcanvasNavbar' aria-controls='offcanvasNavbar' style='width:70px; height:40px'><i class='fa-solid fa-bars' style='color:white'></i></button>";
 		$titulo_navbar="Ficha Dolor HBV";
 		$boton_navbar="<a class='btn btn-lg shadow-sm' href='nuevo_paciente.php' role='button'><i class='fa fa-plus fa-lg' style='color:white' aria-hidden='true'></i></a>";
 		//Conexión
 		require("navbar.php");
 	?>
 
-	<div class="container-sm">
-        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasExampleLabel">
-          <div class="offcanvas-header">
-            <div class="" id="offcanvasExampleLabel"> </div>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-          </div>
-          <div class="offcanvas-body">
+
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasNavbarLabel"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+
+
             <div class="" id="offcanvasExampleLabel"><h5><?php echo $_COOKIE['hkjh41lu4l1k23jhlkj14']; ?></h5></div>
 
           <div class="text-muted"><?php echo $_COOKIE['hkjh41lu4l1k23jhlkj13']; ?></div>
@@ -47,25 +50,29 @@
               <div class="text-primary pt-4 fs-5">
               <i style="margin-left:12px" class="fa-solid fa-file-arrow-up"></i>
               <a style="padding-left:8px" href='acerca_de.php'> Acerca de</a></div>
-<?php 
-			$email_user=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
-			$consulta_user="SELECT * FROM `usuarios_dolor` WHERE `email_usuario` = '$email_user' AND `admin` = '1'";
-
-			$confirma_user=$conexion->query($consulta_user); 
-
-			if(mysqli_num_rows($confirma_user)==0){//No HACE NADA
-
-			}else{ 
-	
-              echo "<form action='gestion_usuarios.php' method='post'><div class='text-primary pt-4 fs-5'>
-              <i style='margin-left:12px' class='fa-solid fa-file-arrow-up'></i><input type='hidden' name='email_user_ad' value='$email_user'/>
-              <button type='submit' class='btn btn-link' value='Submit'>Gestión Usuarios</button></div></form>";
 
 
-			}
+				<?php 
 
-?>
+							//BUSCA SI EL USUARIO ES ADMIN Y AGREGA MENÚ DE ADMIN
+							$email_user=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
+							$consulta_user="SELECT * FROM `usuarios_dolor` WHERE `email_usuario` = '$email_user' AND `admin` = '1'";
 
+							$confirma_user=$conexion->query($consulta_user); 
+
+							if(mysqli_num_rows($confirma_user)==0){//AL NO ENCONRAR REGISTROS DE ADMIN NO AGREGA NADA
+
+							}else{ 
+					
+				              echo "<form id='gest_users' action='gestion_usuarios.php' method='post'><input type='hidden' name='email_user_ad' value='$email_user'/>
+				              <div class='text-primary pt-4 fs-5'>
+				              <i style='margin-left:10px' class='fa-solid fa-users'></i>
+				              <a style='padding-left:5px' href='#' onclick='envioForm()'> Gestión Usuarios</a></div></form>
+				              <script>function envioForm() {document.getElementById('gest_users').submit(); }</script>
+				              ";
+							}
+
+				?>
               <div class="fixed-bottom mb-6"><hr>
                 <div class="container">
                 <div class="row">
@@ -76,7 +83,7 @@
 
         </div>
       </div>
-</div>
+
 
 <br>
 <br>
