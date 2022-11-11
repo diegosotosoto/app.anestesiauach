@@ -15,8 +15,6 @@
 ?>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-	<link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.1.4/dist/css/datepicker.min.css'>   
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 </head>
 <body>
 	
@@ -151,13 +149,10 @@
 
 				<li class='list-group-item mb-2'><img class='btn-imagen' src='/images/IMG_3990.PNG'/>Exámenes</li>
 				<li class='list-group-item mb-2'>
-				 <div class="input-group date" id="datepicker">
-				        <input type="text" class="form-control" name="fecha_exs" id="fecha_exs"/>
-				        <span class="input-group-append">
-				          <span class="input-group-text bg-light d-block">
-				            <i class="fa fa-calendar"></i>
-				          </span>
-				        </span>
+					<div class='text-muted pt-2'>Fecha Exámenes</div>
+				 <div class="input-group date">
+				        <input type="text" class="form-control" name="fecha_exs" id="datepicker"/>
+							<span class="input-group-text" id="basic-addon2"><i class="fa-solid fa-calendar"></i></span>
 				      </div>
 
 				<div>
@@ -264,20 +259,27 @@
 
 	?>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-<script src="bootstrap-datepicker.es.js" charset="UTF-8"></script>
+    <script src="https://unpkg.com/gijgo@1.9.14/js/gijgo.min.js" type="text/javascript"></script>
+    <link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript">
+    	    var today, datepicker;
+    			today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
         $(function() {
             $('#datepicker').datepicker({
+            	 		uiLibrary: 'bootstrap5',
             	    format: 'dd/mm/yyyy',
-            	    language: 'es',
-            	    weekStart: 1,
+            	    weekStartDay: 1,
+            	    autoclose: true,
+            	    maxDate: today,
+            	    showRightIcon: false,
+
             }
 
             	);
 
         });
+
+
     </script>
 
 </body>

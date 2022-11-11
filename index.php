@@ -90,8 +90,9 @@
 
 
 	<?php 
+				//GUARDAR PACIENTE NUEVO
+
 		if($_POST['nombre_paciente']){
-		//Guardar paciente Nuevo
 			$nombre_paciente=htmlentities(addslashes($_POST['nombre_paciente']));
 			$rut=htmlentities(addslashes(strtoupper($_POST['rut'])));
 			$ficha=htmlentities(addslashes($_POST['ficha']));
@@ -111,41 +112,63 @@
 			$fecha_creacion=date("Y-m-d H:i:s");
 			$creador=ucwords(strtolower($_COOKIE['hkjh41lu4l1k23jhlkj14']));
 
-			$consulta_conf="SELECT `rut` FROM `pacientes` WHERE `rut`='$rut' AND `de_alta` = '0'";
+
+			//PRIMERO BUSCA SI EL RUT EXISTE PREVIAMENTE Y ESTA ACTIVO
+			$consulta_conf="SELECT `rut`, `nombre_paciente`,`ficha` FROM `pacientes` WHERE `rut`='$rut' AND `de_alta` = '0'";
 
 			$confirmar=$conexion->query($consulta_conf); 
 
 			if(mysqli_num_rows($confirmar)==0){
 
-					$consulta_n="INSERT INTO `pacientes` (`nombre_paciente`, `rut`, `ficha`, `unidad_cama`, `procedimiento`, `analgesia`, `nivel`, `espacio`, `distancia`, `solucion`, `infusion`, `bolo`, `lockout`, `peso`, `comentarios`, `de_alta`, `fecha_creacion`, `creador`) VALUES ('$nombre_paciente', '$rut', '$ficha', '$unidad_cama', '$procedimiento', '$analgesia', '$nivel', '$espacio', '$distancia', '$solucion', '$infusion', '$bolo', '$lockout', '$peso', '$comentarios', '$de_alta', '$fecha_creacion', '$creador') ";
+			//SEGUNDO BUSCA SI EL RUT EXISTE PREVIAMENTE Y ESTA DADO DE ALTA
+					$consulta_conf_2="SELECT `rut`, `nombre_paciente`,`ficha` FROM `pacientes` WHERE `rut`='$rut' AND `de_alta` = '1'";
 
-					$escribir=$conexion->query($consulta_n);
+					$confirmar_2=$conexion->query($consulta_conf_2); 
 
+					if(mysqli_num_rows($confirmar_2)==0){
 
-					if($escribir==false){
-						echo "Error en la consulta";
+								$consulta_n="INSERT INTO `pacientes` (`nombre_paciente`, `rut`, `ficha`, `unidad_cama`, `procedimiento`, `analgesia`, `nivel`, `espacio`, `distancia`, `solucion`, `infusion`, `bolo`, `lockout`, `peso`, `comentarios`, `de_alta`, `fecha_creacion`, `creador`) VALUES ('$nombre_paciente', '$rut', '$ficha', '$unidad_cama', '$procedimiento', '$analgesia', '$nivel', '$espacio', '$distancia', '$solucion', '$infusion', '$bolo', '$lockout', '$peso', '$comentarios', '$de_alta', '$fecha_creacion', '$creador') ";
 
-			}else{
-
-				echo "
-							<div class='alert alert-success alert-dismissible fade show'>
-						    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
-						    <strong>Info!</strong> Registro Guardado.
-						  	</div>
-				";
-
-			}
+									$escribir=$conexion->query($consulta_n);
 
 
-			}else{
-				echo "
+									if($escribir==false){
+										echo "Error en la consulta";
 
-							<div class='alert alert-warning alert-dismissible fade show'>
-						    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
-						    <strong>Info!</strong> Este Rut ya se encuentra en la base de datos.
-						  	</div>
+									}else{//NO EXISTE PREVIAMENTE NI FUE DADO DE ALTA
 
-				";
+												echo "
+															<div class='alert alert-success alert-dismissible fade show'>
+														    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
+														    <strong>Info!</strong> Registro Guardado.
+														  	</div>
+												";
+									}
+
+					}else{ // EXISTE Y SE ENCUENTRA DADO DE ALTA
+
+								$datos_alta=$confirmar_2->fetch_assoc();
+
+								echo "
+													<div class='alert alert-warning alert-dismissible fade show'>
+												    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
+												    <strong>Info!</strong> Este Rut ya se encuentra en la base de datos, EN ESTADO DADO DE ALTA.</br>
+												    Nombre: ".$datos_alta['nombre_paciente']."</br> Rut: ".$datos_alta['rut']."</br> Ficha: ".$datos_alta['ficha']."
+												  	</br>
+												  	<form action='editar_paciente.php' method='post'><button class='btn shadow-sm' type='submit' name='editar' value='".$datos_alta['rut']."' />Desea Reactivar?</button></form>
+												  	</div>
+										";   ////******   al enviar formulario debe editar al paciente sacarlo del alta y agregar los datos nuevos, excepto la ficha y nombre
+
+					}
+
+
+			}else{ // EXISTE Y SE ENCUENTRA ACTIVO
+						echo "
+									<div class='alert alert-danger alert-dismissible fade show'>
+								    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
+								    <strong>Info!</strong> Este Rut ya se encuentra ACTIVO en la base de datos.
+								  	</div>
+						";
 			}
 
 

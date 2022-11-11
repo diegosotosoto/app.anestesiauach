@@ -57,7 +57,7 @@
 		}else{
 
 			echo "
-							<div class='alert alert-warning alert-dismissible fade show'>
+							<div class='alert alert-danger alert-dismissible fade show'>
 						    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
 						    <strong>Info!</strong> Error en el registro, contacte al administrador.
 						  	</div>
@@ -85,7 +85,7 @@
 
 
 					echo "
-							<div class='alert alert-warning alert-dismissible fade show'>
+							<div class='alert alert-danger alert-dismissible fade show'>
 						    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
 						    <strong>Info!</strong> Usuario o Contraseña no válidos.
 						  	</div>
@@ -107,7 +107,7 @@
 
 					echo "
 
-							<div class='alert alert-warning alert-dismissible fade show'>
+							<div class='alert alert-danger alert-dismissible fade show'>
 						    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
 						    <strong>Info!</strong> Usuario o Contraseña no válidos.
 						  	</div>
