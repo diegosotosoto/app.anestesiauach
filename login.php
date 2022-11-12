@@ -98,8 +98,8 @@
 
 					$galletita_mail=$email_usuario_v;
 					$galletita_user=$usuario['nombre_usuario'];
-					setcookie("hkjh41lu4l1k23jhlkj13",$galletita_mail, time()+60*60*24*30);
-					setcookie("hkjh41lu4l1k23jhlkj14",$galletita_user, time()+60*60*24*30);
+					setcookie("hkjh41lu4l1k23jhlkj13",$galletita_mail, time()+60*60*24*30*12);
+					setcookie("hkjh41lu4l1k23jhlkj14",$galletita_user, time()+60*60*24*30*12);
 
 					header('Location: index.php');
 					
