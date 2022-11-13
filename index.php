@@ -44,6 +44,10 @@
           <div class="text-muted"><?php echo $_COOKIE['hkjh41lu4l1k23jhlkj13']; ?></div>
           <hr>
               <div class="text-primary pt-4 fs-5">
+              <i style="margin-left:12px" class="fa-solid fa-clipboard"></i>
+              <a style="padding-left:8px" href='apuntes.php'> Apuntes</a></div>
+
+              <div class="text-primary pt-4 fs-5">
               <i style="margin-left:10px" class="fa-solid fa-door-open"></i>
               <a style="padding-left:5px" href='cierra_sesion.php'> Cerrar sesión</a></div>
 
