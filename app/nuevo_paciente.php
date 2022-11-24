@@ -48,11 +48,12 @@
 
 				<div>
 				<div class='d-flex justify-content-between pt-3'><div class='text-muted'>Rut (sin puntos ej: 12345678-9)</div><div class="fw-lighter text-muted"><small>Requerido (*)</small></div></div>
-				<input class="form-control mb-2" type="text" name="rut" id="rut" pattern='[0-9]{6,8}[-]{1}[0-9Kk]{1}'required>
+				<input class="form-control mb-2" type="text" oninput="checkRut(this)" name="rut" id="rut" required>
 				<div class="invalid-feedback pt-1">
-			      Ingrese un Rut Válido
+						Ingrese un RUT válido
 			    </div>
 				</div>
+
 
   			<div>
 				<div class='d-flex justify-content-between pt-3'><div class='text-muted'>Ficha</div><div class="fw-lighter text-muted"><small>Requerido (*)</small></div></div>
@@ -64,11 +65,54 @@
 
 			    <div>
 				<div class='d-flex justify-content-between pt-3'><div class='text-muted'>Unidad / Cama</div><div class="fw-lighter text-muted"><small>Requerido (*)</small></div></div>
-				<input class="form-control mb-2" type="text" name="unidad_cama" id="unidad_cama" required pattern='[a-zA-ZñÑáéíóúÁÉÍÓÚ0-9\s]{2,}'>
+				<input class="form-control mb-2" type="text" name="unidad_cama" id="unidad_cama" required list="unidades" autocomplete="off">
+				<datalist id="unidades">
+						<option value="100 - MEDICINA"></option>
+						<option value="UHD - UNIDAD  HOSPIT. DOMICILIARIA"></option>
+						<option value="CCV - CLINICA COSTANERA VALDIVIA"></option>
+						<option value="102 - UNIDAD HEMATOLOGIA INTENSIVA"></option>
+						<option value="119 - MEDICO QUIRURGICO INDIFERENCIADO"></option>
+						<option value="145 - PEDIATRICO QUIRURG. INDIFEREN"></option>
+						<option value="200 - CIRUGIA ADULTO"></option>
+						<option value="210 - CIRUGIA MAYOR AMBULATORIA"></option>
+						<option value="300 - TRAUMATOLOGIA ADULTO"></option>
+						<option value="400 - CIRUGIA INFANTIL"></option>
+						<option value="403 - TRAUMATOLOGIA INFANTIL"></option>
+						<option value="501 - NEONATO CUIDADOS INTENSIVOS"></option>
+						<option value="502 - NEONATO CUIDADOS INTERMEDIOS"></option>
+						<option value="503 - NEONATO CUIDADOS BASICOS"></option>
+						<option value="506 - PEDIATRIA"></option>
+						<option value="507 - SEGUNDA INFANCIA"></option>
+						<option value="509 - UNIDAD ONCO HEMATOLOGIA INFANT"></option>
+						<option value="510 - UTI PEDIATRICA"></option>
+						<option value="600 - PUERPERIO"></option>
+						<option value="601 - ARO - OBSTETRICIA"></option>
+						<option value="602 - GINECOLOGIA"></option>
+						<option value="603 - PARTO - OBSTETRICIA"></option>
+						<option value="701 - UCI ADULTO"></option>
+						<option value="707 - UCI-2"></option>
+						<option value="702 - UCI PEDIATRICA"></option>
+						<option value="703 - UCI INTERMEDIA"></option>
+						<option value="705 - UTI-1"></option>
+						<option value="706 - UTI-3"></option>
+						<option value="804 - NEUROCIRUGIA"></option>
+						<option value="807 - PSIQUIATRIA"></option>
+						<option value="811 - OFTALMOLOGIA"></option>
+						<option value="812 - ONCOLOGIA"></option>
+						<option value="813 - OTORRINOLARINGOLOGIA"></option>
+						<option value="814 - UROLOGIA"></option>
+						<option value="901 - SOU (SALA OBSERVACION ADULTO)"></option>
+						<option value="910 - PENSIONADO"></option>
+						<option value="931 - PABELLON CENTRAL"></option>
+						<option value="932 - PABELLON PARTOS"></option>
+						<option value="941 - RECUPERACION PABELLON CENTRAL"></option>
+				</datalist>
 				<div class="invalid-feedback pt-1 float-end">
 			      Ingrese un valor válido
 			    </div>
 				</div>
+
+
 
 			    <div>
 			    <div class='d-flex justify-content-between pt-3'><div class='text-muted'>Procedimiento</div><div class="fw-lighter text-muted"><small>Requerido (*)</small></div></div>
@@ -187,29 +231,7 @@
 </div>
 
 		</form>
-<script>
-    $("#seeAnotherFieldGroup").change(function() {
-			if ($(this).val() == "Peridural") {
-				$('#otherFieldGroupDiv').show();
-				$('#nivel').attr('required','');
-				$('#nivel').attr('data-error', 'Este campo es requerido.');
-				$('#espacio').attr('required','');
-				$('#espacio').attr('data-error', 'Este campo es requerido.');
-        		$('#distancia').attr('required','');
-				$('#distancia').attr('data-error', 'Este campo es requerido.');
-			} else {
-				$('#otherFieldGroupDiv').hide();
-				$('#nivel').removeAttr('required');
-				$('#nivel').removeAttr('data-error');
-				$('#espacio').removeAttr('required');
-				$('#espacio').removeAttr('data-error');				
-        		$('#distancia').removeAttr('required');
-				$('#distancia').removeAttr('data-error');	
-			}
-		});
-		$("#seeAnotherFieldGroup").trigger("change");
-    
-</script>	
+
 <br>
 <br>
 
@@ -222,9 +244,81 @@
 
 	?>
 
+<script>
+$("#seeAnotherFieldGroup").change(function() {
+			if ($(this).val() == "Peridural") {
+				$('#otherFieldGroupDiv').show();
+				$('#nivel').attr('required','');
+				$('#nivel').attr('data-error', 'Este campo es requerido.');
+				$('#espacio').attr('required','');
+				$('#espacio').attr('data-error', 'Este campo es requerido.');
+        $('#distancia').attr('required','');
+				$('#distancia').attr('data-error', 'Este campo es requerido.');
+			} else {
+				$('#otherFieldGroupDiv').hide();		
+				$('#nivel').removeAttr('required');
+				$('#nivel').removeAttr('data-error');
+				$('#espacio').removeAttr('required');
+				$('#espacio').removeAttr('data-error');				
+        $('#distancia').removeAttr('required');
+				$('#distancia').removeAttr('data-error');	
+			}
+		});
+		$("#seeAnotherFieldGroup").trigger("change");	
+</script>	
 
 <script>
+function checkRut(rut) {
+    // Despejar Puntos
+    var valor = rut.value.replace('.','');
+    // Despejar Guión
+    valor = valor.replace('-','');
+    
+    // Aislar Cuerpo y Dígito Verificador
+    cuerpo = valor.slice(0,-1);
+    dv = valor.slice(-1).toUpperCase();
+    
+    // Formatear RUN
+    rut.value = cuerpo + '-'+ dv
+    
+    // Si no cumple con el mínimo ej. (n.nnn.nnn)
+    if(cuerpo.length < 7) { rut.setCustomValidity("RUT Incompleto"); return false;}
+    
+    // Calcular Dígito Verificador
+    suma = 0;
+    multiplo = 2;
+    
+    // Para cada dígito del Cuerpo
+    for(i=1;i<=cuerpo.length;i++) {
+    
+        // Obtener su Producto con el Múltiplo Correspondiente
+        index = multiplo * valor.charAt(cuerpo.length - i);
+        
+        // Sumar al Contador General
+        suma = suma + index;
+        
+        // Consolidar Múltiplo dentro del rango [2,7]
+        if(multiplo < 7) { multiplo = multiplo + 1; } else { multiplo = 2; }
+  
+    }
+    
+    // Calcular Dígito Verificador en base al Módulo 11
+    dvEsperado = 11 - (suma % 11);
+    
+    // Casos Especiales (0 y K)
+    dv = (dv == 'K')?10:dv;
+    dv = (dv == 0)?11:dv;
+    
+    // Validar que el Cuerpo coincide con su Dígito Verificador
+    if(dvEsperado != dv) { rut.setCustomValidity("RUT Inválido"); return false; }
+    
+    // Si todo sale bien, eliminar errores (decretar que es válido)
+    rut.setCustomValidity('');
+}
+</script>
 
+<script>
+	// Example starter JavaScript for disabling form submissions if there are invalid fields
 (() => {
   'use strict'
 
@@ -245,6 +339,8 @@
 })()
 
 </script>
+
+
 <!-  FOOTER  ->
 
 

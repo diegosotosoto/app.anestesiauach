@@ -45,7 +45,7 @@
 		<li class='list-group-item'><div class='d-flex justify-content-between'><div>Autor</div><div>Diego Soto Soto</div></div></li>
 	</ul>
 	<ul class="list-group pt-3">
-		<li class='list-group-item'><div class='d-flex justify-content-between'><div>Compartir</div>
+		<li class='list-group-item'><div class='d-flex justify-content-between'><div>app.anestesiauach.cl</div>
 			
     <button class="btn btn-primary">Compartir!</button>
 

@@ -1,0 +1,24 @@
+[22-Nov-2022 22:16:11 UTC] PHP Warning:  mysqli::__construct(): (HY000/1045): Access denied for user ''@'localhost' (using password: NO) in /home/anestes1/public_html/pdf/generar_pdf.php on line 4
+[22-Nov-2022 22:16:11 UTC] PHP Warning:  mysqli::set_charset(): Couldn't fetch mysqli in /home/anestes1/public_html/pdf/generar_pdf.php on line 5
+[22-Nov-2022 22:17:25 UTC] PHP Warning:  require(../tfpdf.php): failed to open stream: No such file or directory in /home/anestes1/public_html/pdf/generar_pdf.php on line 53
+[22-Nov-2022 22:17:25 UTC] PHP Warning:  require(../tfpdf.php): failed to open stream: No such file or directory in /home/anestes1/public_html/pdf/generar_pdf.php on line 53
+[22-Nov-2022 22:17:25 UTC] PHP Fatal error:  require(): Failed opening required '../tfpdf.php' (include_path='.:/opt/cpanel/ea-php73/root/usr/share/pear') in /home/anestes1/public_html/pdf/generar_pdf.php on line 53
+[22-Nov-2022 22:19:31 UTC] PHP Warning:  require(../tfpdf.php): failed to open stream: No such file or directory in /home/anestes1/public_html/pdf/generar_pdf.php on line 53
+[22-Nov-2022 22:19:31 UTC] PHP Warning:  require(../tfpdf.php): failed to open stream: No such file or directory in /home/anestes1/public_html/pdf/generar_pdf.php on line 53
+[22-Nov-2022 22:19:31 UTC] PHP Fatal error:  require(): Failed opening required '../tfpdf.php' (include_path='.:/opt/cpanel/ea-php73/root/usr/share/pear') in /home/anestes1/public_html/pdf/generar_pdf.php on line 53
+[22-Nov-2022 22:20:27 UTC] PHP Warning:  require(../tfpdf.php): failed to open stream: No such file or directory in /home/anestes1/public_html/pdf/generar_pdf.php on line 53
+[22-Nov-2022 22:20:27 UTC] PHP Warning:  require(../tfpdf.php): failed to open stream: No such file or directory in /home/anestes1/public_html/pdf/generar_pdf.php on line 53
+[22-Nov-2022 22:20:27 UTC] PHP Fatal error:  require(): Failed opening required '../tfpdf.php' (include_path='.:/opt/cpanel/ea-php73/root/usr/share/pear') in /home/anestes1/public_html/pdf/generar_pdf.php on line 53
+[22-Nov-2022 22:21:33 UTC] PHP Warning:  stat(): stat failed for unifont/https://anestesiauach.cl/font/DejaVuSansCondensed.ttf in /home/anestes1/public_html/pdf/tfpdf.php on line 486
+[22-Nov-2022 22:21:33 UTC] PHP Warning:  require_once(unifont/ttfonts.php): failed to open stream: No such file or directory in /home/anestes1/public_html/pdf/tfpdf.php on line 492
+[22-Nov-2022 22:21:33 UTC] PHP Fatal error:  require_once(): Failed opening required 'unifont/ttfonts.php' (include_path='.:/opt/cpanel/ea-php73/root/usr/share/pear') in /home/anestes1/public_html/pdf/tfpdf.php on line 492
+[22-Nov-2022 22:22:16 UTC] PHP Warning:  stat(): stat failed for unifont/../pdf/font/DejaVuSansCondensed.ttf in /home/anestes1/public_html/pdf/tfpdf.php on line 486
+[22-Nov-2022 22:22:16 UTC] PHP Warning:  require_once(unifont/ttfonts.php): failed to open stream: No such file or directory in /home/anestes1/public_html/pdf/tfpdf.php on line 492
+[22-Nov-2022 22:22:16 UTC] PHP Fatal error:  require_once(): Failed opening required 'unifont/ttfonts.php' (include_path='.:/opt/cpanel/ea-php73/root/usr/share/pear') in /home/anestes1/public_html/pdf/tfpdf.php on line 492
+[22-Nov-2022 22:23:40 UTC] PHP Warning:  stat(): stat failed for /home/anestes1/public_html/pdf/font/unifont/../pdf/font/DejaVuSansCondensed.ttf in /home/anestes1/public_html/pdf/tfpdf.php on line 486
+[22-Nov-2022 22:23:40 UTC] PHP Warning:  fopen(/home/anestes1/public_html/pdf/font/unifont/../pdf/font/DejaVuSansCondensed.ttf): failed to open stream: No such file or directory in /home/anestes1/public_html/pdf/font/unifont/ttfonts.php on line 79
+[22-Nov-2022 22:24:27 UTC] PHP Warning:  fopen(/home/anestes1/public_html/app/font/unifont/DejaVuSansCondensed.ttf): failed to open stream: No such file or directory in /home/anestes1/public_html/pdf/font/unifont/ttfonts.php on line 496
+[22-Nov-2022 22:25:17 UTC] PHP Warning:  stat(): stat failed for /home/anestes1/public_html/pdf/font/unifont/https://anestesiauach.cl/pdf/font/DejaVuSansCondensed.ttf in /home/anestes1/public_html/pdf/tfpdf.php on line 486
+[22-Nov-2022 22:25:17 UTC] PHP Warning:  fopen(/home/anestes1/public_html/pdf/font/unifont/https://anestesiauach.cl/pdf/font/DejaVuSansCondensed.ttf): failed to open stream: No such file or directory in /home/anestes1/public_html/pdf/font/unifont/ttfonts.php on line 79
+[22-Nov-2022 22:31:16 UTC] PHP Warning:  fopen(/home/anestes1/public_html/app/font/unifont/DejaVuSansCondensed.ttf): failed to open stream: No such file or directory in /home/anestes1/public_html/pdf/font/unifont/ttfonts.php on line 496
+[22-Nov-2022 22:32:08 UTC] PHP Warning:  fopen(/home/anestes1/public_html/app/font/unifont/DejaVuSansCondensed.ttf): failed to open stream: No such file or directory in /home/anestes1/public_html/pdf/font/unifont/ttfonts.php on line 496

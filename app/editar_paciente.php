@@ -58,10 +58,54 @@
 				<div class="container">
 				<div class="row">
 				<div class="col">
-					<div>
-					<div class='text-muted pt-1'>Unidad / Cama</div><input class="form-control mb-2" type="text" name="unidad_cama_e" id="unidad_cama_e" required pattern='[a-zA-ZñÑáéíóúÁÉÍÓÚ0-9\s]{2,}' value="<?php echo html_entity_decode($fila['unidad_cama']);?>"/>
+
+
+				<div>
+				<div class='d-flex justify-content-between pt-3'><div class='text-muted'>Unidad / Cama</div><div class="fw-lighter text-muted"><small>Requerido (*)</small></div></div>
+				<input class="form-control mb-2" type="text" name="unidad_cama_e" id="unidad_cama_e" required pattern='[a-zA-ZñÑáéíóúÁÉÍÓÚ0-9\s]{2,}' list="unidades" value="<?php echo html_entity_decode($fila['unidad_cama']);?>" autocomplete="off">
+					<datalist id="unidades">
+						<option value="100 - MEDICINA"></option>
+						<option value="UHD - UNIDAD  HOSPIT. DOMICILIARIA"></option>
+						<option value="CCV - CLINICA COSTANERA VALDIVIA"></option>
+						<option value="102 - UNIDAD HEMATOLOGIA INTENSIVA"></option>
+						<option value="119 - MEDICO QUIRURGICO INDIFERENCIADO"></option>
+						<option value="145 - PEDIATRICO QUIRURG. INDIFEREN"></option>
+						<option value="200 - CIRUGIA ADULTO"></option>
+						<option value="210 - CIRUGIA MAYOR AMBULATORIA"></option>
+						<option value="300 - TRAUMATOLOGIA ADULTO"></option>
+						<option value="400 - CIRUGIA INFANTIL"></option>
+						<option value="403 - TRAUMATOLOGIA INFANTIL"></option>
+						<option value="501 - NEONATO CUIDADOS INTENSIVOS"></option>
+						<option value="502 - NEONATO CUIDADOS INTERMEDIOS"></option>
+						<option value="503 - NEONATO CUIDADOS BASICOS"></option>
+						<option value="506 - PEDIATRIA"></option>
+						<option value="507 - SEGUNDA INFANCIA"></option>
+						<option value="509 - UNIDAD ONCO HEMATOLOGIA INFANT"></option>
+						<option value="510 - UTI PEDIATRICA"></option>
+						<option value="600 - PUERPERIO"></option>
+						<option value="601 - ARO - OBSTETRICIA"></option>
+						<option value="602 - GINECOLOGIA"></option>
+						<option value="603 - PARTO - OBSTETRICIA"></option>
+						<option value="701 - UCI ADULTO"></option>
+						<option value="707 - UCI-2"></option>
+						<option value="702 - UCI PEDIATRICA"></option>
+						<option value="703 - UCI INTERMEDIA"></option>
+						<option value="705 - UTI-1"></option>
+						<option value="706 - UTI-3"></option>
+						<option value="804 - NEUROCIRUGIA"></option>
+						<option value="807 - PSIQUIATRIA"></option>
+						<option value="811 - OFTALMOLOGIA"></option>
+						<option value="812 - ONCOLOGIA"></option>
+						<option value="813 - OTORRINOLARINGOLOGIA"></option>
+						<option value="814 - UROLOGIA"></option>
+						<option value="901 - SOU (SALA OBSERVACION ADULTO)"></option>
+						<option value="910 - PENSIONADO"></option>
+						<option value="931 - PABELLON CENTRAL"></option>
+						<option value="932 - PABELLON PARTOS"></option>
+						<option value="941 - RECUPERACION PABELLON CENTRAL"></option>
+				</datalist>
 					<div class="invalid-feedback pt-1">
-			      	Ingrese un número de ficha válido
+			      	Ingrese un valor válido
 			    	</div>
 					</div>
 			   		
@@ -230,38 +274,36 @@
 
 
 		</form>
-<script>
-    $("#seeAnotherFieldGroup").change(function() {
-			if ($(this).val() == "Peridural") {
-				$('#otherFieldGroupDiv').show();
-				$('#nivel_e').attr('required','');
-				$('#nivel_e').attr('data-error', 'Este campo es requerido.');
-				$('#espacio_e').attr('required','');
-				$('#espacio_e').attr('data-error', 'Este campo es requerido.');
-        		$('#distancia_e').attr('required','');
-				$('#distancia_e').attr('data-error', 'Este campo es requerido.');
-			} else {
-				$('#otherFieldGroupDiv').hide();
-				$('#nivel_e').removeAttr('required');
-				$('#nivel_e').removeAttr('data-error');
-				$('#espacio_e').removeAttr('required');
-				$('#espacio_e').removeAttr('data-error');				
-        		$('#distancia_e').removeAttr('required');
-				$('#distancia_e').removeAttr('data-error');	
-			}
-		});
-		$("#seeAnotherFieldGroup").trigger("change");
-    
-</script>	
+
 
 	<?php 
 
 		$conexion->close();
 
 	?>
-	
+
 <script>
-    
+	$("#seeAnotherFieldGroup").change(function() {
+			if ($(this).val() == "Peridural") {
+				$('#otherFieldGroupDiv').show();
+				$('#nivel_e').attr('required','');
+				$('#nivel_e').attr('data-error', 'Este campo es requerido.');
+				$('#espacio_e').attr('required','');
+				$('#espacio_e').attr('data-error', 'Este campo es requerido.');
+        $('#distancia_e').attr('required','');
+				$('#distancia_e').attr('data-error', 'Este campo es requerido.');				
+			} else {
+				$('#otherFieldGroupDiv').hide();
+				$('#nivel_e').removeAttr('required');
+				$('#nivel_e').removeAttr('data-error');
+				$('#espacio_e').removeAttr('required');
+				$('#espacio_e').removeAttr('data-error');				
+        $('#distancia_e').removeAttr('required');
+				$('#distancia_e').removeAttr('data-error');					
+			}
+		});
+		$("#seeAnotherFieldGroup").trigger("change");
+
 </script>		
 <script>
 	// Example starter JavaScript for disabling form submissions if there are invalid fields

@@ -4,6 +4,7 @@ self.addEventListener("install", (event) => {
       .open("screen")
       .then((cache) =>
         cache.addAll([    
+          "/style.css",
           "/images/logo192.png",
         ])
       )
@@ -19,3 +20,5 @@ self.addEventListener('fetch', (event) => {
     }
   }());
 });
+
+

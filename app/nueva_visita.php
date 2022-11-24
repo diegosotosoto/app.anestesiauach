@@ -14,7 +14,6 @@
 
 ?>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
 <body>
 	
@@ -148,12 +147,14 @@
 				</li>
 
 				<li class='list-group-item mb-2'><img class='btn-imagen' src='/images/IMG_3990.PNG'/>Exámenes</li>
+
 				<li class='list-group-item mb-2'>
+
 					<div class='text-muted pt-2'>Fecha Exámenes</div>
 				 <div class="input-group date">
-				        <input type="text" class="form-control" name="fecha_exs" id="datepicker"/>
-							<span class="input-group-text" id="basic-addon2"><i class="fa-solid fa-calendar"></i></span>
-				      </div>
+				  <input type="text" class="form-control" name="fecha_exs" id="datepicker">
+				  </div>
+
 
 				<div>
 				<div class='text-muted pt-2'>INR</div><input class="form-control mb-2" type="number" max="20" step=".1"  name="inr" id="inr">
@@ -271,7 +272,7 @@
             	    weekStartDay: 1,
             	    autoclose: true,
             	    maxDate: today,
-            	    showRightIcon: false,
+            	    showRightIcon: true,
 
             }
 

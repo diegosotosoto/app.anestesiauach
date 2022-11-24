@@ -39,7 +39,7 @@
 			$lockout_e=htmlentities(addslashes($_POST['lockout_e']));
 			$peso_e=htmlentities(addslashes($_POST['peso_e']));
 			$comentarios_e=htmlentities(addslashes($_POST['comentarios_e']));
-			$fecha_edicion_e=date("Y-m-d H:i:s");
+			$fecha_edicion_e=date("Y-m-d H:i:s",strtotime('-4 hour'));
 			$editor_e=ucwords(strtolower($_COOKIE['hkjh41lu4l1k23jhlkj14']));
 
 
@@ -79,7 +79,7 @@
 				if($_POST['rut_v']){
 					$nombre_paciente_v=htmlentities(addslashes($_POST['nombre_paciente_v']));
 					$rut_v=htmlentities(addslashes(strtoupper($_POST['rut_v'])));
-					$fecha_v=date("Y-m-d H:i:s");
+					$fecha_v=date("Y-m-d H:i:s",strtotime('-4 hour'));
 					$eva_estatico=htmlentities(addslashes($_POST['eva_estatico']));
 					$eva_dinamico=htmlentities(addslashes($_POST['eva_dinamico']));
 					$sedacion=htmlentities(addslashes($_POST['sedacion']));
@@ -173,7 +173,7 @@
 		echo "<li class='list-group-item'><br><h5 class='mb-1 fw-bold'>".$fila['nombre_paciente']."</h5>";
 		echo "<p class='mb-1'>".$fila['rut']."</p></li>";
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Ficha Clínica</div><div>".$fila['ficha']."</div></div></li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Unidad/Cama</div><div>".$fila['unidad_cama']."</div></div></li>";
+		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Unidad&nbsp&nbsp</div><div class='text-end'>".$fila['unidad_cama']."</div></div></li>";
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Procedimiento</div><div>".$fila['procedimiento']."</div></div></li>";	
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Analgesia</div><div>".$fila['analgesia']."</div></div></li>";
 
@@ -189,10 +189,10 @@
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Lockout PCA</div><div>".$fila['lockout']." min</div></div></li>";
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Peso</div><div>".$fila['peso']." kg</div></div></li>";
 
-		echo "<li class='list-group-item mb-2 py-3'><img class='btn-imagen' src='/images/IMG_3977.PNG'/>Comentarios";				
+		echo "<li class='list-group-item mb-2 py-3'><img class='btn-imagen' src='images/IMG_3977.PNG'/>Comentarios";				
 		echo "<div class='py-2'>".$fila['comentarios']."</div></div></li>";
 
-		echo "<li class='list-group-item mb-2 py-3'><div><img class='btn-imagen' src='/images/IMG_3978.PNG'/>EVOLUCIONES DIARIAS</div></div>";
+		echo "<li class='list-group-item mb-2 py-3'><div><img class='btn-imagen' src='images/IMG_3978.PNG'/>EVOLUCIONES DIARIAS</div></div>";
 			
 
 		$consulta_elementos="SELECT `rut_v` FROM `visita_diaria` WHERE `rut_v`='$formulario'";
@@ -208,11 +208,11 @@
 
 	
 
-		echo "<li class='list-group-item'><div><form action='nueva_visita.php' method='post'><button class='btn btn-primary btn-lg' type='submit' name='visita' value='$formulario' ><img class='btn-imagen' src='/images/IMG_3981.PNG'/>Nueva Evolución Diaria</button></form></li>";
+		echo "<li class='list-group-item'><div><form action='nueva_visita.php' method='post'><button class='btn btn-primary btn-lg' type='submit' name='visita' value='$formulario' ><img class='btn-imagen' src='images/IMG_3981.PNG'/>Nueva Evolución Diaria</button></form></li>";
 
-		echo "<li class='list-group-item'><small class='text-muted'>Creado el $fecha1, por ".$fila['fecha_creacion']."</small></li>";
+		echo "<li class='list-group-item'><small class='text-muted'>Creado el $fecha1, por ".$fila['creador']."</small></li>";
 		if(isset($fila['fecha_edicion'])){
-			echo "<li class='list-group-item'><small class='text-muted'>Editado el $fecha2, por ".$fila['fecha_edicion']."</small></li>";
+			echo "<li class='list-group-item'><small class='text-muted'>Editado el $fecha2, por ".$fila['editor']."</small></li>";
 		}
 
 
