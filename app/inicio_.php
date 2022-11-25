@@ -24,8 +24,8 @@
 
 
 		$boton_toggler="<button class='navbar-toggler shadow-sm' type='button' data-bs-toggle='offcanvas' data-bs-target='#offcanvasNavbar' aria-controls='offcanvasNavbar' style='width:70px; height:40px'><i class='fa-solid fa-bars' style='color:white'></i></button>";
-		$titulo_navbar="Anestesia UACH";
-		$boton_navbar="<a></a><a></a>";
+		$titulo_navbar="";
+		$boton_navbar="<a class='btn btn-lg shadow-sm' href='nuevo_paciente.php' role='button'><i class='fa fa-plus fa-lg' style='color:white' aria-hidden='true'></i></a>";
 		//Conexión
 		require("navbar.php");
 	?>
@@ -99,6 +99,32 @@
 
 </br>
 </br>
+
+<div class="container text-center">
+  <div class="row pt-5">
+    <div class="col text-center">
+      <a href="#" class="btn shadow-sm btn-success" style="height: 150px;width: 150px"><i class="fa-solid fa-user-plus fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Nuevo Paciente</div></a>
+    </div>
+
+    <div class="col text-center">
+      <a href="#" class="btn shadow-sm btn-primary" style="height: 150px;width: 150px"><i class="fa-solid fa-syringe fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Ingreso Dolor</div></a>
+    </div>
+
+  </div>
+   <div class="row pt-5">
+    <div class="col text-center">
+      <a href="#" class="btn shadow-sm btn-danger disabled" style="height: 150px;width: 150px"> <i class="fa-solid fa-clipboard fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Visita Preanestésica</div></a>
+    </div>
+    
+    <div class="col text-center">
+      <a href="apuntes.php" class="btn shadow-sm btn-warning" style="height: 150px;width: 150px"><i class="fa-solid fa-book fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Apuntes</div></a>
+    </div>
+
+  </div>
+</div>
+
+
+
 
 	<?php 
 				//GUARDAR PACIENTE NUEVO
@@ -193,28 +219,7 @@
 		}
 	?>
 
-<div class="container text-center">
-  <div class="row pt-5">
-    <div class="col text-center">
-      <a href='nuevo_paciente.php' class="btn shadow-sm btn-success" style="height: 150px;width: 150px"><i class="fa-solid fa-user-plus fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Nuevo Paciente</div></a>
-    </div>
 
-    <div class="col text-center">
-      <a href="hoja_dolor.php" class="btn shadow-sm btn-primary" style="height: 150px;width: 150px"><i class="fa-solid fa-syringe fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Pacientes Dolor</div></a>
-    </div>
-
-  </div>
-   <div class="row pt-5">
-    <div class="col text-center">
-      <a href="#" class="btn shadow-sm btn-danger disabled" style="height: 150px;width: 150px"> <i class="fa-solid fa-clipboard fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Visita Preanestésica</div></a>
-    </div>
-    
-    <div class="col text-center">
-      <a href="apuntes.php" class="btn shadow-sm btn-warning" style="height: 150px;width: 150px"><i class="fa-solid fa-book fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Apuntes</div></a>
-    </div>
-
-  </div>
-</div>
 
 
 
