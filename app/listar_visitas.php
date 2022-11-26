@@ -24,7 +24,7 @@
 	<?php
 		$formulario=htmlentities(addslashes($_POST['lista_v']));
 		//ENVIA EL POST VISTA CON LA VARIABLE FLORMULARIO PARA CANCELAR
-		$boton_toggler="<button class='btn shadow-sm btn-lg' type='submit' name='vista' value='$formulario'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></button>";
+		$boton_toggler="<button class='btn shadow-sm btn-lg border-light' style='; --bs-border-opacity: .1;' type='submit' name='vista' value='$formulario'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></button>";
 		$titulo_navbar="Visitas Dolor";
 
 		$boton_navbar="<a class='navbar-brand mr-auto ms-5' href='#'' role='button'></a>";

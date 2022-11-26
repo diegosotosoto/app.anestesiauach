@@ -87,7 +87,7 @@
 
 	<?php
 
-		$boton_toggler="<a class='btn btn-lg shadow-sm' href='index.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
+		$boton_toggler="<a class='btn btn-lg shadow-sm border-light' style='; --bs-border-opacity: .1;' href='index.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
 		$titulo_navbar="Gestión";
 		$boton_navbar="<a></a><a></a>";
 

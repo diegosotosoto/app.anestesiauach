@@ -4,7 +4,7 @@
 	"start_url":"/",
 	"scope": ".",
 	"background_color":"#CCEAFF",
-	"theme_color":"#0096FF",
+	"theme_color":"#42A5FF",
 	"display":"standalone",
 	"prefer_related_applications":false, 
 
@@ -22,22 +22,4 @@
 			"purpose": "maskable"
 		}
 	],
-    "shortcuts" : [
-        {
-            "name": "Apuntes",
-            "url": "/apuntes.php",
-            "description": "Apuntes y fórmulas de uso frecuente",
-            "icons": [{ "src": "/images/IMG_3981.PNG", "sizes": "30x30" }]
-        },
-        {
-            "name": "Compartir",
-            "url": "acerca_de.php",
-            "icons": [{ "src": "/images/IMG_3978.PNG", "sizes": "30x30" }]
-        },
-        {
-            "name": "Ficha Dolor",
-            "url": "/",
-            "icons": [{ "src": "/images/logo192.png", "sizes": "192x192" }]
-        }
-    ]
 }

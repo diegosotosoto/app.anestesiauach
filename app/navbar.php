@@ -1,5 +1,5 @@
 
-<nav class="navbar fixed-top navbar-dark" style="background-color: #0096FF;">
+<nav class="navbar fixed-top navbar-dark shadow" style="background-color: #0096FF;background-image: var(--bs-gradient);">
   <div class="container-fluid ">
 
 

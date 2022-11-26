@@ -22,10 +22,10 @@
 	<?php
 		$formulario=htmlentities(addslashes($_POST['visita']));	
 
-		$boton_toggler="<a class='btn btn-lg shadow-sm' href='index.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
+		$boton_toggler="<a class='btn btn-lg shadow-sm border-light' style='; --bs-border-opacity: .1;'  href='index.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
 		$titulo_navbar="Visita";
 		echo "<form name='form_ed' id='form_ed' method='post' action='vista_paciente.php' class='needs-validation' novalidate>";
-		$boton_navbar="<button class='btn shadow-sm btn-lg' type='submit' value='Submit'><div class='text-white'>Guardar</div></button>";
+		$boton_navbar="<button class='btn shadow-sm btn-lg border-light' style='; --bs-border-opacity: .1;' type='submit' value='Submit'><div class='text-white'>Guardar</div></button>";
 
 		require("navbar.php");
 	?>

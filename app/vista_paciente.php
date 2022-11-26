@@ -148,8 +148,8 @@
 		$busqueda2=$conexion->query($consulta_m);
 		$fila=$busqueda2->fetch_assoc();
 
-		$boton_toggler="<a class='btn btn-lg shadow-sm' href='index.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
-		$boton_navbar="<form action='editar_paciente.php' method='post'><button class='btn btn-lg shadow-sm' type='submit' name='editar' value='".$fila['rut']."'/><i class='fa fa-pencil fa-lg' style='color:white' aria-hidden='true'></i></button></form>";
+		$boton_toggler="<a class='btn btn-lg shadow-sm border-light' style='; --bs-border-opacity: .1;'  href='index.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
+		$boton_navbar="<form action='editar_paciente.php' method='post'><button class='btn btn-lg shadow-sm border-light' style='; --bs-border-opacity: .1;'  type='submit' name='editar' value='".$fila['rut']."'/><i class='fa-solid fa-pen fa-lg' style='color:white' aria-hidden='true'></i></button></form>";
 
 
 		require("navbar.php");
@@ -170,9 +170,9 @@
 			$fecha2 = date( 'd-m-y H:i', $phpdate2 );
 		}
 		
-		echo "<li class='list-group-item'><br><h5 class='mb-1 fw-bold'>".$fila['nombre_paciente']."</h5>";
-		echo "<p class='mb-1'>".$fila['rut']."</p></li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Ficha Clínica</div><div>".$fila['ficha']."</div></div></li>";
+		echo "<li class='list-group-item bg-secondary' style='--bs-bg-opacity: .2;'><br><h5 class='mb-1 fw-bold'>".$fila['nombre_paciente']."</h5>";
+		echo "<p class='mb-1'>Rut:&nbsp;".$fila['rut']."</p>";
+		echo "<p class='mb-1'>FC:&nbsp;".$fila['ficha']."</p>";
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Unidad&nbsp&nbsp</div><div class='text-end'>".$fila['unidad_cama']."</div></div></li>";
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Procedimiento</div><div>".$fila['procedimiento']."</div></div></li>";	
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Analgesia</div><div>".$fila['analgesia']."</div></div></li>";

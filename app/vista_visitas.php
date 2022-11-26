@@ -25,9 +25,9 @@
 		$rut_v=htmlentities(addslashes($_POST['rut_v']));
 		$fecha_v=htmlentities(addslashes($_POST['fecha_v']));
 
-		$boton_toggler="<form method='post' action='listar_visitas.php'><button class='btn btn-lg shadow-sm' type='submit' name='lista_v' value='$rut_v'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></button></form>";
+		$boton_toggler="<form method='post' action='listar_visitas.php'><button class='btn btn-lg shadow-sm border-light' style='; --bs-border-opacity: .1;' type='submit' name='lista_v' value='$rut_v'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></button></form>";
 		$titulo_navbar=" ";
-		$boton_navbar="<form method='post' action='https://anestesiauach.cl/pdf/generar_pdf.php' target='_blank');'><input type='hidden' name='fecha_v' value='$fecha_v'><button class='btn btn-lg shadow-sm' type='submit' name='rut_v' value='$rut_v'><div class='text-white'><i class='fa-solid fa-file-pdf'></i></div></button></form>";
+		$boton_navbar="<form method='post' action='https://anestesiauach.cl/pdf/generar_pdf.php' target='_blank');'><input type='hidden' name='fecha_v' value='$fecha_v'><button class='btn btn-lg shadow-sm border-light' style='width:60px; --bs-border-opacity: .1;' type='submit' name='rut_v' value='$rut_v'><div class='text-white'><i class='fa-solid fa-file-pdf'></i></div></button></form>";
 
 		require("navbar.php");
 	?>

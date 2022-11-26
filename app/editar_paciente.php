@@ -46,7 +46,7 @@
 
 			<ul class="list-group">
 	<?php
-		echo "<li class='list-group-item'><br><h5 class='mb-1 fw-bold'>".$fila['nombre_paciente']."</h5>";
+		echo "<li class='list-group-item bg-secondary' style='--bs-bg-opacity: .2;'><br><h5 class='mb-1 fw-bold'>".$fila['nombre_paciente']."</h5>";
 		echo "<div class='mb-1'>Rut: ".$fila['rut']."</div>";
 		echo "<div class='mb-1'>FC: ".$fila['ficha']."</div></li>";
 	?>
@@ -62,7 +62,7 @@
 
 				<div>
 				<div class='d-flex justify-content-between pt-3'><div class='text-muted'>Unidad / Cama</div><div class="fw-lighter text-muted"><small>Requerido (*)</small></div></div>
-				<input class="form-control mb-2" type="text" name="unidad_cama_e" id="unidad_cama_e" required pattern='[a-zA-ZñÑáéíóúÁÉÍÓÚ0-9\s]{2,}' list="unidades" value="<?php echo html_entity_decode($fila['unidad_cama']);?>" autocomplete="off">
+				<input class="form-control mb-2" type="text" name="unidad_cama_e" id="unidad_cama_e" list="unidades" value="<?php echo html_entity_decode($fila['unidad_cama']);?>" autocomplete="off" required>
 					<datalist id="unidades">
 						<option value="100 - MEDICINA"></option>
 						<option value="UHD - UNIDAD  HOSPIT. DOMICILIARIA"></option>

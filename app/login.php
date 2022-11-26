@@ -104,7 +104,7 @@
 			$alerta_login = "
 								<div class='alert alert-success alert-dismissible fade show'>
 						    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
-						    <strong>Info!</strong> Nuevo Usuario Registrado.
+						    <strong>Info!</strong> Nuevo Usuario Registrado. Comunícate con el administrador para validar tu cuenta!
 						  	</div>
 
 			";
@@ -144,17 +144,18 @@
 
 
 <form class="needs-validation" action="login.php" method="post" novalidate autocomplete="nope">
-<div class="container text-center mt-3">
+<div class="container text-center mt-4 pt-4">
+	<a href="#" class="btn shadow bg-primary me-2 rounded-3 text-white pt-2" style="height: 150px;width: 300px; background-image: var(--bs-gradient);">
   <div class="row pt-4">
-  	<h1>¡Hola!</h1>
+  	<h1>¡Hola!<i class="fa-solid fa-face-smile-wink ps-3"></i></h1>
   </div>
   <div class="row pt-3">
     <div class="col">
       Por favor, ingresa tus datos!
     </div>
   </div>
-
-  <div class="row pt-3">
+</a>
+  <div class="row pt-4">
     <div class="col">
 			<div class='text-muted pt-3'>E-Mail</div>
 			<div class="input-group mb-2">
@@ -175,13 +176,17 @@
     </div>
   </div> 
 
-  <div class="row pt-5">
+  <div class="row pt-5 pb-5">
   	<div class="col">
-  		<input type="submit" name="registro" class="btn btn-primary btn-lg" value="Ingresar" required/>
+  		<button type="submit" name="registro" class="btn btn-primary btn-lg shadow"><i class="fa-solid fa-right-to-bracket pe-2"></i>Ingresar</button>
   	</div>
   </div>
 </div>
-
+  <div class="row pt-5 pb-5">
+</div>
+<div class="fixed-bottom pt-5 mb-3 text-center">
+	  <p class="text-muted pb-2">Anestesia<small class='fw-bold'>  UACH &nbsp;<img src='images/austral.png' style='height: 36px; width: 36px; filter: invert(60%);'/></small></p>
+</div>
 
 
 <script>

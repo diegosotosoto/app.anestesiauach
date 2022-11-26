@@ -23,9 +23,9 @@
 		//Botones del Toggle NAVBAR
 
 
-		$boton_toggler="<a class='btn btn-lg shadow-sm' href='index.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
+		$boton_toggler="<a class='btn btn-lg shadow-sm border-light' style='; --bs-border-opacity: .1;' href='index.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
 		$titulo_navbar="Ficha Dolor HBV";
-		$boton_navbar="<a class='btn btn-lg shadow-sm' href='nuevo_paciente.php' role='button'><i class='fa fa-plus fa-lg' style='color:white' aria-hidden='true'></i></a>";
+		$boton_navbar="<a class='btn btn-lg shadow-sm border-light' style='; --bs-border-opacity: .1;' href='nuevo_paciente.php' role='button'><i class='fa fa-plus fa-lg' style='color:white' aria-hidden='true'></i></a>";
 		//Conexión
 		require("navbar.php");
 	?>

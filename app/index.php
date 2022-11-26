@@ -24,14 +24,14 @@
 
 
 		$boton_toggler="<button class='navbar-toggler shadow-sm' type='button' data-bs-toggle='offcanvas' data-bs-target='#offcanvasNavbar' aria-controls='offcanvasNavbar' style='width:70px; height:40px'><i class='fa-solid fa-bars' style='color:white'></i></button>";
-		$titulo_navbar="Anestesia UACH";
-		$boton_navbar="<a></a><a></a>";
+		$titulo_navbar="Anestesia<small class='fw-bold'>  UACH &nbsp;<img src='images/austral.png' style='height: 36px; width: 36px'/></small>";
+		$boton_navbar="<a class='btn text-white shadow-sm border-light' style='width:50px; height:40px; --bs-border-opacity: .1;' href='acerca_de.php'>?</a>";
 		//Conexión
 		require("navbar.php");
 	?>
 
 
-    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel" style="  --bs-offcanvas-width: 320px;">
       <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasNavbarLabel"></h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -39,22 +39,22 @@
       <div class="offcanvas-body">
 
 
-            <div class="" id="offcanvasExampleLabel"><h5><?php echo $_COOKIE['hkjh41lu4l1k23jhlkj14']; ?></h5></div>
+            <div class="" id="offcanvasExampleLabel"><h5><i class="fa-solid fa-user-doctor ps-1 pe-2"></i><?php echo $_COOKIE['hkjh41lu4l1k23jhlkj14']; ?></h5></div>
 
           <div class="text-muted"><?php echo $_COOKIE['hkjh41lu4l1k23jhlkj13']; ?></div>
           <hr>
-              <div class="text-primary pt-4 fs-5">
+          		<ul class="list-group pt-3">
+							<li class='list-group-item bg-light bg-gradient'>
+              <div class="text-primary fs-5">
               <i style="margin-left:12px" class="fa-solid fa-clipboard"></i>
               <a class="text-decoration-none" style="padding-left:8px" href='apuntes.php'> Apuntes</a></div>
+            	</li>
 
-              <div class="text-primary pt-4 fs-5">
-              <i style="margin-left:10px" class="fa-solid fa-door-open"></i>
-              <a class="text-decoration-none" style="padding-left:5px" href='cierra_sesion.php'> Cerrar sesión</a></div>
-
-              <div class="text-primary pt-4 fs-5">
+							<li class='list-group-item bg-light bg-gradient'>
+              <div class="text-primary fs-5">
               <i style="margin-left:12px" class="fa-solid fa-file-arrow-up"></i>
               <a class="text-decoration-none" style="padding-left:8px" href='acerca_de.php'> Acerca de</a></div>
-
+            	</li>
 
 				<?php 
 
@@ -69,31 +69,39 @@
 							}else{ 
 					
 				              echo "<form id='gest_users' action='gestion_usuarios.php' method='post'><input type='hidden' name='email_user_ad' value='$email_user'/>
-				              <div class='text-primary pt-4 fs-5'>
+				              <li class='list-group-item bg-light bg-gradient'>
+				              <div class='text-primary fs-5'>
 				              <i style='margin-left:10px' class='fa-solid fa-users'></i>
 				              <a class='text-decoration-none' style='padding-left:5px' href='#' onclick='envioForm1()'> Gestión Usuarios</a></div></form>
 				              <script>function envioForm1() {document.getElementById('gest_users').submit(); }</script>
+				              </li>
 				              ";
 
 				              echo "<form id='gest_pacientes' action='gestion_pacientes.php' method='post'><input type='hidden' name='email_user_ad' value='$email_user'/>
-				              <div class='text-primary pt-4 fs-5'>
+				              <li class='list-group-item bg-light bg-gradient'>
+				              <div class='text-primary fs-5'>
 				              <i style='margin-left:10px' class='fa-solid fa-users'></i>
 				              <a class='text-decoration-none' style='padding-left:5px' href='#' onclick='envioForm2()'> Gestión Pacientes</a></div></form>
 				              <script>function envioForm2() {document.getElementById('gest_pacientes').submit(); }</script>
+				              </li>
 				              ";
 
 							}
 
-				?>
-              <div class="fixed-bottom mb-6"><hr>
-                <div class="container">
-                <div class="row">
-                  <div class="col text-muted pb-4">
-                    <i class="fa-solid fa-user-gear" style="margin-left:40px"></i><small style="padding-left:15px">Diego Soto Soto - 2022</small></div>
-                </div>
-              </div></div>
+				?>				
+									</ul>
+									<ul class="list-group pt-5">
+										<li class='list-group-item bg-light bg-gradient'>
+			              <div class="text-primary fs-5">
+			              <i style="margin-left:10px" class="fa-solid fa-door-open"></i>
+			              <a class="text-decoration-none" style="padding-left:5px" href='cierra_sesion.php'> Cerrar sesión</a></div>
+			            	</li>
+			            </ul>
+									<div class="pt-5 pb-5 text-center"></div><div class="pt-5 pb-5 text-center"></div>
+                  <div class="sticky-bottom mb-3 text-center"><hr> <i class="fa-solid fa-user-gear" style="margin-left:40px"></i><small class="ps-2">Diego Soto Soto - 2022</small>
+                  </div>
+                  </div>
 
-        </div>
       </div>
 
 
@@ -193,24 +201,24 @@
 		}
 	?>
 
-<div class="container text-center">
+<div class="container text-center pt-2">
   <div class="row pt-5">
     <div class="col text-center">
-      <a href='nuevo_paciente.php' class="btn shadow-sm btn-success" style="height: 150px;width: 150px"><i class="fa-solid fa-user-plus fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Nuevo Paciente</div></a>
+      <a href='nuevo_paciente.php' class="btn shadow btn-success ms-2 rounded-3" style="height: 150px;width: 150px; background-image: var(--bs-gradient);"><i class="fa-solid fa-user-plus fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Nuevo Paciente</div></a>
     </div>
 
     <div class="col text-center">
-      <a href="hoja_dolor.php" class="btn shadow-sm btn-primary" style="height: 150px;width: 150px"><i class="fa-solid fa-syringe fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Pacientes Dolor</div></a>
+      <a href="hoja_dolor.php" class="btn shadow btn-primary me-2 rounded-3" style="height: 150px;width: 150px; background-image: var(--bs-gradient);"><i class="fa-solid fa-syringe fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Pacientes Dolor</div></a>
     </div>
 
   </div>
    <div class="row pt-5">
     <div class="col text-center">
-      <a href="#" class="btn shadow-sm btn-danger disabled" style="height: 150px;width: 150px"> <i class="fa-solid fa-clipboard fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Visita Preanestésica</div></a>
+      <a href="#" class="btn shadow btn-danger disabled ms-2 bg-opacity-25 rounded-3" style="height: 150px;width: 150px; background-image: var(--bs-gradient);"> <i class="fa-solid fa-clipboard fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Visita Preanestésica</div></a>
     </div>
     
     <div class="col text-center">
-      <a href="apuntes.php" class="btn shadow-sm btn-warning" style="height: 150px;width: 150px"><i class="fa-solid fa-book fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Apuntes</div></a>
+      <a href="apuntes.php" class="btn shadow btn-warning me-2 rounded-3" style="height: 150px;width: 150px; background-image: var(--bs-gradient);"><i class="fa-solid fa-book fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Apuntes</div></a>
     </div>
 
   </div>

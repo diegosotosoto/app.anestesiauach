@@ -19,8 +19,8 @@
 	<?php
 
 
-		$boton_toggler="<a class='btn btn-lg shadow-sm' href='index.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
-		$titulo_navbar="Acerca De";
+		$boton_toggler="<a class='btn btn-lg shadow-sm border-light' style='; --bs-border-opacity: .1;'  href='index.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
+		$titulo_navbar="Acerca de";
 		$boton_navbar="<a class='navbar-brand mr-auto ms-5' href='#'' role='button'></a>";
 
 
@@ -29,23 +29,28 @@
 	
 <br>
 <br>
-<br>
+
 <div class="container text-center mt-4">
+		<ul class="list-group pt-3">
+		<li class='list-group-item bg-light bg-gradient'>
 	<div class="row">
-		<div class="col">
+		<div class="col pt-2">
 			<img style="width: 80px; height: 80px;" src='/images/logo192.png'/>
 		</div>
 	</div>
 	<div class="row">
-		<div class="col">
+		<div class="col pb-2">
 			<h1 class="pt-3">App Anestesiología UACH</h1>
 		</div>
 	</div>
-	<ul class="list-group pt-3">
-		<li class='list-group-item'><div class='d-flex justify-content-between'><div>Autor</div><div>Diego Soto Soto</div></div></li>
+	</li>
 	</ul>
 	<ul class="list-group pt-3">
-		<li class='list-group-item'><div class='d-flex justify-content-between'><div>app.anestesiauach.cl</div>
+		<li class='list-group-item bg-light bg-gradient'><div class='d-flex justify-content-between'><div>Autor</div><div>Diego Soto Soto</div></div></li>
+		<li class='list-group-item bg-light bg-gradient'><div class='d-flex justify-content-between'><div>email</div><div>diegosoto@anestesiauach.cl</div></div></li>
+	</ul>
+	<ul class="list-group pt-3">
+		<li class='list-group-item bg-light bg-gradient'><div class='d-flex justify-content-between'><div>app.anestesiauach.cl</div>
 			
     <button class="btn btn-primary">Compartir!</button>
 

@@ -22,9 +22,9 @@
 	<?php
 	
 
-		$boton_toggler="<a class='btn btn-lg shadow-sm' href='index.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
+		$boton_toggler="<a class='btn btn-lg shadow-sm border-light' style='; --bs-border-opacity: .1;'  href='index.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
 		$titulo_navbar="Nuevo";
-		$boton_navbar="<button class='btn btn-lg shadow-sm' type='submit' form='form_ingreso' value='Submit'><div class='text-white'>Agregar</div></button>";
+		$boton_navbar="<button class='btn btn-lg shadow-sm border-light' style='; --bs-border-opacity: .1;' type='submit' form='form_ingreso' value='Submit'><div class='text-white'>Agregar</div></button>";
 
 		require("navbar.php");
 	?>
@@ -65,7 +65,7 @@
 
 			    <div>
 				<div class='d-flex justify-content-between pt-3'><div class='text-muted'>Unidad / Cama</div><div class="fw-lighter text-muted"><small>Requerido (*)</small></div></div>
-				<input class="form-control mb-2" type="text" name="unidad_cama" id="unidad_cama" required list="unidades" autocomplete="off">
+				<input class="form-control mb-2" type="text" name="unidad_cama" id="unidad_cama" required list="unidades" autocomplete="off" required>
 				<datalist id="unidades">
 						<option value="100 - MEDICINA"></option>
 						<option value="UHD - UNIDAD  HOSPIT. DOMICILIARIA"></option>

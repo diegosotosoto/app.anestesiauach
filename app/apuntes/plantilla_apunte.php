@@ -2,7 +2,7 @@
 
 	//Ve si está activa la cookie o redirige al login
 	if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
-		header('Location: login.php');
+		header('Location: ../login.php');
 	}
 	//Conexión
 	require("../conectar.php");
@@ -21,9 +21,9 @@
 
 	<?php
 		//Botones del Toggle NAVBAR
-		$boton_toggler="<a class='btn btn-lg shadow-sm' href='../apuntes.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
+		$boton_toggler="<a class='btn btn-lg border-light shadow-sm' style='--bs-border-opacity: .1;' href='../apuntes.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
 		$titulo_navbar="Apuntes";
-		$boton_navbar="<button class='navbar-toggler text-white' type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation'> ? </button>";
+		$boton_navbar="<button class='navbar-toggler text-white shadow-sm' style='width:50px; height:40px; --bs-border-opacity: .1;' type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation'> ? </button>";
 		//Conexión
 		require("../navbar.php");
 	?>
@@ -34,14 +34,14 @@
       <ul class="list-group">
 
         <li class="list-group-item list-group-item-secondary">
-          <div class="text-center text-capitalize fw-normal">
+          <div class="text-center text-capitalize fw-normal fs-5">
+
       			<h6>
       							<!-   ****** TÍTULO INFORMATIVO ******  ->  
       							<?php  echo $titulo_info;  ?>
       			</h6>
       		<div>
         </li>
-
         <li class="list-group-item">
         	      		<!-   ****** DESCRIPCIÓN ******  ->  
           				<div class="pt-2">
@@ -96,24 +96,29 @@
 <ul class="list-group">
 <div class="container text-center">
 
-  <div class="row pt-1">
+  <div class="row pt-2">
     <div class="col text-center">
-      <li class="list-group-item active"><div class="text-capitalize fw-normal">
-      	<h5>
+
+      <li class="list-group-item active shadow-sm bg-primary rounded-top text-white pt-2" style="background-image: var(--bs-gradient);">
+
       							<!-   ****** ICONO CON FORMATO PE-3 PT-2 ******  -> <!-   ****** TITULO ******  ->   		
-      			<?php
+
+						      			<?php
 
       				echo $icono_apunte;
       				echo $titulo_apunte;
 
       			?>
 
-      </h5></div></li>
+    </li>
+
+
+
     </div>
    </div>
 
    		<li class='list-group-item mb-2'>
-
+   			<div class="ms-4 me-4">
 
 						<!-  INPUTS  ->   		
    			<?php
@@ -133,7 +138,7 @@
 				<!-  BOTON DE CÁLCULO  ->
 				   <div class="row pt-5 ms-1">
 				    <div class="col">
-				      <button class="btn btn-primary me-4" onclick="doMath();">Calcular</button>
+				      <button class="btn btn-primary btn-lg shadow-sm me-4" onclick="doMath();"><i class="fa-solid fa-calculator pe-3"></i>Calcular</button>
 				    </div>
 				  </div>
 
@@ -172,6 +177,7 @@
 			      }
 
 			  </script>
+			</div>
 
 
 			</br></br>
@@ -200,7 +206,7 @@
 
 	<?php
 		//Conexión
-		require("../footer.php");
+		require("footer.php");
 
 	?>
 

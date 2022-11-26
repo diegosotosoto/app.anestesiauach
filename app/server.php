@@ -8,14 +8,27 @@
 	$busqueda=$conexion->query($consulta_b);
 
 
+	$i=0;
 
 		while($fila=$busqueda->fetch_assoc()){
 
-				echo "<form action='vista_paciente.php' method='post'><button class='list-group-item list-group-item-action' type='submit' name='vista' value='".$fila['rut']."' /><h5 class='mb-1'>".$fila['nombre_paciente']."</h5><p class='mb-1'>".$fila['rut']."</p>
-    <small class='text-muted'>".$fila['analgesia']."</small></button></form>";
+			$i++;
+				echo "<form action='vista_paciente.php' method='post'><button type='submit' name='vista' value='".$fila['rut']."' class='list-group-item list-group-item-action";
+		if ($i==1) {
+			echo " list-group-item-light' "; //fondo blanco
+		}else{
+			echo " list-group-item-info opacity-70' "; //fondo gris
+		}
+				
+				echo "style='background-image: var(--bs-gradient);'/><h5 class='mb-1'>".$fila['nombre_paciente']."</h5><p class='mb-1'>".$fila['rut']."</p><small class='text-muted'>".$fila['analgesia']."</small></button></form>";
+
+		if ($i==2){
+		$i=0;
+		}
 
 	} 
 
 
 
  ?>
+
