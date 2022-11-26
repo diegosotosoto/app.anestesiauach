@@ -98,7 +98,7 @@
 			            	</li>
 			            </ul>
 									<div class="pt-5 pb-5 text-center"></div><div class="pt-5 pb-5 text-center"></div>
-                  <div class="sticky-bottom mb-3 text-center"><hr> <i class="fa-solid fa-user-gear" style="margin-left:40px"></i><small class="ps-2">Diego Soto Soto - 2022</small>
+                  <div class="sticky-bottom mb-3 text-center text-muted"><hr> <i class="fa-solid fa-user-gear"></i><small class="ps-2">Diego Soto Soto - 2022</small>
                   </div>
                   </div>
 
