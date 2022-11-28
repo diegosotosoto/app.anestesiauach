@@ -178,6 +178,8 @@
 					</div>
 			 </div>
 
+
+
 			    <div>
 			    <div class='d-flex justify-content-between pt-3'><div class='text-muted'>Solución</div><div class="fw-lighter text-muted"><small>Requerido (*)</small></div></div>
 					<select class="form-select mb-0" id="solucion" name="solucion" required>
@@ -193,6 +195,7 @@
 			      Ingrese un valor válido
 			    </div>
 				</div>	
+
 
 					 <div>
 					<div class='text-muted pt-4'>Infusión PCA</div>
@@ -254,7 +257,17 @@ $("#seeAnotherFieldGroup").change(function() {
 				$('#espacio').attr('data-error', 'Este campo es requerido.');
         $('#distancia').attr('required','');
 				$('#distancia').attr('data-error', 'Este campo es requerido.');
-			} else {
+				$("#solucion option[value='Morfina 0,2 mg/ml']").hide();
+				$("#solucion option[value='Metadona 0,2 mg/ml']").hide();
+				$("#solucion option[value='Fentanyl 2 ug/ml']").hide();
+				$("#solucion option[value='Bupi 0,1% + Fentanyl 1,6 ug']").show();
+				$("#solucion option[value='Bupivacaína 0,1%']").show();										
+			} else if ($(this).val() == "PCA EV") {
+				$("#solucion option[value='Morfina 0,2 mg/ml']").show();
+				$("#solucion option[value='Metadona 0,2 mg/ml']").show();
+				$("#solucion option[value='Fentanyl 2 ug/ml']").show();
+				$("#solucion option[value='Bupi 0,1% + Fentanyl 1,6 ug']").hide();
+				$("#solucion option[value='Bupivacaína 0,1%']").hide();				
 				$('#otherFieldGroupDiv').hide();		
 				$('#nivel').removeAttr('required');
 				$('#nivel').removeAttr('data-error');
@@ -262,10 +275,39 @@ $("#seeAnotherFieldGroup").change(function() {
 				$('#espacio').removeAttr('data-error');				
         $('#distancia').removeAttr('required');
 				$('#distancia').removeAttr('data-error');	
+			} else if ($(this).val() == "Otro (Comentarios)") {
+				$("#solucion option[value='Morfina 0,2 mg/ml']").hide();
+				$("#solucion option[value='Metadona 0,2 mg/ml']").hide();
+				$("#solucion option[value='Fentanyl 2 ug/ml']").hide();
+				$("#solucion option[value='Bupi 0,1% + Fentanyl 1,6 ug']").hide();
+				$("#solucion option[value='Bupivacaína 0,1%']").hide();				
+				$('#otherFieldGroupDiv').hide();		
+				$('#nivel').removeAttr('required');
+				$('#nivel').removeAttr('data-error');
+				$('#espacio').removeAttr('required');
+				$('#espacio').removeAttr('data-error');				
+        $('#distancia').removeAttr('required');
+				$('#distancia').removeAttr('data-error');	
+			} else {
+				$("#solucion option[value='Morfina 0,2 mg/ml']").hide();
+				$("#solucion option[value='Metadona 0,2 mg/ml']").hide();
+				$("#solucion option[value='Fentanyl 2 ug/ml']").hide();				
+				$("#solucion option[value='Bupi 0,1% + Fentanyl 1,6 ug']").hide();
+				$("#solucion option[value='Bupivacaína 0,1%']").show();			
+				$('#otherFieldGroupDiv').hide();			
+				$('#nivel').removeAttr('required');
+				$('#nivel').removeAttr('data-error');
+				$('#espacio').removeAttr('required');
+				$('#espacio').removeAttr('data-error');				
+        $('#distancia').removeAttr('required');
+				$('#distancia').removeAttr('data-error');	
 			}
+
 		});
 		$("#seeAnotherFieldGroup").trigger("change");	
-</script>	
+</script>
+
+
 
 <script>
 function checkRut(rut) {

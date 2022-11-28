@@ -35,7 +35,7 @@
 		<li class='list-group-item bg-light bg-gradient'>
 	<div class="row">
 		<div class="col pt-2">
-			<img style="width: 80px; height: 80px;" src='/images/logo192.png'/>
+			<img style="width: 80px; height: 80px;" src='images/logo192.png'/>
 		</div>
 	</div>
 	<div class="row">

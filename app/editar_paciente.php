@@ -282,8 +282,9 @@
 
 	?>
 
+
 <script>
-	$("#seeAnotherFieldGroup").change(function() {
+$("#seeAnotherFieldGroup").change(function() {
 			if ($(this).val() == "Peridural") {
 				$('#otherFieldGroupDiv').show();
 				$('#nivel_e').attr('required','');
@@ -291,20 +292,58 @@
 				$('#espacio_e').attr('required','');
 				$('#espacio_e').attr('data-error', 'Este campo es requerido.');
         $('#distancia_e').attr('required','');
-				$('#distancia_e').attr('data-error', 'Este campo es requerido.');				
+				$('#distancia_e').attr('data-error', 'Este campo es requerido.');
+				$("#solucion_e option[value='Morfina 0,2 mg/ml']").hide();
+				$("#solucion_e option[value='Metadona 0,2 mg/ml']").hide();
+				$("#solucion_e option[value='Fentanyl 2 ug/ml']").hide();
+				$("#solucion_e option[value='Bupi 0,1% + Fentanyl 1,6 ug']").show();
+				$("#solucion_e option[value='Bupivacaína 0,1%']").show();										
+			} else if ($(this).val() == "PCA EV") {
+				$("#solucion_e option[value='Morfina 0,2 mg/ml']").show();
+				$("#solucion_e option[value='Metadona 0,2 mg/ml']").show();
+				$("#solucion_e option[value='Fentanyl 2 ug/ml']").show();
+				$("#solucion_e option[value='Bupi 0,1% + Fentanyl 1,6 ug']").hide();
+				$("#solucion_e option[value='Bupivacaína 0,1%']").hide();				
+				$('#otherFieldGroupDiv').hide();		
+				$('#nivel_e').removeAttr('required');
+				$('#nivel_e').removeAttr('data-error');
+				$('#espacio_e').removeAttr('required');
+				$('#espacio_e').removeAttr('data-error');				
+        $('#distancia_e').removeAttr('required');
+				$('#distancia_e').removeAttr('data-error');	
+			} else if ($(this).val() == "Otro (Comentarios)") {
+				$("#solucion_e option[value='Morfina 0,2 mg/ml']").hide();
+				$("#solucion_e option[value='Metadona 0,2 mg/ml']").hide();
+				$("#solucion_e option[value='Fentanyl 2 ug/ml']").hide();
+				$("#solucion_e option[value='Bupi 0,1% + Fentanyl 1,6 ug']").hide();
+				$("#solucion_e option[value='Bupivacaína 0,1%']").hide();				
+				$('#otherFieldGroupDiv').hide();		
+				$('#nivel_e').removeAttr('required');
+				$('#nivel_e').removeAttr('data-error');
+				$('#espacio_e').removeAttr('required');
+				$('#espacio_e').removeAttr('data-error');				
+        $('#distancia_e').removeAttr('required');
+				$('#distancia_e').removeAttr('data-error');	
 			} else {
+				$("#solucion_e option[value='Morfina 0,2 mg/ml']").hide();
+				$("#solucion_e option[value='Metadona 0,2 mg/ml']").hide();
+				$("#solucion_e option[value='Fentanyl 2 ug/ml']").hide();				
+				$("#solucion_e option[value='Bupi 0,1% + Fentanyl 1,6 ug']").hide();
+				$("#solucion_e option[value='Bupivacaína 0,1%']").show();				
 				$('#otherFieldGroupDiv').hide();
 				$('#nivel_e').removeAttr('required');
 				$('#nivel_e').removeAttr('data-error');
 				$('#espacio_e').removeAttr('required');
 				$('#espacio_e').removeAttr('data-error');				
         $('#distancia_e').removeAttr('required');
-				$('#distancia_e').removeAttr('data-error');					
+				$('#distancia_e').removeAttr('data-error');	
 			}
-		});
-		$("#seeAnotherFieldGroup").trigger("change");
 
-</script>		
+		});
+		$("#seeAnotherFieldGroup").trigger("change");	
+</script>
+
+
 <script>
 	// Example starter JavaScript for disabling form submissions if there are invalid fields
 (() => {

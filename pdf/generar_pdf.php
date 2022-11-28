@@ -1,7 +1,6 @@
 <?php
-
 	//Conexión
-	require("app/conectar.php");
+	require("../app/conectar.php");
 	$conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
 	$conexion->set_charset("utf8");
 	
@@ -50,8 +49,13 @@
 	$comentarios_v = html_entity_decode($fila['comentarios_v']);
 	$editor_v = html_entity_decode($fila['editor_v']);
 
+	$consulta_bec="SELECT `becad_` FROM `usuarios_dolor` WHERE `nombre_usuario` = '$editor_v'";
+	$confirma_bec=$conexion->query($consulta_bec); 
+	$bec=$confirma_bec->fetch_assoc();
 
-	require('app/tfpdf.php');
+
+
+	require('../pdf/tfpdf.php');
 
 	$pdf = new tFPDF('P','mm','Letter');
 	$pdf->AddPage();
@@ -184,8 +188,16 @@
 		$pdf->Ln(16);
 		$pdf->Cell(150,10,'Dr(a): '.$editor_v,0,0,'R');
 		$pdf->Ln(7);
+
+	if($bec['becad_']==1){
+
+		$pdf->Cell(150,10,"Becado(a) Anestesia",0,0,'R');
+
+	}else {
+
 		$pdf->Cell(150,10,"Anestesiólogo(a)",0,0,'R');
 
+	}
 
 
 

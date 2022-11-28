@@ -40,7 +40,7 @@
 			$peso_e=htmlentities(addslashes($_POST['peso_e']));
 			$comentarios_e=htmlentities(addslashes($_POST['comentarios_e']));
 			$fecha_edicion_e=date("Y-m-d H:i:s",strtotime('-4 hour'));
-			$editor_e=ucwords(strtolower($_COOKIE['hkjh41lu4l1k23jhlkj14']));
+			$editor_e=ucwords(strtolower(urldecode($_COOKIE['hkjh41lu4l1k23jhlkj14'])));
 
 
 			if($_POST['de_alta_e']=="on"){
@@ -103,7 +103,7 @@
 					$indic5=htmlentities(addslashes($_POST['indic5']));
 					$indic6=htmlentities(addslashes($_POST['indic6']));
 					$comentarios_v=htmlentities(addslashes($_POST['comentarios_v']));
-					$editor_v=ucwords(strtolower($_COOKIE['hkjh41lu4l1k23jhlkj14']));
+					$editor_v=ucwords(strtolower(urldecode($_COOKIE['hkjh41lu4l1k23jhlkj14'])));
 
 					$consulta_v="INSERT INTO `visita_diaria` (`nombre_paciente_v`, `rut_v`, `fecha_v`, `eva_estatico`, `eva_dinamico`, `sedacion`, `motor`, `bolos`, `pas`, `pad`, `fc`, `sao2`, `fio2`, `fecha_exs`, `inr`, `ttpa`, `plaq`, `crea`, `anticoagulante`, `indic1`, `indic2`, `indic3`, `indic4`, `indic5`, `indic6`, `comentarios_v`, `editor_v`) VALUES ('$nombre_paciente_v', '$rut_v', '$fecha_v', '$eva_estatico', '$eva_dinamico', '$sedacion', '$motor', '$bolos', '$pas', '$pad', '$fc', '$sao2', '$fio2', '$fecha_exs', '$inr', '$ttpa', '$plaq', '$crea',  '$anticoagulante', '$indic1', '$indic2', '$indic3', '$indic4', '$indic5', '$indic6', '$comentarios_v', '$editor_v');";
 

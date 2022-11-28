@@ -145,7 +145,7 @@
 
 <form class="needs-validation" action="login.php" method="post" novalidate autocomplete="nope">
 <div class="container text-center mt-4 pt-4">
-	<a href="#" class="btn shadow bg-primary me-2 rounded-3 text-white pt-2" style="height: 150px;width: 300px; background-image: var(--bs-gradient);">
+  <a href="#" class="btn shadow bg-primary me-2 rounded-3 text-white border-0 pt-2" style="height: 150px;width: 320px; background-color: #0050ff;background-image: linear-gradient(45deg, #0050ff 0%, #B721FF 100%);">
   <div class="row pt-4">
   	<h1>¡Hola!<i class="fa-solid fa-face-smile-wink ps-3"></i></h1>
   </div>

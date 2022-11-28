@@ -18,25 +18,7 @@
 <body>
 
 <?php 
-			//Chequear si usuario es ADMIN
-			if($_POST['email_user_ad']){
 
-				$email_user=htmlentities(addslashes($_POST['email_user_ad']));
-
-				$consulta_user="SELECT * FROM `usuarios_dolor` WHERE `email_usuario` = '$email_user' AND `admin` = '1'";
-
-				$confirma_user=$conexion->query($consulta_user); 
-
-				if(mysqli_num_rows($confirma_user)==0){
-
-					header('Location: index.php');
-
-				}
-
-			}else{ //si la variable no fue enviada mediante post
-
-				header('Location: index.php');
-			}
 
 
 			//GUARDAR EDICIÓN DE USUARIO
@@ -55,8 +37,12 @@
 			}else{
 				$admin_us="0";
 			}
-
-			$consulta_us="UPDATE `usuarios_dolor` SET `nombre_usuario`='$nombre_us', `email_usuario`='$email_us', `verified`='$verified_us', `admin`='$admin_us' WHERE `email_usuario`='$email_init'";
+			if($_POST['becad']=="1"){
+				$becad_us="1";
+			}else{
+				$becad_us="0";
+			}
+			$consulta_us="UPDATE `usuarios_dolor` SET `nombre_usuario`='$nombre_us', `email_usuario`='$email_us', `verified`='$verified_us', `admin`='$admin_us', `becad_`='$becad_us' WHERE `email_usuario`='$email_init'";
 			
 
 
@@ -101,7 +87,7 @@
 		<div class='row'>
 <?php 
 
-	$con_users="SELECT `nombre_usuario`,`email_usuario`,`verified`,`admin` FROM `usuarios_dolor`";
+	$con_users="SELECT `nombre_usuario`,`email_usuario`,`verified`,`admin`,`becad_` FROM `usuarios_dolor`";
 
 	$tab_users=$conexion->query($con_users);
 
@@ -120,11 +106,17 @@
 		}else {
 			$admin="";
 		}
+		if($row_user['becad_']=="1"){ 
+			$becad="checked";
+		}else {
+			$becad="";
+		}		
 		echo "<form action='gestion_usuarios.php' method='post'>";
 		echo "<div class='col'>Nombre Usuario<input class='form-control mb-2' type='text' name='nombre_usuario' id='nombre_usuario' value='$user' required/></div>";
 		echo "<div class='col'>Email<input class='form-control mb-2' type='text' name='email_usuario' id='email_usuario' value='$email' required/></div>";
 		echo "<div class='col'>Verificado <input class='form-check-input' type='checkbox' name='verified' id='verified' value='1' $verified/></div>";
 		echo "<div class='col'>Administrador <input class='form-check-input' type='checkbox' name='admin' id='admin' value='1' $admin/></div>";
+		echo "<div class='col'>Becad@ <input class='form-check-input' type='checkbox' name='becad' id='becad' value='1' $becad/></div>";
 		echo "</br><input type='hidden' name='email_init' value='$email'/>";
 		echo "<div class='col'><button type='submit' value'Submit'>OK</button></div></form></div></br><hr></br><div class='row'>";
 

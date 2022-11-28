@@ -16,9 +16,7 @@
 
 </head>
 <body>
-</br></br></br>
 <!-  NAVBAR  ->	
-
 	<?php
 		//Botones del Toggle NAVBAR
 		$boton_toggler="<a class='btn btn-lg border-light shadow-sm' style='--bs-border-opacity: .1;' href='../apuntes.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
@@ -27,11 +25,11 @@
 		//Conexión
 		require("../navbar.php");
 	?>
+<br><br>
+    <div class="pt-2 collapse navbar-collapse" id="navbarSupportedContent" style="background-color: #42A5FF;">
+    	<div class="pt-4 container ms-auto">
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    	<div class="container ms-auto">
-
-      <ul class="list-group">
+      <ul class="list-group pb-3">
 
         <li class="list-group-item list-group-item-secondary">
           <div class="text-center text-capitalize fw-normal fs-5">
@@ -87,17 +85,14 @@
           	?>
 
 					<!-   ****** FOOTER DE LA INFO ******  ->  
-        <li class="list-group-item"></li>
       </ul>
     </div>
     </div>
-
-
-<ul class="list-group">
+<ul class="pt-4 list-group">
 <div class="container text-center">
 
-  <div class="row pt-2">
-    <div class="col text-center">
+  <div class="row">
+    <div class="col text-center fs-5">
 
       <li class="list-group-item active shadow-sm bg-primary rounded-top text-white pt-2" style="background-image: var(--bs-gradient);">
 

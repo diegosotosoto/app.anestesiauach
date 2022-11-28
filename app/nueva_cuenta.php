@@ -31,13 +31,13 @@
 
 <form class="needs-validation" action="login.php" method="post" novalidate autocomplete="nope" oninput='pass_usuario2.setCustomValidity(pass_usuario2.value != pass_usuario.value ? "Passwords do not match." : "")'>
 <div class="container text-center mt-4 pt-4">
-  <a href="#" class="btn shadow bg-primary me-2 rounded-3 text-white pt-2" style="height: 150px;width: 300px; background-image: var(--bs-gradient);">
+  <a href="#" class="btn shadow bg-primary me-2 rounded-3 text-white border-0 pt-2" style="height: 150px;width: 320px; background-color: #0050ff;background-image: linear-gradient(45deg, #0050ff 0%, #B721FF 100%);">
   <div class="row pt-4">
-    <h1>¡Hola!<i class="fa-solid fa-face-smile-wink ps-3"></i></h1>
+    <h1>Eres Nuev@?<i class="fa-solid fa-crow ps-3"></i></h1>
   </div>
   <div class="row pt-3">
     <div class="col">
-      Por favor, ingresa tus datos!
+      Por favor, regístrate!
     </div>
   </div>
 </a>
@@ -98,7 +98,7 @@
   		<button type="submit" name="registro" class="btn btn-primary btn-lg shadow" ><i class="fa-solid fa-check-to-slot pe-2 pb-"></i>Registrar</button>
   	</div>
   </div>
-  <div class="row pt-4 pb-5"></div>
+  <div class="row pt-2 pb-3"></div>
 <div class="pt-4 mb-3 text-center">
     <p class="text-muted pb-2">Anestesia<small class='fw-bold'>  UACH &nbsp;<img src='images/austral.png' style='height: 36px; width: 36px; filter: invert(60%);'/></small></p>
 </div>

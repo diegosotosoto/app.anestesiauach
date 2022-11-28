@@ -4,8 +4,20 @@ self.addEventListener("install", (event) => {
       .open("screen")
       .then((cache) =>
         cache.addAll([    
-          "/style.css",
-          "/images/logo192.png",
+          "style.css",
+          "images/logo192.png",
+          "css/all.css",
+          "css/bootstrap.min.css",
+          "js/bootstrap.bundle.min.js",
+          "js/jquery-3.6.1.min.js",
+          "images/IMG0001.jpeg",
+          "images/austral.png",
+          "index.php",
+          "apuntes.php",
+          "acerca_de.php",          
+          "apuntes/plantilla_apunte.php",
+          "apuntes/bica.php",
+          "apuntes/perdida_admisible.php",
         ])
       )
   );
