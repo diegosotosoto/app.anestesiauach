@@ -198,24 +198,24 @@
 <div class="container text-center pt-2">
   <div class="row pt-5">
     <div class="col text-center">
-      <a href='nuevo_paciente.php' class="btn shadow btn-success ms-2 rounded-3 border-0 text-white" style="height: 150px;width: 150px; background-color: #016932; background-image: linear-gradient(45deg, #016932 0%, #009044 36%, #08d869 83%, #70fbb4 100%);
+      <a href='nuevo_paciente.php' class="btn shadow btn-success ms-2 rounded-3 border-0 text-white" style="height: 150px;width: 150px; background-color: #016932; background-image: linear-gradient(62deg, #016932 0%, #009044 36%, #08d869 83%, #70fbb4 100%);
 "><i class="fa-solid fa-user-plus fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Nuevo Paciente</div></a>
     </div>
 
     <div class="col text-center">
-      <a href="hoja_dolor.php" class="btn shadow me-2 rounded-3 border-0 text-white" style="height: 150px;width: 150px; background-color: #026edd;background-image: linear-gradient(62deg, #026edd 33%, #41aafd 86%, #92c6f9 100%);
+      <a href="hoja_dolor.php" class="btn shadow me-2 rounded-3 border-0 text-white" style="height: 150px;width: 150px; background-color: #026edd;background-image: linear-gradient(62deg, #026edd 33%, #41aafd 83%, #92c6f9 100%);
 "><i class="fa-solid fa-syringe fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Pacientes Dolor</div></a>
     </div>
 
   </div>
    <div class="row pt-5">
     <div class="col text-center">
-      <a href="#" class="btn shadow btn-danger disabled ms-2 bg-opacity-25 rounded-3 border-0" style="height: 150px;width: 150px; background-color: #bd2424; background-image: linear-gradient(62deg, #bd2424 37%, #f73f3f 78%, #ff8080 100%);
+      <a href="#" class="btn shadow btn-danger disabled ms-2 bg-opacity-25 rounded-3 border-0" style="height: 150px;width: 150px; background-color: #bd2424; background-image: linear-gradient(62deg, #bd2424 25%, #f73f3f 83%, #ff8080 100%);
 "> <i class="fa-solid fa-clipboard fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Visita Preanestésica</div></a>
     </div>
     
     <div class="col text-center">
-      <a href="apuntes.php" class="btn shadow me-2 rounded-3 border-0 text-muted" style="height: 150px;width: 150px; background-color: #fd980f;background-image: linear-gradient(45deg, #fd980f 0%, #f7de68 70%, #fff5b4 90%);
+      <a href="apuntes.php" class="btn shadow me-2 rounded-3 border-0 text-muted" style="height: 150px;width: 150px; background-color: #fd980f;background-image: linear-gradient(62deg, #fd980f 30%, #f7de68 83%, #fff5b4 100%);
 "><i class="fa-solid fa-book fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Apuntes</div></a>
     </div>
 

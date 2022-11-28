@@ -46,7 +46,7 @@
 
 			<ul class="list-group">
 	<?php
-		echo "<li class='list-group-item bg-secondary' style='--bs-bg-opacity: .2;'><br><h5 class='mb-1 fw-bold'>".$fila['nombre_paciente']."</h5>";
+		echo "<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'><br><h5 class='mb-1 fw-bold'>".$fila['nombre_paciente']."</h5>";
 		echo "<div class='mb-1'>Rut: ".$fila['rut']."</div>";
 		echo "<div class='mb-1'>FC: ".$fila['ficha']."</div></li>";
 	?>

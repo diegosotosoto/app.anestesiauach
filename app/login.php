@@ -182,9 +182,7 @@
   	</div>
   </div>
 </div>
-  <div class="row pt-5 pb-5">
-</div>
-<div class="fixed-bottom pt-5 mb-3 text-center">
+<div class="pt-5 mb-2 text-center">
 	  <p class="text-muted pb-2">Anestesia<small class='fw-bold'>  UACH &nbsp;<img src='images/austral.png' style='height: 36px; width: 36px; filter: invert(60%);'/></small></p>
 </div>
 

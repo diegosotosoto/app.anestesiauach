@@ -170,7 +170,7 @@
 			$fecha2 = date( 'd-m-y H:i', $phpdate2 );
 		}
 		
-		echo "<li class='list-group-item bg-secondary' style='--bs-bg-opacity: .2;'><br><h5 class='mb-1 fw-bold'>".$fila['nombre_paciente']."</h5>";
+		echo "<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'><br><h5 class='mb-1 fw-bold'>".$fila['nombre_paciente']."</h5>";
 		echo "<p class='mb-1'>Rut:&nbsp;".$fila['rut']."</p>";
 		echo "<p class='mb-1'>FC:&nbsp;".$fila['ficha']."</p>";
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Unidad&nbsp&nbsp</div><div class='text-end'>".$fila['unidad_cama']."</div></div></li>";
