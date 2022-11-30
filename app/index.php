@@ -31,7 +31,7 @@
 	?>
 
 
-    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel" style="background: rgb(204,234,255); background: linear-gradient(0deg, rgba(204,234,255,1) 0%, rgba(255,255,255,1) 41%, rgba(255,255,255,1) 100%);">
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel" style="background: rgb(204,234,255); background: linear-gradient(0deg, rgba(204,234,255,1) 0%, rgba(255,255,255,1) 41%, rgba(255,255,255,1) 100%); --bs-offcanvas-width: 320px;">
       <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasNavbarLabel"></h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -208,6 +208,7 @@
     </div>
 
   </div>
+
    <div class="row pt-5">
     <div class="col text-center">
       <a href="#" class="btn shadow btn-danger disabled ms-2 bg-opacity-25 rounded-3 border-0" style="height: 150px;width: 150px; background-color: #bd2424; background-image: linear-gradient(62deg, #bd2424 25%, #f73f3f 83%, #ff8080 100%);
@@ -218,8 +219,18 @@
       <a href="apuntes.php" class="btn shadow me-2 rounded-3 border-0 text-muted" style="height: 150px;width: 150px; background-color: #fd980f;background-image: linear-gradient(62deg, #fd980f 30%, #f7de68 83%, #fff5b4 100%);
 "><i class="fa-solid fa-book fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Apuntes</div></a>
     </div>
-
   </div>
+
+   <div class="row pt-5">
+    <div class="col text-center">
+      <a href='telefonos.php' class="btn shadow btn-success ms-2 rounded-3 border-0 text-white" style="height: 150px;width: 150px; background-color: #6405d0; background-image: linear-gradient(62deg, #6405d0 32%, #9b4df1 78%, #cea3fb 100%);"><i class="fa-solid fa-phone fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Teléfonos Frecuentes</div></a>
+    </div>
+    
+    <div class="col text-center">
+      <a href="#"><div class="text-center pt-3 ps-2 pe-2"></div></a>
+    </div>
+  </div>
+
 </div>
 
 

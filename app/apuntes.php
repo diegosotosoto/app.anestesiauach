@@ -67,7 +67,7 @@
 
 
       <div class="list-group">
-        <a href="apuntes/perdida_admisible.php" class="list-group-item list-group-item-action text-primary fs-5"><i style="padding-right:10px; padding-left: 10px;" class="fa-solid fa-droplet"></i>Pérdida Admisible </a> 
+        <a href="apuntes/asa.php" class="list-group-item list-group-item-action text-primary fs-5"><i style="padding-right:10px; padding-left: 10px;" class="fa-solid fa-lightbulb"></i>Clasificación ASA</a> 
       </div>
 
     </div>
