@@ -30,260 +30,110 @@
     require("navbar.php");
   ?>
 
+<?php
+
+$cabeceras = array(
+'Generalidades' => array('icono'=>'apuntes/icons/anesthesia.png',array(
+      array('apuntes/asa.php','fa-solid fa-lightbulb','Clasificación ASA'),
+    )),
+'Evaluación y Riesgo' => array('icono'=>'apuntes/icons/compliance.png',
+      array(array('apuntes/score_lee.php','fa-solid fa-calendar-plus','Índice de Riesgo Cardiaco Revisado'),        
+    )),
+'Monitorización' => array('icono'=>'apuntes/icons/vital-signs.png',array(
+      array('apuntes/asa.php','fa-solid fa-lightbulb','Clasificación ASA'),
+    )),
+'Farmacología' => array('icono'=>'apuntes/icons/vaccination.png',array(
+      array('apuntes/asa.php','fa-solid fa-lightbulb','Clasificación ASA'),
+    )),
+'Cardiovascular' => array('icono'=>'apuntes/icons/heart.png',array(
+      array('apuntes/deltapp.php','fa-solid fa-wave-square','Delta PP'),
+    )),
+'Neurocirugía' => array('icono'=>'apuntes/icons/brain.png',array(
+      array('apuntes/asa.php','fa-solid fa-lightbulb','Clasificación ASA')
+    )),
+'Pediatría' => array('icono'=>'apuntes/icons/children.png',array(
+      array('apuntes/peri_ped.php','fa-solid fa-baby','Dosis Peridural Ped.')
+    )),
+'Nefrourología' => array('icono'=>'apuntes/icons/kidney.png',array(
+      array('apuntes/bica.php','fa-solid fa-flask-vial','Corrección de bicarbonato'),
+    )),
+'Obstetricia' => array('icono'=>'apuntes/icons/pregnancy.png',array(
+      array('apuntes/asa.php','fa-solid fa-lightbulb','Clasificación ASA')
+    )),
+'Regional/Dolor' => array('icono'=>'apuntes/icons/ultrasound.png',array(
+      array('apuntes/asa.php','fa-solid fa-lightbulb','Clasificación ASA')
+    )),
+'Respiratorio' => array('icono'=>'apuntes/icons/lungs.png',array(
+      array('apuntes/asa.php','fa-solid fa-lightbulb','Clasificación ASA')
+    )),
+'Volumen y Reposición' => array('icono'=>'apuntes/icons/transfusion.png',array(
+      array('apuntes/perdida_admisible.php','fa-solid fa-droplet','Pérdida Admisible')
+    ))
+);
+
+$generalidades = array(); //array de arrays que contiene 1.href 2.icono de fa 3.titulo para cada elemento
+$eval_riesgo = array(array('apuntes/asa.php','fa-solid fa-lightbulb','Clasificación ASA'));
+$monitorizacion = array();
+$farmacologia = array();
+$cardiovasc = array();
+$neurocirugia = array();
+$pediatria = array();
+$nefro_uro = array(array('apuntes/bica.php','fa-solid fa-flask-vial','Corrección de bicarbonato'));
+$obstetricia = array();
+$regional_dolor = array();
+$respiratorio = array();
+$volumen_repo = array(array('apuntes/perdida_admisible.php','fa-solid fa-droplet','Pérdida Admisible'));
+
+
+?>
+
 
 
 <div class="accordion" id="accordionPanelsStayOpenExample">
+<?php
 
-<!- INICIO DEL ITEM ->
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="panelsStayOpen-headingGen">
-      <button class="accordion-button collapsed pt-4 pb-4 fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseGen" aria-expanded="false" aria-controls="panelsStayOpen-collapseGen" style="background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);">
-        <img src="apuntes/icons/anesthesia.png" style="height: 34px; width: 34px; margin-left:10px; margin-right:20px"/>Generalidades
-      </button>
-    </h2>
+$i = 0;
 
-    <div id="panelsStayOpen-collapseGen" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingGen">
-      <div class="accordion-body">
+      foreach ($cabeceras  as $nombre => $ext){
+          
+        echo "
+            <div class='accordion-item'>
+              <h2 class='accordion-header' id='panelsStayOpen-heading$i'>
+                <button class='accordion-button collapsed pt-4 pb-4 fs-5' type='button' data-bs-toggle='collapse' data-bs-target='#panelsStayOpen-collapse$i' aria-expanded='false' aria-controls='panelsStayOpen-collapse$i' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'>
+                  <img src='".$ext['icono']."' style='height: 34px; width: 34px; margin-left:10px; margin-right:20px'/>$nombre
+                </button>
+              </h2>
 
-      <div class="list-group">
-        <a href="apuntes/bica.php" class="list-group-item list-group-item-action text-primary fs-5"><i style="padding-right:10px; padding-left: 10px;"  class="fa-solid fa-flask-vial"></i>Corrección de bicarbonato</a> 
-      </div>
+              <div id='panelsStayOpen-collapse$i' class='accordion-collapse collapse' aria-labelledby='panelsStayOpen-heading$i'>
+                <div class='accordion-body'>
 
-      </div>
-    </div>
-  </div>
-<!- FIN DEL ITEM ->
+                ";
 
-<!- INICIO DEL ITEM ->
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="panelsStayOpen-headingEval">
-      <button class="accordion-button collapsed pt-4 pb-4 fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseEval" aria-expanded="false" aria-controls="panelsStayOpen-collapseEval" style="background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);">
-        <img src="apuntes/icons/compliance.png" style="height: 34px; width: 34px; margin-left:10px; margin-right:20px"/>Evaluación y Riesgo
-      </button>
-    </h2>
+                $j = 0;
+                foreach ($ext[$j] as $contenido){
+                    echo "
+                          <div class='list-group'>
+                          <a href='".$contenido[0]."' class='list-group-item list-group-item-action text-primary fs-5'><i style='padding-right:10px; padding-left: 10px;' class='".$contenido[1]."'></i>".$contenido[2]."</a> 
+                        </div>
+                        ";
+                    $j++;
+                }
 
-    <div id="panelsStayOpen-collapseEval" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingEval">
-      <div class="accordion-body">
+                echo "
+                </div>
+              </div>
+            </div>
+            ";
 
+        $i++;
+      }
 
-      <div class="list-group">
-        <a href="apuntes/asa.php" class="list-group-item list-group-item-action text-primary fs-5"><i style="padding-right:10px; padding-left: 10px;" class="fa-solid fa-lightbulb"></i>Clasificación ASA</a> 
-      </div>
+?>
 
-    </div>
-  </div>
- </div>
-<!- FIN DEL ITEM ->
-
-<!- INICIO DEL ITEM ->
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="panelsStayOpen-headingMonit">
-      <button class="accordion-button collapsed pt-4 pb-4 fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseMonit" aria-expanded="false" aria-controls="panelsStayOpen-collapseMonit" style="background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);">
-        <img src="apuntes/icons/vital-signs.png" style="height: 34px; width: 34px; margin-left:10px; margin-right:20px"/>Monitorización
-      </button>
-    </h2>
-
-    <div id="panelsStayOpen-collapseMonit" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingMonit">
-      <div class="accordion-body">
-
-
-      <div class="list-group">
-        <a href="apuntes/perdida_admisible.php" class="list-group-item list-group-item-action text-primary fs-5"><i style="padding-right:10px; padding-left: 10px;" class="fa-solid fa-droplet"></i>Pérdida Admisible </a> 
-      </div>
-
-    </div>
-  </div>
- </div>
-<!- FIN DEL ITEM ->
-
-<!- INICIO DEL ITEM ->
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="panelsStayOpen-headingFarm">
-      <button class="accordion-button collapsed pt-4 pb-4 fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseFarm" aria-expanded="false" aria-controls="panelsStayOpen-collapseFarm" style="background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);">
-        <img src="apuntes/icons/vaccination.png" style="height: 34px; width: 34px; margin-left:10px; margin-right:20px"/>Farmacología
-      </button>
-    </h2>
-
-    <div id="panelsStayOpen-collapseFarm" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingFarm">
-      <div class="accordion-body">
-
-
-      <div class="list-group">
-        <a href="apuntes/perdida_admisible.php" class="list-group-item list-group-item-action text-primary fs-5"><i style="padding-right:10px; padding-left: 10px;" class="fa-solid fa-droplet"></i>Pérdida Admisible </a> 
-      </div>
-
-    </div>
-  </div>
- </div>
-<!- FIN DEL ITEM ->
-
-<!- INICIO DEL ITEM ->  
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="panelsStayOpen-headingCardio">
-      <button class="accordion-button collapsed pt-4 pb-4 fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseCardio" aria-expanded="false" aria-controls="panelsStayOpen-collapseCardio" style="background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);">
-         <img src="apuntes/icons/heart.png" style="height: 34px; width: 34px; margin-left:10px; margin-right:20px"/>Cardiovascular
-      </button>
-    </h2>
-
-    <div id="panelsStayOpen-collapseCardio" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingCardio">
-      <div class="accordion-body">
-
-      <div class="list-group">
-        <a href="apuntes/perdida_admisible.php" class="list-group-item list-group-item-action text-primary fs-5"><i style="padding-right:10px; padding-left: 10px;" class="fa-solid fa-heart-pulse"></i>Pérdida Admisible </a> 
-      </div>
-
-    </div>
-  </div>
- </div>
-<!- FIN DEL ITEM ->
-
-<!- INICIO DEL ITEM ->  
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="panelsStayOpen-headingNeuro">
-      <button class="accordion-button collapsed pt-4 pb-4 fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseNeuro" aria-expanded="false" aria-controls="panelsStayOpen-collapseNeuro" style="background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);">
-         <img src="apuntes/icons/brain.png" style="height: 34px; width: 34px; margin-left:10px; margin-right:20px"/>Neurocirugía
-      </button>
-    </h2>
-
-    <div id="panelsStayOpen-collapseNeuro" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingNeuro">
-      <div class="accordion-body">
-
-      <div class="list-group">
-        <a href="apuntes/perdida_admisible.php" class="list-group-item list-group-item-action text-primary fs-5"><i style="padding-right:10px; padding-left: 10px;" class="fa-solid fa-heart-pulse"></i>Pérdida Admisible </a> 
-      </div>
-
-    </div>
-  </div>
- </div>
-<!- FIN DEL ITEM ->
-
-<!- INICIO DEL ITEM ->  
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="panelsStayOpen-headingPed">
-      <button class="accordion-button collapsed pt-4 pb-4 fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapsePed" aria-expanded="false" aria-controls="panelsStayOpen-collapsePed" style="background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);">
-         <img src="apuntes/icons/children.png" style="height: 34px; width: 34px; margin-left:10px; margin-right:20px"/>Pediatría
-      </button>
-    </h2>
-
-    <div id="panelsStayOpen-collapsePed" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingPed">
-      <div class="accordion-body">
-
-      <div class="list-group">
-        <a href="apuntes/perdida_admisible.php" class="list-group-item list-group-item-action text-primary fs-5"><i style="padding-right:10px; padding-left: 10px;" class="fa-solid fa-heart-pulse"></i>Pérdida Admisible </a> 
-      </div>
-
-    </div>
-  </div>
- </div>
-<!- FIN DEL ITEM -> 
-
-<!- INICIO DEL ITEM ->
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="panelsStayOpen-headingRen">
-      <button class="accordion-button collapsed pt-4 pb-4 fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseRen" aria-expanded="false" aria-controls="panelsStayOpen-collapseRen" style="background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);">
-        <img src="apuntes/icons/kidney.png" style="height: 34px; width: 34px; margin-left:10px; margin-right:20px"/>Nefrourología
-      </button>
-    </h2>
-
-    <div id="panelsStayOpen-collapseRen" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingRen">
-      <div class="accordion-body">
-
-      <div class="list-group">
-        <a href="apuntes/bica.php" class="list-group-item list-group-item-action text-primary fs-5"><i style="padding-right:10px; padding-left: 10px;"  class="fa-solid fa-flask-vial"></i>Corrección de bicarbonato</a> 
-      </div>
-
-      </div>
-    </div>
-  </div>
-<!- FIN DEL ITEM ->
-
-<!- INICIO DEL ITEM ->
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="panelsStayOpen-headingObst">
-      <button class="accordion-button collapsed pt-4 pb-4 fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseObst" aria-expanded="false" aria-controls="panelsStayOpen-collapseObst" style="background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);">
-        <img src="apuntes/icons/pregnancy.png" style="height: 34px; width: 34px; margin-left:10px; margin-right:20px"/>Obstetricia
-      </button>
-    </h2>
-
-    <div id="panelsStayOpen-collapseObst" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingObst">
-      <div class="accordion-body">
-
-      <div class="list-group">
-        <a href="apuntes/bica.php" class="list-group-item list-group-item-action text-primary fs-5"><i style="padding-right:10px; padding-left: 10px;"  class="fa-solid fa-flask-vial"></i>Corrección de bicarbonato</a> 
-      </div>
-
-      </div>
-    </div>
-  </div>
-<!- FIN DEL ITEM ->
-
-<!- INICIO DEL ITEM ->
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="panelsStayOpen-headingReg">
-      <button class="accordion-button collapsed pt-4 pb-4 fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseReg" aria-expanded="false" aria-controls="panelsStayOpen-collapseReg" style="background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);">
-        <img src="apuntes/icons/ultrasound.png" style="height: 34px; width: 34px; margin-left:10px; margin-right:20px"/>Regional / Dolor
-      </button>
-    </h2>
-
-    <div id="panelsStayOpen-collapseReg" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingReg">
-      <div class="accordion-body">
-
-      <div class="list-group">
-        <a href="apuntes/bica.php" class="list-group-item list-group-item-action text-primary fs-5"><i style="padding-right:10px; padding-left: 10px;"  class="fa-solid fa-flask-vial"></i>Corrección de bicarbonato</a> 
-      </div>
-
-      </div>
-    </div>
-  </div>
-<!- FIN DEL ITEM ->
-
-<!- INICIO DEL ITEM ->
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="panelsStayOpen-headingResp">
-      <button class="accordion-button collapsed pt-4 pb-4 fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseResp" aria-expanded="false" aria-controls="panelsStayOpen-collapseResp" style="background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);">
-        <img src="apuntes/icons/lungs.png" style="height: 34px; width: 34px; margin-left:10px; margin-right:20px"/>Respiratorio
-      </button>
-    </h2>
-
-    <div id="panelsStayOpen-collapseResp" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingResp">
-      <div class="accordion-body">
-
-      <div class="list-group">
-        <a href="apuntes/bica.php" class="list-group-item list-group-item-action text-primary fs-5"><i style="padding-right:10px; padding-left: 10px;"  class="fa-solid fa-flask-vial"></i>Corrección de bicarbonato</a> 
-      </div>
-
-      </div>
-    </div>
-  </div>
-<!- FIN DEL ITEM ->
-
-<!- INICIO DEL ITEM ->
-  <div class="accordion-item">
-    <h2 class="accordion-header" id="panelsStayOpen-headingVol">
-      <button class="accordion-button collapsed pt-4 pb-4 fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseVol" aria-expanded="false" aria-controls="panelsStayOpen-collapseVol" style="background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);">
-        <img src="apuntes/icons/transfusion.png" style="height: 34px; width: 34px; margin-left:10px; margin-right:20px"/>Volumen y Reposición
-      </button>
-    </h2>
-
-    <div id="panelsStayOpen-collapseVol" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingVol">
-      <div class="accordion-body">
-
-
-      <div class="list-group">
-        <a href="apuntes/perdida_admisible.php" class="list-group-item list-group-item-action text-primary fs-5"><i style="padding-right:10px; padding-left: 10px;" class="fa-solid fa-droplet"></i>Pérdida Admisible </a> 
-      </div>
-
-    </div>
-  </div>
- </div>
- <div class="pt-5 mb-2 text-center">
+</div>
+<div class="pt-5 mb-2 text-center">
     <p class="text-muted pb-2">Anestesia<small class='fw-bold'>  UACH &nbsp;<img src='images/austral.png' style='height: 36px; width: 36px; filter: invert(60%);'/></small></p>
 </div>
-<!- FIN DEL ITEM ->
-
-
-
-
 
 
   <?php 

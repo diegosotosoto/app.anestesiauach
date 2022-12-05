@@ -117,6 +117,7 @@
 
 						<!-  INPUTS  ->   		
    			<?php
+   			if($input){
    				foreach($input as $clave_input){
    						echo "<div class='row pt-5'><div class='col text-start'>";
    						echo $clave_input[0]; //título
@@ -126,9 +127,44 @@
    						echo $clave_input[2]; //unidad
    						echo "</span></div></div>	";
 	   					}
-
+	   			}
    			?>
-	
+
+
+   									<!-  INPUTS ESPECIAL (Select) ->   		
+   			<?php
+   				if($input_e){
+		   				foreach($input_e as $clave_input_e){
+		   						echo "<div class='row pt-5'><div class='col text-start'>";
+		   						echo $clave_input_e[0]; //título
+		   						echo "</div><div class='col input-group'>";   	
+						      echo "<select class='form-select mb-0' id='".$clave_input_e[1]."' name='analgesia' required>"; //id
+
+						      foreach($clave_input_e[2] as $selopt => $selvalue){
+
+		  					      echo "<option value='".$selvalue."'>".$selopt."</option>";
+
+						      }
+
+
+		   						echo "</select></div></div>	";
+			   					}
+			   	}
+   			?>
+					
+
+   									<!-  INPUTS ESPECIAL (CHECK) ->   		
+   			<?php
+   			if($input_ch){
+   				foreach($input_ch as $clave_input_ch){
+   						echo "<div class='row pt-5'><div class='d-flex justify-content-between'><div class='text-start'>";
+   						echo $clave_input_ch[0]; //título
+   						echo "</div><div class='text-end'>    	
+				      <input class='form-check-input' type='checkbox' id='$clave_input_ch[1]'>"; //id
+							echo "</div></div></div>	";
+	   					}
+	   			}
+   			?>
 
 				<!-  BOTON DE CÁLCULO  ->
 				   <div class="row pt-5 ms-1">
@@ -143,13 +179,18 @@
    						echo "<div class='row pt-5'><div class='col text-start'>";
    						echo $clave_result[0]; //título
    						echo "</div><div class='col input-group'>    	
-				      <input class='form-control' type='number' id='$clave_result[1]'>"; //id
+				      <input class='form-control' type='number' id='$clave_result[1]' readonly>"; //id
    						echo "<span class='input-group-text' id='basic-addon2'>";	
    						echo $clave_result[2]; //unidad
    						echo "</span></div></div>	";
 	   					}
 
    			?>
+
+
+
+   					<!- INTERPRETACION RESULTADO (otro_elemento) ->
+					<div id='otro_elemento' class='pt-5'></div> 
 
 
 			   <script>
@@ -160,6 +201,14 @@
 			      			echo "var $var_input[1]Var = document.getElementById('$var_input[1]').value; "; //pesoVar beVar
 			      		}
 
+			      		foreach($input_e as $var_input_e){  //construye las variables Javascript de los inputs tipo select
+			      			echo "var $var_input_e[1]Var = document.getElementById('$var_input_e[1]').value; "; //pesoVar beVar
+			      		}
+
+			      		foreach($input_ch as $var_input_ch){  //construye las variables Javascript de los inputs tipo check
+			      			echo "var $var_input_ch[1]Var = document.getElementById('$var_input_ch[1]').checked; "; //pesoVar beVar
+			      		}
+
 			      		foreach($resultado as $var_calc){
 			      			echo "var $var_calc[1]Var = $var_calc[3]; "; //construye las variables de reslutado y el calculo correspondiente
 			      		}
@@ -167,11 +216,26 @@
 			      		foreach($resultado as $var_result){  //construye los resultados
 		      			echo "$('#$var_result[1]').attr('value', $var_result[1]Var.toFixed($var_result[4])); ";
 		      			}
-			      	?>
+
+				   				//Otros elementos
+				   			if($otro_elemento){
+
+				   					echo $otro_elemento;
+
+				   			}
+
+
+   			?>
 
 			      }
 
+
+
 			  </script>
+
+
+
+
 			</div>
 
 

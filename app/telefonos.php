@@ -125,8 +125,10 @@ $array_tel = array (
 
 		require("navbar.php");
 ?>
-
-<div class="pt-5 mt-3">
+<div class="form-group text-center ms-3 pt-5 mt-5">
+ <input type="text" class="form-control" style="width:90%" id="search" placeholder="Busca un número...">
+</div>
+<div class="pt-3" id="mytable">
 
 <?php
 
@@ -151,6 +153,22 @@ $array_tel = array (
  <div class="pt-5 mb-2 text-center">
     <p class="text-muted pb-2">Anestesia<small class='fw-bold'>  UACH &nbsp;<img src='images/austral.png' style='height: 36px; width: 36px; filter: invert(60%);'/></small></p>
 </div>
+<script>
+ // Write on keyup event of keyword input element
+ $(document).ready(function(){
+ $("#search").keyup(function(){
+ _this = this;
+ // Show only matching TR, hide rest of them
+ $.each($("#mytable ul div"), function() {
+ if($(this).text().toLowerCase().indexOf($(_this).val().toLowerCase()) === -1)
+ $(this).hide();
+ else
+ $(this).show();
+ });
+ });
+});
+</script>
+
 	<?php
 		//Conexión
 		require("footer.php");
