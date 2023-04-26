@@ -1,0 +1,13 @@
+core rut
+https://www.hbvaldivia.cl/core/fc/paciente?select-tipo=0&ficha-run=15525515
+https://www.hbvaldivia.cl/core/farmacia/receta/0/15525515
+
+
+core ficha
+https://www.hbvaldivia.cl/core/fc/paciente?select-tipo=1&ficha-run=670549
+https://www.hbvaldivia.cl/core/farmacia/receta/1/670549
+
+
+
+buscar
+https://www.hbvaldivia.cl/core/farmacia/asignar_paciente

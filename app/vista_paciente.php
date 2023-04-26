@@ -1,22 +1,39 @@
 <?php
 
-	//Ve si está activa la cookie o redirige al login
-	if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
-		header('Location: login.php');
-	}
-	//Conexión
-	require("conectar.php");
-	$conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
-	$conexion->set_charset("utf8");
+//1 Validador login
+	require("valida_pag.php");
 	
+//Variable
+		if($_POST['vista']){
+			$formulario=htmlentities(addslashes($_POST['vista']));
+		}elseif($_POST['rut_v']){
+			$formulario=htmlentities(addslashes($_POST['rut_v']));
+		}elseif($_POST['rut_e']){
+			$formulario=htmlentities(addslashes($_POST['rut_e']));
+		}
+
+		//Conexión
+		  require("conectar.php");
+		  $conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
+		  $conexion->set_charset("utf8");
+  
+		$consulta_m="SELECT * FROM `pacientes` WHERE `rut` = '$formulario'";
+		$busqueda2=$conexion->query($consulta_m);
+		$fila=$busqueda2->fetch_assoc();
+
+    	$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='hoja_dolor.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+		$boton_navbar="<form action='editar_paciente.php' method='post'><button class='d-sm-block d-sm-none btn btn-md shadow-sm border-light' style='; --bs-border-opacity: .1;'  type='submit' name='editar' value='".$fila['rut']."'/><i class='fa-solid fa-pen fa-lg' style='color:white' aria-hidden='true'></i></button></form>";
+
+
 	//Carga Head de la página
 	require("head.php");
 
 ?>
 
-</head>
-<body>
-<br><br>
+<div class="col col-sm-8 col-xl-9"><!- Columna principal (derecha) responsive->
+<div class="row text-center ps-2">
+
+
 <!-  GUARDAR REGISTROS  ->	
 
 		<?php 
@@ -129,38 +146,12 @@
 
 	?>
 
-
-
-<!-  NAVBAR  ->	
-
-
-	<?php
-		if($_POST['vista']){
-			$formulario=htmlentities(addslashes($_POST['vista']));
-		}elseif($_POST['rut_v']){
-			$formulario=htmlentities(addslashes($_POST['rut_v']));
-		}elseif($_POST['rut_e']){
-			$formulario=htmlentities(addslashes($_POST['rut_e']));
-		}
-
-
-		$consulta_m="SELECT * FROM `pacientes` WHERE `rut` = '$formulario'";
-		$busqueda2=$conexion->query($consulta_m);
-		$fila=$busqueda2->fetch_assoc();
-
-		$boton_toggler="<a class='btn btn-lg shadow-sm border-light' style='; --bs-border-opacity: .1;'  href='index.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
-		$boton_navbar="<form action='editar_paciente.php' method='post'><button class='btn btn-lg shadow-sm border-light' style='; --bs-border-opacity: .1;'  type='submit' name='editar' value='".$fila['rut']."'/><i class='fa-solid fa-pen fa-lg' style='color:white' aria-hidden='true'></i></button></form>";
-
-
-		require("navbar.php");
-
-	?>
-
-
-
 <ul class="list-group">
 
 	<?php
+		$consulta_m="SELECT * FROM `pacientes` WHERE `rut` = '$formulario'";
+		$busqueda2=$conexion->query($consulta_m);
+		$fila=$busqueda2->fetch_assoc();
 
 		$phpdate1 = strtotime( $fila['fecha_creacion'] );
 		$fecha1 = date( 'd-m-y H:i', $phpdate1 );
@@ -170,7 +161,18 @@
 			$fecha2 = date( 'd-m-y H:i', $phpdate2 );
 		}
 		
-		echo "<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'><br><h5 class='mb-1 fw-bold'>".$fila['nombre_paciente']."</h5>";
+		echo "<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'><br><h5 class='mb-1 fw-bold'>".$fila['nombre_paciente']."</h5>		
+
+		<div class='pt-1 ps-3 me-3 d-flex float-start'>
+		<a class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block' style='width:80px; height:40px; --bs-border-opacity: .1;' href='hoja_dolor.php'><i class='fa fa-chevron-left'></i>Atrás</a>
+		</div>
+
+		<span class='float-end'>
+		<div class='pt-1 ps-3 me-3 d-flex justify-content-end'>
+		<form action='editar_paciente.php' method='post'><button class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block' style='; --bs-border-opacity: .1;'  type='submit' name='editar' value='".$fila['rut']."'/><i class='fa-solid fa-pen fa-lg' style='color:white' aria-hidden='true'></i></button></form>
+		</div>
+		</span>";
+		
 		echo "<p class='mb-1'>Rut:&nbsp;".$fila['rut']."</p>";
 		echo "<p class='mb-1'>FC:&nbsp;".$fila['ficha']."</p>";
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Unidad&nbsp&nbsp</div><div class='text-end'>".$fila['unidad_cama']."</div></div></li>";
@@ -192,7 +194,7 @@
 		echo "<li class='list-group-item mb-2 py-3'><img class='btn-imagen' src='images/IMG_3977.PNG'/>Comentarios";				
 		echo "<div class='py-2'>".$fila['comentarios']."</div></div></li>";
 
-		echo "<li class='list-group-item mb-2 py-3'><div><img class='btn-imagen' src='images/IMG_3978.PNG'/>EVOLUCIONES DIARIAS</div></div>";
+		echo "<li class='list-group-item mb-2 py-3'><div><img class='btn-imagen' src='images/IMG_3978.PNG'/>EVOLUCIONES DIARIAS</div>";
 			
 
 		$consulta_elementos="SELECT `rut_v` FROM `visita_diaria` WHERE `rut_v`='$formulario'";
@@ -201,9 +203,9 @@
 		
 
 		if($elementos>0){
-				echo "<div class='py-2'><form action='listar_visitas.php' method='post'><button class='btn btn-light btn-lg shadow-sm' type='submit' name='lista_v' value='$formulario' >$elementos elementos</button></form></div></div></li>";	
+				echo "<div class='py-2'><form action='listar_visitas.php' method='post'><button class='btn btn-light btn-lg shadow-sm' type='submit' name='lista_v' value='$formulario' >$elementos elementos</button></form></div></li>";	
 		}else{
-			echo "<div class='py-2'><button class='btn btn-light btn-lg shadow-sm'>$elementos elementos</button></div></div></li>";	
+			echo "<div class='py-2'><button class='btn btn-light btn-lg shadow-sm'>$elementos elementos</button></div></></li>";	
 		}
 
 	
@@ -212,7 +214,7 @@
 
 		echo "<li class='list-group-item'><small class='text-muted'>Creado el $fecha1, por ".$fila['creador']."</small></li>";
 		if(isset($fila['fecha_edicion'])){
-			echo "<li class='list-group-item'><small class='text-muted'>Editado el $fecha2, por ".$fila['editor']."</small></li>";
+			echo "<li class='list-group-item pb-5'><small class='text-muted'>Editado el $fecha2, por ".$fila['editor']."</small></li>";
 		}
 
 
@@ -220,8 +222,8 @@
 	?>
 
 </ul>
-<br>
-<br>
+</div>
+</div>
 	<?php 
 		//Cierre Conexión
 		$conexion->close();
@@ -235,5 +237,3 @@
 
 	?>
 
-</body>
-</html>

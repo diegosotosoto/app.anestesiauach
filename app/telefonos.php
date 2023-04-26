@@ -5,13 +5,18 @@
 		header('Location: login.php');
 	}
 
+
+    //Variables
+
+    $boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+    $titulo_navbar="<div class='text-white'>Teléfonos</div>";
+    $boton_navbar="<a></a><a></a>";
+
 	
 	//Carga Head de la página
 	require("head.php");
 
 ?>
-</head>
-<body>
 	
 
 	<!- INICIO DEL ITEM ->
@@ -19,6 +24,8 @@
 
 $array_frec = array(
 'RECUPERACIÓN CENTRAL'	=> '63 2263491'
+,'RECUPERACIÓN H'	=> '63 2263936'
+,'RECUPERACIÓN MATERNIDAD'	=> '63 2263604'
 ,'BANCO SANGRE TECNÓLOGO'	=> '63 2263768'
 ,'BANCO SANGRE'	=> '63 2263775'
 ,'UCI 1'	=> '63 2263499'
@@ -39,6 +46,7 @@ $array_frec = array(
 ,'GESTIÓN DE CAMAS 2'	=> '63 2263916'
 ,'LABORATORIO CENTRAL RECEPCION'	=> '63 2263309'
 ,'LABORATORIO CENTRAL SEC.'	=> '63 2263305'
+,'RESIDENCIA UCI 1.'	=> '63 2263635'
 );
 
 $array_tel = array (
@@ -115,44 +123,37 @@ $array_tel = array (
 ,'URGENCIA REANIMADOR'	=> '63 2263802'
 );
 
-
-    //Botones del Toggle NAVBAR
-
-
-    $boton_toggler="<a class='btn btn-lg shadow-sm border-light' style='; --bs-border-opacity: .1;'  href='index.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
-    $titulo_navbar="Teléfonos";
-    $boton_navbar="<a></a><a></a>";
-
-		require("navbar.php");
 ?>
-<div class="form-group text-center ms-3 pt-5 mt-5">
- <input type="text" class="form-control" style="width:90%" id="search" placeholder="Busca un número...">
+
+<div class="col col-sm-8 col-xl-9"><!- Columna principal (derecha) responsive->
+
+		<div class="form-group text-center ms-3 pt-3 pb-3 mt-2">
+		 <input type="text" class="form-control" style="width:90%" id="search" placeholder="Busca un Servicio...">
+		</div>
+		<div class="pt-2 pb-4" id="mytable">
+
+		<?php
+
+					foreach ($array_frec  as $servicio1 => $telefono1){
+					    
+		        echo "<ul class='list-group'><div class='list-group'><a href='tel:$telefono1' class='list-group-item list-group-item-action text-primary fs-5'>
+		        	<i class='fa-solid fa-star pe-3 ps-2 text-warning'></i>$servicio1</a></div></ul>";
+		      
+					}
+
+				echo "<ul class='list-group'><div class='list-group ps-5 text-secondary fs-4'> <br>OTROS </div></ul>";
+
+					foreach ($array_tel  as $servicio => $telefono){
+					    
+		        echo "<ul class='list-group'><div class='list-group'><a href='tel:$telefono' class='list-group-item list-group-item-action text-primary fs-5'>
+		        	<i class='fa-solid fa-phone pe-3 ps-2 text-success'></i>$servicio</a></div></ul>";
+		      
+					}
+
+		?>
+		</div>
 </div>
-<div class="pt-3" id="mytable">
 
-<?php
-
-			foreach ($array_frec  as $servicio1 => $telefono1){
-			    
-        echo "<ul class='list-group'><div class='list-group'><a href='tel:$telefono1' class='list-group-item list-group-item-action text-primary fs-5'>
-        	<i class='fa-solid fa-star pe-3 ps-2 text-warning'></i>$servicio1</a></div></ul>";
-      
-			}
-
-		echo "<ul class='list-group'><div class='list-group ps-5 text-secondary fs-4'> <br>OTROS </div></ul>";
-
-			foreach ($array_tel  as $servicio => $telefono){
-			    
-        echo "<ul class='list-group'><div class='list-group'><a href='tel:$telefono' class='list-group-item list-group-item-action text-primary fs-5'>
-        	<i class='fa-solid fa-phone pe-3 ps-2 text-success'></i>$servicio</a></div></ul>";
-      
-			}
-
-?>
-</div>
- <div class="pt-5 mb-2 text-center">
-    <p class="text-muted pb-2">Anestesia<small class='fw-bold'>  UACH &nbsp;<img src='images/austral.png' style='height: 36px; width: 36px; filter: invert(60%);'/></small></p>
-</div>
 <script>
  // Write on keyup event of keyword input element
  $(document).ready(function(){
@@ -175,8 +176,7 @@ $array_tel = array (
 
 	?>
 
-</body>
-</html>
+
 
 
 

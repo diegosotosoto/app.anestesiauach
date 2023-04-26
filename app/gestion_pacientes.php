@@ -1,23 +1,38 @@
 <?php
-	//Ve si están activas AMBAS cookies o redirige al login
 	if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
-		header('Location: login.php');
-	}elseif($_COOKIE['hkjh41lu4l1k23jhlkj13']!="diegosotosoto@gmail.com"){
-		header('Location: login.php');
-	}
+			header('Location: login.php');
+		}
+
 	//Conexión
 	require("conectar.php");
 	$conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
 	$conexion->set_charset("utf8");
-	
+
+	//chequea privilegios de administrador
+
+	  $check_usuario=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
+	  $con_users_b="SELECT `admin`  FROM `usuarios_dolor` WHERE `email_usuario` = '$check_usuario' ";
+	  $users_b=$conexion->query($con_users_b);
+	  $usuario=$users_b->fetch_assoc();
+	  if($usuario['admin']!=1){
+		header('Location: login.php');
+	  }
+
+
+	  //Variables
+
+		$boton_toggler="<a class='btn btn-lg shadow-sm border-light d-sm-block d-sm-none' style='; --bs-border-opacity: .1;' href='index.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
+		$titulo_navbar="<span class='text-white d-sm-block d-sm-none'>Gestión</span>";
+		$boton_navbar="<a></a><a></a>";
+
 	//Carga Head de la página
 	require("head.php");
 ?>
 
-</head>
-<body>
-<br><br><br>
+<div class="col col-sm-8 col-xl-9"><!- Columna principal (derecha) responsive->
+
 <?php
+
 
 
 			//GUARDAR EDICIÓN DE USUARIO
@@ -67,18 +82,8 @@
 
 
 
-	<?php
 
-		$boton_toggler="<a class='btn btn-lg shadow-sm border-light' style='; --bs-border-opacity: .1;' href='index.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
-		$titulo_navbar="Pacientes";
-		$boton_navbar="<a></a><a></a>";
-
-		require("navbar.php");
-	?>
-
-
-
-<div class='container text-center'>
+<div class='container text-center pt-5'>
 		<div class='row'>
 <?php 
 
@@ -110,6 +115,7 @@
 	}
 
 ?>
+
 				</div>
 			</div>			
 		</div>

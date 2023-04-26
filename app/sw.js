@@ -15,9 +15,6 @@ self.addEventListener("install", (event) => {
           "index.php",
           "apuntes.php",
           "acerca_de.php",          
-          "apuntes/plantilla_apunte.php",
-          "apuntes/bica.php",
-          "apuntes/perdida_admisible.php",
         ])
       )
   );

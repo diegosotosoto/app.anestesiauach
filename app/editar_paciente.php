@@ -1,34 +1,31 @@
 <?php
 
-	//Ve si está activa la cookie o redirige al login
-	if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
-		header('Location: login.php');
-	}
-	//Conexión
-	require("conectar.php");
-	$conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
-	$conexion->set_charset("utf8");
-	
-	//Carga Head de la página
-	require("head.php");
+//Validador login
+    require("valida_pag.php");
+
+//Variables sin conexion
+$formulario=$_POST['editar'];
+
+$boton_toggler="<form action='vista_paciente.php' method='post'><button class='d-sm-block d-sm-none btn shadow-sm' type='submit' name='vista' value='$formulario'><div class='text-white'>Cancelar</div></button></form>";
+
+$titulo_navbar="";
+
+$boton_navbar="<button class='btn shadow-sm' type='submit' name='editar' value='Submit' onclick='envioForm_ed_pacte()'><div class='text-white'>Guardar</div></button>";
+
+//Carga Head de la página
+require("head.php");
 
 ?>
 
-</head>
-<body>
-<!-  NAVBAR  ->	
-<form class="needs-validation" method='post' action='vista_paciente.php' novalidate>
+
+<div class="col col-sm-8 col-xl-9"><!- Columna principal (derecha) responsive->
+
+
 	<?php
-		$formulario=$_POST['editar'];
-		//ENVIA EL POST VISTA CON LA VARIABLE FLORMULARIO PARA CANCELAR
-		$boton_toggler="<button class='btn btn-lg shadow-sm' type='submit' name='vista' value='$formulario'><div class='text-white'>Cancelar</div></button>";
 
-		$titulo_navbar="";
 
-		$boton_navbar="<button class='btn btn-lg shadow-sm' type='submit' name='editar' value='Submit'><div class='text-white'>Guardar</div></button>";
-		require("navbar.php");
 	?>
-<br><br>
+
 	<?php
 
 
@@ -40,16 +37,34 @@
 
 
 	?>
-		<input type="hidden" name="rut_e" id="rut_e" value="<?php echo $fila['rut'];?>">
+
+
 
 		<!– TABLA DE REGISTROS –>
 
 			<ul class="list-group">
 	<?php
-		echo "<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'><br><h5 class='mb-1 fw-bold'>".$fila['nombre_paciente']."</h5>";
+		echo "<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'><br><h5 class='mb-1 fw-bold'>".$fila['nombre_paciente']."</h5>
+
+
+		<div class='pt-1 ps-3 me-3 d-flex float-start'>
+		<form action='vista_paciente.php' method='post'><button class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block' type='submit' name='vista' value='$formulario'><div class='text-white'>Cancelar</div></button></form>
+		</div>
+
+		<span class='float-end'>
+		<div class='pt-1 ps-3 me-3 d-flex justify-content-end'>
+		<button class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block' type='submit' name='editar' value='Submit' onclick='envioForm_ed_pacte()'><div class='text-white'>Guardar</div></button>
+		</div>
+		</span>";
+
+
 		echo "<div class='mb-1'>Rut: ".$fila['rut']."</div>";
 		echo "<div class='mb-1'>FC: ".$fila['ficha']."</div></li>";
 	?>
+
+	<form class='needs-validation' name='form_ed_pacte' id='form_ed_pacte' method='post' action='vista_paciente.php' novalidate>
+		<input type="hidden" name="rut_e" id="rut_e" value="<?php echo $fila['rut'];?>">
+
 			</ul>
 			<br>
 
@@ -274,13 +289,14 @@
 
 
 		</form>
-
+</div>
 
 	<?php 
 
 		$conexion->close();
 
 	?>
+<script>function envioForm_ed_pacte() {document.getElementById('form_ed_pacte').submit(); }</script>
 
 
 <script>
@@ -373,6 +389,3 @@ $("#seeAnotherFieldGroup").change(function() {
 		require("footer.php");
 
 	?>
-
-</body>
-</html>

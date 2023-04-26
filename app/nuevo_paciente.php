@@ -9,28 +9,26 @@
 	$conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
 	$conexion->set_charset("utf8");
 	
+//VARIABLES
+	
+		$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+		$titulo_navbar="<span class='text-white'>Nuevo</span>";
+		$boton_navbar="<button class='btn shadow-sm border-light' style='; --bs-border-opacity: .1;' type='submit' form='form_ingreso' value='Submit'><div class='text-white'>Agregar</div></button>";
+
 	//Carga Head de la página
 	require("head.php");
 
 ?>
 
-</head>
-<body>
+<div class="col col-sm-8 col-xl-9 pb-5"><!- Columna principal (derecha) responsive->
+
+
 	<form class="needs-validation" name="form_ingreso" id="form_ingreso" method="post" action="index.php" novalidate>
 <!-  NAVBAR  ->	
 
-	<?php
-	
 
-		$boton_toggler="<a class='btn btn-lg shadow-sm border-light' style='; --bs-border-opacity: .1;'  href='index.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
-		$titulo_navbar="Nuevo";
-		$boton_navbar="<button class='btn btn-lg shadow-sm border-light' style='; --bs-border-opacity: .1;' type='submit' form='form_ingreso' value='Submit'><div class='text-white'>Agregar</div></button>";
-
-		require("navbar.php");
-	?>
-<br><br>
 			<ul class="list-group">
-			<li class='list-group-item'><br><h5 class='mb-1 fw-bold'>Ingresar Datos</h5></li>
+			<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><br><h5 class='mb-1 fw-bold pt-3 pb-3'>Ingresar Datos</h5></li>
 			</ul>
 
 
@@ -198,20 +196,20 @@
 
 
 					 <div>
-					<div class='text-muted pt-4'>Infusión PCA</div>
+					<div class='text-muted pt-4 text-start'>Infusión PCA</div>
 					<div class="input-group mb-2">
 					  <input type="number" max="100" step=".1" class="form-control" name="infusion" id="infusion">
 					  <span class="input-group-text" id="basic-addon2"> ml/hr</span>
 					</div>
 					</div>
 
-					<div class='text-muted pt-3'>Bolo PCA</div>
+					<div class='text-muted pt-3 text-start'>Bolo PCA</div>
 					<div class="input-group mb-2">
 					  <input type="number" max="100" step=".1" class="form-control" name="bolo" id="bolo">
 					  <span class="input-group-text" id="basic-addon2"> ml</span>
 					</div>
 
-					<div class='text-muted pt-3'>Lockout PCA</div>
+					<div class='text-muted pt-3 text-start'>Lockout PCA</div>
 					<div class="input-group mb-2">
 					  <input type="number" max="100" step=".1" class="form-control" name="lockout" id="lockout">
 					  <span class="input-group-text" id="basic-addon2"> ml</span>
@@ -233,10 +231,16 @@
 </div>
 </div>
 
+
+
+
+		<div class="pt-3 ps-3 me-3 d-flex justify-content-end">
+		<button class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block' style='; --bs-border-opacity: .1;' type='submit' form='form_ingreso' value='Submit'><div class='text-white'>Agregar Paciente</div></button>
+		</div>
+
 		</form>
 
-<br>
-<br>
+</div>
 
 <!- chequear que no haya otro ingresado antes -> 
 
@@ -386,6 +390,3 @@ function checkRut(rut) {
 <!-  FOOTER  ->
 
 
-
-</body>
-</html>

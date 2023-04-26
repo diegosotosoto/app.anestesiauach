@@ -4,28 +4,25 @@
 	if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
 		header('Location: ../login.php');
 	}
+
 	//Conexión
 	require("../conectar.php");
 	$conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
 	$conexion->set_charset("utf8");
-	
+
+	//Variables
+		$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+		$titulo_navbar="<span class='text-white'>Apuntes</span>";
+		$boton_navbar="<button class='navbar-toggler text-white shadow-sm' style='width:50px; height:40px; --bs-border-opacity: .1;' type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation'> ? </button>";
+
 	//Carga Head de la página
 	require("head.php");
 
-?>
 
-</head>
-<body>
-<!-  NAVBAR  ->	
-	<?php
-		//Botones del Toggle NAVBAR
-		$boton_toggler="<a class='btn btn-lg border-light shadow-sm' style='--bs-border-opacity: .1;' href='../apuntes.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
-		$titulo_navbar="Apuntes";
-		$boton_navbar="<button class='navbar-toggler text-white shadow-sm' style='width:50px; height:40px; --bs-border-opacity: .1;' type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation'> ? </button>";
-		//Conexión
-		require("../navbar.php");
 	?>
-<br><br>
+
+<div class="col col-sm-8 col-xl-9 pb-5"><!- Columna principal (derecha) responsive->
+
     <div class="pt-2 collapse navbar-collapse" id="navbarSupportedContent" style="background-color: #42A5FF;">
     	<div class="pt-4 container ms-auto">
 
@@ -255,8 +252,7 @@
 
 </ul>
 
-<div class="pt-4 mb-2 text-center">
-	  <p class="text-muted pb-2">Anestesia<small class='fw-bold'>  UACH &nbsp;<img src='../images/austral.png' style='height: 36px; width: 36px; filter: invert(60%);'/></small></p>
+
 </div>
 
 	<?php 
@@ -267,9 +263,7 @@
 
 	<?php
 		//Conexión
-		require("footer.php");
+		require("../footer.php");
 
 	?>
 
-</body>
-</html>	

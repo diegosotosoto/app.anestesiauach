@@ -1,43 +1,30 @@
 <?php
+//Validador login
+    require("valida_pag.php");
 
-  //Ve si está activa la cookie o redirige al login
-  if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
-    header('Location: login.php');
-  }
-  //Conexión
-  require("conectar.php");
-  $conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
-  $conexion->set_charset("utf8");
-  
-  //Carga Head de la página
-  require("head.php");
+//Variables sin conexion
+$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$titulo_navbar="<div class='text-white'>Apuntes</div>";
+$boton_navbar="<a></a><a></a>";
+
+
+//Carga Head de la página
+require("head.php");
 
 ?>
 
-</head>
-<body>
-</br></br></br>
-<!-  NAVBAR  -> 
-
-  <?php
-    //Botones del Toggle NAVBAR
-
-
-    $boton_toggler="<a class='btn btn-lg shadow-sm border-light' style='; --bs-border-opacity: .1;'  href='index.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
-    $titulo_navbar="Apuntes";
-    $boton_navbar="<a></a><a></a>";
-    //Conexión
-    require("navbar.php");
-  ?>
+<div class="col col-sm-8 col-xl-9 py-3"><!- Columna principal (derecha) responsive->
 
 <?php
 
 $cabeceras = array(
 'Generalidades' => array('icono'=>'apuntes/icons/anesthesia.png',array(
       array('apuntes/asa.php','fa-solid fa-lightbulb','Clasificación ASA'),
+      array('apuntes/cormack.php','fa-solid fa-lungs','Clasificación de Cormack-Lehane'),
     )),
-'Evaluación y Riesgo' => array('icono'=>'apuntes/icons/compliance.png',
-      array(array('apuntes/score_lee.php','fa-solid fa-calendar-plus','Índice de Riesgo Cardiaco Revisado'),        
+'Evaluación y Riesgo' => array('icono'=>'apuntes/icons/compliance.png',array(
+      array('apuntes/score_lee.php','fa-solid fa-calendar-plus','Índice de Riesgo Cardiaco Revisado'),
+      array('apuntes/mallampati.php','fa-solid fa-head-side-cough','Score de Mallampati'),
     )),
 'Monitorización' => array('icono'=>'apuntes/icons/vital-signs.png',array(
       array('apuntes/asa.php','fa-solid fa-lightbulb','Clasificación ASA'),
@@ -131,10 +118,7 @@ $i = 0;
 ?>
 
 </div>
-<div class="pt-5 mb-2 text-center">
-    <p class="text-muted pb-2">Anestesia<small class='fw-bold'>  UACH &nbsp;<img src='images/austral.png' style='height: 36px; width: 36px; filter: invert(60%);'/></small></p>
 </div>
-
 
   <?php 
     //Cierre Conexión
@@ -149,5 +133,3 @@ $i = 0;
 
   ?>
 
-</body>
-</html> 

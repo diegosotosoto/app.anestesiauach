@@ -1,36 +1,20 @@
 <?php
+	//No requiere validador de página
 
-	//Ve si está activa la cookie o redirige al login
-	if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
-		header('Location: login.php');
-	}
-	//Conexión
-	require("conectar.php");
-	$conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
-	$conexion->set_charset("utf8");
-	
+	//Variables sin conexion
+		$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+		$titulo_navbar="<div class='text-white'>Acerca de</div>";
+		$boton_navbar="<span class='navbar-brand mr-auto ms-5' href='#'' role='button'></span>";
+
+
 	//Carga Head de la página
 	require("head.php");
-
 ?>
 
-</head>
-<body>
-	<?php
+<div class="col col-sm-8 col-xl-9"><!- Columna principal (derecha) responsive->
 
+<div class="container text-center mt-2">
 
-		$boton_toggler="<a class='btn btn-lg shadow-sm border-light' style='; --bs-border-opacity: .1;'  href='index.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
-		$titulo_navbar="Acerca de";
-		$boton_navbar="<a class='navbar-brand mr-auto ms-5' href='#'' role='button'></a>";
-
-
-		require("navbar.php");
-	?>
-	
-<br>
-<br>
-
-<div class="container text-center mt-4">
 		<ul class="list-group pt-3">
 		<li class='list-group-item bg-light bg-gradient'>
 	<div class="row">
@@ -40,28 +24,26 @@
 	</div>
 	<div class="row">
 		<div class="col pb-2">
-			<h1 class="pt-3">App Anestesiología UACH</h1>
+			<h3 class="pt-3">App Anestesia <span class="opacity-50">UACH</span></h3>
 		</div>
 	</div>
 	</li>
 	</ul>
+
+
 	<ul class="list-group pt-3">
-		<li class='list-group-item bg-light bg-gradient'><div class='d-flex justify-content-between'><div>Autor</div><div>Diego Soto Soto</div></div></li>
-		<li class='list-group-item bg-light bg-gradient'><div class='d-flex justify-content-between'><div>email</div><div>diegosoto@anestesiauach.cl</div></div></li>
-	</ul>
-	<ul class="list-group pt-3">
-		<li class='list-group-item bg-light bg-gradient'><div class='d-flex justify-content-between'><div>app.anestesiauach.cl</div>
+		<li class='list-group-item bg-light bg-gradient'><div class='d-flex justify-content-between'><div><a class='text-dark text-decoration-none' href='https://app.anestesiauach.cl/'>app.anestesiauach.cl</a></div>
 			
-    <button class="btn btn-primary">Compartir!</button>
+    <button id="button" class="btn btn-primary">Compartir!</button>
 
     <script>
       let shareData = {
-        title: 'App Uach',
-        text: 'Aplicación Anestesiología UACH',
+        title: 'Anest UACh',
+        text: 'App Anestesia UACh',
         url: 'https://app.anestesiauach.cl/',
       }
 
-      const btn = document.querySelector('button');
+      const btn = document.querySelector('#button');
       const resultPara = document.querySelector('.result');
 
       btn.addEventListener('click', () => {
@@ -82,9 +64,30 @@
 		</div></li>
 		
 	</ul>
+
+
+	<ul class="list-group pt-3">
+		<li class='list-group-item bg-light bg-gradient'><div class='text-center fw-bold'><div>¡Bienvenido a la Aplicación Web de los Residentes de Anestesiología de la UACh!</div></div></li>
+		<li class='list-group-item bg-white bg-gradient'><div class='d-flex justify-content-between text-start text-black-75 ps-2 pe-2'><div>&nbsp;&nbsp;
+			Nuestra aplicación es el lugar perfecto para que los Residentes e Internos de anestesiología encuentren recursos valiosos para mejorar conocimientos y habilidades. Aquí encontrarás contenido exclusivo, herramientas de cálculo, estudio y casos clínicos.<br>
+			&nbsp;&nbsp;
+			Además, nuestra aplicación te permitirá conectar con Residentes de Anestesiología y Especialistas de la UACh, lo que te brindará una valiosa oportunidad para aprender y compartir experiencia.<br>
+			&nbsp;&nbsp;
+			Estamos emocionados de tenerte a bordo y esperamos que disfrutes al máximo tu experiencia en nuestra app.<br> ¡Comienza a explorar ahora mismo!<br>
+		</div></div></li>
+	</ul>
+
+
+
+	<ul class="list-group py-3">
+		<li class='list-group-item bg-light bg-gradient'><div class='d-flex justify-content-between'><div class="fw-bold">Autor</div><div>Diego Soto Soto</div></div></li>
+		<li class='list-group-item bg-light bg-gradient'><div class='d-flex justify-content-between'><div class="fw-bold">email</div><a class='text-dark text-decoration-none' href='mailto:diego.soto02@uach.cl'>diego.soto02@uach.cl</a></a></div></li>
+		<li class='list-group-item bg-light bg-gradient'><div class='d-flex justify-content-between'><div class="fw-bold">íconos</div><a class='text-dark text-decoration-none' href='https://www.flaticon.com/authors/freepik' target="_blank">Freepik en flaticon.com</a></a></div></li>		
+	</ul>
+
+
+
 </div>
-<div class="pt-5 mb-2 text-center">
-	  <p class="text-muted pb-2">Anestesia<small class='fw-bold'>  UACH &nbsp;<img src='images/austral.png' style='height: 36px; width: 36px; filter: invert(60%);'/></small></p>
 </div>
 
 <!-  FOOTER  ->
@@ -95,5 +98,3 @@
 
 	?>
 
-</body>
-</html>
