@@ -108,20 +108,38 @@
 
 
 			}
-		?>
 
-			<div class="row pt-5 ps-0 pe-0">
-			    <div class="col text-center  ps-0 pe-0">
-			      <a href='nuevo_paciente.php' class="btn shadow btn-success ms-2 rounded-3 border-0 text-white" style="height: 150px;width: 150px; background-color: #016932; background-image: linear-gradient(62deg, #016932 0%, #009044 36%, #08d869 83%, #70fbb4 100%);
-				"><i class="fa-solid fa-user-plus fa-2xl pt-5"></i><div class="text-center pt-3">Nuevo<br> Paciente</div></a>
-			    </div>
+		//Expluye Dolor de Cuentas de Internos
+	  $check_usuario=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
+	  $con_users_b="SELECT `intern_`  FROM `usuarios_dolor` WHERE `email_usuario` = '$check_usuario' AND `verified`  = '1'";
+	  $users_b=$conexion->query($con_users_b);
+	  $usuario=$users_b->fetch_assoc();
+	  if($usuario['intern_']!=1){
 
-				<div class="col text-center ps-0 pe-0">
-			      <a href="hoja_dolor.php" class="btn shadow me-2 rounded-3 border-0 text-white" style="height: 150px;width: 150px; background-color: #026edd;background-image: linear-gradient(62deg, #026edd 33%, #41aafd 83%, #92c6f9 100%);
-				"><i class="fa-solid fa-syringe fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Pacientes Dolor</div></a>
-			    </div>
 
-			</div>
+		echo "
+					<div class='row pt-5 ps-0 pe-0'>
+					    <div class='col text-center  ps-0 pe-0'>
+					      <a href='nuevo_paciente.php' class='btn shadow btn-success ms-2 rounded-3 border-0 text-white' style='height: 150px;width: 150px; background-color: #016932; background-image: linear-gradient(62deg, #016932 0%, #009044 36%, #08d869 83%, #70fbb4 100%);
+						'><i class='fa-solid fa-user-plus fa-2xl pt-5'></i><div class='text-center pt-3'>Nuevo<br> Paciente</div></a>
+					    </div>
+
+						<div class='col text-center ps-0 pe-0'>
+					      <a href='hoja_dolor.php' class='btn shadow me-2 rounded-3 border-0 text-white' style='height: 150px;width: 150px; background-color: #026edd;background-image: linear-gradient(62deg, #026edd 33%, #41aafd 83%, #92c6f9 100%);
+						'><i class='fa-solid fa-syringe fa-2xl pt-5'></i><div class='text-center pt-3 ps-2 pe-2'>Pacientes Dolor</div></a>
+					    </div>
+					</div>
+					";
+
+
+	  }
+
+
+
+
+
+?>
+
 
 			<div class="row pt-5  ps-0 pe-0">
 			    <div class="col text-center  ps-0 pe-0">

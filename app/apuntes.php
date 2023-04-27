@@ -86,7 +86,7 @@ $i = 0;
         echo "
             <div class='accordion-item'>
               <h2 class='accordion-header' id='panelsStayOpen-heading$i'>
-                <button class='accordion-button collapsed pt-4 pb-4 fs-5' type='button' data-bs-toggle='collapse' data-bs-target='#panelsStayOpen-collapse$i' aria-expanded='false' aria-controls='panelsStayOpen-collapse$i' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'>
+                <button class='accordion-button collapsed pt-3 pb-3 fs-6' type='button' data-bs-toggle='collapse' data-bs-target='#panelsStayOpen-collapse$i' aria-expanded='false' aria-controls='panelsStayOpen-collapse$i' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'>
                   <img src='".$ext['icono']."' style='height: 34px; width: 34px; margin-left:10px; margin-right:20px'/>$nombre
                 </button>
               </h2>
@@ -100,7 +100,7 @@ $i = 0;
                 foreach ($ext[$j] as $contenido){
                     echo "
                           <div class='list-group'>
-                          <a href='".$contenido[0]."' class='list-group-item list-group-item-action text-primary fs-5'><i style='padding-right:10px; padding-left: 10px;' class='".$contenido[1]."'></i>".$contenido[2]."</a> 
+                          <a href='".$contenido[0]."' class='list-group-item list-group-item-action text-primary fs-6'><i style='padding-right:10px; padding-left: 10px;' class='".$contenido[1]."'></i>".$contenido[2]."</a> 
                         </div>
                         ";
                     $j++;

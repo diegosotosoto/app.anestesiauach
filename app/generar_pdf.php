@@ -8,6 +8,15 @@
 	$conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
 	$conexion->set_charset("utf8");
 	
+//Saca a los internos del area de dolor
+	  $check_usuario=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
+	  $con_users_b="SELECT `intern_`  FROM `usuarios_dolor` WHERE `email_usuario` = '$check_usuario'";
+	  $users_b=$conexion->query($con_users_b);
+	  $usuario=$users_b->fetch_assoc();
+	  if($usuario['intern_']==1){
+	  	header('Location: login.php');
+	  }
+	
 
 		$rut_v=htmlentities(addslashes($_POST['rut_v']));
 		$fecha_v=htmlentities(addslashes($_POST['fecha_v']));

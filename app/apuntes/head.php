@@ -18,7 +18,7 @@
     <link href="../css/bootstrap.min.css" rel="stylesheet"/>
 	<link rel="stylesheet" href="../css/all.css"/>
 	<link rel="stylesheet" href="../style.css"/>
-	<script src="js/jquery-3.6.1.min.js"></script>
+	<script src="../js/jquery-3.6.1.min.js"></script>
 
 <body>
 <div class="container-xxl text-center px-0">
@@ -49,7 +49,7 @@
       <div class="offcanvas-body">
           	<div class="container text-center">
 							<div class="row ps-1 pt-3 pb-3">
-	                <a class="navbar-brand d-xs-none d-none d-sm-block" href="#"><img src="images/austral_b.png" style="width: 30% ;"></a>
+	                <a class="navbar-brand d-xs-none d-none d-sm-block" href="#"><img src="../images/austral_b.png" style="width: 30% ;"></a>
 	            </div>
 									<div class='list-group' id='offcanvasExampleLabel'>
 									<?php

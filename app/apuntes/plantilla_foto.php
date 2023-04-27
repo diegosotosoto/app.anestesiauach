@@ -147,6 +147,6 @@
 
 	<?php
 		//Conexión
-		require("../footer.php");
+		require("footer.php");
 
 	?>
