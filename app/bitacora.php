@@ -19,7 +19,7 @@
 		} elseif ($usuario['staff_']==1) {
 			header('Location: bitacora_autoriza.php');
 		} elseif ($usuario['intern_']==1) {
-			header('Location: bitacora_ingreso.php');
+			header('Location: bitacora_internos.php');
 		} elseif ($usuario['becad_']==1) {
 			header('Location: bitacora_ingreso.php');
 		}

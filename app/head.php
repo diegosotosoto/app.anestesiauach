@@ -98,14 +98,26 @@
 				              $query_badge="SELECT `staff_b` FROM `bitacora_proced` WHERE `staff_b` = '$nombre_usuario' AND `aprobado_staff_b` = '0' ";
         							$consutal_badge=$conexion->query($query_badge);
         							$badge = mysqli_num_rows($consutal_badge);
-        							$escribe_badge="<span class='badge text-bg-danger'>$badge</span>";
+
+
+				              $query_badge2="SELECT `staff_i` FROM `bitacora_internos` WHERE `staff_i` = '$nombre_usuario' AND `aprobado_staff_i` = '0' ";
+        							$consutal_badge2=$conexion->query($query_badge2);
+        							$badge2 = mysqli_num_rows($consutal_badge2);
+
+
+        							$escribe_badge=$badge+$badge2;
+
+
+
+
+
 				    } 
 
 				echo "<div class='list-group'>
 								  <a href='apuntes.php' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-calculator ps-2 pe-3 fs-3' style='color: #FFD700'></i>Cálculos</a> 
 							</div>";
 				echo "<div class='list-group'>
-				  <a href='bitacora.php' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-clipboard ps-2 pe-3 fs-3' style='color: #CE2E2E'></i>Bitácora &nbsp;$escribe_badge</a> 
+				  <a href='bitacora.php' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-clipboard ps-2 pe-3 fs-3' style='color: #CE2E2E'></i>Bitácora &nbsp;<span class='badge text-bg-danger'>".$escribe_badge."</span></a> 
 							</div>";
 				echo "<div class='list-group'>
 				  <a href='correos.php' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-envelope ps-2 pe-3 fs-3' style='color: #29A09B'></i>Directorio Correos</a> 
@@ -122,17 +134,24 @@
 										//BUSCA SI EL USUARIO ES ADMIN Y AGREGA MENÚ DE ADMIN
 										$email_user=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 										$consulta_user="SELECT * FROM `usuarios_dolor` WHERE `email_usuario` = '$email_user' AND `admin` = '1'";
-
 										$confirma_user=$conexion->query($consulta_user); 
 
 										if(mysqli_num_rows($confirma_user)==0){//AL NO ENCONRAR REGISTROS DE ADMIN NO AGREGA NADA
 
 										}else{ 
 								
+
+														$query_badge3="SELECT `verified` FROM `usuarios_dolor` WHERE `verified` = '0'";
+			        							$consutal_badge3=$conexion->query($query_badge3);
+			        							$badge3 = mysqli_num_rows($consutal_badge3);
+
+
+			        							$escribe_badge3="<span class='badge text-bg-danger'>".$badge3."</span>";
+
 							              echo "
 														<form id='gest_users' action='gestion_usuarios.php' method='post'><input type='hidden' name='email_user_ad' value='$email_user'/>
 														<div class='list-group'>
-														  <a href='#' onclick='envioForm1()' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-users ps-2 pe-3 fs-3 text-primary'></i>Gestión Usuarios</a> 
+														  <a href='#' onclick='envioForm1()' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-users ps-2 pe-3 fs-3 text-primary'></i>Gestión Usuarios &nbsp;$escribe_badge3</a> 
 														</div></form>
 							              <script>function envioForm1() {document.getElementById('gest_users').submit(); }</script>
 							              ";

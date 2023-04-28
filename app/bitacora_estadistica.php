@@ -18,10 +18,13 @@
     } elseif ($usuario['staff_']==1) {
       header('Location: bitacora_autoriza.php');
     } elseif ($usuario['intern_']==1) {
-
+      header('Location: bitacora_estad_i.php');
     } elseif ($usuario['becad_']==1) {
-
+      //CONTINUA EN LA PAGINA
     }
+//*********MOSTRAR ESTADISTICA SEGUN SOLICITUD DE STAFF********
+
+
 
 
 //VARIABLES
@@ -55,7 +58,8 @@
 <?php
 $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
-        $consulta_est="SELECT * FROM `bitacora_proced` WHERE `autor_b` = '$autor_b' ";
+      //busca los datos segun auntor, que estén validados
+        $consulta_est="SELECT * FROM `bitacora_proced` WHERE `autor_b` = '$autor_b' AND `aprobado_staff_b` = '1' ";
         $busqueda_est=$conexion->query($consulta_est);
 
 

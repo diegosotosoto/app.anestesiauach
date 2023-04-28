@@ -18,9 +18,9 @@
 		} elseif ($usuario['staff_']==1) {
 			header('Location: bitacora_autoriza.php');
 		} elseif ($usuario['intern_']==1) {
- 			header('Location: bitacora_internos.php');
-		} elseif ($usuario['becad_']==1) {
 			//CONTINUA EN LA PAGINA
+		} elseif ($usuario['becad_']==1) {
+			header('Location: bitacora_ingreso.php');
 		}
 
 
@@ -43,42 +43,35 @@
 
 
 			//GUARDAR EDICIÓN DE USUARIO
-				if($_POST['rut_b']){
+				if($_POST['rut_i']){
 
-			$autor_b=strtolower(urldecode($_COOKIE['hkjh41lu4l1k23jhlkj13']));
-			$rut_b=htmlentities(addslashes(strtoupper($_POST['rut_b'])));
-			$ficha_b=htmlentities(addslashes($_POST['ficha_b']));
-			$edad_b=htmlentities(addslashes($_POST['edad_b']));
+			$autor_i=strtolower(urldecode($_COOKIE['hkjh41lu4l1k23jhlkj13']));
+			$rut_i=htmlentities(addslashes(strtoupper($_POST['rut_i'])));
+			$ficha_i=htmlentities(addslashes($_POST['ficha_i']));
+			$edad_i=htmlentities(addslashes($_POST['edad_i']));
+			$procedimiento_i=htmlentities(addslashes($_POST['procedimiento_i']));
+			$fecha_i=htmlentities(addslashes($_POST['fecha_i']));
 
-			$procedimiento_b=htmlentities(addslashes($_POST['procedimiento_b']));
-			$fecha_b=htmlentities(addslashes($_POST['fecha_b']));
-			$via_aerea_b=htmlentities(addslashes($_POST['via_aerea_b']));
-			$vad_b=htmlentities(addslashes($_POST['vad_b']));
-			$acceso_vascular_b=htmlentities(addslashes($_POST['acceso_vascular_b']));
-			$invasivo_b=htmlentities(addslashes($_POST['invasivo_b']));
-
-			if($_POST['invasivo_eco_b']=="1"){
-				$invasivo_eco_b="1";
-			}else{
-				$invasivo_eco_b="0";
-			}
-
-			$neuroaxial_b=htmlentities(addslashes($_POST['neuroaxial_b']));
-			$regional_b=htmlentities(addslashes($_POST['regional_b']));
-			$dolor_b=htmlentities(addslashes($_POST['dolor_b']));
-
-			$staff_b=htmlentities(addslashes($_POST['staff_b']));
-			$comentarios_b=htmlentities(addslashes($_POST['comentarios_b']));
+			$evaluacion_i=htmlentities(addslashes($_POST['evaluacion_i']));
+			$ventilacion_i=htmlentities(addslashes($_POST['ventilacion_i']));
+			$intubacion_i=htmlentities(addslashes($_POST['intubacion_i']));
+			$lma_i=htmlentities(addslashes($_POST['lma_i']));
+			$ayudas_i=htmlentities(addslashes($_POST['ayudas_i']));
+			$vvp_i=htmlentities(addslashes($_POST['vvp_i']));			
+			$espinal_i=htmlentities(addslashes($_POST['espinal_i']));
+			$seminario_i=htmlentities(addslashes($_POST['seminario_i']));
+			$staff_i=htmlentities(addslashes($_POST['staff_i']));
+			$comentarios_i=htmlentities(addslashes($_POST['comentarios_i']));
 
 
 
-			$consulta_b="INSERT INTO `bitacora_proced` (`autor_b`, `rut_b`, `ficha_b`, `edad_b`, `procedimiento_b`, `fecha_b`, `via_aerea_b`, `vad_b`, `acceso_vascular_b`, `invasivo_b`, `invasivo_eco_b`, `neuroaxial_b`, `regional_b`, `dolor_b`, `staff_b`, `comentarios_b`) VALUES ('$autor_b','$rut_b', '$ficha_b', '$edad_b', '$procedimiento_b', '$fecha_b', '$via_aerea_b', '$vad_b', '$acceso_vascular_b', '$invasivo_b', '$invasivo_eco_b', '$neuroaxial_b', '$regional_b', '$dolor_b', '$staff_b', '$comentarios_b') ";
+			$consulta_i="INSERT INTO `bitacora_internos` (`autor_i`, `rut_i`, `ficha_i`, `edad_i`, `procedimiento_i`, `fecha_i`, `evaluacion_i`, `ventilacion_i`, `intubacion_i`, `lma_i`, `ayudas_i`, `vvp_i`, `espinal_i`, `seminario_i`, `staff_i`, `comentarios_i`) VALUES ('$autor_i','$rut_i', '$ficha_i', '$edad_i', '$procedimiento_i', '$fecha_i', '$evaluacion_i', '$ventilacion_i', '$intubacion_i', '$lma_i', '$ayudas_i', '$vvp_i', '$espinal_i', '$seminario_i', '$staff_i', '$comentarios_i') ";
 			
 
-			$escribir_b=$conexion->query($consulta_b);
+			$escribir_i=$conexion->query($consulta_i);
 
 
-			if($escribir_b==false){
+			if($escribir_i==false){
 				echo "Error en la consulta";
 
 			}else{
@@ -106,12 +99,12 @@
     <a class="nav-link active" aria-current="page" href="#">Ingreso</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="bitacora_estadistica.php">Estadística</a>
+    <a class="nav-link" href="bitacora_estad_i.php">Estadística</a>
   </li>
 </ul>
 
 
-	<form class="needs-validation" name="form_ingreso_bit" id="form_ingreso_bit" method="post" action="bitacora_ingreso.php" novalidate>
+	<form class="needs-validation" name="form_ingreso_bit" id="form_ingreso_bit" method="post" action="bitacora_internos.php" novalidate>
 <!-  NAVBAR  ->	
 
 
@@ -129,7 +122,7 @@
 
 				<div>
 				<div class='d-flex justify-content-between pt-3'><div class='text-muted'>Rut Paciente <span class="opacity-50">(ej: 12345678-9)</span></div><div class="fw-lighter text-muted"><small>Requerido (*)</small></div></div>
-				<input class="form-control mb-2" type="text" oninput="checkRut(this)" name="rut_b" id="rut_b" required>
+				<input class="form-control mb-2" type="text" oninput="checkRut(this)" name="rut_i" id="rut_i" required>
 				<div class="invalid-feedback pt-1">
 						Ingrese un RUT válido
 			    </div>
@@ -137,7 +130,7 @@
 
   				<div>
 				<div class='d-flex justify-content-between pt-3'><div class='text-muted'>Ficha</div><div class="fw-lighter text-muted"><small>Requerido (*)</small></div></div>
-				<input class="form-control mb-1" type="text" name="ficha_b" id="ficha_b" pattern="[0-9]{1,7}" required>
+				<input class="form-control mb-1" type="text" name="ficha_i" id="ficha_i" pattern="[0-9]{1,7}" required>
 				<div class="invalid-feedback pt-1">
 			      Ingrese un número de ficha válido
 			    </div>
@@ -145,7 +138,7 @@
 
 				<div>
 			    <div class='d-flex justify-content-between pt-3'><div class='text-muted'>Edad</div><div class="fw-lighter text-muted"><small>Requerido (*)</small></div></div>
-					<select class="form-select mb-0" id="edad_b" name="edad_b" required>
+					<select class="form-select mb-0" id="edad_i" name="edad_i" required>
 					  <option value=""></option>
 					  <option value="RNPT">RNPT</option>
 					  <option value="Neonato">Neonato</option>
@@ -162,7 +155,7 @@
 
 				<div>
 			    <div class='d-flex justify-content-between pt-3'><div class='text-muted'>Procedimiento</div><div class="fw-lighter text-muted"><small>Requerido (*)</small></div></div>
-					<select class="form-select mb-0" id="procedimiento_b" name="procedimiento_b" required>
+					<select class="form-select mb-0" id="procedimiento_i" name="procedimiento_i" required>
 					  <option value=""></option>
 					  <option value="Cirugía General">Cirugía General</option>
 					  <option value="Cirugía Pediátrica">Cirugía Pediátrica</option>
@@ -170,7 +163,7 @@
 					  <option value="Cirugía Vascular">Cirugía Vascular</option>
 					  <option value="Cirugía de Tórax">Cirugía de Tórax</option>
 					  <option value="Neurocirugía">Neurocirugía</option>
-					  <option value="Cirugía Cardiaca">Cirugía Cardiaca</option>
+					  <option value="Cirugía Cardiaca">Otra</option>
 					</select>
 				<div class="invalid-feedback pt-0">
 			      Ingrese un valor válido
@@ -180,19 +173,30 @@
 
 				 <div class='d-flex justify-content-between pt-3'><div class='text-muted'>Fecha <span class="opacity-50">(dd/mm/aaaa)</span></div><div class="fw-lighter text-muted"><small>Requerido (*)</small></div></div>
 				 <div class="input-group date">
-				  <input type="text" class="form-control" name="fecha_b" id="datepicker" required>
+				  <input type="text" class="form-control" name="fecha_i" id="datepicker" required>
 				  </div>
 
 
 				<div>
-			    <div class='d-flex justify-content-between pt-3'><div class='text-muted'>Manejo de Vía Aérea</div><div class="fw-lighter text-muted"><small></small></div></div>
-					<select class="form-select mb-0" id="seeAnotherFieldGroup" name="via_aerea_b">
+			    <div class='d-flex justify-content-between pt-3'><div class='text-muted'>Evaluación Preanestésica</div><div class="fw-lighter text-muted"><small></small></div></div>
+					<select class="form-select mb-0" id="evaluacion_i" name="evaluacion_i" required>
 					  <option value=""></option>
-					  <option value="Tubo Orotraqueal">Tubo Orotraqueal</option>		  
-					  <option value="Máscara Laríngea">Máscara Laríngea</option>
-					  <option value="Tubo Nasotraqueal">Tubo Nasotraqueal</option>
-					  <option value="Tubo Doble Lumen">Tubo Doble Lumen</option>
-					  <option value="Otra Via Aérea Supraglótica">Otra Via Aérea Supraglótica</option>
+					  <option value="1">Evaluación Completa</option>
+					  <option value="2">Evaluación Incompleta</option>
+					  <option value="2">Evaluación No Realizada</option>
+					</select>
+				<div class="invalid-feedback pt-0">
+			      Ingrese un valor válido
+			    </div>
+				</div>	
+
+				<div>
+			    <div class='d-flex justify-content-between pt-3'><div class='text-muted'>Ventilación</div><div class="fw-lighter text-muted"><small></small></div></div>
+					<select class="form-select mb-0" id="ventilacion_i" name="ventilacion_i">
+					  <option value=""></option>
+					  <option value="1">Exitosa Solo</option>
+					  <option value="2">Exitosa con Ayuda</option>				  
+					  <option value="3">Fallida</option>
 					</select>
 				<div class="invalid-feedback pt-0">
 			      Ingrese un valor válido
@@ -201,104 +205,78 @@
 
 
 				<div>
-			    <div class='d-flex justify-content-between pt-3'><div class='text-muted'>Vía Aérea Dificil</div><div class="fw-lighter text-muted"><small></small></div></div>
-					<select class="form-select mb-2" id="vad_b" name="vad_b">
-					  <option value=""></option>						
-					  <option value="Bougie">Bougie</option>
-					  <option value="Guía o Conductor">Guía o Conductor</option>
-					  <option value="Videolaringoscopio">Videolaringoscopio</option>
-					  <option value="Dispositivo Supraglótico">Dispositivo Supraglótico</option>
-					  <option value="Fibrobroncoscopio">Fibrobroncoscopio</option>
-					  <option value="Fastrack">Fastrack</option>
-					  <option value="Bonfils">Bonfils</option>
-					  <option value="Ventilación en Jet">Ventilación en Jet</option>
-					  <option value="Via Aérea Quirúrgica">Via Aérea Quirúrgica</option>			  
-					</select>
-					</div>
-
-					<div class='d-flex justify-content-between pt-3'><div class='text-muted'>Acceso Vascular</div><div class="fw-lighter text-muted"><small></small></div></div>
-					<div class="input-group mb-2">
-					<select class="form-select mb-2" id="acceso_vascular_b" name="acceso_vascular_b">
-					  <option value=""></option>						
-					  <option value="Vía Venosa Periférica">Vía Venosa Periférica</option>
-					  <option value="Midline">Midline</option>
-					  <option value="PICC">PICC</option>	  
-					</select>
-					</div>
-
-				    <div>
-				    <div class='d-flex justify-content-between pt-0 pb-3'><div class='text-muted'>Uso de Ecógrafo</div><div class="fw-lighter text-muted">
-				    <input class='form-check-input' type='checkbox' name='invasivo_eco_b' id='invasivo_eco_b' value='1'/>
-					</div>
-					</div>
-					</div>
-
-
-					<div class='d-flex justify-content-between pt-3'><div class='text-muted'>Monitorización Invasiva</div><div class="fw-lighter text-muted"><small></small></div></div>
-					<div class="input-group mb-2">
-					<select class="form-select mb-2" id="invasivo_b" name="invasivo_b">
-					  <option value=""></option>						
-					  <option value="Línea Arterial">Línea Arterial</option>
-					  <option value="CVC">CVC</option>
-					  <option value="Cateter Arteria Pulmonar">Cateter Arteria Pulmonar</option>
-					  <option value="Otro">Otro</option>	  
-					</select>
-					</div>
-
-			    <div>
-			    <div class='d-flex justify-content-between pt-3'><div class='text-muted'>Anestesia Neuroaxial</div><div class="fw-lighter text-muted"><small></small></div></div>
-					<select class="form-select mb-0" id="neuroaxial_b" name="neuroaxial_b">
+			    <div class='d-flex justify-content-between pt-3'><div class='text-muted'>Intubación</div><div class="fw-lighter text-muted"><small></small></div></div>
+					<select class="form-select mb-0" id="intubacion_i" name="intubacion_i">
 					  <option value=""></option>
-					  <option value="Anestesia Espinal">Anestesia Espinal</option>
-					  <option value="Combinada Espinal-Epidural">Combinada Espinal-Epidural</option>
-					  <option value="Analgesia Epidural Lumbar">Analgesia Epidural Lumbar</option>
-					  <option value="nalgesia Epidural Torácica">Analgesia Epidural Torácica</option>
-					  <option value="Anestesia Caudal">Anestesia Caudal</option>
-					  <option value="Otro">Otro</option>				  
+					  <option value="1">Exitosa Solo</option>
+					  <option value="2">Exitosa con Ayuda</option>				  
+					  <option value="3">Fallida</option>
 					</select>
-					<div class="invalid-feedback pt-0 float-end">
+				<div class="invalid-feedback pt-0">
 			      Ingrese un valor válido
 			    </div>
 				</div>	
 
-			    <div>
-			    <div class='d-flex justify-content-between pt-3'><div class='text-muted'>Anestesia Regional</div><div class="fw-lighter text-muted"><small></small></div></div>
-					<select class="form-select mb-0" id="regional_b" name="regional_b">
-					  <option value=""></option>
-					  <option value="Bloqueo de Plaxo Braquial">Bloqueo de Plexo Braquial</option>
-					  <option value="Bloqueo de EEII">Bloqueo de EEII</option>
-					  <option value="Bloqueo de Pared/Interfascial">Bloqueo de Pared/Interfascial</option>
-					  <option value="Bloqueo Nervio Dorsal del Pene">Bloqueo Nervio Dorsal del Pene</option>
-					  <option value="Bloqueo Paravertebral">Bloqueo Paravertebral</option>
-					  <option value="Bloqueo Plexo Lumbar">Bloqueo Plexo Lumbar</option>
-					  <option value="Bloqueo Nervio Periférico">Bloqueo Nervio Periférico</option>					  
-					  <option value="Regional Ev">Regional Ev</option>				
-					  <option value="Otro">Otro</option>		  
+					<div class='d-flex justify-content-between pt-3'><div class='text-muted'>Máscara Laríngea</div><div class="fw-lighter text-muted"><small></small></div></div>
+					<div class="input-group mb-2">
+					<select class="form-select mb-2" id="lma_i" name="lma_i">
+					  <option value=""></option>						
+					  <option value="1">Exitosa Solo</option>
+					  <option value="2">Exitosa con Ayuda</option>				  
+					  <option value="3">Fallida</option>
 					</select>
-					<div class="invalid-feedback pt-0 float-end">
+					</div>
+
+
+				<div>
+			    <div class='d-flex justify-content-between pt-3'><div class='text-muted'>Uso Conductor/Bougie</div><div class="fw-lighter text-muted"><small></small></div></div>
+					<select class="form-select mb-0" id="ayudas_i" name="ayudas_i">
+					  <option value=""></option>
+					  <option value="1">Exitoso Solo</option>
+					  <option value="2">Exitoso con Ayuda</option>				  
+					  <option value="3">Fallido</option>
+					</select>
+				<div class="invalid-feedback pt-0">
 			      Ingrese un valor válido
 			    </div>
 				</div>	
 
-			    <div>
-			    <div class='d-flex justify-content-between pt-3'><div class='text-muted'>Manejo de Dolor</div><div class="fw-lighter text-muted"><small></small></div></div>
-					<select class="form-select mb-0" id="dolor_b" name="dolor_b">
-					  <option value=""></option>
-					  <option value="PCA Endovenosa">PCA Endovenosa</option>
-					  <option value="PCA Peridural">PCA Peridural</option> 
-					  <option value="PCA Plexo/Elastomérica">PCA Plexo/Elastomérica</option> 					  
-					  <option value="Dolor Crónico">Dolor Crónico</option>
-					  <option value="Otro">Otro</option>		  
+					<div class='d-flex justify-content-between pt-3'><div class='text-muted'>Vía Venosa Periférica</div><div class="fw-lighter text-muted"><small></small></div></div>
+					<div class="input-group mb-2">
+					<select class="form-select mb-2" id="vvp_i" name="vvp_i">
+					  <option value=""></option>						
+					  <option value="1">Exitosa Solo</option>
+					  <option value="2">Exitosa con Ayuda</option>				  
+					  <option value="3">Fallida</option>
 					</select>
-					<div class="invalid-feedback pt-0 float-end">
-			      Ingrese un valor válido
-			    </div>
-				</div>
+					</div>
 
+
+					<div class='d-flex justify-content-between pt-3'><div class='text-muted'>Anestesia Espinal/Raquídea</div><div class="fw-lighter text-muted"><small></small></div></div>
+					<div class="input-group mb-2">
+					<select class="form-select mb-2" id="espinal_i" name="espinal_i">
+					  <option value=""></option>						
+					  <option value="1">Exitosa Solo</option>
+					  <option value="2">Exitosa con Ayuda</option>				  
+					  <option value="3">Fallida</option>
+					</select>
+					</div>
+
+					<div class='d-flex justify-content-between pt-3'><div class='text-muted'>Realización Seminarios</div><div class="fw-lighter text-muted"><small></small></div></div>
+					<div class="input-group mb-2">
+					<select class="form-select mb-2" id="seminario_i" name="seminario_i">
+					  <option value=""></option>						
+					  <option value="1">Vía Aérea</option>
+					  <option value="2">Anestesia Neuroaxial</option>
+					  <option value="3">RCP</option>
+					  <option value="4">Transfusiones</option>	
+					  <option value="5">Dolor</option>
+					</select>
+					</div>
 
 			    <div>
 			    <div class='d-flex justify-content-between pt-3'><div class='text-muted'>Anestesiólog@ Responsable</div><div class="fw-lighter text-muted"><small>Requerido (*)</small></div></div>
-					<select class="form-select mb-0" id="staff_b" name="staff_b" required>
+					<select class="form-select mb-0" id="staff_i" name="staff_i" required>
 					  <option value=""></option>
 				<?php
 
@@ -317,14 +295,6 @@
 			      Ingrese un valor válido
 			    </div>
 				</div>	
-
-			    <div>
-			    <div class='d-flex justify-content-between pt-5 pb-3'><div class='text-muted'>Autorizado por Staff</div><div class="fw-lighter text-muted">
-			    <input class='form-check-input' type='checkbox' name='aprobado_staff_b' id='aprobado_staff_b' value='1' disabled/>
-					</div></div>
-					</div>
-
-
 
 
 			<div class='col'>
