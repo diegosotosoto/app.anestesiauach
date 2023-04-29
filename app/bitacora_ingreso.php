@@ -66,7 +66,6 @@
 			$neuroaxial_b=htmlentities(addslashes($_POST['neuroaxial_b']));
 			$regional_b=htmlentities(addslashes($_POST['regional_b']));
 			$dolor_b=htmlentities(addslashes($_POST['dolor_b']));
-
 			$staff_b=htmlentities(addslashes($_POST['staff_b']));
 			$comentarios_b=htmlentities(addslashes($_POST['comentarios_b']));
 

@@ -42,7 +42,7 @@
 
 
 <?php
-//Guarda la Bitácora
+//Guarda la Bitácora para becado
 
 				if($_POST['bitacora_autoriza']){
 
@@ -73,6 +73,33 @@
 
 				}
 
+//Guarda la Bitácora para interno
+
+				if($_POST['bitacora_autoriza_i']){
+
+					$id_i=$_POST['bitacora_autoriza_i'];
+
+					$consulta_usi="UPDATE `bitacora_internos` SET `aprobado_staff_i`='1' WHERE `id_i`='$id_i'";
+					
+					$escribir_usi=$conexion->query($consulta_usi);
+
+					if($escribir_usi==false){
+						echo "Error en la consulta";
+
+					}else{
+
+						echo "
+									<div class='alert alert-success alert-dismissible fade show'>
+								    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
+								    <strong>Info!</strong> Bitácora Autorizada.
+								  	</div>
+						";
+
+						} 
+
+
+				}
+
 
 ?>
 
@@ -81,12 +108,15 @@
   <li class="nav-item">
     <a class="nav-link active" aria-current="page" href="#">Validación</a>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" href="bitacora_revision.php">Revisión</a>
+  </li>  
 </ul>
 
 
 
 			<ul class="list-group">
-			<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><h4 class='mb-1 fw-bold pt-3'>Validar Bitácora</h4><div class='text-black-75 pt-1' style='font-size: 14px'> 
+			<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><h4 class='mb-1 fw-bold pt-2'>Validar Bitácora</h4><div class='text-black-75 pt-1' style='font-size: 14px'> 
 			</div>
 			</li>
 			</ul>
@@ -231,7 +261,7 @@
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Conductor/Bougie</div><div>".$lma_i."</div></div></li>";
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Vía Venosa Periférica</div><div class='text-end'>".$vvp_i."</div></div></li>";
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Espinal/Raquidea</div><div class='text-end'>".$espinal_i."</div></div></li>";
-		echo "<input type='hidden' name='bitacora_autoriza' value='".$row_int['id_i']."'/>";
+		echo "<input type='hidden' name='bitacora_autoriza_i' value='".$row_int['id_i']."'/>";
 		echo "<li class='list-group-item' style='background-color: #e9effb;'>Comentarios</li>";				
 		echo "<li class='list-group-item mb-2 py-2'><div class='py-4'>".$row_int['comentarios_i']."</div></li>";
 		echo "<div class='col'><button class='btn btn-primary' type='submit' value'Submit'>Autorizar</button></div></form></ul></br>";

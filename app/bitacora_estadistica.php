@@ -14,9 +14,9 @@
   $users_b=$conexion->query($con_users_b);
   $usuario=$users_b->fetch_assoc();
   if($usuario['admin']==1){
-      header('Location: bitacora_autoriza.php');
+
     } elseif ($usuario['staff_']==1) {
-      header('Location: bitacora_autoriza.php');
+
     } elseif ($usuario['intern_']==1) {
       header('Location: bitacora_estad_i.php');
     } elseif ($usuario['becad_']==1) {
@@ -40,23 +40,64 @@
 
 <div class="col col-sm-8 col-xl-9 pb-5"><!- Columna principal (derecha) responsive->
 
-<ul class="nav nav-tabs pt-1">
-  <li class="nav-item">
-    <a class="nav-link" href="bitacora_ingreso.php">Ingreso</a>
+
+  <?php if($usuario['admin']==1 or $usuario['staff_']==1){
+
+echo "
+<ul class='nav nav-tabs pt-1'>
+  <li class='nav-item'>
+    <a class='nav-link' href='bitacora_autoriza.php'>Validación</a>
   </li>
-  <li class="nav-item">
-    <a class="nav-link active" aria-current="page" href="#">Estadística</a>
+  <li class='nav-item'>
+    <a class='nav-link active' aria-current='page' href='bitacora_revision.php'>Revisión</a>
+  </li>  
+</ul>";
+
+
+}elseif ($usuario['becad_']==1) {
+  
+echo "<ul class='nav nav-tabs pt-1'>
+  <li class='nav-item'>
+    <a class='nav-link' href='bitacora_ingreso.php'>Ingreso</a>
   </li>
-</ul>
+  <li class='nav-item'>
+    <a class='nav-link active' aria-current='page' href='#'>Estadística</a>
+  </li>
+</ul>";
+
+}
+
+
+
+if ($_POST['revision']) {
+
+$autor_b=$_POST['revision'];
+
+}else{
+
+$autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
+
+}
+
+
+  $select_name="SELECT `nombre_usuario`  FROM `usuarios_dolor` WHERE `email_usuario` = '$autor_b' ";
+  $name_query=$conexion->query($select_name);
+  $name_row=$name_query->fetch_assoc();
+
+
+?>
+
 
 
 	<ul class="list-group">
-	<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><h4 class='mb-1 fw-bold pt-3'>Estadística</h4>
+	<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><h4 class='mb-1 fw-bold pt-3'>Estadística de <?php  echo $name_row['nombre_usuario']; ?></h4>
 	</li>
 	</ul>
 
+
 <?php
-$autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
+
+
 
       //busca los datos segun auntor, que estén validados
         $consulta_est="SELECT * FROM `bitacora_proced` WHERE `autor_b` = '$autor_b' AND `aprobado_staff_b` = '1' ";
