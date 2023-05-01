@@ -178,6 +178,8 @@
 			$fecha2 = date( 'd-m-y H:i', $phpdate2 );
 		}
 		
+
+
 		echo "<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'><br><h5 class='mb-1 fw-bold'>".$fila['nombre_paciente']."</h5>		
 
 		<div class='pt-1 ps-3 me-3 d-flex float-start'>
@@ -189,6 +191,10 @@
 		<form action='editar_paciente.php' method='post'><button class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block' style='; --bs-border-opacity: .1;'  type='submit' name='editar' value='".$fila['rut']."'/><i class='fa-solid fa-pen fa-lg' style='color:white' aria-hidden='true'></i></button></form>
 		</div>
 		</span>";
+		
+
+
+
 		
 		echo "<p class='mb-1'>Rut:&nbsp;".$fila['rut']."</p>";
 		echo "<p class='mb-1'>FC:&nbsp;".$fila['ficha']."</p>";

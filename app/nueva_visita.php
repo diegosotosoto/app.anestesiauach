@@ -25,10 +25,10 @@
 		$formulario=htmlentities(addslashes($_POST['visita']));	
 
 
-		$boton_toggler="<a class='btn btn-lg shadow-sm border-light d-sm-block d-sm-none' style='; --bs-border-opacity: .1;'  href='index.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
+		$boton_toggler="<a class='btn shadow-sm border-light d-sm-block d-sm-none' style='; --bs-border-opacity: .1;'  href='index.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
 		$titulo_navbar="<a class='d-sm-block d-sm-none'> Visita </a>";
 
-		$boton_navbar="<button class='btn shadow-sm btn-lg border-light d-sm-block d-sm-none' style='; --bs-border-opacity: .1;' type='submit' value='Submit' onclick='envioForm_ed()'><div class='text-white'>Guardar</div></button>";
+		$boton_navbar="<button class='btn shadow-sm border-light' style='; --bs-border-opacity: .1;' type='submit' form='form_ed' value='Submit'><div class='text-white'>Guardar</div></button>";
 
 
 	//Carga Head de la página
@@ -38,31 +38,59 @@
 
 
 <div class="col col-sm-9 col-xl-9"><!- Columna principal (derecha) responsive->
-<form name='form_ed' id='form_ed' method='post' action='vista_paciente.php' class='needs-validation' novalidate>
+
 	<?php
 		$consulta_ed="SELECT `nombre_paciente`,`rut` FROM `pacientes` WHERE `rut` = '$formulario' ";
 		$busqueda3=$conexion->query($consulta_ed);
-		$fila=$busqueda3->fetch_array();
+		$fila=$busqueda3->fetch_assoc();
 	?>
 
 		<ul class="list-group">
 
+
+
+
+
+
+
 	<!– TABLA DE REGISTROS –>
 
 	<?php
-		echo "<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><br><h5 class='mb-1 fw-bold'>$fila[0]</h5>";
-		echo "<p class='mb-1'>$fila[1]</p></li>";
-	?>
-			</ul>
 
-<input type="hidden" name="nombre_paciente_v" id="nombre_paciente_v" value="<?php echo $fila[0];?>">
-<input type="hidden" name="rut_v" id="rut_v" value="<?php echo $fila[1];?>">
+
+		echo "<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><br><h5 class='mb-1 fw-bold'>".$fila['nombre_paciente']."</h5>";
+
+
+		//BOTON A LA IZQUIERDA DEL TITULO class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block'
+		echo "<div class='pt-1 ps-3 me-3 d-flex float-start'>
+		<a class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block' style='; --bs-border-opacity: .1;'  href='index.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>
+		</div>";
+
+		//BOTÓN A LA DERECHA DEL TITULO class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block'
+		echo "<div class='pt-1 ps-3 pe-3 me-2 d-flex float-end'>
+	<button class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block' style='; --bs-border-opacity: .1;' type='submit' form='form_ed' value='Submit'><div class='text-white'>Guardar</div></button>
+		</div>";
+
+
+		//SUBTITULO
+		echo "<p class='mb-1'>".$fila['rut']."</p></li>";
+		echo "<div class='mb-1'></div></li>";
+
+
+
+	?>
+
+
+</ul>
+<form name='form_ed' id='form_ed' method='post' action='vista_paciente.php' class='needs-validation' novalidate>
+<input type="hidden" name="nombre_paciente_v" id="nombre_paciente_v" value="<?php echo $fila['nombre_paciente'];?>">
+<input type="hidden" name="rut_v" id="rut_v" value="<?php echo $fila['rut'];?>">
 
 
 		<!– TABLA DE REGISTROS –>
 <ul class="list-group">
-	<li class='list-group-item mb-2' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><img class='btn-imagen' src='/images/IMG_3987.PNG'/>Exámen Físico</li>
-	<li class='list-group-item mb-2'>
+	<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><img class='btn-imagen' src='/images/IMG_3987.PNG'/>Exámen Físico</li>
+	<li class='list-group-item'>
 
 
 				<div class='d-flex justify-content-between'><div class='text-muted'>EVA Estático</div><div class="fw-lighter text-muted"><small>Requerido (*)</small></div></div>
@@ -121,8 +149,8 @@
 
 				<div class='text-muted pt-3 text-start'>Bolos PCA: Solicitados / Administrados</div><input class="form-control mb-4" type="text" name="bolos" id="bolos"></li>
 
-				<li class='list-group-item mb-2' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><img class='btn-imagen' src='/images/IMG_3992.PNG'/>Signos Vitales</li>
-				<li class='list-group-item mb-2'>
+				<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><img class='btn-imagen' src='/images/IMG_3992.PNG'/>Signos Vitales</li>
+				<li class='list-group-item'>
 
 				<div class='text-muted text-start'>PAS</div>
 				<div class="input-group mb-2">
@@ -149,15 +177,15 @@
 				</div>
 
 				<div class='text-muted text-start'>FiO2</div>
-				<div class="input-group mb-2">
+				<div class="input-group mb-3">
 				  <input  type="number" max="100" class="form-control" name="fio2" id="fio2">
 				  <span class="input-group-text" id="basic-addon2"> %</span>
 				</div>
 				</li>
 
-				<li class='list-group-item mb-2' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><img class='btn-imagen' src='/images/IMG_3990.PNG'/>Exámenes</li>
+				<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><img class='btn-imagen' src='/images/IMG_3990.PNG'/>Exámenes</li>
 
-				<li class='list-group-item mb-2'>
+				<li class='list-group-item'>
 
 					<div class='text-muted pt-2 text-start'>Fecha Exámenes (dd/mm/aaaa)</div>
 				 <div class="input-group date">
@@ -189,8 +217,8 @@
 				</li>
 
 
-				<li class='list-group-item mb-2' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><img class='btn-imagen' src='/images/IMG_3981.PNG'/>Indicaciones Diarias</li>
-				<li class='list-group-item mb-2'>
+				<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><img class='btn-imagen' src='/images/IMG_3981.PNG'/>Indicaciones Diarias</li>
+				<li class='list-group-item'>
 
 				<div class='text-muted text-start'>Anticoagulación</div>
 					<select class="form-select mb-2" id="anticoagulante" name="anticoagulante">
@@ -233,6 +261,31 @@
 
 </div>
 
+<script>
+	// Example starter JavaScript for disabling form submissions if there are invalid fields
+(() => {
+  'use strict'
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  const forms = document.querySelectorAll('.needs-validation')
+
+  // Loop over them and prevent submission
+  Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity()) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+
+      form.classList.add('was-validated')
+    }, false)
+  })
+})()
+
+</script>
+
+
+
     <script src="https://unpkg.com/gijgo@1.9.14/js/gijgo.min.js" type="text/javascript"></script>
     <link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript">
@@ -261,31 +314,11 @@
 
 		$conexion->close();
 	?>
-<script>function envioForm_ed() {document.getElementById('form_ed').submit(); }</script>
 
 
-<script>
-	// Example starter JavaScript for disabling form submissions if there are invalid fields
-(() => {
-  'use strict'
 
-  // Fetch all the forms we want to apply custom Bootstrap validation styles to
-  const forms = document.querySelectorAll('.needs-validation')
 
-  // Loop over them and prevent submission
-  Array.from(forms).forEach(form => {
-    form.addEventListener('submit', event => {
-      if (!form.checkValidity()) {
-        event.preventDefault()
-        event.stopPropagation()
-      }
 
-      form.classList.add('was-validated')
-    }, false)
-  })
-})()
-
-</script>
 <!-  FOOTER  ->
 
 	<?php

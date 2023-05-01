@@ -34,7 +34,7 @@ require("head.php");
 ?>
 
 
-<div class="col col-sm-8 col-xl-9"><!- Columna principal (derecha) responsive->
+<div class="col col-sm-9 col-xl-9"><!- Columna principal (derecha) responsive->
 
 
 	<?php
@@ -60,20 +60,23 @@ require("head.php");
 
 			<ul class="list-group">
 	<?php
-		echo "<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'><br><h5 class='mb-1 fw-bold'>".$fila['nombre_paciente']."</h5>
+		//TITULO DE LA PAGINA
+		echo "<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'><br><h5 class='mb-1 fw-bold'>".$fila['nombre_paciente']."</h5>";
 
 
-		<div class='pt-1 ps-3 me-3 d-flex float-start'>
+		//BOTON A LA DERECHA DEL TITULO
+		echo "<div class='pt-1 ps-3 me-3 d-flex float-start'>
 		<form action='vista_paciente.php' method='post'><button class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block' type='submit' name='vista' value='$formulario'><div class='text-white'>Cancelar</div></button></form>
-		</div>
+		</div>";
 
-		<span class='float-end'>
+		//BOTÓN A LA IZQUIERDA DEL TITULO
+		echo "<span class='float-end'>
 		<div class='pt-1 ps-3 me-3 d-flex justify-content-end'>
 		<button class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block' type='submit' name='editar' value='Submit' onclick='envioForm_ed_pacte()'><div class='text-white'>Guardar</div></button>
 		</div>
 		</span>";
 
-
+		//SUBTITULO
 		echo "<div class='mb-1'>Rut: ".$fila['rut']."</div>";
 		echo "<div class='mb-1'>FC: ".$fila['ficha']."</div></li>";
 	?>

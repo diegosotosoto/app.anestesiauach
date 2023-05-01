@@ -29,6 +29,31 @@ require("head.php");
 
 ?>
 <div class="col col-sm-9 col-xl-9 pb-5"><!- Columna principal (derecha) responsive->
+<ul class="list-group">
+
+
+	<?php
+		//TITULO DE LA PAGINA
+		echo "<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'><br><h5 class='mb-1 fw-bold'> Pacientes con manejo de Dolor</h5>";
+
+
+		//BOTON A LA IZQUIERDA DEL TITULO
+		echo "<div class='pt-1 ps-3 me-3 d-flex float-start'>
+		<a class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>
+		</div>";
+
+		//BOTÓN A LA DERECHA DEL TITULO
+		echo "<span class='float-end'>
+		<div class='pt-1 ps-3 me-3 d-flex justify-content-end'>
+		<a class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block' style='width:50px; height:40px; --bs-border-opacity: .1;' href='nuevo_paciente.php'><i class='fa fa-plus fa-lg' style='color:white' aria-hidden='true'></i></a>
+		</div>
+		</span>";
+
+		//SUBTITULO
+		echo "<div class='mb-1'>HBV</div>";
+		echo "<div class='mb-1'></div></li>";
+	?>
+
 
 
 		<div class="list-group py-3" id="link_wrapper">
@@ -40,7 +65,7 @@ require("head.php");
 		<a class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block' style='; --bs-border-opacity: .1;' href='nuevo_paciente.php'><i class='fa fa-plus fa-lg pe-2' style='color:white' aria-hidden='true'></i>Nuevo Paciente</a>
 		</div>
 
-
+</ul>
 </div>
 
 

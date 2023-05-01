@@ -23,7 +23,7 @@
 
 //VARIABLES
 	
-		$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+		$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='hoja_dolor.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 		$titulo_navbar="<span class='text-white'>Nuevo</span>";
 		$boton_navbar="<button class='btn shadow-sm border-light' style='; --bs-border-opacity: .1;' type='submit' form='form_ingreso' value='Submit'><div class='text-white'>Agregar</div></button>";
 
@@ -40,7 +40,31 @@
 
 
 			<ul class="list-group">
-			<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><br><h5 class='mb-1 fw-bold pt-3 pb-3'>Ingresar Datos</h5></li>
+
+
+
+	<?php
+		//TITULO DE LA PAGINA
+		echo "<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'><br><h5 class='mb-1 fw-bold'> Nuevo Paciente</h5>";
+
+
+		//BOTON A LA IZQUIERDA DEL TITULO class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block'
+		echo "<div class='pt-1 ps-3 me-3 d-flex float-start'>
+		<a class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block' style='width:80px; height:40px; --bs-border-opacity: .1;' href='hoja_dolor.php'><i class='fa fa-chevron-left'></i>Atrás</a>
+		</div>";
+
+		//BOTÓN A LA DERECHA DEL TITULO class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block'
+		echo "<span class='float-end'>
+		<div class='pt-1 ps-3 me-3 d-flex justify-content-end'>
+		<button class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block' style='; --bs-border-opacity: .1;' type='submit' form='form_ingreso' value='Submit'><div class='text-white'>Agregar</div></button>
+		</div>
+		</span>";
+
+		//SUBTITULO
+		echo "<div class='mb-1'></div>";
+		echo "<div class='mb-1'></div></li>";
+	?>
+
 			</ul>
 
 
