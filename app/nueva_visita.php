@@ -25,7 +25,7 @@
 		$formulario=htmlentities(addslashes($_POST['visita']));	
 
 
-		$boton_toggler="<a class='btn shadow-sm border-light d-sm-block d-sm-none' style='; --bs-border-opacity: .1;'  href='index.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
+		$boton_toggler="<form action='vista_paciente.php' method='post'><button class='d-sm-block d-sm-none btn shadow-sm' type='submit' name='vista' value='$formulario'><div class='text-white'>Cancelar</div></button></form>";
 		$titulo_navbar="<a class='d-sm-block d-sm-none'> Visita </a>";
 
 		$boton_navbar="<button class='btn shadow-sm border-light' style='; --bs-border-opacity: .1;' type='submit' form='form_ed' value='Submit'><div class='text-white'>Guardar</div></button>";
@@ -63,7 +63,7 @@
 
 		//BOTON A LA IZQUIERDA DEL TITULO class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block'
 		echo "<div class='pt-1 ps-3 me-3 d-flex float-start'>
-		<a class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block' style='; --bs-border-opacity: .1;'  href='index.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>
+		<form action='vista_paciente.php' method='post'><button class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block' type='submit' name='vista' value='$formulario'><div class='text-white'>Cancelar</div></button></form>
 		</div>";
 
 		//BOTÓN A LA DERECHA DEL TITULO class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block'

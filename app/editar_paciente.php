@@ -20,7 +20,7 @@
 
 
 //Variables sin conexion
-$formulario=$_POST['editar'];
+$formulario=$_POST['editar']; //Corresponde al rut del paciente
 
 $boton_toggler="<form action='vista_paciente.php' method='post'><button class='d-sm-block d-sm-none btn shadow-sm' type='submit' name='vista' value='$formulario'><div class='text-white'>Cancelar</div></button></form>";
 
