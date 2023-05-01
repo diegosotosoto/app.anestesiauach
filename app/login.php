@@ -163,17 +163,42 @@
 				  </div>
 				</div>
 
+
+
+
+
+
 				  <div class="row pt-3 justify-content-md-center">
 				    <div class="col col-lg-6">
 							<div class='text-muted pt-3'>Contraseña</div>
 							<div class="input-group mb-2">
-				    	<input type="password" name="pass_usuario_v" class="form-control" required/>
-				    	<span class="input-group-text bg-primary text-white" id="basic-addon2"><i class="fa fa-key"></i></span>
+<input type="password" name="pass_usuario_v" id="pass_usuario_v" class="form-control" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" placeholder="Contraseña" aria-label="Contraseña" aria-describedby="button-addon2">
+        <button class="btn btn-outline-secondary opacity-75" type="button" id="button-addon2" onclick="mostrar()"><i id="icono" class="fa-solid fa-eye"></i></button>
+        <span class="input-group-text bg-primary text-white" id="basic-addon2"><i class="fa fa-key"></i></span>
+        <script type="text/javascript">
+        function mostrar() {
+          var tipo = document.getElementById("pass_usuario_v");
+          var icono = document.getElementById("icono"); // obtén el elemento del icono
+          if(tipo.type == 'password') {
+            tipo.type = 'text';
+            icono.className = 'fa-solid fa-eye-slash'; // actualiza la clase del icono
+            icono.innerHTML = ''; // elimina el contenido HTML del icono
+          } else {
+            tipo.type = 'password';
+            icono.className = 'fa-solid fa-eye'; // actualiza la clase del icono
+            icono.innerHTML = ''; // elimina el contenido HTML del icono
+          }
+        }
+        </script>
+
 				    	</div>
 					    	<div class="pt-2"><small><a href="nueva_cuenta.php" class="text-primary"/>Crear nueva cuenta</a></small>
 					    	</div>
 				    	</div>
 				  </div> 
+
+
+
 
 				  <div class="row pt-5 pb-5">
 				  	<div class="col">

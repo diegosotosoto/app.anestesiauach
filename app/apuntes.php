@@ -39,7 +39,8 @@ $cabeceras = array(
       array('apuntes/glasgow.php','fa-solid fa-brain','Escala de Glasgow')
     )),
 'Pediatría' => array('icono'=>'apuntes/icons/children.png',array(
-      array('apuntes/peri_ped.php','fa-solid fa-baby','Dosis Peridural Ped.')
+      array('apuntes/peri_ped.php','fa-solid fa-baby','Dosis Peridural Ped.'),
+      array('apuntes/flacc.php','fa-solid fa-hands-holding-child','Escala FLACC'),
     )),
 'Nefrourología' => array('icono'=>'apuntes/icons/kidney.png',array(
       array('apuntes/bica.php','fa-solid fa-flask-vial','Corrección de bicarbonato'),

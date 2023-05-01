@@ -1,11 +1,10 @@
 <?php
 
 $titulo_info = "Utilidad Clínica";//texto obligatorio
-$descripcion_info = "La Escala de Coma de Glasgow (en Inglés Glasgow Coma Scale (GCS)) es una escala de aplicación neurológica que permite medir el nivel de conciencia de una persona. Utiliza tres parámetros que han demostrado ser muy replicables en su apreciación entre los distintos observadores: la respuesta verbal, la respuesta ocular y la respuesta motora. 
-        			";//texto obligatorio
+$descripcion_info = "La escala de Glasgow es una herramienta clínica que se utiliza para evaluar el estado de conciencia de un paciente. Esta escala mide tres aspectos principales: la respuesta ocular, la respuesta verbal y la respuesta motora, y utiliza una puntuación que va de 3 a 15 para describir el nivel de conciencia de un paciente en situaciones de emergencia o en el contexto de una lesión cerebral. La puntuación de la escala de Glasgow se correlaciona con el pronóstico del paciente y puede ayudar a tomar decisiones en cuanto al tratamiento y la necesidad de monitoreo.";//texto obligatorio
 
-$formula = "";//texto opcional en formato html
-$referencias = array("1.- asdasdasdasdasdasd","2.- aljsdhasldasdasdasdasd", "3.- asdjasldasdasdasdasdasd"); //array opcional ordenada por números
+$formula = "Glasgow = respuesta ocular (1-4) + respuesta verbal (1-5) + respuesta motora (1-6)";//texto opcional en formato html
+$referencias = array("1.- Teasdale G, Jennett B. Assessment of coma and impaired consciousness. A practical scale. Lancet. 1974 Jul 13;2(7872):81-4","2.- Rowley G, Fielding K. Reliability and accuracy of the Glasgow Coma scale with experienced and inexperienced users. Lancet 1991;337(8740):535-538.", "3.- Reith FC, Van den Brande R, Synnot A, Gruen R, Maas AI. The reliability of the Glasgow Coma Scale: a systematic review. Intensive Care Med. 2016 Jan;42(1):3-15."); //array opcional ordenada por números
 
 $icono_apunte = "<i class='fa-solid fa-brain pe-3 pt-2'></i>";//formato obligatorio fontawesome pe-3 pt-2
 $titulo_apunte = "Escala de Glasgow";//texto obligatorio

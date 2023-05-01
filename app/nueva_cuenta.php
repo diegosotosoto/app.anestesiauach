@@ -64,9 +64,25 @@
       <div class="col">
         <div class='text-muted pt-3'>Contraseña</div>
         <div class="input-group mb-2">
-        <input type="text" name="pass_usuario" class="texto-seguro form-control" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$"/>
+        <input type="password" name="pass_usuario" id="pass_usuario" class="form-control" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" placeholder="Contraseña" aria-label="Contraseña" aria-describedby="button-addon2">
+        <button class="btn btn-outline-secondary opacity-75" type="button" id="button-addon2" onclick="mostrar()"><i id="icono" class="fa-solid fa-eye"></i></button>
         <span class="input-group-text bg-primary text-white" id="basic-addon2"><i class="fa fa-key"></i></span>
         </div>
+        <script type="text/javascript">
+        function mostrar() {
+          var tipo = document.getElementById("pass_usuario");
+          var icono = document.getElementById("icono"); // obtén el elemento del icono
+          if(tipo.type == 'password') {
+            tipo.type = 'text';
+            icono.className = 'fa-solid fa-eye-slash'; // actualiza la clase del icono
+            icono.innerHTML = ''; // elimina el contenido HTML del icono
+          } else {
+            tipo.type = 'password';
+            icono.className = 'fa-solid fa-eye'; // actualiza la clase del icono
+            icono.innerHTML = ''; // elimina el contenido HTML del icono
+          }
+        }
+        </script>
       </div>
     </div> 
 
@@ -75,8 +91,10 @@
       <div class="col">
         <div class='text-muted pt-3'>Repetir Contraseña</div>
         <div class="input-group mb-2">
-        <input type="text" name="pass_usuario2" class="texto-seguro form-control" required/>
-        <span class="input-group-text bg-primary text-white" id="basic-addon2"><i class="fa fa-key"></i></span>
+
+        <input type="password" name="pass_usuario2" id="pass_usuario2" class="form-control" required placeholder="Contraseña" aria-label="Contraseña" aria-describedby="button-addon">
+        <button class="btn btn-outline-secondary opacity-75" type="button" id="button-addon" onclick="mostrar2()"><i id="icono2" class="fa-solid fa-eye"></i></button>
+        <span class="input-group-text bg-primary text-white" id="basic-addon"><i class="fa fa-key"></i></span>
           <div class="invalid-feedback pt-0">
                 Las contraseñas deben coincidir...
           </div>
@@ -84,6 +102,21 @@
         <div class="pt-3">
         <small class="text-muted">Contraseña de 8 a 12 caracteres, incluyendo una Mayúscula, un Número y un símbolo (!@#$%^&*_=+-)</small>
           </div>
+                <script type="text/javascript">
+        function mostrar2() {
+          var tipo2 = document.getElementById("pass_usuario2");
+          var icono2 = document.getElementById("icono2"); // obtén el elemento del icono
+          if(tipo2.type == 'password') {
+            tipo2.type = 'text';
+            icono2.className = 'fa-solid fa-eye-slash'; // actualiza la clase del icono
+            icono2.innerHTML = ''; // elimina el contenido HTML del icono
+          } else {
+            tipo2.type = 'password';
+            icono2.className = 'fa-solid fa-eye'; // actualiza la clase del icono
+            icono2.innerHTML = ''; // elimina el contenido HTML del icono
+          }
+        }
+                </script>
       </div>
     </div> 
 

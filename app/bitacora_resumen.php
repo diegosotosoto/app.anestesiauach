@@ -14,13 +14,13 @@
 	$users_b=$conexion->query($con_users_b);
 	$usuario=$users_b->fetch_assoc();
 	if($usuario['admin']==1){
-			//CONTINUA EN LA PAGINA
+			header('Location: bitacora_autoriza.php');
 		} elseif ($usuario['staff_']==1) {
-			//CONTINUA EN LA PAGINA
+			header('Location: bitacora_autoriza.php');
 		} elseif ($usuario['intern_']==1) {
-			header('Location: bitacora_internos.php');
+ 			header('Location: bitacora_internos.php');
 		} elseif ($usuario['becad_']==1) {
-			header('Location: bitacora_ingreso.php');
+			//CONTINUA EN LA PAGINA
 		}
 
 
@@ -37,92 +37,6 @@
 
 <div class="col col-sm-8 col-xl-9 pb-5"><!- Columna principal (derecha) responsive->
 
-
-
-
-
-<?php
-//Guarda la Bitácora para becado
-
-				if($_POST['bitacora_autoriza']){
-
-
-					$id_b=$_POST['bitacora_autoriza'];
-
-					$consulta_us="UPDATE `bitacora_proced` SET `aprobado_staff_b`='1' WHERE `id_b`='$id_b'";
-
-					$escribir_us=$conexion->query($consulta_us);
-
-							if($_POST['comentarios_b_a']){
-
-							$feedback_b=$_COOKIE['hkjh41lu4l1k23jhlkj14'].": ".$_POST['comentarios_b_a'];
-
-								$consulta_fb="UPDATE `bitacora_proced` SET `feedback_b`= '$feedback_b' WHERE `id_b`='$id_b'";
-								$escribir_fb=$conexion->query($consulta_fb);
-
-							}	
-
-
-					if($escribir_us==false or $escribir_fb==false){
-						echo "Error en la consulta";
-
-					}else{
-
-						echo "
-									<div class='alert alert-success alert-dismissible fade show'>
-								    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
-								    <strong>Info!</strong> Bitácora Autorizada.
-								  	</div>
-						";
-
-						} 
-
-
-				}
-
-//Guarda la Bitácora para interno
-
-				if($_POST['bitacora_autoriza_i']){
-
-					$id_i=$_POST['bitacora_autoriza_i'];
-
-					$consulta_usi="UPDATE `bitacora_internos` SET `aprobado_staff_i`='1' WHERE `id_i`='$id_i'";
-					
-					$escribir_usi=$conexion->query($consulta_usi);
-
-
-							if($_POST['comentarios_i_a']){
-
-							$feedback_i=$_COOKIE['hkjh41lu4l1k23jhlkj14'].": ".$_POST['comentarios_i_a'];
-
-								$consulta_fbi="UPDATE `bitacora_internos` SET `feedback_i`= '$feedback_i' WHERE `id_i`='$id_i'";
-								$escribir_fbi=$conexion->query($consulta_fbi);
-
-							}	
-
-
-
-					if($escribir_usi==false or $escribir_fbi==false){
-						echo "Error en la consulta";
-
-					}else{
-
-						echo "
-									<div class='alert alert-success alert-dismissible fade show'>
-								    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
-								    <strong>Info!</strong> Bitácora Autorizada.
-								  	</div>
-						";
-
-						} 
-
-
-				}
-
-
-?>
-
-
 <ul class="nav nav-tabs pt-1">
   <li class="nav-item">
     <a class="nav-link active" aria-current="page" href="#">Validación</a>
@@ -135,7 +49,7 @@
 
 
 			<ul class="list-group">
-			<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><h4 class='mb-1 fw-bold pt-2'>Validar Bitácora</h4><div class='text-black-75 pt-1' style='font-size: 14px'> 
+			<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><h4 class='mb-1 fw-bold pt-2'>Resumen Bitácoras</h4><div class='text-black-75 pt-1' style='font-size: 14px'> 
 			</div>
 			</li>
 			</ul>

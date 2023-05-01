@@ -162,7 +162,7 @@
 			    </div>
 
 			    <div class="col text-center ps-0 pe-0">
-			      	<a href="correos.php" class="btn shadow btn-danger ms-2 bg-opacity-25 rounded-3 border-0" style="height: 150px;width: 150px; background-color: #29A09B; background-image: linear-gradient(62deg, #29A09B 25%, #7BD3CE 83%, #DDF3F2 100%);
+			      	<a href="correos.php" class="btn shadow btn-danger me-2 bg-opacity-25 rounded-3 border-0" style="height: 150px;width: 150px; background-color: #29A09B; background-image: linear-gradient(62deg, #29A09B 25%, #7BD3CE 83%, #DDF3F2 100%);
 					"> <i class="fa-solid fa-envelope fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Directorio<br>Correos</div></a>
 			    </div>
 			</div>
