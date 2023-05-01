@@ -125,7 +125,7 @@ $array_tel = array (
 
 ?>
 
-<div class="col col-sm-8 col-xl-9"><!- Columna principal (derecha) responsive->
+<div class="col col-sm-9 col-xl-9"><!- Columna principal (derecha) responsive->
 
 		<div class="form-group text-center ms-3 pt-3 pb-3 mt-2">
 		 <input type="text" class="form-control" style="width:90%" id="search" placeholder="Busca un Servicio...">

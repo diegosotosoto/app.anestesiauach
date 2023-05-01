@@ -37,7 +37,7 @@
 ?>
 
 
-<div class="col col-sm-8 col-xl-9"><!- Columna principal (derecha) responsive->
+<div class="col col-sm-9 col-xl-9"><!- Columna principal (derecha) responsive->
 <form name='form_ed' id='form_ed' method='post' action='vista_paciente.php' class='needs-validation' novalidate>
 	<?php
 		$consulta_ed="SELECT `nombre_paciente`,`rut` FROM `pacientes` WHERE `rut` = '$formulario' ";

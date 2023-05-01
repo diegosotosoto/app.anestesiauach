@@ -74,7 +74,7 @@
 
 ?>
 
-<div class="col col-sm-8 col-xl-9"><!- Columna principal (derecha) responsive->
+<div class="col col-sm-9 col-xl-9"><!- Columna principal (derecha) responsive->
 <div class="row justify-content-md-center">
 
 					<?php

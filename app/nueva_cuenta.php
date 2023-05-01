@@ -21,7 +21,7 @@
   }
 </style>
 
-<div class="col col-sm-8 col-xl-9 pb-5"><!- Columna principal (derecha) responsive->
+<div class="col col-sm-9 col-xl-9 pb-5"><!- Columna principal (derecha) responsive->
 
 
 <form class="needs-validation" action="login.php" method="post" novalidate autocomplete="nope" oninput='pass_usuario2.setCustomValidity(pass_usuario2.value != pass_usuario.value ? "Passwords do not match." : "")'>

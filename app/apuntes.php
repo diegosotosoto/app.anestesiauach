@@ -13,7 +13,7 @@ require("head.php");
 
 ?>
 
-<div class="col col-sm-8 col-xl-9 py-3"><!- Columna principal (derecha) responsive->
+<div class="col col-sm-9 col-xl-9 py-3"><!- Columna principal (derecha) responsive->
 
 <?php
 

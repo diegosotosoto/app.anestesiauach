@@ -32,7 +32,7 @@
 
 ?>
 
-<div class="col col-sm-8 col-xl-9 pb-5"><!- Columna principal (derecha) responsive->
+<div class="col col-sm-9 col-xl-9 pb-5"><!- Columna principal (derecha) responsive->
 
 
 	<form class="needs-validation" name="form_ingreso" id="form_ingreso" method="post" action="index.php" novalidate>
