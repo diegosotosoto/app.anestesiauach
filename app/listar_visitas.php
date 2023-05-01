@@ -33,7 +33,7 @@
 
 	<?php
 
-	$consulta_a="SELECT `editor_v` FROM `visita_diaria` WHERE `rut_v` = '$formulario'";
+	$consulta_a="SELECT `nombre_paciente_v` FROM `visita_diaria` WHERE `rut_v` = '$formulario'";
 	
 	$busqueda_a=$conexion->query($consulta_a);
 
@@ -56,7 +56,7 @@
 
 
 		//SUBTITULO
-		echo "<div class='mb-1 float-none'>".$nombre_visit['editor_v']."</div>";
+		echo "<div class='mb-1 float-none'>".$nombre_visit['nombre_paciente_v']."</div>";
 		echo "<div class='mb-1'></div></li>";
 	?>
 
