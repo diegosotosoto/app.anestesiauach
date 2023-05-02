@@ -17,10 +17,10 @@
 
 	//Carga Head de la página
 	require("head.php");
-
+ 
 
 	?>
-
+ 
 <div class="col col-sm-8 col-xl-9 pb-5"><!- Columna principal (derecha) responsive->
 
     <div class="pt-2 collapse navbar-collapse" id="navbarSupportedContent" style="background-color: #42A5FF;">
@@ -34,6 +34,7 @@
       			<h6>
       							<!-   ****** TÍTULO INFORMATIVO ******  ->  
       							<?php  echo $titulo_info;  ?>
+
       			</h6>
       		<div>
         </li>
@@ -67,6 +68,7 @@
           	?>
 
 					<!-   ****** FOOTER DE LA INFO ******  ->  
+
       </ul>
     </div>
     </div>
@@ -76,7 +78,13 @@
   <div class="row">
     <div class="col text-center fs-5">
 
-      <li class="list-group-item active shadow-sm bg-primary rounded-top text-white pt-2" style="background-image: var(--bs-gradient);">
+      <li class="list-group-item active shadow-sm bg-primary rounded-top text-white pt-2" style="background-image: var(--bs-gradient);">    
+      	
+    <span class='float-end'>
+		<div class='pt-0 ps-3 me-3 d-flex justify-content-end'>
+			<button class='btn btn-primary shadow-sm border-light d-none d-sm-block' style='width:50px; height:40px; --bs-border-opacity: .1;' type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation'> ? </button>
+		</div>
+		</span>
 
       							<!-   ****** ICONO CON FORMATO PE-3 PT-2 ******  -> <!-   ****** TITULO ******  ->   		
 
@@ -87,9 +95,15 @@
 
       			?>
 
+
+
     </li>
 
 
+
+
+
+      							<!-   ANASDNASJDJASDJ    ->   	
 
     </div>
    </div>

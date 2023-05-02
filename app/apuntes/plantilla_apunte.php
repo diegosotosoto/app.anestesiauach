@@ -17,7 +17,7 @@
 
 	//Carga Head de la página
 	require("head.php");
-
+ 
 
 	?>
 
@@ -89,9 +89,14 @@
 <div class="container text-center">
 
   <div class="row">
-    <div class="col text-center fs-5">
 
       <li class="list-group-item active shadow-sm bg-primary rounded-top text-white pt-2" style="background-image: var(--bs-gradient);">
+      	
+		<span class='float-end'>
+				<div class='pt-0 pb-1 ps-3 me-3 d-flex justify-content-end'>
+					<button class='btn btn-primary shadow-sm border-light d-none d-sm-block' style='width:50px; height:40px; --bs-border-opacity: .1;' type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation'> ? </button>
+				</div>
+		</span>
 
       							<!-   ****** ICONO CON FORMATO PE-3 PT-2 ******  -> <!-   ****** TITULO ******  ->   		
 
@@ -102,9 +107,9 @@
 
       			?>
 
+
+
     </li>
-
-
 
     </div>
    </div>
