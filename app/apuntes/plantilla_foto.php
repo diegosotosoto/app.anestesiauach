@@ -21,7 +21,7 @@
 
 	?>
  
-<div class="col col-sm-8 col-xl-9 pb-5"><!- Columna principal (derecha) responsive->
+<div class="col col-sm-9 col-xl-9 pb-5"><!- Columna principal (derecha) responsive->
 
     <div class="pt-2 collapse navbar-collapse" id="navbarSupportedContent" style="background-color: #42A5FF;">
     	<div class="pt-4 container ms-auto">
