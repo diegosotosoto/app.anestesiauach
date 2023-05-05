@@ -13,7 +13,7 @@
         <hr class="ms-0 mt-1 mb-2 me-0">
         <ul class="list-unstyled small text-muted">
           <li class="mb-2" style="font-size: min(max(14px, 1.5vw), 16px)">Aplicación Web del Programa de Anestesiología y Reanimación de la Universidad Austral de Chile. Derechos Reservados</li>
-          <li class="mb-2 mt-2 py-3 opacity-50">Diseñado por Diego Soto S.</li>
+          <li class="mb-2 mt-2 py-3 opacity-50">Diseñado por Diego Soto S. 2023</li>
         </ul>
     </div>
 
