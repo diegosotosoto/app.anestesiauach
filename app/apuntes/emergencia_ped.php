@@ -10,20 +10,13 @@ $referencias = array("1.- asdasdasdasdasdasd","2.- aljsdhasldasdasdasdasd", "3.-
 $icono_apunte = "<i class='fa-solid fa-truck-medical pe-3 pt-2'></i>";//formato obligatorio fontawesome pe-3 pt-2
 $titulo_apunte = "Dosis de Emergencia Pediátrica";//texto obligatorio
  
-$input = array(array("Peso","peso","Kg"),array("Talla","talla","mt"));//array de 2 dimensiones array("inputX" => array("titulo","id","unidad"));
+$input = array(array("Peso","peso","Kg"),array("Talla","talla","cm"),array("Edad","edad","meses"));//array de 2 dimensiones array("inputX" => array("titulo","id","unidad"));
 
-$resultado = array(array("Infusión","resultado1","ml/hr","((parseFloat(pesoVar) * parseFloat(selectVar) / 3 * 2) > 5.0) ? 5.0:(parseFloat(pesoVar) * parseFloat(selectVar) / 3 * 2);","1"),array("Bolo","resultado2","ml","((parseFloat(pesoVar) * parseFloat(selectVar) / 3) > 5.0) ? 5.0:(parseFloat(pesoVar) * parseFloat(selectVar) / 3);","1"));//array de 2 dimensiones array(array("titulo","id","unidad","calculo en formato JS","decimales en el resultado")); en este caso el array contiene un if a modo de triada que se almacena en la variable: var B = (A ==="red") ? "hot":"cool";
+$resultado = array(array("Superficie Corporal","resultado1","m2SC","((parseFloat(pesoVar) < 10.0) ? ((parseFloat(pesoVar)*4)+9)/100 : ((parseFloat(pesoVar)*4)+7)/ (parseFloat(pesoVar)+90))","2"));//array de 2 dimensiones array(array("titulo","id","unidad","calculo en formato JS","decimales en el resultado")); en este caso el array contiene un if a modo de triada que se almacena en la variable: var B = (A ==="red") ? "hot":"cool";
 
 
 //Otro elemento en Javascript permite dejar un texto asociado al cálculo (interpretación del resultado), en formato Javascript
-$otro_elemento = "
-				if (parseFloat(resultado1Var) >= 5.0 || parseFloat(resultado2Var) >= 5.0 ) {
-
-					$( '#otro_elemento' ).text( 'El valor máximo del bolo o infusión es de 5.0 ml/hr. ' );
-
-				} 
-
-				"; // en JavaScript
+$otro_elemento = ""; // en JavaScript
 
 	//PLANTILLA
 	require("plantilla_apunte.php");

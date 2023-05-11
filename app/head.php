@@ -163,6 +163,13 @@
 							              <script>function envioForm2() {document.getElementById('gest_pacientes').submit(); }</script>
 							              ";
 
+							              echo "<form id='gest_bitacora' action='gestion_bitacora.php' method='post'><input type='hidden' name='email_user_ad' value='$email_user'/>
+														<div class='list-group'>
+														  <a href='#' onclick='envioForm3()' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-clipboard ps-2 pe-3 fs-3 text-primary'></i>Gestión Bitácora</a> 
+														</div></form>
+							              <script>function envioForm3() {document.getElementById('gest_bitacora').submit(); }</script>
+							              ";
+
 										}
 
 							?>				

@@ -25,6 +25,7 @@ $cabeceras = array(
 'Evaluación y Riesgo' => array('icono'=>'apuntes/icons/compliance.png',array(
       array('apuntes/score_lee.php','fa-solid fa-calendar-plus','Índice de Riesgo Cardiaco Revisado'),
       array('apuntes/mallampati.php','fa-solid fa-head-side-cough','Score de Mallampati'),
+      array('apuntes/aldrete.php','fa-solid fa-star','Score de Aldrete re Modificado'),
     )),
 'Monitorización' => array('icono'=>'apuntes/icons/vital-signs.png',array(
       array('apuntes/asa.php','fa-solid fa-lightbulb','Clasificación ASA'),

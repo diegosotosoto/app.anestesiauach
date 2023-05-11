@@ -54,7 +54,12 @@
 
 
 			if($escribir_us==false){
-				echo "Error en la consulta";
+				echo "
+							<div class='alert alert-danger alert-dismissible fade show'>
+						    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
+						    <strong>Info!</strong> Error en el Guardado. Contacta al Administrador
+						  	</div>
+				";
 
 			}else{
 

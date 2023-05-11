@@ -74,11 +74,17 @@
 			$consulta_b="INSERT INTO `bitacora_proced` (`autor_b`, `rut_b`, `ficha_b`, `edad_b`, `procedimiento_b`, `fecha_b`, `via_aerea_b`, `vad_b`, `acceso_vascular_b`, `invasivo_b`, `invasivo_eco_b`, `neuroaxial_b`, `regional_b`, `dolor_b`, `staff_b`, `comentarios_b`) VALUES ('$autor_b','$rut_b', '$ficha_b', '$edad_b', '$procedimiento_b', '$fecha_b', '$via_aerea_b', '$vad_b', '$acceso_vascular_b', '$invasivo_b', '$invasivo_eco_b', '$neuroaxial_b', '$regional_b', '$dolor_b', '$staff_b', '$comentarios_b') ";
 			
 
+
 			$escribir_b=$conexion->query($consulta_b);
 
 
 			if($escribir_b==false){
-				echo "Error en la consulta";
+				echo "
+							<div class='alert alert-danger alert-dismissible fade show'>
+						    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
+						    <strong>Info!</strong> Error en el Guardado. Contacta al Administrador
+						  	</div>
+				";
 
 			}else{
 

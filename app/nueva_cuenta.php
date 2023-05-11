@@ -1,3 +1,4 @@
+
 <?php
 
   //Variables
@@ -64,7 +65,7 @@
       <div class="col">
         <div class='text-muted pt-3'>Contraseña</div>
         <div class="input-group mb-2">
-        <input type="password" name="pass_usuario" id="pass_usuario" class="form-control" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" placeholder="Contraseña" aria-label="Contraseña" aria-describedby="button-addon2">
+        <input type="password" name="pass_usuario" id="pass_usuario" class="form-control" required pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*_=+\-?]).{8,12}$" aria-describedby="button-addon2">
         <button class="btn btn-outline-secondary opacity-75" type="button" id="button-addon2" onclick="mostrar()"><i id="icono" class="fa-solid fa-eye"></i></button>
         <span class="input-group-text bg-primary text-white" id="basic-addon2"><i class="fa fa-key"></i></span>
         </div>
@@ -92,7 +93,7 @@
         <div class='text-muted pt-3'>Repetir Contraseña</div>
         <div class="input-group mb-2">
 
-        <input type="password" name="pass_usuario2" id="pass_usuario2" class="form-control" required placeholder="Contraseña" aria-label="Contraseña" aria-describedby="button-addon">
+        <input type="password" name="pass_usuario2" id="pass_usuario2" class="form-control" required aria-describedby="button-addon">
         <button class="btn btn-outline-secondary opacity-75" type="button" id="button-addon" onclick="mostrar2()"><i id="icono2" class="fa-solid fa-eye"></i></button>
         <span class="input-group-text bg-primary text-white" id="basic-addon"><i class="fa fa-key"></i></span>
           <div class="invalid-feedback pt-0">
