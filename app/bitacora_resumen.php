@@ -100,6 +100,7 @@
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Manejo VAD</div><div>".$row_user['vad_b']."</div></div></li>";
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Acceso Vascular</div><div>".$row_user['acceso_vascular_b']."</div></div></li>";
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Uso de Eco</div><div>".$eco."</div></div></li>";
+		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>A. Venoso Central</div><div>".$row_user['cvc_b']."</div></div></li>";
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>P. Invasivo</div><div>".$row_user['invasivo_b']."</div></div></li>";
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>A. Neuroaxial</div><div>".$row_user['neuroaxial_b']."</div></div></li>";
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>A. Regional</div><div class='text-end'>".$row_user['regional_b']."</div></div></li>";

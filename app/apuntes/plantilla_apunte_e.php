@@ -119,7 +119,7 @@
    			<?php
    			if($input){
    				foreach($input as $clave_input){
-   						echo "<div class='row pt-5'><div class='col text-start'>";
+   						echo "<div class='row pt-4'><div class='col text-start'>";
    						echo $clave_input[0]; //título
    						echo "</div><div class='col input-group'>    	
 				      <input class='form-control' type='number' id='$clave_input[1]'>"; //id
@@ -135,14 +135,14 @@
    			<?php
    				if($input_e){
 		   				foreach($input_e as $clave_input_e){
-		   						echo "<div class='row pt-5'><div class='col text-start'>";
+		   						echo "<div class='row pt-4'><div class='col text-start'>";
 		   						echo $clave_input_e[0]; //título
 		   						echo "</div><div class='col input-group'>";   	
-						      echo "<select class='form-select mb-0' id='".$clave_input_e[1]."' name='analgesia' required>"; //id
+						      echo "<select class='form-select mb-0' id='".$clave_input_e[1]."' required>"; //id
 
 						      foreach($clave_input_e[2] as $selopt => $selvalue){
 
-		  					      echo "<option value='".$selvalue."'>".$selopt."</option>";
+		  					      echo "<option value='".$selvalue."'>".$selopt."";
 
 						      }
 
@@ -157,7 +157,7 @@
    			<?php
    			if($input_ch){
    				foreach($input_ch as $clave_input_ch){
-   						echo "<div class='row pt-5'><div class='d-flex justify-content-between'><div class='text-start'>";
+   						echo "<div class='row pt-4'><div class='d-flex justify-content-between'><div class='text-start'>";
    						echo $clave_input_ch[0]; //título
    						echo "</div><div class='text-end'>    	
 				      <input class='form-check-input' type='checkbox' id='$clave_input_ch[1]'>"; //id
@@ -180,10 +180,10 @@
         var inputNuevo = '';
 
         if (esAnios) {
-          inputNuevo = '<input type="number" id="edad" name="edad" class="form-control" placeholder="Edad en Meses"><span class="input-group-text" id="basic-addon2">meses</span>';
+          inputNuevo = '<input type="number" id="edad" name="edad" class="form-control" placeholder="Edad"><span class="input-group-text" id="basic-addon2">meses</span>';
           $('#btnCambiar').removeClass('anios').html('<i class="fa-solid fa-rotate"></i>');   
         } else {
-          inputNuevo = '<input type="number" id="edad" name="edad"  class="form-control" placeholder="Edad en años"><span class="input-group-text" id="basic-addon2">años</span>';
+          inputNuevo = '<input type="number" id="edad" name="edad"  class="form-control" placeholder="Edad"><span class="input-group-text" id="basic-addon2">años</span>';
           $('#btnCambiar').addClass('anios').html('<i class="fa-solid fa-rotate"></i>');
         }
 
@@ -222,26 +222,29 @@
         	resultadoF = resultadoX;
         }
 
-        $('#resultadoX').attr('value',"Tubo: "+Math.round(resultadoF * 2) / 2+" con cuff");
+        $('#resultadoX').attr('value',Math.round(resultadoF * 2) / 2);
       });
     });
   </script>
 
 
-<div class="container">
-	<div class="row">
-		<div class="col-10 py-2">
+
+	<div class="row pt-4">
+		<div class='col-6 text-start'>   						
+						Edad
+		</div>
+		<div class="col-5 pe-0 mx-0">
         <div class="input-group mb-2" id="edadInput">
 
-    <input type="number" id="edad" name="edad"  class="form-control" placeholder="Edad en años"><span class="input-group-text" id="basic-addon2">años</span>
+    <input type="number" id="edad" name="edad"  class="form-control" placeholder="Edad"><span class="input-group-text" id="basic-addon2">años</span>
 
   			</div>
   	</div>
-  	<div class="col py-2">
-        <span class="input-group-text text-white" id="basic-addon2as"><button class="btn btn-outline-secondary opacity-75 anios" id="btnCambiar" type="button" id="button-addon2" ><i class="fa-solid fa-rotate"></i></button></span>
+  	<div class="col-1 py-2 px-0 mx-0">
+        <span class="input-group-text text-white px-0 mx-0 py-0 my-0" id="basic-addon2as"><button class="px-0 mx-0 py-0 my-0 btn btn-outline-secondary opacity-75 anios" id="btnCambiar" type="button" id="button-addon2" style="width: 100%; height: 100%;" ><i class="fa-solid fa-rotate"></i></button></span>
     </div>
   </div>
-</div>
+
 
 
 
@@ -256,16 +259,27 @@
 				  </div>
 
 
-<div class='row pt-5'><div class='col input-group'>    	
-				      <input class='form-control' id="resultadoX" readonly>
-<span class='input-group-text' id='basic-addon2'>c/cuff
-</span></div></div>
+
+
+				<div class='row pt-5'>
+					<div class='col text-start'>   						
+						Tubo
+					</div>
+					<div class='col input-group'>    	
+							<input class='form-control' id="resultadoX" readonly>
+							<span class='input-group-text' id='basic-addon2'>c/cuff
+							</span>
+					</div>
+				</div>
+
+
+
 
 
 						<!-  RESULTADO  ->   		
    			<?php
    				foreach($resultado as $clave_result){
-   						echo "<div class='row pt-5'><div class='col text-start'>";
+   						echo "<div class='row pt-4'><div class='col text-start'>";
    						echo $clave_result[0]; //título
    						echo "</div><div class='col input-group'>    	
 				      <input class='form-control' type='number' id='$clave_result[1]' readonly>"; //id

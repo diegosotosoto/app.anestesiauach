@@ -115,11 +115,17 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
           $procedimiento_1='Cirugía General';
           $procedimiento_2='Cirugía Pediátrica';
-          $procedimiento_3='Cesárea';
-          $procedimiento_4='Cirugía Vascular';
-          $procedimiento_5='Cirugía de Tórax';
-          $procedimiento_6='Neurocirugía';
-          $procedimiento_7='Cirugía Cardiaca';
+          $procedimiento_3='Gineco-Obstetricia';
+          $procedimiento_4='Cirugía de Tórax/Vascular';
+          $procedimiento_5='Neurocirugía';
+          $procedimiento_6='Cirugía Cardiovascular';
+          $procedimiento_7='Cirugía Ambulatoria';
+          $procedimiento_8='Turno/Urgencias';
+          $procedimiento_9='Cirugía Urológica';
+          $procedimiento_10='Traumatología y Regional';
+          $procedimiento_11='Dolor';
+          $procedimiento_12='Electivo';
+          $procedimiento_13='UCI/UTI';
 
 
           $via_aerea_1='Tubo Orotraqueal';
@@ -145,11 +151,14 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
           $invasivo_eco_1='1';
 
+
+          $cvc_1='CVC';
+          $cvc_2='Cateter de Arteria Pulmonar';
+          $cvc_3='CVC con reparos anatómicos';
+          $cvc_4='Cateter Pulmonar por anatomía';
        
           $invasivo_1='Línea Arterial';
-          $invasivo_2='CVC';
-          $invasivo_3='Cateter Arteria Pulmonar';
-          $invasivo_4='Otro';
+          $invasivo_2='Línea Arterial con Eco';
   
 
           $neuroaxial_1='Anestesia Espinal';
@@ -192,6 +201,13 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
         $procedimiento_b_5=0;
         $procedimiento_b_6=0;
         $procedimiento_b_7=0;
+        $procedimiento_b_8=0;
+        $procedimiento_b_9=0;
+        $procedimiento_b_10=0;
+        $procedimiento_b_11=0;
+        $procedimiento_b_12=0;
+        $procedimiento_b_13=0;
+
         
         $via_aerea_b_1=0;
         $via_aerea_b_2=0;
@@ -218,6 +234,13 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
         $invasivo_b_2=0;
         $invasivo_b_3=0;        
         $invasivo_b_4=0;
+
+
+        $cvc_b_1=0;
+        $cvc_b_2=0;
+        $cvc_b_3=0;        
+        $cvc_b_4=0;
+
 
         $neuroaxial_b_1=0;
         $neuroaxial_b_2=0;
@@ -288,6 +311,24 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
           }
           if ($estad['procedimiento_b']==htmlentities(addslashes($procedimiento_7))){
             $procedimiento_b_7++;
+          }
+          if ($estad['procedimiento_b']==htmlentities(addslashes($procedimiento_8))){
+            $procedimiento_b_8++;
+          }
+          if ($estad['procedimiento_b']==htmlentities(addslashes($procedimiento_9))){
+            $procedimiento_b_9++;
+          }
+          if ($estad['procedimiento_b']==htmlentities(addslashes($procedimiento_10))){
+            $procedimiento_b_10++;
+          }
+          if ($estad['procedimiento_b']==htmlentities(addslashes($procedimiento_11))){
+            $procedimiento_b_11++;
+          }
+          if ($estad['procedimiento_b']==htmlentities(addslashes($procedimiento_12))){
+            $procedimiento_b_12++;
+          }
+          if ($estad['procedimiento_b']==htmlentities(addslashes($procedimiento_13))){
+            $procedimiento_b_13++;
           }
 
 
@@ -360,14 +401,22 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
           if ($estad['invasivo_b']==htmlentities(addslashes($invasivo_2))){
             $invasivo_b_2++;
           }
-          if ($estad['invasivo_b']==htmlentities(addslashes($invasivo_3))){
-            $invasivo_b_3++;
-          }
-          if ($estad['invasivo_b']==htmlentities(addslashes($invasivo_4))){
-            $invasivo_b_4++;
-          }
 
   
+          if ($estad['cvc_b']==htmlentities(addslashes($cvc_1))){
+            $cvc_b_1++;
+          }
+          if ($estad['cvc_b']==htmlentities(addslashes($cvc_2))){
+            $cvc_b_2++;
+          }
+          if ($estad['cvc_b']==htmlentities(addslashes($cvc_3))){
+            $cvc_b_3++;
+          }
+          if ($estad['cvc_b']==htmlentities(addslashes($cvc_4))){
+            $cvc_b_4++;
+          }
+
+
 
           if ($estad['neuroaxial_b']==htmlentities(addslashes($neuroaxial_1))){
             $neuroaxial_b_1++;
@@ -495,20 +544,26 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
     </div>
 
-    <div class="col-xl-4 col-md-6">
+    <div class="col-xl-4 col-md-6 mx-0 px-0">
 <script type="text/javascript">
     google.charts.load("current", {packages:['corechart']});
     google.charts.setOnLoadCallback(drawChart);
     function drawChart() {
       var data = google.visualization.arrayToDataTable([
         ["Cirugía", "Valor", { role: "style" } ],
-        ["C.General", <?php echo $procedimiento_b_1;?>, "#009044"],
-        ["C.Pediátrica", <?php echo $procedimiento_b_2;?>, "#026edd"],
-        ["Cesárea", <?php echo $procedimiento_b_3;?>, "#9b4df1"],        
-        ["Vascular", <?php echo $procedimiento_b_4;?>, "#f7de68"],
-        ["Tórax", <?php echo $procedimiento_b_5;?>, "#f73f3f"],
-        ["Neuro", <?php echo $procedimiento_b_6;?>, "#7BD3CE"],
-        ["Cardio", <?php echo $procedimiento_b_7;?>, "#F8BBD0"]    
+        ["Gral", <?php echo $procedimiento_b_1;?>, "#009044"],
+        ["Ped", <?php echo $procedimiento_b_2;?>, "#026edd"],
+        ["Gine", <?php echo $procedimiento_b_3;?>, "#9b4df1"],        
+        ["Tx/Vasc", <?php echo $procedimiento_b_4;?>, "#f7de68"],
+        ["Neuro", <?php echo $procedimiento_b_5;?>, "#f73f3f"],
+        ["Cardio", <?php echo $procedimiento_b_6;?>, "#7BD3CE"],
+        ["Amb.", <?php echo $procedimiento_b_7;?>, "#F8BBD0"],
+        ["Turno", <?php echo $procedimiento_b_8;?>, "#009044"],
+        ["Uro", <?php echo $procedimiento_b_9;?>, "#026edd"],
+        ["Trauma", <?php echo $procedimiento_b_10;?>, "#9b4df1"],        
+        ["Dolor", <?php echo $procedimiento_b_11;?>, "#f7de68"],
+        ["Electivo", <?php echo $procedimiento_b_12;?>, "#f73f3f"],
+        ["UCI", <?php echo $procedimiento_b_13;?>, "#7BD3CE"]
       ]);
 
       var view = new google.visualization.DataView(data);
@@ -525,7 +580,11 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
         height: 300,
         bar: {groupWidth: "95%"},
         legend: { position: "none" },
-      };
+    hAxis: {
+      slantedText: true,        // Texto en ángulo
+      slantedTextAngle: 60,     // Ángulo de rotación (-90 para vertical)
+    },
+  };
       var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values2"));
       chart.draw(view, options);
   }
@@ -635,7 +694,7 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
         ["VVP", <?php echo $acceso_vascular_b_1;?>, "#009044"],
         ["Midline", <?php echo $acceso_vascular_b_2;?>, "#026edd"],
         ["PICC", <?php echo $acceso_vascular_b_3;?>, "#9b4df1"],        
-        ["Ecografia", <?php echo $invasivo_eco_b_1;?>, "#f7de68"]
+        ["Ecografia", <?php echo $invasivo_eco_b_4;?>, "#f7de68"]
       ]);
 
 
@@ -671,12 +730,8 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
       var data = google.visualization.arrayToDataTable([
         ["Acceso Invasivo", "Valor", { role: "style" } ],
         ["L.A.", <?php echo $invasivo_b_1;?>, "#009044"],
-        ["C.V.C.", <?php echo $invasivo_b_2;?>, "#026edd"],
-        ["C.A.P.", <?php echo $invasivo_b_3;?>, "#9b4df1"],        
-        ["Otro", <?php echo $invasivo_b_4;?>, "#f7de68"]
+        ["L.A.Eco", <?php echo $invasivo_b_2;?>, "#026edd"],
       ]);
-
-
 
       var view = new google.visualization.DataView(data);
       view.setColumns([0, 1,
@@ -710,6 +765,51 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
   
 
   <div class="row">
+
+
+
+
+    <div class="col-xl-4 col-md-6">
+<script type="text/javascript">
+    google.charts.load("current", {packages:['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
+      var data = google.visualization.arrayToDataTable([
+        ["A. Venoso Central", "Valor", { role: "style" } ],
+        ["CVC", <?php echo $cvc_b_1;?>, "#009044"],
+        ["CAP", <?php echo $cvc_b_2;?>, "#026edd"],
+        ["CVC Anat", <?php echo $cvc_b_3;?>, "#9b4df1"],        
+        ["CAP Anat", <?php echo $cvc_b_4;?>, "#f7de68"]
+      ]);
+
+      var view = new google.visualization.DataView(data);
+      view.setColumns([0, 1,
+                       { calc: "stringify",
+                         sourceColumn: 1,
+                         type: "string",
+                         role: "annotation" },
+                       2]);
+
+      var options = {
+        title: "Acceso Venoso Central",
+        width: 400,
+        height: 300,
+        bar: {groupWidth: "95%"},
+        legend: { position: "none" },
+      };
+      var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_valuesXX"));
+      chart.draw(view, options);
+  }
+  </script>
+<div id="columnchart_valuesXX"></div>
+<div class="py-2"></div>
+
+    </div>
+
+
+
+
+
 
     <div class="col-xl-4 col-md-6">
 <script type="text/javascript">
@@ -797,6 +897,9 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
     </div>
 
+
+<div class="row">    
+
     <div class="col-xl-4 col-md-6">
 <script type="text/javascript">
     google.charts.load("current", {packages:['corechart']});
@@ -836,7 +939,7 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
 
     </div>
-
+</div>
 
   </div>
 

@@ -56,6 +56,7 @@
 			$vad_b=htmlentities(addslashes($_POST['vad_b']));
 			$acceso_vascular_b=htmlentities(addslashes($_POST['acceso_vascular_b']));
 			$invasivo_b=htmlentities(addslashes($_POST['invasivo_b']));
+			$cvc_b=htmlentities(addslashes($_POST['cvc_b']));
 
 			if($_POST['invasivo_eco_b']=="1"){
 				$invasivo_eco_b="1";
@@ -71,7 +72,7 @@
 
 
 
-			$consulta_b="INSERT INTO `bitacora_proced` (`autor_b`, `rut_b`, `ficha_b`, `edad_b`, `procedimiento_b`, `fecha_b`, `via_aerea_b`, `vad_b`, `acceso_vascular_b`, `invasivo_b`, `invasivo_eco_b`, `neuroaxial_b`, `regional_b`, `dolor_b`, `staff_b`, `comentarios_b`) VALUES ('$autor_b','$rut_b', '$ficha_b', '$edad_b', '$procedimiento_b', '$fecha_b', '$via_aerea_b', '$vad_b', '$acceso_vascular_b', '$invasivo_b', '$invasivo_eco_b', '$neuroaxial_b', '$regional_b', '$dolor_b', '$staff_b', '$comentarios_b') ";
+			$consulta_b="INSERT INTO `bitacora_proced` (`autor_b`, `rut_b`, `ficha_b`, `edad_b`, `procedimiento_b`, `fecha_b`, `via_aerea_b`, `vad_b`, `acceso_vascular_b`, `invasivo_b`, `invasivo_eco_b`, `neuroaxial_b`, `regional_b`, `dolor_b`, `staff_b`, `comentarios_b`, `cvc_b`) VALUES ('$autor_b','$rut_b', '$ficha_b', '$edad_b', '$procedimiento_b', '$fecha_b', '$via_aerea_b', '$vad_b', '$acceso_vascular_b', '$invasivo_b', '$invasivo_eco_b', '$neuroaxial_b', '$regional_b', '$dolor_b', '$staff_b', '$comentarios_b', '$cvc_b') ";
 			
 
 
@@ -166,16 +167,22 @@
 				</div>			
 
 				<div>
-			    <div class='d-flex justify-content-between pt-3'><div class='text-muted'>Procedimiento</div><div class="fw-lighter text-muted"><small>Requerido (*)</small></div></div>
+			    <div class='d-flex justify-content-between pt-3'><div class='text-muted'>Curso/Rotación</div><div class="fw-lighter text-muted"><small>Requerido (*)</small></div></div>
 					<select class="form-select mb-0" id="procedimiento_b" name="procedimiento_b" required>
 					  <option value=""></option>
 					  <option value="Cirugía General">Cirugía General</option>
 					  <option value="Cirugía Pediátrica">Cirugía Pediátrica</option>
-					  <option value="Cesárea">Cesárea</option>
-					  <option value="Cirugía Vascular">Cirugía Vascular</option>
-					  <option value="Cirugía de Tórax">Cirugía de Tórax</option>
+					  <option value="Gineco-Obstetricia">Gineco-Obstetricia</option>
+					  <option value="Cirugía de Tórax/Vascular">Cirugía de Tórax/Vascular</option>
 					  <option value="Neurocirugía">Neurocirugía</option>
-					  <option value="Cirugía Cardiaca">Cirugía Cardiaca</option>
+					  <option value="Cirugía Cardiovascular">Cirugía Cardiovascular</option>
+					  <option value="Cirugía Ambulatoria">Cirugía Ambulatoria</option>
+					  <option value="Turno/Urgencias">Turno/Urgencias</option>
+					  <option value="Cirugía Urológica">Cirugía Urológica</option>
+					  <option value="Traumatología y Regional">Traumatología y Regional</option>
+					  <option value="Dolor">Dolor</option>
+					  <option value="Electivo">Electivo</option>
+					  <option value="UCI/UTI">UCI/UTI</option>
 					</select>
 				<div class="invalid-feedback pt-0">
 			      Ingrese un valor válido
@@ -244,11 +251,24 @@
 					<select class="form-select mb-2" id="invasivo_b" name="invasivo_b">
 					  <option value=""></option>						
 					  <option value="Línea Arterial">Línea Arterial</option>
-					  <option value="CVC">CVC</option>
-					  <option value="Cateter Arteria Pulmonar">Cateter Arteria Pulmonar</option>
-					  <option value="Otro">Otro</option>	  
+					  <option value="Línea Arterial con Eco">Línea Arterial con Eco</option>
 					</select>
 					</div>
+
+
+					<div class='d-flex justify-content-between pt-3'><div class='text-muted'>A. Venoso Central</div><div class="fw-lighter text-muted"><small></small></div></div>
+					<div class="input-group mb-2">
+					<select class="form-select mb-2" id="cvc_b" name="cvc_b">
+					  <option value=""></option>						
+					  <option value="CVC">CVC</option>
+					  <option value="Cateter de Arteria Pulmonar">Cateter de Arteria Pulmonar</option>
+					  <option value="CVC con reparos anatómicos">CVC con reparos anatómicos</option>
+					  <option value="Cateter Pulmonar por anatomía">Cateter Pulmonar por anatomía</option>
+					</select>
+					</div>
+
+
+
 
 			    <div>
 			    <div class='d-flex justify-content-between pt-3'><div class='text-muted'>Anestesia Neuroaxial</div><div class="fw-lighter text-muted"><small></small></div></div>
