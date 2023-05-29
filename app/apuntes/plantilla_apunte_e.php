@@ -195,34 +195,50 @@
       $('#btnCalcular').click(function() {
         var edadInput = $('#edad').val();
         var resultadoX = '';
+        var resultadoX2 = '';
         var resultadoF = '';
+        var resultadoF2 = '';
 
-        if ($('#btnCambiar').hasClass('anios')) {
+        if (edadInput > 0) {
 
-          resultadoX = edadInput / 4 + 3.5 ;
+		        if ($('#btnCambiar').hasClass('anios')) {
 
-        } else {
+		          resultadoX = edadInput / 4 + 3.5 ;
+		          resultadoX2 = edadInput / 2 + 12 ;
 
-		        	if (edadInput >= 18 ){
-		        		resultadoX = edadInput / 12 / 4 + 3.5;
-		        	} else if (edadInput < 18 && edadInput >= 9 ){
-		        		resultadoX = 3.5;
-		        	} else if (edadInput < 9 && edadInput >= 3 ){
-		          	resultadoX = 3.0;
-		        	} else if (edadInput < 3 ){
-		        		resultadoX = 2.5;
-		        	} 
-        }
+		        } else {
 
-        if (resultadoX > 7) {
-        	resultadoF = 7;
-        } else if (resultadoX < 2.5) {
-        	resultadoF = 2.5;
-        } else {
-        	resultadoF = resultadoX;
-        }
+				        	if (edadInput >= 18 ){
+				        		resultadoX = edadInput / 12 / 4 + 3.5;
+				        		resultadoX2 = edadInput / 12 / 2 + 12;
+				        	} else if (edadInput < 18 && edadInput >= 9 ){
+				        		resultadoX = 3.5;
+				        		resultadoX2 = 10.5;
+				        	} else if (edadInput < 9 && edadInput >= 3 ){
+				          	resultadoX = 3.0;
+				          	resultadoX2 = 9.0;
+				        	} else if (edadInput < 3 ){
+				        		resultadoX = 2.5;
+				        		resultadoX2 = 7.5;
+				        	} 
+		        }
 
+		        if (resultadoX > 7) {
+		        	resultadoF = 7;
+		        	resultadoF2 = 21;
+		        } else if (resultadoX < 2.5) {
+		        	resultadoF = 2.5;
+		        	resultadoF2 = 7.5;
+		        } else {
+		        	resultadoF = resultadoX;
+		        	resultadoF2 = resultadoX2;
+		        }
+
+			}
         $('#resultadoX').attr('value',Math.round(resultadoF * 2) / 2);
+        $('#resultadoX2').attr('value',Math.round(resultadoF2 * 2) / 2);
+
+
       });
     });
   </script>
@@ -272,6 +288,17 @@
 					</div>
 				</div>
 
+
+				<div class='row pt-4'>
+					<div class='col text-start'>   						
+						Dist. Boca
+					</div>
+					<div class='col input-group'>    	
+							<input class='form-control' id="resultadoX2" readonly>
+							<span class='input-group-text' id='basic-addon2'>cm
+							</span>
+					</div>
+				</div>
 
 
 
