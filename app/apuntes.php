@@ -28,10 +28,10 @@ $cabeceras = array(
       array('apuntes/aldrete.php','fa-solid fa-star','Score de Aldrete re Modificado'),
     )),
 'Monitorización' => array('icono'=>'apuntes/icons/vital-signs.png',array(
-      array('apuntes/asa.php','fa-solid fa-lightbulb','Clasificación ASA'),
+       
     )),
 'Farmacología' => array('icono'=>'apuntes/icons/vaccination.png',array(
-      array('apuntes/asa.php','fa-solid fa-lightbulb','Clasificación ASA'),
+       
     )),
 'Cardiovascular' => array('icono'=>'apuntes/icons/heart.png',array(
       array('apuntes/deltapp.php','fa-solid fa-wave-square','Delta PP'),
@@ -48,13 +48,13 @@ $cabeceras = array(
       array('apuntes/bica.php','fa-solid fa-flask-vial','Corrección de bicarbonato'),
     )),
 'Obstetricia' => array('icono'=>'apuntes/icons/pregnancy.png',array(
-      array('apuntes/asa.php','fa-solid fa-lightbulb','Clasificación ASA')
+       
     )),
 'Regional/Dolor' => array('icono'=>'apuntes/icons/ultrasound.png',array(
-      array('apuntes/asa.php','fa-solid fa-lightbulb','Clasificación ASA')
+       
     )),
 'Respiratorio' => array('icono'=>'apuntes/icons/lungs.png',array(
-      array('apuntes/asa.php','fa-solid fa-lightbulb','Clasificación ASA')
+       
     )),
 'Volumen y Reposición' => array('icono'=>'apuntes/icons/transfusion.png',array(
       array('apuntes/perdida_admisible.php','fa-solid fa-droplet','Pérdida Admisible')
