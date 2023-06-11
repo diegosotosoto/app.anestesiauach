@@ -102,7 +102,7 @@
 							$alerta_login = "
 												<div class='alert alert-success alert-dismissible fade show'>
 										    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
-										    <strong>Info!</strong> Nuevo Usuario Registrado. Comunícate con el administrador para validar tu cuenta!
+										    <strong>Info!</strong> Se ha Registrado un Nuevo Usuario. <br> ***Para ingresar PRIMERO comunícate con un Administrador para validar tu cuenta!***
 										  	</div>
 
 							";

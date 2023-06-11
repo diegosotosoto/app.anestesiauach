@@ -46,10 +46,11 @@
 
 				if($_POST['bitacora_autoriza']){
 
+					$submit_b=$_POST['submit_b'];
 
 					$id_b=$_POST['bitacora_autoriza'];
 
-					$consulta_us="UPDATE `bitacora_proced` SET `aprobado_staff_b`='1' WHERE `id_b`='$id_b'";
+					$consulta_us="UPDATE `bitacora_proced` SET `aprobado_staff_b`='$submit_b' WHERE `id_b`='$id_b'";
 
 					$escribir_us=$conexion->query($consulta_us);
 
@@ -71,7 +72,7 @@
 						  	</div>
 				";
 
-					}else{
+					}else if($submit_b==1){
 
 						echo "
 									<div class='alert alert-success alert-dismissible fade show'>
@@ -80,7 +81,16 @@
 								  	</div>
 						";
 
-						} 
+						}else if($submit_b==3){
+
+						echo "
+									<div class='alert alert-danger alert-dismissible fade show'>
+								    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
+								    <strong>Info!</strong> Bitácora Rechazada.
+								  	</div>
+						";
+
+						}  
 
 
 				}
@@ -89,9 +99,11 @@
 
 				if($_POST['bitacora_autoriza_i']){
 
+					$submit_i=$_POST['submit_i'];
+
 					$id_i=$_POST['bitacora_autoriza_i'];
 
-					$consulta_usi="UPDATE `bitacora_internos` SET `aprobado_staff_i`='1' WHERE `id_i`='$id_i'";
+					$consulta_usi="UPDATE `bitacora_internos` SET `aprobado_staff_i`='$submit_i' WHERE `id_i`='$id_i'";
 					
 					$escribir_usi=$conexion->query($consulta_usi);
 
@@ -107,7 +119,7 @@
 
 
 
-					if($escribir_usi==false or $escribir_fbi==false){
+					if($escribir_usi==false){
 						echo "
 							<div class='alert alert-danger alert-dismissible fade show'>
 						    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
@@ -115,12 +127,21 @@
 						  	</div>
 						";
 
-					}else{
+					}else if($submit_i==1){
 
 						echo "
 									<div class='alert alert-success alert-dismissible fade show'>
 								    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
 								    <strong>Info!</strong> Bitácora Autorizada.
+								  	</div>
+						";
+
+						}else if($submit_i==3){
+
+						echo "
+									<div class='alert alert-danger alert-dismissible fade show'>
+								    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
+								    <strong>Info!</strong> Bitácora Rechazada.
 								  	</div>
 						";
 
@@ -172,6 +193,7 @@
 
 	}
 
+//Bitácora de Becados
 
 	while($row_user=$tab_users->fetch_assoc()){
 
@@ -206,9 +228,35 @@
 		echo "<li class='list-group-item mb-2 py-2'><div class='py-4'>".$row_user['comentarios_b']."</div></li>";
 		echo "<div class='text-primary pt-4'>Agregar Feedback</div><textarea class='form-control mb-2' style='resize: none;' maxlength='200' rows='3' name='comentarios_b_a' id='comentarios_b_a'></textarea>
 			 ";
-		echo "<div class='col'><button class='btn btn-primary' type='submit' value'Submit'>Autorizar</button></div></form></ul></br>";
+		echo "<div class='col'>
+					<div class='d-flex justify-content-between px-4'>
+					<button class='btn btn-primary' type='submit' name='submit_b' value='1'>Autorizar</button>
+					    <button type='button' class='btn btn-danger' data-bs-toggle='modal' data-bs-target='#confirmarModal'>Rechazar</button>
+					</div></ul></br>";
+		echo "
+  <!-- Modal de confirmación -->
+  <div class='modal fade' id='confirmarModal' tabindex='-1' aria-labelledby='confirmarModalLabel' aria-hidden='true'>
+    <div class='modal-dialog'>
+      <div class='modal-content'>
+        <div class='modal-header'>
+          <h5 class='modal-title' id='confirmarModalLabel'>Confirmar Rechazo</h5>
+          <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+        </div>
+        <div class='modal-body'>
+          ¿Estás seguro de que deseas Rechazar? Se notificará al becado del rechazo para su corrección
+        </div>
+        <div class='modal-footer'>
+          <button type='submit' name='submit_b' value='3' class='btn btn-danger'>Sí, Rechazar</button>
+        </div>
+      </div>
+    </div>
+  </div></form>
+		";
 		echo "<hr></br>";
 	}
+
+
+//Bitácora de internos
 
 
 	while($row_int=$tab_internos->fetch_assoc()){
@@ -298,7 +346,30 @@
 		echo "<li class='list-group-item mb-2 py-2'><div class='py-4'>".$row_int['comentarios_i']."</div></li>";
 		echo "<div class='text-primary pt-4'>Agregar Feedback</div><textarea class='form-control mb-2' style='resize: none;' maxlength='200' rows='3' name='comentarios_i_a' id='comentarios_i_a'></textarea>
 	  ";
-		echo "<div class='col'><button class='btn btn-primary' type='submit' value'Submit'>Autorizar</button></div></form></ul></br>";
+		echo "<div class='col'>
+					<div class='d-flex justify-content-between px-4'>
+					<button class='btn btn-primary' type='submit' name='submit_i' value='1'>Autorizar</button>
+					    <button type='button' class='btn btn-danger' data-bs-toggle='modal' data-bs-target='#confirmarModal_i'>Rechazar</button>
+					</div></ul></br>";
+		echo "
+  <!-- Modal de confirmación -->
+  <div class='modal fade' id='confirmarModal_i' tabindex='-1' aria-labelledby='confirmarModalLabel' aria-hidden='true'>
+    <div class='modal-dialog'>
+      <div class='modal-content'>
+        <div class='modal-header'>
+          <h5 class='modal-title' id='confirmarModalLabel'>Confirmar Rechazo</h5>
+          <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+        </div>
+        <div class='modal-body'>
+          ¿Estás seguro de que deseas Rechazar? Se notificará al interno del rechazo para su corrección
+        </div>
+        <div class='modal-footer'>
+          <button type='submit' name='submit_i' value='3' class='btn btn-danger'>Sí, Rechazar</button>
+        </div>
+      </div>
+    </div>
+  </div></form>
+		";
 		echo "<hr></br>";
 
 

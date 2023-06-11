@@ -194,12 +194,12 @@
 
 
 				<div>
-				<div class='text-muted pt-2 text-start'>INR</div><input class="form-control mb-2" type="number" max="20" step=".1"  name="inr" id="inr">
+				<div class='text-muted pt-2 text-start'>INR</div><input class="form-control mb-2" type="text" pattern="^\d+(\.\d{1})?$"  name="inr" id="inr">
 				</div>
 
 				<div class='text-muted text-start'>TTPA</div>
 				<div class="input-group mb-2">
-				  <input  type="number" max="1000" step=".1"  class="form-control" name="ttpa" id="ttpa">
+				  <input type="text" pattern="^\d+(\.\d{1})?$" class="form-control" name="ttpa" id="ttpa">
 				  <span class="input-group-text" id="basic-addon2"> seg</span>
 				</div>
 
@@ -211,7 +211,7 @@
 
 				<div class='text-muted text-start'>Creatinina</div>
 				<div class="input-group mb-2">
-				  <input type="number" max="20" step=".1" class="form-control" name="crea" id="crea">
+				  <input type="text" pattern="^\d+(\.\d{1})?$" class="form-control" name="crea" id="crea">
 				  <span class="input-group-text" id="basic-addon2"> mg/dL</span>
 				</div>
 				</li>

@@ -1,9 +1,9 @@
 <?php
 
-	//Ve si está activa la cookie o redirige al login
-	if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
-		header('Location: ../login.php');
-	}
+	// Ve si está activa la cookie o redirige al login
+	// if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
+	//	header('Location: ../login.php');
+	// }
 
 	//Conexión
 	require("../conectar.php");
@@ -313,6 +313,10 @@
    						echo "<span class='input-group-text' id='basic-addon2'>";	
    						echo $clave_result[2]; //unidad
    						echo "</span></div></div>	";
+   							if($clave_result[5]){ 
+   								echo "<div class='text-start pb-1 pt-1 opacity-50'>".$clave_result[5]."</div>";
+   							}
+
 	   					}
 
    			?>
