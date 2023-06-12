@@ -46,6 +46,7 @@ $cabeceras = array(
     )),
 'Nefrourología' => array('icono'=>'apuntes/icons/kidney.png',array(
       array('apuntes/bica.php','fa-solid fa-flask-vial','Corrección de bicarbonato'),
+      array('apuntes/vfg.php','fa-solid fa-filter','Velocidad Filtración Glomerular'),
     )),
 'Obstetricia' => array('icono'=>'apuntes/icons/pregnancy.png',array(
        

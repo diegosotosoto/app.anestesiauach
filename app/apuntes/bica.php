@@ -2,6 +2,7 @@
 
 
 $icono_apunte = "<i class='fa-solid fa-flask-vial pe-3 pt-2'></i>";//formato obligatorio fontawesome pe-3 pt-2
+
 $titulo_apunte = "Corrección de Bicarbonato";//TÍTULO DEL APUNTE (texto obligatorio)
 
 $input = array(array("Peso:","peso","Kg"),array("Exceso de Base:","be","mEq/L"));//INPUTS DE LA FORMULA array de 2 dimensiones array("inputX" => array("titulo","id","unidad"));

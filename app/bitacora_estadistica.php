@@ -40,7 +40,6 @@
 
 <div class="col col-sm-9 col-xl-9 pb-5"><!- Columna principal (derecha) responsive->
 
-
   <?php if($usuario['admin']==1 or $usuario['staff_']==1){
 
 echo "
@@ -671,11 +670,15 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
       var options = {
         title: "Manejo de Vía Aérea Difícil",
-        width: 400,
+       width: 350,
         height: 300,
         bar: {groupWidth: "95%"},
         legend: { position: "none" },
-      };
+    hAxis: {
+      slantedText: true,        // Texto en ángulo
+      slantedTextAngle: 60,     // Ángulo de rotación (-90 para vertical)
+    },
+  };
       var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values4"));
       chart.draw(view, options);
   }
@@ -708,7 +711,7 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
       var options = {
         title: "Acceso Vascular",
-        width: 400,
+        width: 350,
         height: 300,
         bar: {groupWidth: "95%"},
         legend: { position: "none" },
@@ -743,7 +746,7 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
       var options = {
         title: "Acceso Vascular Invasivo",
-        width: 400,
+        width: 350,
         height: 300,
         bar: {groupWidth: "95%"},
         legend: { position: "none" },
@@ -792,7 +795,7 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
       var options = {
         title: "Acceso Venoso Central",
-        width: 400,
+        width: 350,
         height: 300,
         bar: {groupWidth: "95%"},
         legend: { position: "none" },
@@ -836,7 +839,7 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
       var options = {
         title: "Anestesia Neuroaxial",
-        width: 400,
+        width: 350,
         height: 300,
         bar: {groupWidth: "95%"},
         legend: { position: "none" },
@@ -881,11 +884,15 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
       var options = {
         title: "Anestesia Regional",
-        width: 400,
+        width: 350,
         height: 300,
         bar: {groupWidth: "95%"},
         legend: { position: "none" },
-      };
+    hAxis: {
+      slantedText: true,        // Texto en ángulo
+      slantedTextAngle: 60,     // Ángulo de rotación (-90 para vertical)
+    },
+  };
       var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values8"));
       chart.draw(view, options);
   }
@@ -925,7 +932,7 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
       var options = {
         title: "Atenciones de Dolor",
-        width: 400,
+        width: 350,
         height: 300,
         bar: {groupWidth: "95%"},
         legend: { position: "none" },
@@ -933,15 +940,16 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
       var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values9"));
       chart.draw(view, options);
   }
-  </script>
+</script>
+  
 <div id="columnchart_values9"></div>
 <div class="py-2"></div>
-
-
     </div>
-</div>
+
 
   </div>
+
+
 
 
 </div>
@@ -952,9 +960,9 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
 
 
-	<?php 
+  <?php 
 
-		$conexion->close();
-		require("footer.php");
+    $conexion->close();
+    require("footer.php");
 
-	?>
+  ?>
