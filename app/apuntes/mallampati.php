@@ -9,7 +9,7 @@ $icono_apunte = "<i class='fa-solid fa-head-side-cough pe-3 pt-2'></i>";//format
 $titulo_apunte = "Score de Mallampati";//texto obligatorio
 
 $imagen = "../images/malampatti-scale.png";
-$caption = " La clasificación de Mallampati indica el tamaño de la lengua y en que magnitud ésta obscurece la visión de la buco-faringe. Posteriormente, Ezri propuso agregar una quinta categoría a la clasificación, correspondiente a aquellos pacientes en los que era posible además ver la epiglotis (categoría cero). Se examina al paciente sentado, con la boca abierta al máximo y con la lengua protruida.";
+$caption = " La clasificación de Mallampati indica el tamaño de la lengua y en que magnitud esta obscurece la visión de la buco-faringe. Posteriormente, Ezri propuso agregar una quinta categoría a la clasificación, correspondiente a aquellos pacientes en los que era posible además ver la epiglotis a simple vista (categoría cero). Se examina al paciente sentado, con la boca abierta al máximo y con la lengua protruida.";
 
 
 	//PLANTILLA
