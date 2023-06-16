@@ -25,7 +25,7 @@
 //*********MOSTRAR ESTADISTICA SEGUN SOLICITUD DE STAFF********
 
 
-
+ 
 
 //VARIABLES
 	
@@ -62,6 +62,9 @@ echo "<ul class='nav nav-tabs pt-1'>
   <li class='nav-item'>
     <a class='nav-link active' aria-current='page' href='#'>Estadística</a>
   </li>
+  <li class='nav-item'>
+    <a class='nav-link' href='bitacora_rechazos.php'>Rechazos</a>
+  </li> 
 </ul>";
 
 }

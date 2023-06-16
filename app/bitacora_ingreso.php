@@ -114,6 +114,9 @@
   <li class="nav-item">
     <a class="nav-link" href="bitacora_estadistica.php">Estadística</a>
   </li>
+   <li class="nav-item">
+    <a class="nav-link" href="bitacora_rechazos.php">Rechazos</a>
+  </li> 
 </ul>
 
 
