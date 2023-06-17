@@ -27,7 +27,7 @@
 
 	  //Variables
 
-		$boton_toggler="<a class='btn btn-lg shadow-sm border-light d-sm-block d-sm-none' style='; --bs-border-opacity: .1;' href='bitacora_rechazos.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
+		$boton_toggler="<a class='btn btn-lg shadow-sm border-light d-sm-block d-sm-none' style='; --bs-border-opacity: .1;' href='index.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
 		$titulo_navbar="<span class='text-white d-sm-block d-sm-none'>Gestión</span>";
 		$boton_navbar="<a></a><a></a>";
 
@@ -61,7 +61,7 @@
 
 		//BOTON A LA IZQUIERDA DEL TITULO
 		echo "<div class='pt-1 ps-3 me-3 d-flex float-start'>
-		<a class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block' style='width:80px; height:40px; --bs-border-opacity: .1;' href='bitacora_rechazos.php'><i class='fa fa-chevron-left'></i>Atrás</a>
+		<a class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>
 		</div>";
 
 		//BOTÓN A LA DERECHA DEL TITULO

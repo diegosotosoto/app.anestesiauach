@@ -153,7 +153,6 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
           $invasivo_eco_1='1';
 
-
           $cvc_1='CVC';
           $cvc_2='Cateter de Arteria Pulmonar';
           $cvc_3='CVC con reparos anatómicos';

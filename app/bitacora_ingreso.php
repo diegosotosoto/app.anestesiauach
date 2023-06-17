@@ -380,7 +380,7 @@
 		require("footer.php");
 
 	?>
-
+<script type="text/javascript" src="js/not_reload.js"></script>
   <script src="https://unpkg.com/gijgo@1.9.14/js/gijgo.min.js" type="text/javascript"></script>
     <link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript">

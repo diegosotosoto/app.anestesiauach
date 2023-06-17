@@ -1,10 +1,6 @@
 <?php
-	//Ve si está activa la cookie o redirige al login
-	if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
-		header('Location: login.php');
-	}
 	//Conexión
-	require("conectar.php");
+	require("../app/conectar.php");
 	$conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
 	$conexion->set_charset("utf8");
 	
@@ -16,7 +12,8 @@
 	  if($usuario['intern_']==1){
 	  	header('Location: login.php');
 	  }
-	
+
+
 
 		$rut_v=htmlentities(addslashes($_POST['rut_v']));
 		$fecha_v=htmlentities(addslashes($_POST['fecha_v']));
@@ -62,11 +59,20 @@
 	$comentarios_v = html_entity_decode($fila['comentarios_v']);
 	$editor_v = html_entity_decode($fila['editor_v']);
 
+	$editor_codificado=htmlentities($editor_v); //lo recodifica para compararlo con la version codificada de la BD
 
-	require('tfpdf.php');
+	$consulta_bec="SELECT `becad_` FROM `usuarios_dolor` WHERE `nombre_usuario` = '$editor_codificado'";
+	$confirma_bec=$conexion->query($consulta_bec); 
+	$bec=$confirma_bec->fetch_assoc();
 
-	$pdf = new tFPDF();
+
+	require('../pdf/tfpdf.php');
+
+	$pdf = new tFPDF('P','mm','Letter');
 	$pdf->AddPage();
+	$pdf->SetTitle('Visita Dolor '.$nombre_paciente.' '.$fecha1,true);
+	$pdf->SetAuthor($editor_v,true);
+	$pdf->SetCreator('www.anestesiauach.cl');
 	$pdf->SetMargins(20,25,10);
 	$pdf->AddFont('DejaVu','','DejaVuSansCondensed.ttf',true);
 	$pdf->SetFont('DejaVu','',12);
@@ -193,12 +199,20 @@
 		$pdf->Ln(16);
 		$pdf->Cell(150,10,'Dr(a): '.$editor_v,0,0,'R');
 		$pdf->Ln(7);
+
+	if($bec['becad_']==1){
+
+		$pdf->Cell(150,10,"Becado(a) Anestesia",0,0,'R');
+
+	}else {
+
 		$pdf->Cell(150,10,"Anestesiólogo(a)",0,0,'R');
 
+	}
 
 
 
-    $pdf->Output('D', 'visita.pdf');
+    $pdf->Output('I', 'visita'.$nombre_paciente.'.pdf');
 
 
 	$conexion->close();
