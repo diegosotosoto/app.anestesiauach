@@ -4,6 +4,16 @@
 	$conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
 	$conexion->set_charset("utf8");
 	
+//Saca a los internos del area de dolor
+	  $check_usuario=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
+	  $con_users_b="SELECT `intern_`  FROM `usuarios_dolor` WHERE `email_usuario` = '$check_usuario'";
+	  $users_b=$conexion->query($con_users_b);
+	  $usuario=$users_b->fetch_assoc();
+	  if($usuario['intern_']==1){
+	  	header('Location: login.php');
+	  }
+
+
 
 		$rut_v=htmlentities(addslashes($_POST['rut_v']));
 		$fecha_v=htmlentities(addslashes($_POST['fecha_v']));
@@ -49,10 +59,11 @@
 	$comentarios_v = html_entity_decode($fila['comentarios_v']);
 	$editor_v = html_entity_decode($fila['editor_v']);
 
-	$consulta_bec="SELECT `becad_` FROM `usuarios_dolor` WHERE `nombre_usuario` = '$editor_v'";
+	$editor_codificado=htmlentities($editor_v); //lo recodifica para compararlo con la version codificada de la BD
+
+	$consulta_bec="SELECT `becad_` FROM `usuarios_dolor` WHERE `nombre_usuario` = '$editor_codificado'";
 	$confirma_bec=$conexion->query($consulta_bec); 
 	$bec=$confirma_bec->fetch_assoc();
-
 
 
 	require('../pdf/tfpdf.php');
