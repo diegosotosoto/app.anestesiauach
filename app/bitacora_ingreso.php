@@ -28,7 +28,7 @@
 	
 		$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 		$titulo_navbar="<span class='text-white'>Bitácora</span>";
-		$boton_navbar="<button class='btn shadow-sm border-light' style='; --bs-border-opacity: .1;' type='submit' form='form_ingreso_bit' value='Submit'><div class='text-white'>Guardar</div></button>";
+		$boton_navbar="<a></a>";
 
 	//Carga Head de la página
 	require("head.php");
@@ -364,7 +364,7 @@
 
 
 		<div class="pt-3 ps-3 me-3 d-flex justify-content-end">
-		<button class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block' style='; --bs-border-opacity: .1;' type='submit' form='form_ingreso_bit' value='Submit'><div class='text-white'>Guardar Bitácora</div></button>
+		<button class='btn pull-right btn-primary shadow-sm border-light' style='; --bs-border-opacity: .1;' type='submit' form='form_ingreso_bit' value='Submit'id='boton'><div class='text-white'>Guardar Bitácora</div></button>
 		</div>
 
 
@@ -380,6 +380,7 @@
 		require("footer.php");
 
 	?>
+
 <script type="text/javascript" src="js/not_reload.js"></script>
   <script src="https://unpkg.com/gijgo@1.9.14/js/gijgo.min.js" type="text/javascript"></script>
     <link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" />
@@ -470,7 +471,10 @@ function checkRut(rut) {
       if (!form.checkValidity()) {
         event.preventDefault()
         event.stopPropagation()
-      }
+      } else {
+          // Desactivar el botón de envío del formulario
+          $('#boton').prop('disabled', true);
+        }
 
       form.classList.add('was-validated')
     }, false)

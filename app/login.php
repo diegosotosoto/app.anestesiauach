@@ -173,7 +173,7 @@
 							<div class='text-muted pt-3'>Contraseña</div>
 							<div class="input-group mb-2">
 <input type="password" name="pass_usuario_v" id="pass_usuario_v" class="form-control" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" placeholder="Contraseña" aria-label="Contraseña" aria-describedby="button-addon2">
-        <button class="btn btn-outline-secondary opacity-75" type="button" id="button-addon2" onclick="mostrar()"><i id="icono" class="fa-solid fa-eye"></i></button>
+        <button class="btn btn-outline-secondary border-secondary border-opacity-25" type="button" id="button-addon2" onclick="mostrar()"><i id="icono" class="opacity-75 fa-solid fa-eye"></i></button>
         <span class="input-group-text bg-primary text-white" id="basic-addon2"><i class="fa fa-key"></i></span>
         <script type="text/javascript">
         function mostrar() {
@@ -193,6 +193,8 @@
 
 				    	</div>
 					    	<div class="pt-2"><small><a href="nueva_cuenta.php" class="text-primary"/>Crear nueva cuenta</a></small>
+					    	</div>
+					    	<div class="pt-2"><small><a href="nuevo_password.php" class="text-primary"/>Olvidé mi contraseña</a></small>
 					    	</div>
 				    	</div>
 				  </div> 

@@ -108,9 +108,6 @@
         							$escribe_badge=$badge+$badge2;
 
 
-
-
-
 				    } 
 
 				echo "<div class='list-group'>
