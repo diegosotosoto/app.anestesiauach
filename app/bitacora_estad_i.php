@@ -179,7 +179,6 @@ $autor_i=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
           }
           if ($estad['edad_i']==htmlentities(addslashes($edad_2))){
             $edad_i_2++;
-            
           }
           if ($estad['edad_i']==htmlentities(addslashes($edad_3))){
             $edad_i_3++;
@@ -471,7 +470,7 @@ $autor_i=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
         ["Ventilacion", "Valor", { role: "style" } ],
         ["Solo", <?php echo $ventilacion_i_1;?>, "#009044"],
         ["C/Ayuda", <?php echo $ventilacion_i_2;?>, "#026edd"],
-        ["Fallida", <?php echo $ventilacion_i_2;?>, "#9b4df1"] 
+        ["Fallida", <?php echo $ventilacion_i_3;?>, "#9b4df1"] 
       ]);
 
       var view = new google.visualization.DataView(data);

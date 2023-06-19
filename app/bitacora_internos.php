@@ -184,7 +184,7 @@
 
 				<div>
 			    <div class='d-flex justify-content-between pt-3'><div class='text-muted'>Evaluación Preanestésica</div><div class="fw-lighter text-muted"><small></small></div></div>
-					<select class="form-select mb-0" id="evaluacion_i" name="evaluacion_i" required>
+					<select class="form-select mb-0" id="evaluacion_i" name="evaluacion_i">
 					  <option value=""></option>
 					  <option value="1">Evaluación Completa</option>
 					  <option value="2">Evaluación Incompleta</option>
@@ -306,7 +306,7 @@
 
 
 			<div class='col'>
-			    <div class='text-muted pt-4'>Comentarios</div><textarea class="form-control mb-2" style="resize: none;" maxlength="250" rows="5" name="comentarios_b" id="comentarios_b"></textarea>
+			    <div class='text-muted pt-4'>Comentarios</div><textarea class="form-control mb-2" style="resize: none;" maxlength="250" rows="5" name="comentarios_i" id="comentarios_i"></textarea>
 			  </div>
 
 
