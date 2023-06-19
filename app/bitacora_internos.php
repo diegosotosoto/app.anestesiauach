@@ -28,7 +28,7 @@
 	
 		$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 		$titulo_navbar="<span class='text-white'>Bitácora</span>";
-		$boton_navbar="<button class='btn shadow-sm border-light' style='; --bs-border-opacity: .1;' type='submit' form='form_ingreso_bit' value='Submit'><div class='text-white'>Guardar</div></button>";
+		$boton_navbar="<a></a>";
 
 	//Carga Head de la página
 	require("head.php");
@@ -168,7 +168,7 @@
 					  <option value="Cirugía Vascular">Cirugía Vascular</option>
 					  <option value="Cirugía de Tórax">Cirugía de Tórax</option>
 					  <option value="Neurocirugía">Neurocirugía</option>
-					  <option value="Cirugía Cardiaca">Otra</option>
+					  <option value="Otra">Otra</option>
 					</select>
 				<div class="invalid-feedback pt-0">
 			      Ingrese un valor válido
@@ -188,7 +188,7 @@
 					  <option value=""></option>
 					  <option value="1">Evaluación Completa</option>
 					  <option value="2">Evaluación Incompleta</option>
-					  <option value="2">Evaluación No Realizada</option>
+					  <option value="3">Evaluación No Realizada</option>
 					</select>
 				<div class="invalid-feedback pt-0">
 			      Ingrese un valor válido
@@ -230,6 +230,9 @@
 					  <option value="2">Exitosa con Ayuda</option>				  
 					  <option value="3">Fallida</option>
 					</select>
+					<div class="invalid-feedback pt-0">
+			      Ingrese un valor válido
+			    </div>
 					</div>
 
 
@@ -311,7 +314,7 @@
 
 
 		<div class="pt-3 ps-3 me-3 d-flex justify-content-end">
-		<button class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block' style='; --bs-border-opacity: .1;' type='submit' form='form_ingreso_bit' value='Submit'><div class='text-white'>Guardar Bitácora</div></button>
+		<button class='btn pull-right btn-primary shadow-sm border-light' style='; --bs-border-opacity: .1;' type='submit' form='form_ingreso_bit' value='Submit' id='boton'><div class='text-white'>Guardar Bitácora</div></button>
 		</div>
 
 
@@ -328,6 +331,7 @@
 
 	?>
 
+<script type="text/javascript" src="js/not_reload.js"></script>
   <script src="https://unpkg.com/gijgo@1.9.14/js/gijgo.min.js" type="text/javascript"></script>
     <link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript">
@@ -347,7 +351,6 @@
             	);
 
         });
-
 
     </script>
 
@@ -417,7 +420,10 @@ function checkRut(rut) {
       if (!form.checkValidity()) {
         event.preventDefault()
         event.stopPropagation()
-      }
+      } else {
+          // Desactivar el botón de envío del formulario
+          $('#boton').prop('disabled', true);
+        }
 
       form.classList.add('was-validated')
     }, false)

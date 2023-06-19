@@ -335,12 +335,19 @@
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Procedimiento</div><div>".$row_int['procedimiento_i']."</div></div></li>";
 
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Eval.Preanestésica</div><div>".$evaluacion_i."</div></div></li>";
+
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Ventilación</div><div>".$ventilacion_i."</div></div></li>";
+
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Intubación</div><div>".$intubacion_i."</div></div></li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Máscara Laríngea</div><div>".$ayudas_i."</div></div></li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Conductor/Bougie</div><div>".$lma_i."</div></div></li>";
+
+		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Máscara Laríngea</div><div>".$lma_i."</div></div></li>";
+
+		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Conductor/Bougie</div><div>".$ayudas_i."</div></div></li>";
+
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Vía Venosa Periférica</div><div class='text-end'>".$vvp_i."</div></div></li>";
+
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Espinal/Raquidea</div><div class='text-end'>".$espinal_i."</div></div></li>";
+		
 		echo "<input type='hidden' name='bitacora_autoriza_i' value='".$row_int['id_i']."'/>";
 		echo "<li class='list-group-item' style='background-color: #e9effb;'>Comentarios</li>";				
 		echo "<li class='list-group-item mb-2 py-2'><div class='py-4'>".$row_int['comentarios_i']."</div></li>";

@@ -40,6 +40,17 @@ if ($_POST['email_usuario_rec']){
               <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
               <strong>Info!</strong> Se ha cambiado la Contraseña <br>
               </div>
+
+              <div class='row py-5'>
+              <div class='col'>
+              </div>
+              </div>
+
+              <div class='row py-5'>
+              <div class='col'>
+                <a class='btn btn-primary btn-lg shadow' href='login.php'><i class='fa-solid fa-right-to-bracket pe-2'></i>Ir al Login</a>
+              </div>
+              </div>
         ";
         header('Location: login.php'); //página login
         exit();
@@ -123,7 +134,7 @@ if($_GET['962eb831a0df54562eb40fed6bf13b']){
                         </script>
                       </div>
                     </div> 
-
+ 
 
                     <div class='row pt-3'>
                       <div class='col'>
