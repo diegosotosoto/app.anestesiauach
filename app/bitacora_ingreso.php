@@ -71,6 +71,24 @@
 			$comentarios_b=htmlentities(addslashes($_POST['comentarios_b']));
 
 
+	$confirma_bitacora_b="SELECT *  FROM `bitacora_proced` WHERE `rut_b` = '$rut_b' AND `ficha_b` = '$ficha_b' AND `fecha_b` = '$fecha_b' AND `autor_b` = '$autor_b' AND `via_aerea_b` = '$via_aerea_b' AND `vad_b` = '$vad_b' AND `acceso_vascular_b` = '$acceso_vascular_b' AND `invasivo_b` = '$invasivo_b' AND `cvc_b` = '$cvc_b' AND `neuroaxial_b` = '$neuroaxial_b' AND `regional_b` = '$regional_b'";
+	$consulta_cb=$conexion->query($confirma_bitacora_b);
+
+	$respuesta_cb=mysqli_num_rows($consulta_cb);
+
+	if($respuesta_cb>=1){
+
+				echo "
+							<div class='alert alert-danger alert-dismissible fade show'>
+						    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
+						    <strong>Info!</strong> Ya existe un registro ingresado por ".$autor_b." con fecha ".$fecha_b." , para el paciente Rut :".$rut_b.". <strong>No se ha ingresado el nuevo registro</strong>
+						  	</div>
+				";
+
+
+	}else{
+
+
 
 			$consulta_b="INSERT INTO `bitacora_proced` (`autor_b`, `rut_b`, `ficha_b`, `edad_b`, `procedimiento_b`, `fecha_b`, `via_aerea_b`, `vad_b`, `acceso_vascular_b`, `invasivo_b`, `invasivo_eco_b`, `neuroaxial_b`, `regional_b`, `dolor_b`, `staff_b`, `comentarios_b`, `cvc_b`) VALUES ('$autor_b','$rut_b', '$ficha_b', '$edad_b', '$procedimiento_b', '$fecha_b', '$via_aerea_b', '$vad_b', '$acceso_vascular_b', '$invasivo_b', '$invasivo_eco_b', '$neuroaxial_b', '$regional_b', '$dolor_b', '$staff_b', '$comentarios_b', '$cvc_b') ";
 			
@@ -100,7 +118,7 @@
 		}
 
 
-
+}
 
 
 

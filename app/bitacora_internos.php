@@ -64,6 +64,29 @@
 			$comentarios_i=htmlentities(addslashes($_POST['comentarios_i']));
 
 
+	$confirma_bitacora_i="SELECT *  FROM `bitacora_internos` WHERE `rut_i` = '$rut_i' AND `ficha_i` = '$ficha_i' AND `fecha_i` = '$fecha_i' AND `autor_i` = '$autor_i' AND `evaluacion_i` = '$evaluacion_i' AND `ventilacion_i` = '$ventilacion_i' AND `intubacion_i` = '$intubacion_i' AND `lma_i` = '$lma_i' AND `ayudas_i` = '$ayudas_i' AND `vvp_i` = '$vvp_i' AND `espinal_i` = '$espinal_i'";
+
+
+
+
+	$consulta_ci=$conexion->query($confirma_bitacora_i);
+
+
+
+
+	$respuesta_ci=mysqli_num_rows($consulta_ci);
+
+	if($respuesta_ci>=1){
+
+				echo "
+							<div class='alert alert-danger alert-dismissible fade show'>
+						    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
+						    <strong>Info!</strong> Ya existe un registro ingresado por ".$autor_i." con fecha ".$fecha_i." , para el paciente Rut :".$rut_i.". <strong>No se ha ingresado el nuevo registro</strong>
+						  	</div>
+				";
+
+
+	}else{
 
 			$consulta_i="INSERT INTO `bitacora_internos` (`autor_i`, `rut_i`, `ficha_i`, `edad_i`, `procedimiento_i`, `fecha_i`, `evaluacion_i`, `ventilacion_i`, `intubacion_i`, `lma_i`, `ayudas_i`, `vvp_i`, `espinal_i`, `seminario_i`, `staff_i`, `comentarios_i`) VALUES ('$autor_i','$rut_i', '$ficha_i', '$edad_i', '$procedimiento_i', '$fecha_i', '$evaluacion_i', '$ventilacion_i', '$intubacion_i', '$lma_i', '$ayudas_i', '$vvp_i', '$espinal_i', '$seminario_i', '$staff_i', '$comentarios_i') ";
 			
@@ -93,7 +116,7 @@
 
 
 
-
+}
 
 
 
