@@ -10,14 +10,14 @@
 	
 	//redirección segun nivel de usuario
 	$check_usuario=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
-	$con_users_b="SELECT `admin`, `staff_`, `intern_`, `becad_`  FROM `usuarios_dolor` WHERE `email_usuario` = '$check_usuario' ";
+	$con_users_b="SELECT `admin`, `staff_`, `intern_`, `becad_`, `becad_otro` FROM `usuarios_dolor` WHERE `email_usuario` = '$check_usuario' ";
 	$users_b=$conexion->query($con_users_b);
 	$usuario=$users_b->fetch_assoc();
 	if($usuario['admin']==1){
 			//CONTINUA EN LA PAGINA
 		} elseif ($usuario['staff_']==1) {
 			//CONTINUA EN LA PAGINA
-		} elseif ($usuario['intern_']==1) {
+		} elseif ($usuario['intern_']==1 or $usuario['becad_otro']==1) {
 			header('Location: bitacora_internos.php');
 		} elseif ($usuario['becad_']==1) {
 			header('Location: bitacora_ingreso.php');
@@ -63,7 +63,7 @@
 		<form action='bitacora_estadistica.php' method='post'>
 	<ul class='list-group'>
 
-<li class='list-group-item' style='background-color: #e9effb;'><br><h6 class='fw-bold'>Becados: </h6>
+<li class='list-group-item' style='background-color: #e9effb;'><br><h6 class='fw-bold'>Becados de Anestesia: </h6>
 
 
 
@@ -103,7 +103,7 @@
 		<form action='bitacora_estad_i.php' method='post'>
 	<ul class='list-group'>
 
-<li class='list-group-item' style='background-color: #e9effb;'><br><h6 class='fw-bold'>Internos: </h6>
+<li class='list-group-item' style='background-color: #e9effb;'><br><h6 class='fw-bold'>Internos y Otros Becados: </h6>
 
 
 
@@ -115,7 +115,7 @@
 
 
 						<?php 
-							$con_users_b="SELECT `nombre_usuario`,`email_usuario` FROM `usuarios_dolor` WHERE `intern_` = '1' ";
+							$con_users_b="SELECT `nombre_usuario`,`email_usuario` FROM `usuarios_dolor` WHERE `intern_` = '1' OR `becad_otro` = '1' ";
 							$users_b=$conexion->query($con_users_b);
 
 							while ($usuari=$users_b->fetch_assoc()) {

@@ -70,7 +70,13 @@
 				$intern_us="0";
 			}
 
-			$consulta_us="UPDATE `usuarios_dolor` SET `nombre_usuario`='$nombre_us', `email_usuario`='$email_us', `verified`='$verified_us', `admin`='$admin_us', `staff_`='$staff_us', `becad_`='$becad_us', `intern_`='$intern_us'  WHERE `email_usuario`='$email_init'";
+			if($_POST['becad_otro']=="1"){
+				$becad_otro_us="1";
+			}else{
+				$becad_otro_us="0";
+			}			
+
+			$consulta_us="UPDATE `usuarios_dolor` SET `nombre_usuario`='$nombre_us', `email_usuario`='$email_us', `verified`='$verified_us', `admin`='$admin_us', `staff_`='$staff_us', `becad_`='$becad_us', `becad_otro`='$becad_otro_us', `intern_`='$intern_us'  WHERE `email_usuario`='$email_init'";
 			
 
 			$escribir_us=$conexion->query($consulta_us);
@@ -105,7 +111,7 @@
 		<div class='row'>
 <?php 
 
-	$con_users="SELECT `nombre_usuario`,`email_usuario`,`verified`,`admin`,`staff_`,`becad_`,`intern_`  FROM `usuarios_dolor`";
+	$con_users="SELECT `nombre_usuario`,`email_usuario`,`verified`,`admin`,`staff_`,`becad_`,`intern_`,`becad_otro`  FROM `usuarios_dolor` ORDER BY `verified` ASC, `nombre_usuario` ASC";
 
 	$tab_users=$conexion->query($con_users);
 
@@ -137,6 +143,11 @@
 			$becad="";
 		}
 
+		if($row_user['becad_otro']=="1"){ 
+			$becad_otro="checked";
+		}else {
+			$becad_otro="";
+		}
 		if($row_user['intern_']=="1"){ 
 			$intern="checked";
 		}else {
@@ -148,8 +159,9 @@
 		echo "<div class='col'>Verificado <input class='form-check-input' type='checkbox' name='verified' id='verified' value='1' $verified/></div>";
 		echo "<div class='col'>Administrador <input class='form-check-input' type='checkbox' name='admin' id='admin' value='1' $admin/></div>";
 		echo "<div class='col'>Staff <input class='form-check-input' type='checkbox' name='staff' id='staff' value='1' $staff/></div>";
-		echo "<div class='col'>Becad@ <input class='form-check-input' type='checkbox' name='becad' id='becad' value='1' $becad/></div>";
-		echo "<div class='col'>Intern@ <input class='form-check-input' type='checkbox' name='intern' id='intern' value='1' $intern/></div>";		
+		echo "<div class='col'>Becad@ Anestesia<input class='form-check-input' type='checkbox' name='becad' id='becad' value='1' $becad/></div>";
+		echo "<div class='col'>Intern@ <input class='form-check-input' type='checkbox' name='intern' id='intern' value='1' $intern/></div>";
+		echo "<div class='col'>Becad@ Pasante <input class='form-check-input' type='checkbox' name='becad_otro' id='becad_otro' value='1' $becad_otro/></div>";		
 		echo "</br><input type='hidden' name='email_init' value='$email'/>";
 		echo "<div class='col'><button type='submit' value'Submit'>OK</button></div></form></div></br><hr></br><div class='row'>";
 

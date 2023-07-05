@@ -17,7 +17,7 @@
 	require("head.php");
 
 
-		$consulta_corr="SELECT * FROM `usuarios_dolor` WHERE `verified` = '1'";
+		$consulta_corr="SELECT * FROM `usuarios_dolor` WHERE `verified` = '1' ORDER BY `nombre_usuario` ASC";
 		$busqueda_corr=$conexion->query($consulta_corr);
 		
 
@@ -43,9 +43,11 @@
 						} elseif($fila['staff_']=='1'){
 							$calidad='Anestesiólog@';
 						} elseif($fila['becad_']=='1'){
-							$calidad='Becad@';
+							$calidad='Becad@ Anestesia';
 						} elseif($fila['intern_']=='1'){
 							$calidad='Intern@';
+						} elseif($fila['becad_otro']=='1'){
+							$calidad='Becad@ Pasante';
 						} 
 					  
 				echo "<ul class='list-group'><div class='list-group-item py-3' style='font-size: min(max(14px, 1.5vw), 16px)'>

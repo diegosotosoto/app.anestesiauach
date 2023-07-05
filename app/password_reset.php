@@ -93,16 +93,15 @@ if($_GET['962eb831a0df54562eb40fed6bf13b']){
                           <div class='container text-center mt-4 pt-4'>
                             <a href='#' class='btn shadow bg-primary me-2 rounded-3 text-white border-0 py-2' style='height: 150px;width: 320px; background-color: #0050ff;background-image: linear-gradient(45deg, #0050ff 0%, #44B2FF 100%);'>
                             <div class='row pt-4'>
-                              <h2>Nueva Contraseña</h2>
+                              <h3>Nueva Contraseña</h3>
                             </div>
                               <div class='row py-2'>        
-                                <h1><i class='fa-solid fa-key ps-3'></i></h1>
+                                <h4>$email_usuario_rec</h4>
                             </div>
                           </a>
 
                     </div>
                   </div>
-
 
                 ";
 

@@ -114,13 +114,14 @@
 
 			}
 
-		//Expluye Dolor de Cuentas de Internos
+//Saca a los internos y otros becados del area de dolor
 	  $check_usuario=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
-	  $con_users_b="SELECT `intern_`  FROM `usuarios_dolor` WHERE `email_usuario` = '$check_usuario' AND `verified`  = '1'";
+	  $con_users_b="SELECT `intern_`, `becad_otro`   FROM `usuarios_dolor` WHERE `email_usuario` = '$check_usuario'";
 	  $users_b=$conexion->query($con_users_b);
 	  $usuario=$users_b->fetch_assoc();
-	  if($usuario['intern_']!=1){
+	  if($usuario['intern_']==1 or $usuario['becad_otro']==1){
 
+	  }else{
 
 		echo "
 					<div class='row pt-5 ps-0 pe-0'>

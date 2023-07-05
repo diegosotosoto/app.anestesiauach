@@ -13,17 +13,22 @@
 	$conexion->set_charset("utf8");
 
 
-
+//LOGIN NORMAL DE USUARIO YA REGISTRADO
 	if(empty($_POST['email_usuario_v'])){
-		//no hace nada si no hay post
+		//no hace nada si no hay post de la misma pagina login.php
+
+
 	}
-	else{ //cuando existe post
+	else{ //cuando existe post de login.php
 		$email_usuario_v=htmlentities(addslashes($_POST['email_usuario_v']));
 		$pass_usuario_v=htmlentities(addslashes($_POST['pass_usuario_v']));
 
 		$sql="SELECT `password`,`nombre_usuario` FROM `usuarios_dolor` WHERE `email_usuario`= '$email_usuario_v' AND `verified`= '1'";
+
+		//chequea si existe un usuario verificado y contraseña
 		$result_sql=$conexion->query($sql);
 
+		//si NO existe un usuario verificado y contraseña
 		if(mysqli_num_rows($result_sql)==0){
 
 
@@ -34,30 +39,33 @@
 						  	</div>
 		      ";
 
-				}else{
+				}else{ //si EXISTE un usuario verificado y contraseña
+
 				$usuario=$result_sql->fetch_assoc();
 				$confirma_pass=password_verify($pass_usuario_v,$usuario['password']);
-				if($confirma_pass){
 
-					$galletita_mail=$email_usuario_v;
-					$galletita_user=$usuario['nombre_usuario'];
-					setcookie("hkjh41lu4l1k23jhlkj13",$galletita_mail, time()+60*60*24*30*6);
-					setcookie("hkjh41lu4l1k23jhlkj14",$galletita_user, time()+60*60*24*30*6);
+							//chequea contraseña correcta
+								if($confirma_pass){
 
-					header('Location: index.php');
-					
-				}else{
+									$galletita_mail=$email_usuario_v;
+									$galletita_user=$usuario['nombre_usuario'];
+									setcookie("hkjh41lu4l1k23jhlkj13",$galletita_mail, time()+60*60*24*30*6);
+									setcookie("hkjh41lu4l1k23jhlkj14",$galletita_user, time()+60*60*24*30*6);
 
-					$alerta_login =  "
+									header('Location: index.php');
+									
+								}else{
 
-							<div class='alert alert-danger alert-dismissible fade show'>
-						    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
-						    <strong>Info!</strong> Usuario o Contraseña no válidos.
-						  	</div>
+									$alerta_login =  "
 
-		      ";
+											<div class='alert alert-danger alert-dismissible fade show'>
+										    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
+										    <strong>Info!</strong> Usuario o Contraseña no válidos.
+										  	</div>
 
-			}
+						      ";
+
+							}
 	}
 
 }
@@ -79,17 +87,19 @@
 
 					<?php
 
+					//CHEQUEA SI EXISTE POST DESDE PAGINA DE NUEVA CUENTA***
+					if(empty($_POST['email_usuario'])){  //Si el Post viene vacío no hace nada
 
-					if(empty($_POST['email_usuario'])){
+					}else{  //Si EXISTE Post con datos de nueva cuenta
 
-					}else{
 						$email_usuario=htmlentities(addslashes($_POST['email_usuario']));
 						$nombre_usuario=htmlentities(addslashes($_POST['nombre_usuario']));
 						$pass_usuario=htmlentities(addslashes($_POST['pass_usuario']));		
 						$pass_cifrado=password_hash($pass_usuario, PASSWORD_DEFAULT);
 
 
-						$chequea_email="SELECT `email_usuario` FROM `usuarios_dolor` WHERE `email_usuario`= '$email_usuario' AND `verified`= '1'";
+
+						$chequea_email="SELECT `email_usuario` FROM `usuarios_dolor` WHERE `email_usuario`= '$email_usuario'";
 						$result=$conexion->query($chequea_email);
 						$conteo=mysqli_num_rows($result);
 
@@ -113,7 +123,7 @@
 							$alerta_login = "
 											<div class='alert alert-danger alert-dismissible fade show'>
 										    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
-										    <strong>Info!</strong> Error en el registro, contacte al administrador.
+										    <strong>Info!</strong> Al parecer el correo $email_usuario ya se encuentra registrado.<br> Si olvidaste tu contraseña, puedes solicitar una nueva <a href='nuevo_password.php'>Aquí</a>
 										  	</div>
 
 				      ";
@@ -162,7 +172,7 @@
 				    </div>
 				  </div>
 				</div>
-
+ 
 
 
 

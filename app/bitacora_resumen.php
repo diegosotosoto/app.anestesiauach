@@ -10,14 +10,14 @@
 	
 	//redirección segun nivel de usuario
 	$check_usuario=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
-	$con_users_b="SELECT `admin`, `staff_`, `intern_`, `becad_`  FROM `usuarios_dolor` WHERE `email_usuario` = '$check_usuario' ";
+	$con_users_b="SELECT `admin`, `staff_`, `intern_`, `becad_`, `becad_otro`  FROM `usuarios_dolor` WHERE `email_usuario` = '$check_usuario' ";
 	$users_b=$conexion->query($con_users_b);
 	$usuario=$users_b->fetch_assoc();
 	if($usuario['admin']==1){
 			header('Location: bitacora_autoriza.php');
 		} elseif ($usuario['staff_']==1) {
 			header('Location: bitacora_autoriza.php');
-		} elseif ($usuario['intern_']==1) {
+		} elseif ($usuario['intern_']==1 or $usuario['becad_otro']==1) {
  			header('Location: bitacora_internos.php');
 		} elseif ($usuario['becad_']==1) {
 			//CONTINUA EN LA PAGINA
@@ -92,7 +92,7 @@
 
 
 		echo "<ul class='list-group'><form action='bitacora_autoriza.php' method='post'>";
-		echo "<li class='list-group-item' style='background-color: #e9effb;'><br><h6 class='mb-1 pb-3 fw-bold'>Becado: ".$rows['nombre_usuario']."</h6>";
+		echo "<li class='list-group-item' style='background-color: #e9effb;'><br><h6 class='mb-1 pb-3 fw-bold'>Becad@: ".$rows['nombre_usuario']."</h6>";
 		echo "<div class='d-flex justify-content-between'> <div>".$row_user['fecha_b']."</div> <div>".$row_user['rut_b']."</div> <div>".$row_user['ficha_b']."</div> </div></li>";
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Edad</div><div class='text-end'>".$row_user['edad_b']."</div></div></li>";
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Procedimiento</div><div>".$row_user['procedimiento_b']."</div></div></li>";
@@ -185,7 +185,7 @@
 
 
 		echo "<ul class='list-group'><form action='bitacora_autoriza.php' method='post'>";
-		echo "<li class='list-group-item' style='background-color: #e9effb;'><br><h6 class='mb-1 pb-3 fw-bold'>Interno: ".$rows2['nombre_usuario']."</h6>";
+		echo "<li class='list-group-item' style='background-color: #e9effb;'><br><h6 class='mb-1 pb-3 fw-bold'>Becad@/Intern@: ".$rows2['nombre_usuario']."</h6>";
 		echo "<div class='d-flex justify-content-between'> <div>".$row_int['fecha_i']."</div> <div>".$row_int['rut_i']."</div> <div>".$row_int['ficha_i']."</div> </div></li>";
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Edad</div><div class='text-end'>".$row_int['edad_i']."</div></div></li>";
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Procedimiento</div><div>".$row_int['procedimiento_i']."</div></div></li>";

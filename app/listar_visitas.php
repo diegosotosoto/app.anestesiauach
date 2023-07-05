@@ -4,6 +4,16 @@
 	require("valida_pag.php");
 
 
+//Saca a los internos y otros becados del area de dolor
+	  $check_usuario=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
+	  $con_users_b="SELECT `intern_`, `becad_otro`   FROM `usuarios_dolor` WHERE `email_usuario` = '$check_usuario'";
+	  $users_b=$conexion->query($con_users_b);
+	  $usuario=$users_b->fetch_assoc();
+	  if($usuario['intern_']==1 or $usuario['becad_otro']==1){
+	  	header('Location: login.php');
+	  }
+
+
 //2 Variables con conexion
 	//Conexión
 	require("conectar.php");
