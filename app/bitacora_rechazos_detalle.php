@@ -113,9 +113,18 @@
 		$rows = $confirma_int->fetch_assoc();
 
 
+		$string_rut = $row_user['rut_b'];
+		$parts = explode("-", $string_rut);
+		$result_rut = $parts[0];
+
+
 		echo "<ul class='list-group'><form action='bitacora_autoriza.php' method='post'>";
 		echo "<li class='list-group-item' style='background-color: #e9effb;'>";
-		echo "<div class='d-flex justify-content-between'> <div>".$row_user['fecha_b']."</div> <div>".$row_user['rut_b']."</div> <div>".$row_user['ficha_b']."</div> </div></li>";
+		echo "<div class='d-flex justify-content-between'> <div>".$row_user['fecha_b']."</div> <div>
+				<a class='text-decoration-none' href='https://www.hbvaldivia.cl/core/farmacia/receta/0/".$result_rut."' target='_blank'>".$row_user['rut_b']."</a>
+				</div> <div>
+				<a class='text-decoration-none' href='https://www.hbvaldivia.cl/core/farmacia/receta/1/".$row_user['ficha_b']."' target='_blank'>".$row_user['ficha_b']."</a>
+				</div> </div></li>";
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Edad</div><div class='text-end'>".$row_user['edad_b']."</div></div></li>";
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Procedimiento</div><div>".$row_user['procedimiento_b']."</div></div></li>";
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Via Aérea</div><div>".$row_user['via_aerea_b']."</div></div></li>";

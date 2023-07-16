@@ -72,11 +72,24 @@
 		</div>";
 
 
+
+
 		//SUBTITULO
-		echo "<p class='mb-1'>".$fila['rut_v']."</p></li>";
-		echo "<div class='mb-1'></div></li>";
+		$consulta_fc="SELECT `ficha` FROM `pacientes` WHERE `rut` = '$rut_v'";
+		$busqueda_fc=$conexion->query($consulta_fc);
+		$fc=$busqueda_fc->fetch_assoc();
 
+		$string_rut = $fila['rut_v'];
+		$parts = explode("-", $string_rut);
+		$result_rut = $parts[0];
 
+		echo "<p class='mb-1'>Rut:&nbsp;
+				<a class='text-decoration-none' href='https://www.hbvaldivia.cl/core/farmacia/receta/0/".$result_rut."' target='_blank'>".$fila['rut_v']."</a>
+			</p>";
+
+		echo "<p class='mb-1'>FC:&nbsp;
+			<a class='text-decoration-none' href='https://www.hbvaldivia.cl/core/farmacia/receta/1/".$fc['ficha']."' target='_blank'>".$fc['ficha']."</a>
+		</p>";
 
 
 		echo "<li class='list-group-item py-3' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><img class='btn-imagen' src='images/IMG_3987.PNG'/>Exámen Físico</li>";

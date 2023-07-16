@@ -20,7 +20,7 @@
 
 
 
-	
+	 
 //Variable
 		if($_POST['vista']){
 			$formulario=htmlentities(addslashes($_POST['vista']));
@@ -204,11 +204,18 @@
 		</span>";
 		
 
-
+		$string_rut = $fila['rut'];
+		$parts = explode("-", $string_rut);
+		$result_rut = $parts[0];
 
 		
-		echo "<p class='mb-1'>Rut:&nbsp;".$fila['rut']."</p>";
-		echo "<p class='mb-1'>FC:&nbsp;".$fila['ficha']."</p>";
+		echo "<p class='mb-1'>Rut:&nbsp;
+				<a class='text-decoration-none' href='https://www.hbvaldivia.cl/core/farmacia/receta/0/".$result_rut."' target='_blank'>".$fila['rut']."</a>
+			</p>";
+
+		echo "<p class='mb-1'>FC:&nbsp;
+			<a class='text-decoration-none' href='https://www.hbvaldivia.cl/core/farmacia/receta/1/".$fila['ficha']."' target='_blank'>".$fila['ficha']."</a>
+		</p>";
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Unidad&nbsp&nbsp</div><div class='text-end'>".$fila['unidad_cama']."</div></div></li>";
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Procedimiento</div><div>".$fila['procedimiento']."</div></div></li>";	
 		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Analgesia</div><div>".$fila['analgesia']."</div></div></li>";
