@@ -80,7 +80,7 @@ if ($tab_users->num_rows > 0) {
 ?>
 
 <li class='list-group-item text-center' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'>
-	Bitácoras de Internos
+	Bitácoras Intern@s / Becad@s Pasante
 </li>
 
 
