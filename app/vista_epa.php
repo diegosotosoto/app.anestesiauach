@@ -606,8 +606,10 @@ if($_POST['rut_busc']){ //si existe registro enviado mediante post
 
         $i++;
     	}
+    	echo "<div class='py-5 my-5'></div>";
 	} else {
 	    echo "<li class='list-group-item'>No se encontraron resultados</li>";
+	     echo "<div class='py-5 my-5'></div>";
 	}
 	
 } else {
@@ -633,8 +635,10 @@ if($_POST['ficha_busc']){ //si existe registro enviado mediante post
 
         $i++;
     	}
+    	echo "<div class='py-5 my-5'></div>";
 	} else {
 	    echo "<li class='list-group-item'>No se encontraron resultados</li>";
+	    echo "<div class='py-5 my-5'></div>";
 	}
 	
 } else {
