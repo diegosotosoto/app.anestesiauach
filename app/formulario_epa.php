@@ -238,11 +238,11 @@ echo generarInputGral(...$array_temp);
 
 <?php
 
-$array_diagnostico = ["Diagnóstico", true, "diagnostico", "Ingrese un valor válido", $diagnostico_original, "class='form-control mb-2' type='text' pattern='[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]{2,}' required", $is_disabled, ""];
+$array_diagnostico = ["Diagnóstico", true, "diagnostico", "Ingrese un valor válido", $diagnostico_original, "class='form-control mb-2' type='text' required", $is_disabled, ""];
 echo generarInputGral(...$array_diagnostico);
 
 
-$array_intervencion = ["Intervención Propuesta", true, "intervencion", "Ingrese un valor válido", $intervencion_original, "class='form-control mb-2' type='text' pattern='[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]{2,}' required", $is_disabled, ""];
+$array_intervencion = ["Intervención Propuesta", true, "intervencion", "Ingrese un valor válido", $intervencion_original, "class='form-control mb-2' required", $is_disabled, ""];
 echo generarInputGral(...$array_intervencion);
 
 ?>
@@ -1198,10 +1198,10 @@ $fecha_exs_real = transformaInput($fecha_exs);
 
 <?php
 
-$array_hcto = ["Hcto", false, "hcto", "", $hcto, "pattern='^\\d+(\\.\\d{1})?$' class='form-control'", $is_disabled, "%"];
+$array_hcto = ["Hcto", false, "hcto", "", $hcto, "type='number' step='0.1' class='form-control'", $is_disabled, "%"];
 echo generarInputGral(...$array_hcto);
 
-$array_hb = ["Hb", false, "hb", "", $hb, "pattern='^\\d+(\\.\\d{1})?$' class='form-control'", $is_disabled, "mg/dL"];
+$array_hb = ["Hb", false, "hb", "", $hb, "type='number' step='0.1' class='form-control'", $is_disabled, "mg/dL"];
 echo generarInputGral(...$array_hb);
 
 $array_leucocitos = ["Leucocitos", false, "leuc", "", $leuc, "type='number' max='2000' class='form-control'", $is_disabled, "x10^3"];
@@ -1210,10 +1210,10 @@ echo generarInputGral(...$array_leucocitos);
 $array_plaquetas = ["Plaquetas", false, "plaq", "", $plaq, "type='number' max='2000' class='form-control'", $is_disabled, "x10^3"];
 echo generarInputGral(...$array_plaquetas);
 
-$array_creatinina = ["Creatinina", false, "crea", "", $crea, "pattern='^\\d+(\\.\\d{1})?$' class='form-control'", $is_disabled, "mg/dL"];
+$array_creatinina = ["Creatinina", false, "crea", "", $crea, "type='number' step='0.1' class='form-control'", $is_disabled, "mg/dL"];
 echo generarInputGral(...$array_creatinina);
 
-$array_glicemia = ["Glicemia", false, "glic", "", $glic, "pattern='^\\d+(\\.\\d{1})?$' class='form-control'", $is_disabled, "mg/dL"];
+$array_glicemia = ["Glicemia", false, "glic", "", $glic, "type='number' step='0.1' class='form-control'", $is_disabled, "mg/dL"];
 echo generarInputGral(...$array_glicemia);
 
 
@@ -1228,23 +1228,23 @@ $e_cl = transformaInput($e_cl);
 				<div>
 				<div class='d-flex justify-content-between pt-3'><div class='text-muted'>Electrolitos</div><div class="fw-lighter text-muted"><small></small></div></div>
 				<div class="input-group mb-3">
-				  <div class='text-muted px-2'> Na: </div><input type="number"  max="200" class="form-control" name="e_na" id="e_na" <?php echo "value='".$e_na."' ".$is_disabled_html; ?>>
+				  <div class='text-muted px-2'> Na: </div><input type="number" step ="0.1" max="200" class="form-control" name="e_na" id="e_na" <?php echo "value='".$e_na."' ".$is_disabled_html; ?>>
 				  <span class="input-group-text" id="basic-addon2">mEq</span>
 				  <div class='text-muted px-2'> K: </div><input type="number" step ="0.1" max="10" class="form-control" name="e_k" id="e_k" <?php echo "value='".$e_k."' ".$is_disabled_html; ?>>
 				  <span class="input-group-text" id="basic-addon2">mEq</span>
-				  <div class='text-muted px-2'> Cl: </div><input type="number"  max="200" class="form-control" name="e_cl" id="e_cl" <?php echo "value='".$e_cl."' ".$is_disabled_html; ?>>
+				  <div class='text-muted px-2'> Cl: </div><input type="number" step ="0.1" max="200" class="form-control" name="e_cl" id="e_cl" <?php echo "value='".$e_cl."' ".$is_disabled_html; ?>>
 				  <span class="input-group-text" id="basic-addon2">mEq</span>
 				</div></div>
 
 <?php
 
-$array_protrombina = ["Protrombina", false, "tp", "", $tp, "pattern='^\\d+(\\.\\d{1})?$' class='form-control'", $is_disabled, "%"];
+$array_protrombina = ["Protrombina", false, "tp", "", $tp, "type='number' step='0.1' class='form-control'", $is_disabled, "%"];
 echo generarInputGral(...$array_protrombina);
 
-$array_inr = ["INR", false, "inr", "", $inr, "pattern='^\\d+(\\.\\d{1})?$' class='form-control mb-2'", $is_disabled, ""];
+$array_inr = ["INR", false, "inr", "", $inr, "type='number' step='0.01' class='form-control mb-2'", $is_disabled, ""];
 echo generarInputGral(...$array_inr);
 
-$array_ttpa = ["TTPA", false, "ttpa", "", $ttpa, "pattern='^\\d+(\\.\\d{1})?$' class='form-control'", $is_disabled, "seg"];
+$array_ttpa = ["TTPA", false, "ttpa", "", $ttpa, "type='number' step='0.1' class='form-control'", $is_disabled, "seg"];
 echo generarInputGral(...$array_ttpa);
 
 $array_ecg_otros = ["ECG / Otros", false, "otros_exs", "", $otros_exs_original, "class='form-control mb-2' style='resize: none;' maxlength='250' rows='3'", $is_disabled, ""];
