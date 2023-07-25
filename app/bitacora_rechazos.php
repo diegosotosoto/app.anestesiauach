@@ -99,7 +99,6 @@ $i=0;
         <div class='d-flex justify-content-between'><div>" . $row["staff_b"] . "</div><div> " . $row["cantidad"] . "</div></div></a></form>
         <script>function envioForm".$i."() {document.getElementById('gest".$i."').submit(); }</script>
         ";
-
         $i++;
     }
 } else {

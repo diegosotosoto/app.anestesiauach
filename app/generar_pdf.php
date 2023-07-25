@@ -61,7 +61,7 @@
 
 	$editor_codificado=htmlentities($editor_v); //lo recodifica para compararlo con la version codificada de la BD
 
-	$consulta_bec="SELECT `becad_` FROM `usuarios_dolor` WHERE `nombre_usuario` = '$editor_codificado'";
+	$consulta_bec="SELECT `becad_`,`admin`,`staff_` FROM `usuarios_dolor` WHERE `nombre_usuario` = '$editor_codificado'";
 	$confirma_bec=$conexion->query($consulta_bec); 
 	$bec=$confirma_bec->fetch_assoc();
 
@@ -204,7 +204,7 @@
 
 		$pdf->Cell(150,10,"Becado(a) Anestesia",0,0,'R');
 
-	}else {
+	}else if($bec['staff_']==1 or $bec['admin']==1 ){
 
 		$pdf->Cell(150,10,"Anestesiólogo(a)",0,0,'R');
 

@@ -145,31 +145,38 @@
 
 
 ?>
-
-
 			<div class="row pt-5  ps-0 pe-0">
-			    <div class="col text-center  ps-0 pe-0">
-			      <a href='telefonos.php' class="btn shadow btn-success ms-2 rounded-3 border-0 text-white" style="height: 150px;width: 150px; background-color: #6405d0; background-image: linear-gradient(62deg, #6405d0 32%, #9b4df1 78%, #cea3fb 100%);"><i class="fa-solid fa-phone fa-2xl pt-5"></i><div class="text-center pt-3">Teléfonos<br> Frecuentes</div></a>
-			    </div>
-
-			    <div class="col text-center ps-0 pe-0">
-			      <a href="apuntes.php" class="btn shadow me-2 rounded-3 border-0" style="height: 150px;width: 150px; background-color: #fd980f;background-image: linear-gradient(62deg, #fd980f 30%, #f7de68 83%, #fff5b4 100%);
-				"><div class="opacity-75"><i class="fa-solid fa-calculator fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Cálculos</div></div></a>
-			    </div>
-
-
-			</div>
-
-			<div class="row pt-5  ps-0 pe-0">
-
 			    <div class="col text-center ps-0 pe-0">
 			      	<a href="bitacora.php" class="btn shadow btn-danger ms-2 bg-opacity-25 rounded-3 border-0" style="height: 150px;width: 150px; background-color: #CE2E2E; background-image: linear-gradient(62deg, #CE2E2E 25%, #f73f3f 83%, #ff8080 100%);
 					"> <i class="fa-solid fa-clipboard fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Bitácora Procedimientos</div></a>
 			    </div>
 
+
 			    <div class="col text-center ps-0 pe-0">
-			      	<a href="correos.php" class="btn shadow btn-danger me-2 bg-opacity-25 rounded-3 border-0" style="height: 150px;width: 150px; background-color: #29A09B; background-image: linear-gradient(62deg, #29A09B 25%, #7BD3CE 83%, #DDF3F2 100%);
+			      <a href="apuntes.php" class="btn shadow me-2 rounded-3 border-0" style="height: 150px;width: 150px; background-color: #fd980f;background-image: linear-gradient(62deg, #fd980f 30%, #f7de68 83%, #fff5b4 100%);
+				"><div class="opacity-75"><i class="fa-solid fa-calculator fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Cálculos</div></div></a>
+			    </div>
+			</div>
+
+			<div class="row pt-5  ps-0 pe-0">
+			    <div class="col text-center ps-0 pe-0">
+			      	<a href="vista_epa.php" class="btn shadow btn-danger ms-2 bg-opacity-25 rounded-3 border-0" style="height: 150px;width: 150px; background-color: #CE2E2E; background-image: linear-gradient(62deg, #FF5A00 25%, #FD904C 83%, #FFDBBD 100%);
+					"> <i class="fa-solid fa-clipboard fa-2xl pt-4"></i><div class="text-center pt-3 ps-2 pe-2">Evaluación Preanestésica (Beta)</div></a>
+			    </div>
+
+			    <div class="col text-center  ps-0 pe-0">
+			      <a href='telefonos.php' class="btn shadow btn-success me-2 rounded-3 border-0 text-white" style="height: 150px;width: 150px; background-color: #6405d0; background-image: linear-gradient(62deg, #6405d0 32%, #9b4df1 78%, #cea3fb 100%);"><i class="fa-solid fa-phone fa-2xl pt-5"></i><div class="text-center pt-3">Teléfonos<br> Frecuentes</div></a>
+			    </div>
+			</div>
+
+			<div class="row pt-5  ps-0 pe-0">
+			    <div class="col text-center ps-0 pe-0">
+			      	<a href="correos.php" class="btn shadow btn-danger ms-2 bg-opacity-25 rounded-3 border-0" style="height: 150px;width: 150px; background-color: #29A09B; background-image: linear-gradient(62deg, #29A09B 25%, #7BD3CE 83%, #DDF3F2 100%);
 					"> <i class="fa-solid fa-envelope fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Directorio<br>Correos</div></a>
+			    </div>
+
+			    <div class="col text-center ps-0 pe-0">
+
 			    </div>
 			</div>
 
