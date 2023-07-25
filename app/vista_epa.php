@@ -543,7 +543,7 @@ SET
 
 ?>
 
-	<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><div><img class='btn-imagen' src='/images/IMG_3987.PNG'/>Nueva Evaluación Preanestésica</div></li>
+	<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><div><img class='btn-imagen me-3' src='images/IMG_3977.PNG'/>Nueva Evaluación Preanestésica</div></li>
 		<li class='list-group-item  bg-light'>
 
 		<div class='py-3 ps-3 me-3 d-flex mx-auto'>
@@ -554,7 +554,7 @@ SET
 
 	<form class="needs-validation" name="form_busq_epa" id="form_busq_epa" method="post" action="vista_epa.php" novalidate>
 
-	<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><div><img class='btn-imagen' src='/images/IMG_3987.PNG'/>Búscar Evaluaciones Guardadas</div></li>
+	<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><div><img class='btn-imagen me-3' src='images/IMG_3977.PNG'/>Búscar Evaluaciones Guardadas</div></li>
 	<li class='list-group-item  bg-light'>
 		<div class="row pb-3">
 			<div class="col py-2">

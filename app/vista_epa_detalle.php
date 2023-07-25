@@ -76,6 +76,7 @@ $is_disabled = true; // desabilita select, inputs y checkbox //   true / false
 $is_disabled_html = "disabled";// desabilita objetos escritos en html //  disabled / ""
 $is_disabled_html_ta = "readonly disabled"; // desabilita los objetos textarea html // readonly disabled/ ""
 $is_disabled_dp = "1"; //desabilita los datepickers //  1 / ""
+$is_required = "required"; //alergias requeridas** // required / ""
 //******** desabilita lo botones de guardado?
 
 $boton_final = "<span class='float-end pe-3 pb-5'>
