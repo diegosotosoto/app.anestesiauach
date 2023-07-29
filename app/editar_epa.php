@@ -23,11 +23,31 @@
 		$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 		$titulo_navbar="<span class='text-white'></span>";
 		$boton_navbar="<span class='float-end'>
-					<button class=' d-sm-block d-sm-nonebtn btn-primary shadow-sm border-light' style='; --bs-border-opacity: .1;' type='submit' form='epa_guardar' value='Submit'><div class='text-white'><i class='fa-solid fa-floppy-disk pe-2'></i></div></button>
+					<button class=' d-sm-block d-sm-nonebtn btn-primary shadow-sm border-light' style='; --bs-border-opacity: .1;' type='button' form='epa_guardar' data-bs-toggle='modal' data-bs-target='#confirmarModal'><div class='text-white'><i class='fa-solid fa-floppy-disk pe-2'></i></div></button>
 		</span>";
-
+		
 	//Carga Head de la página
 	require("head.php");
+
+echo "
+  <!-- Modal de confirmación -->
+  <div class='modal fade' id='confirmarModal' tabindex='-1' aria-labelledby='confirmarModalLabel' aria-hidden='true'>
+    <div class='modal-dialog'>
+      <div class='modal-content'>
+        <div class='modal-header'>
+          <h5 class='modal-title' id='confirmarModalLabel'>Confirmar Edición</h5>
+          <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+        </div> 
+        <div class='modal-body'>
+          ¿Estás seguro de que deseas guardar los cambios?
+        </div>
+        <div class='modal-footer'>
+          <button type='submit' form='epa_guardar' value='Submit' class='btn btn-danger'>Sí, Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+		";
 
 ?>
     <style>
@@ -63,7 +83,7 @@
 		//BOTÓN A LA DERECHA DEL TITULO class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block'
 		echo "<span class='float-end'>
         	<input type='hidden' name='ID_epa' value='".$ID_epa."'/>
-			<button class='btn btn-primary shadow-sm border-light d-none d-sm-block' style='; --bs-border-opacity: .1;' type='submit' form='epa_guardar' value='Submit'><div class='text-white'><i class='fa-solid fa-floppy-disk pe-2'></i>Guardar</div></button>
+			<button class='btn btn-primary shadow-sm border-light d-none d-sm-block' style='; --bs-border-opacity: .1;' type='button' form='epa_guardar' data-bs-toggle='modal' data-bs-target='#confirmarModal'><div class='text-white'><i class='fa-solid fa-floppy-disk pe-2'></i>Guardar</div></button>
 			</span>";
 
 		//SUBTITULO
@@ -80,7 +100,7 @@ $is_required = ""; //alergias requeridas** // required / ""
 //******** desabilita lo botones de guardado?
 
 $boton_final = "<span class='float-end pe-3 pb-5'>
-			<button class='btn btn-primary shadow-sm border-light' style='; --bs-border-opacity: .1;' type='submit' form='epa_guardar' value='Submit'><div class='text-white'><i class='fa-solid fa-floppy-disk pe-2'></i>Guardar Cambios</div></button>
+						<button class='btn btn-primary shadow-sm border-light d-none d-sm-block' style='; --bs-border-opacity: .1;' type='button' form='epa_guardar' data-bs-toggle='modal' data-bs-target='#confirmarModal'><div class='text-white'><i class='fa-solid fa-floppy-disk pe-2'></i>Guardar Cambios</div></button>
 		</span>";
 
 	$leer_eva_c="SELECT *  FROM `eval_preanestesica` WHERE `ID_epa` = '$ID_epa'";

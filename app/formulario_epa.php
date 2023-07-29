@@ -1,7 +1,26 @@
-
+  
 
  <!-  INCIO DEL FORMULARIO  ->
 
+<?php
+
+////chk_alerg_med,chk_alerg_alim,chk_alerg_latex,alerg
+
+if($chk_alerg_med == '1' or $chk_alerg_alim == '1' or $chk_alerg_latex == '1'){
+
+	if($chk_alerg_med == '1'){ $med = "<div class='badge fs-6 py-2 bg-danger'>Medicamentos</div>"; }
+	if($chk_alerg_alim == '1'){ $alim = "<div class='badge fs-6 py-2 bg-danger'>Alimentos</div>"; }
+	if($chk_alerg_latex == '1'){ $latex = "<div class='badge fs-6 py-2 bg-danger'>Látex</div>"; }
+	if($alerg !== 'NULL'){ $detalle_alerg_ = "<div class='badge fs-6 py-2 bg-danger'>".$alerg."</div>"; }
+
+	echo "<li class='list-group-item'>
+		<div class='badge fs-6 py-2 bg-danger'>Alergia!</div>".$med.$alim.$latex
+	.$detalle_alerg_."</li>";
+
+
+}
+
+?>
 	<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><div class="col-9"><img class='btn-imagen' src='images/IMG_3987.PNG'/>Datos Personales</div></li>
 	<li class='list-group-item'>
 
@@ -9,138 +28,246 @@
 
 function generarInputGral($titulo, $required=false, $id, $feedback, $value, $other,$disabled=false,$span) {
 
-		if ($required == true){
-			$requerido = "Requerido (*)";
-			$required = "required";
-			$el_feedback = "<div class='invalid-feedback pt-1'>".$feedback."</div>";
-		} else {
-			$requerido = "";
-			$required = "";
-			$el_feedback ="";
+		$esconder_campos = $GLOBALS['esconder_campos_nulos'];
+
+		if ($esconder_campos == '1'){
+
+			if($value !== '' and $value !== 'NULL' and $value !== null){
+
+        		if ($required == true){
+					$requerido = "Requerido (*)";
+					$required = "required";
+					$el_feedback = "<div class='invalid-feedback mt-1'>".$feedback."</div>";
+				} else {
+					$requerido = "";
+					$required = "";
+					$el_feedback ="";
+				}
+
+				if ($disabled == true){
+					$disabled = "disabled";
+				} else {
+					$disabled = "";
+				}
+
+				if ($span!==""){
+					$span_a="<div class='input-group'>";
+					$span_b="<span class='input-group-text' id='basic-addon2'> ".$span."</span></div>";
+				}
+
+			    // Generar el texto con el título, contenido y número de elemento
+			    $construyeInpunt = "<div class='d-flex justify-content-between mt-3'><div class='text-muted'>".$titulo."</div><div class='fw-lighter text-muted'><small>".$requerido."</small></div></div>
+			    		".$span_a."
+							<input class='form-control' type='text' name='".$id."' id='".$id."'".$other." value='".$value."' ".$required." ".$disabled.">
+						  ".$span_b."	
+							".$el_feedback." ";
+
+			} else {
+				$construyeInpunt = "";
+			}
+
+		} else{
+
+			    if($value=='NULL'){
+        			$value = "";
+        		}
+
+        		if ($required == true){
+					$requerido = "Requerido (*)";
+					$required = "required";
+					$el_feedback = "<div class='invalid-feedback mt-1'>".$feedback."</div>";
+				} else {
+					$requerido = "";
+					$required = "";
+					$el_feedback ="";
+				}
+
+				if ($disabled == true){
+					$disabled = "disabled";
+				} else {
+					$disabled = "";
+				}
+
+				if ($span!==""){
+					$span_a="<div class='input-group'>";
+					$span_b="<span class='input-group-text' id='basic-addon2'> ".$span."</span></div>";
+				}
+
+			    // Generar el texto con el título, contenido y número de elemento
+			    $construyeInpunt = "<div class='d-flex justify-content-between mt-3'><div class='text-muted'>".$titulo."</div><div class='fw-lighter text-muted'><small>".$requerido."</small></div></div>
+			    		".$span_a."
+							<input class='form-control' type='text' name='".$id."' id='".$id."'".$other." value='".$value."' ".$required." ".$disabled.">
+						  ".$span_b."	
+							".$el_feedback." ";
+
 		}
-
-		if ($disabled == true){
-			$disabled = "disabled";
-		} else {
-			$disabled = "";
-		}
-
-		if ($value=="NULL"){
-			$value="";
-		}
-
-		if ($span!==""){
-			$span_a="<div class='input-group'>";
-			$span_b="<span class='input-group-text' id='basic-addon2'> ".$span."</span></div>";
-		}
-
-
-    // Generar el texto con el título, contenido y número de elemento
-    $construyeInpunt = "<div class='d-flex justify-content-between pt-3'><div class='text-muted'>".$titulo."</div><div class='fw-lighter text-muted'><small>".$requerido."</small></div></div>
-    		".$span_a."
-				<input class='form-control' type='text' name='".$id."' id='".$id."'".$other." value='".$value."' ".$required." ".$disabled.">
-			  ".$span_b."	
-				".$el_feedback." ";
 
     return $construyeInpunt;
 }
 
 
+
 function generarSelect($titulo, $required = false, $id, $options = [], $selectedValue = "", $disabled = false, $feedback = "")
 {
-    $selectOptions = "";
 
-    foreach ($options as $value => $label) {
-        $selected = $value == $selectedValue ? "selected" : "";
-        $selectOptions .= "<option value='$value' $selected>$label</option>";
-    }
+	$esconder_campos = $GLOBALS['esconder_campos_nulos'];
 
-    if ($required) {
-        $requerido = "Requerido (*)";
-        $requiredAttr = "required";
-        $el_feedback = "<div class='invalid-feedback pt-1'>$feedback</div>";
-    } else {
-        $requerido = "";
-        $requiredAttr = "";
-        $el_feedback = "";
-    }
 
-    if ($disabled) {
-        $disabledAttr = "disabled";
-    } else {
-        $disabledAttr = "";
-    }
+		if ($esconder_campos == '1'){
 
-    $selectInput = "
-        <div class='d-flex justify-content-between pt-3'>
-            <div class='text-muted'>$titulo</div>
-            <div class='fw-lighter text-muted'><small>$requerido</small></div>
-        </div>
-        <select class='form-select mb-2' id='$id' name='$id' $requiredAttr $disabledAttr>
-            $selectOptions
-        </select>
-        $el_feedback
-    ";
+			if($selectedValue !== '' and $selectedValue !== 'NULL' and $selectedValue !== null){
+
+				    $selectOptions = "";
+
+				    foreach ($options as $value => $label) {
+				        $selected = $value == $selectedValue ? "selected" : "";
+				        $selectOptions .= "<option value='$value' $selected>$label</option>";
+				    }
+
+				    if ($required) {
+				        $requerido = "Requerido (*)";
+				        $requiredAttr = "required";
+				        $el_feedback = "<div class='invalid-feedback pt-1'>$feedback</div>";
+				    } else {
+				        $requerido = "";
+				        $requiredAttr = "";
+				        $el_feedback = "";
+				    }
+
+				    if ($disabled) {
+				        $disabledAttr = "disabled";
+				    } else {
+				        $disabledAttr = "";
+				    }
+
+				    $selectInput = "
+				        <div class='d-flex justify-content-between pt-3'>
+				            <div class='text-muted'>$titulo</div>
+				            <div class='fw-lighter text-muted'><small>$requerido</small></div>
+				        </div>
+				        <select class='form-select mb-2' id='$id' name='$id' $requiredAttr $disabledAttr>
+				            $selectOptions
+				        </select>
+				        $el_feedback
+				    ";
+			} else {
+
+				$selectInput = "";
+			}
+
+
+		} else{
+
+				    $selectOptions = "";
+
+				    foreach ($options as $value => $label) {
+				        $selected = $value == $selectedValue ? "selected" : "";
+				        $selectOptions .= "<option value='$value' $selected>$label</option>";
+				    }
+
+				    if ($required) {
+				        $requerido = "Requerido (*)";
+				        $requiredAttr = "required";
+				        $el_feedback = "<div class='invalid-feedback pt-1'>$feedback</div>";
+				    } else {
+				        $requerido = "";
+				        $requiredAttr = "";
+				        $el_feedback = "";
+				    }
+
+				    if ($disabled) {
+				        $disabledAttr = "disabled";
+				    } else {
+				        $disabledAttr = "";
+				    }
+
+				    $selectInput = "
+				        <div class='d-flex justify-content-between pt-3'>
+				            <div class='text-muted'>$titulo</div>
+				            <div class='fw-lighter text-muted'><small>$requerido</small></div>
+				        </div>
+				        <select class='form-select mb-2' id='$id' name='$id' $requiredAttr $disabledAttr>
+				            $selectOptions
+				        </select>
+				        $el_feedback
+				    ";
+
+		}
 
     return $selectInput;
 }
 
 
-function generarCheckDoble($t_check1, $id_check1, $checked1 ,$t_check2, $id_check2, $checked2, $is_disabled) {
+function generarCheckDoble($t_check1, $id_check1, $checked1, $is_disabled, $is_required=false, $always_show=false) {
     // Generar el doble con el título, y contenido con id
+
+
+if($checked1 !== "1" and $GLOBALS['esconder_campos_nulos'] == "1" and $always_show==false){
+
+  $texto_cd = "";
+
+} else {
 
 		if($is_disabled==true){
 			$is_disabled_="disabled";
 		}
 
-		if($checked1=='1'){
+		if($checked1!=="1"){
+			$checked1=""; 
+		} else {
 			$checked1="checked";
-		} else {
-			$checked1="";
 		}
 
-		if($checked2=='1'){
-			$checked2="checked";
+		if($is_required==true){
+			$is_required="required";
 		} else {
-			$checked2="";
+			$is_required="";
 		}
 
-    $texto_cd = "<div class='row my-2'>
-					<div class='col'>
+   		 $texto_cd = "<div class='col-6'>
 						<div class='form-check mx-2'>
-						  <input class='form-check-input'  type='checkbox' value='1' id='".$id_check1."' name='".$id_check1."' ".$checked1." ".$is_disabled_.">
-						  <label class='form-check-label float-start' for='".$id_check1."'>"
+						  <input class='form-check-input'  type='checkbox' value='1' id='".$id_check1."' name='".$id_check1."' ".$checked1." ".$is_disabled_." ".$is_required.">
+						  <label class='form-check-label float-start opacity-75' for='".$id_check1."'>"
 						    .$t_check1.
 						  "</label>
 						</div>
-					</div>
-					<div class='col'>
-						<div class='form-check mx-2'>
-						  <input class='form-check-input'  type='checkbox' value='1' id='".$id_check2."' name='".$id_check2."' ".$checked2." ".$is_disabled_.">
-						  <label class='form-check-label float-start' for='".$id_check2."'>"
-						    .$t_check2.
-						  "</label>
-						</div>
-					</div>
-				</div>";
+					</div>";
+
+	}
 
     return $texto_cd;
 }
 
 
-function generarAccordion($icono, $titulo, $contenido, $show="") {
+function generarAccordion($icono, $titulo, $contenido, $valor_elementos=100) {
     // Variable estática para llevar la cuenta de los elementos
     static $nE = 1;
+
+					$show_accordion_ = $GLOBALS['show_accordion'];
+
+					if($show_accordion_ !== 'show'){
+						$revision_sistemas = "#revision_sistemas";
+					}
+
+
+	      	if($show_accordion_ == 'show' and $valor_elementos==0){
+	      	$badge = "<small class='ms-3 mt-0 badge bg-danger'> Negativo </small>";
+					} else {
+					$badge = "";
+					}
+
 
     // Generar el texto con el título, contenido y número de elemento
     $texto = "<div class='accordion-item'>
 		    <h2 class='accordion-header' id='headingOne".$nE."'>
 	      <button class='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#collapseOne".$nE."' aria-expanded='false' aria-controls='collapseOne".$nE."'>
-	      	<i class='".$icono." ps-2 pe-4'></i>"
+	      	<i class='".$icono." mt-0 ps-2 pe-4'></i>"
 	      	.$titulo.
+	      	"".
+					$badge.
 	      	"</button>
 		    </h2>
-		    <div id='collapseOne".$nE."' class='accordion-collapse collapse ".$show."' aria-labelledby='headingOne".$nE."' data-bs-parent='#revision_sistemas'>
+		    <div id='collapseOne".$nE."' class='accordion-collapse collapse ".$show_accordion_."' aria-labelledby='headingOne".$nE."' data-bs-parent='$revision_sistemas'>
 		      <div class='accordion-body'>"
 	      	.$contenido.
 	      	"</div>
@@ -161,23 +288,22 @@ $array_edad = ["Edad",true,"edad","Ingrese un valor válido",$edad_original,"ste
 $array_peso = ["Peso",true,"peso","Ingrese un valor válido",$peso,"step='0.1'",$is_disabled,"Kg"];
 $array_talla = ["Talla",false,"talla","Ingrese un valor válido",$talla,"step='0.1'",$is_disabled,"mt"];
 
+
 	echo generarInputGral(...$array_nombre_paciente);
 	echo generarInputGral(...$array_rut);
 	echo generarInputGral(...$array_ficha);
 	echo generarInputGral(...$array_edad);
 
 
-
-
 $options_sexo = ["" => "","Femenino" => "Femenino","Masculino" => "Masculino","Otro" => "Otro",];
 
 	echo generarSelect("Sexo", true, "sexo", $options_sexo, $sexo_original, $is_disabled, "Ingrese un valor válido");
-
 
 	echo generarInputGral(...$array_peso);
 	echo generarInputGral(...$array_talla);
 
 $array_imc= ["IMC",false,"imc","",$imc,"step='0.1'",true,"Kg/mt2"];
+
 	echo generarInputGral(...$array_imc);
 
 ?>
@@ -218,12 +344,25 @@ $array_imc= ["IMC",false,"imc","",$imc,"step='0.1'",true,"Kg/mt2"];
               <div id='collapseOne' class='accordion-collapse collapse' aria-labelledby='headingOne'>
                 <div class='accordion-body'>
 
-				<div class='d-flex justify-content-between pt-3'><div class='text-muted'>PA (PAS / PAD)</div><div class="fw-lighter text-muted"><small></small></div></div>
+		<div class='d-flex justify-content-between pt-3'><div class='text-muted'>PA (PAS / PAD)</div><div class="fw-lighter text-muted"><small></small></div></div>
 				<div class="input-group mb-2">
-				  <input type="number"  max="300" class="form-control" name="pas" id="pas" <?php echo "value='".$pas."' ".$is_disabled_html; ?>> &nbsp; / &nbsp;
-				  <input type="number"  max="200" class="form-control" name="pad" id="pad" <?php echo "value='".$pad."' ".$is_disabled_html; ?>>
-				  <span class="input-group-text" id="basic-addon2"> mmHg</span>
-				</div>
+
+<?php
+
+	$array_pas=["",false,"pas","",$pas,"type='number'  max='300'",$is_disabled,""];
+	echo generarInputGral(...$array_pas);
+
+?>
+ &nbsp; / &nbsp;
+
+<?php
+
+	$array_pad=["",false,"pad","",$pad,"type='number'  max='300'",$is_disabled,""];
+	echo generarInputGral(...$array_pad);
+
+?>
+		</div>
+
 
 <?php
 
@@ -240,7 +379,6 @@ $array_temp = ["T°", false, "temp", "", $temp, "type='number' max='100' step='0
 echo generarInputGral(...$array_temp);
 
 ?>
-
                 </div>
               </div>
             </div>
@@ -268,13 +406,9 @@ echo generarInputGral(...$array_diagnostico);
 $array_intervencion = ["Intervención Propuesta", true, "intervencion", "Ingrese un valor válido", $intervencion_original, "class='form-control mb-2' required", $is_disabled, ""];
 echo generarInputGral(...$array_intervencion);
 
-?>
-				<div class='text-muted pt-3 text-start'>Fecha Intervención (dd/mm/aaaa)</div>
-				 <div class="input-group date">
-				  <input type="text" class="form-control" name="fecha_int" id="datepicker1<?php echo $is_disabled_dp; ?>" autocomplete="off" <?php echo "value='".$fecha_int_original."' ".$is_disabled_html; ?>>
-				  </div>
+$array_fecha_int = ["Fecha Intervención (dd/mm/aaaa)", true, "fecha_int", "", $fecha_int_original, "autocomplete='off'", $is_disabled, ""];
+echo generarInputGral(...$array_fecha_int);
 
-<?php
 $array_cirujano = ["Cirujano", false, "cirujano", "", $cirujano_original, "", $is_disabled, ""];
 echo generarInputGral(...$array_cirujano);
 
@@ -300,18 +434,33 @@ echo generarSelect("Riesgo", true, "riesgo", $options_riesgo, $riesgo_original, 
                 <div class='accordion-body'>
 
 
-					<div class='text-muted text-start'>Cirugías / Anestesias</div>
-			    	<textarea class="form-control mb-2" style="resize: none;" maxlength="250" rows="2" name="cirugias_prev" id="cirugias_prev" <?php echo $is_disabled_html_ta; ?>><?php echo $cirugias_prev_original ?></textarea>
+<?php
 
-					<div class='text-muted text-start'>Antecedentes Familiares</div>
-			    	<textarea class="form-control mb-2" style="resize: none;" maxlength="250" rows="2" name="antec_familiares" id="antec_familiares" <?php echo $is_disabled_html_ta; ?>><?php echo $antec_familiares_original; ?></textarea>
+			if ($cirugias_prev_original == "" and $esconder_campos_nulos == "1"){
 
-			  <?php
+			} else {
+				echo "<div class='text-muted text-start'>Cirugías / Anestesias</div>
+			    	<textarea class='form-control mb-2' style='resize: none;' maxlength='250' rows='2' name='cirugias_prev' id='cirugias_prev' $is_disabled_html_ta >$cirugias_prev_original</textarea>";
+			   }
 
-				$antec_dc1 = generarCheckDoble('NVPO / Cinetosis', 'nvpo', $nvpo, 'Sospecha HM', 'hipertermia',$hipertermia, $is_disabled);
+			if ($antec_familiares_original == "" and $esconder_campos_nulos == "1"){
+
+			} else {
+				echo "<div class='text-muted text-start'>Antecedentes Familiares</div>
+			    	<textarea class='form-control mb-2' style='resize: none;' maxlength='250' rows='2' name='antec_familiares' id='antec_familiares' $is_disabled_html_ta >$antec_familiares_original</textarea>";
+			   }
+
+
+				$entrada_dc = "<div class='row'>";
+				$salida_dc = "</div>";
+				$antec_dc1 = generarCheckDoble('NVPO / Cinetosis', 'nvpo', $nvpo, $is_disabled);
+				$antec_dc2 = generarCheckDoble('Sospecha HM', 'hipertermia',$hipertermia, $is_disabled);
+				echo $entrada_dc;
 				echo $antec_dc1;
+				echo $antec_dc2;
+				echo $salida_dc;				
 
-				?>
+?>
 
 
                 </div>
@@ -335,11 +484,17 @@ echo generarSelect("Riesgo", true, "riesgo", $options_riesgo, $riesgo_original, 
 		<div class="accordion" id="revision_sistemas">
 
 <!– Subitem Cardio –>
+
 <?php
 
-$cardio_dc1 = generarCheckDoble('HTA', 'ant_hta',$ant_hta, 'ICC', 'ant_icc',$ant_icc, $is_disabled);
-$cardio_dc2 = generarCheckDoble('IAM', 'ant_iam',$ant_iam, 'Valvulopatía', 'ant_valv',$ant_valv, $is_disabled);
-$cardio_dc3 = generarCheckDoble('C.Coronaria/Angor', 'ant_coronaria',$ant_coronaria, 'Arritmia', 'ant_arr',$ant_arr, $is_disabled);
+$cardio_dc1 = generarCheckDoble('HTA', 'ant_hta',$ant_hta,$is_disabled);
+$cardio_dc2 = generarCheckDoble('ICC', 'ant_icc',$ant_icc, $is_disabled);
+
+$cardio_dc3 = generarCheckDoble('IAM', 'ant_iam',$ant_iam, $is_disabled);
+$cardio_dc4 = generarCheckDoble('Valvulopatía', 'ant_valv',$ant_valv, $is_disabled);
+
+$cardio_dc5 = generarCheckDoble('C.Coronaria/Angor', 'ant_coronaria',$ant_coronaria, $is_disabled);
+$cardio_dc6 = generarCheckDoble('Arritmia', 'ant_arr',$ant_arr, $is_disabled);
 
 
 $arr_cardio_oth = ["Otro / Detalles",false, "otro_cardio", "", $otro_cardio_original, "", $is_disabled, ""];
@@ -361,17 +516,42 @@ $cardio_cf_cf = generarSelect("Capacidad Funcional", false, "cf_cf", $options_cf
 $cont_cardio = "
 				<div class='row mx-1'>".$cardio_cf_cf."
 				</div>"
+				.$entrada_dc
 				.$cardio_dc1
 				.$cardio_dc2
 				.$cardio_dc3
+				.$cardio_dc4
+				.$cardio_dc5
+				.$cardio_dc6
+				.$salida_dc				
 				.$cardio_oth;
 
+
+$accordion_cardio = [$cf_cf,$ant_hta,$ant_icc,$ant_iam,$ant_valv,$ant_coronaria,$ant_arr,$otro_cardio_original];
+
+
+function assignZeroIfAllEmpty($array, &$resultVariable) {
+    $isEmpty = true;
+    foreach ($array as $element) {
+        if ($element !== "NULL" and $element !== "") {
+            $isEmpty = false;
+            break;
+        }
+    }
+
+    if ($isEmpty) {
+        $resultVariable = 0;
+    } else {
+         $resultVariable = 100;
+    }
+}
+
+assignZeroIfAllEmpty($accordion_cardio,$array_cardio);
 
 $ico_cardio = "fa-solid fa-heart-pulse";
 $tit_cardio = "Cardiaco";
 
-
-echo generarAccordion($ico_cardio, $tit_cardio, $cont_cardio);
+echo generarAccordion($ico_cardio, $tit_cardio, $cont_cardio, $array_cardio);
 
 ?>
 
@@ -379,24 +559,35 @@ echo generarAccordion($ico_cardio, $tit_cardio, $cont_cardio);
 
 <?php
 
-$respi_dc1 = generarCheckDoble('Asma', 'ant_asma',$ant_asma, 'SAHOS', 'ant_sahos',$ant_sahos, $is_disabled);
-$respi_dc2 = generarCheckDoble('EPOC', 'ant_epoc',$ant_epoc, 'Usuario O2', 'ant_o2',$ant_o2, $is_disabled);
-$respi_dc3 = generarCheckDoble('IRA / NAC', 'ant_nac',$ant_nac, 'Tos', 'ant_tos',$ant_tos, $is_disabled);
+$respi_dc1 = generarCheckDoble('Asma', 'ant_asma',$ant_asma, $is_disabled);
+$respi_dc2 = generarCheckDoble('SAHOS', 'ant_sahos',$ant_sahos, $is_disabled);
+$respi_dc3 = generarCheckDoble('EPOC', 'ant_epoc',$ant_epoc, $is_disabled);
+$respi_dc4 = generarCheckDoble('Usuario O2', 'ant_o2',$ant_o2, $is_disabled);
+$respi_dc5 = generarCheckDoble('IRA / NAC', 'ant_nac',$ant_nac, $is_disabled);
+$respi_dc6 = generarCheckDoble('Tos', 'ant_tos',$ant_tos, $is_disabled);
 
 $arr_respi_oth = ["Otro / Detalles",false, "otro_respirat", "", $otro_respirat_original, "", $is_disabled, ""];
 $respi_oth = generarInputGral(...$arr_respi_oth);
 
-$cont_respi = 
-				$respi_dc1
+$cont_respi = 	$entrada_dc
+				.$respi_dc1
 				.$respi_dc2
 				.$respi_dc3
+				.$respi_dc4
+				.$respi_dc5
+				.$respi_dc6
+				.$salida_dc				
 				.$respi_oth;
+
+
+$accordion_respi = [$ant_asma,$ant_sahos,$ant_epoc,$ant_o2,$ant_nac,$ant_tos,$otro_respirat_original];
+assignZeroIfAllEmpty($accordion_respi,$array_respi);
 
 
 $ico_respi = "fa-solid fa-lungs";
 $tit_respi = "Respiratorio";
 
-echo generarAccordion($ico_respi, $tit_respi, $cont_respi);
+echo generarAccordion($ico_respi, $tit_respi, $cont_respi,$array_respi);
 
 ?>
 
@@ -404,24 +595,35 @@ echo generarAccordion($ico_respi, $tit_respi, $cont_respi);
 
 <?php
 
-$neuro_dc1 = generarCheckDoble('Convulsiones', 'ant_convuls',$ant_convuls, 'ACV / TIA', 'ant_acv',$ant_acv, $is_disabled);
-$neuro_dc2 = generarCheckDoble('PIC Elevada', 'ant_pic',$ant_pic, 'Cefalea', 'ant_cefalea',$ant_cefalea, $is_disabled);
-$neuro_dc3 = generarCheckDoble('Vértigo', 'ant_vertigo',$ant_vertigo, 'Daño Medular', 'ant_medula',$ant_medula, $is_disabled);
-
+$neuro_dc1 = generarCheckDoble('Convulsiones', 'ant_convuls',$ant_convuls, $is_disabled);
+$neuro_dc2 = generarCheckDoble('ACV / TIA', 'ant_acv',$ant_acv, $is_disabled);
+$neuro_dc3 = generarCheckDoble('PIC Elevada', 'ant_pic',$ant_pic, $is_disabled);
+$neuro_dc4 = generarCheckDoble('Cefalea', 'ant_cefalea',$ant_cefalea, $is_disabled);
+$neuro_dc5 = generarCheckDoble('Vértigo', 'ant_vertigo',$ant_vertigo, $is_disabled);
+$neuro_dc6 = generarCheckDoble('Daño Medular', 'ant_medula',$ant_medula, $is_disabled);
 $arr_neuro_oth = ["Otro / Detalles / Glasgow",false, "otro_neuro", "", $otro_neuro_original, "", $is_disabled, ""];
 $neuro_oth = generarInputGral(...$arr_neuro_oth);
+
+
+$accordion_neuro = [$ant_convuls,$ant_acv,$ant_pic,$ant_cefalea,$ant_vertigo,$ant_medula,$otro_neuro_original];
+assignZeroIfAllEmpty($accordion_neuro,$array_neuro);
+
 
 $ico_neuro = "fa-solid fa-brain";
 $tit_neuro = "Neurológico";
 
-$cont_neuro = 
-				$neuro_dc1
+$cont_neuro = 	$entrada_dc
+				.$neuro_dc1
 				.$neuro_dc2
 				.$neuro_dc3
+				.$neuro_dc4
+				.$neuro_dc5
+				.$neuro_dc6
+				.$salida_dc				
 				.$neuro_oth;
 
 
-echo generarAccordion($ico_neuro,$tit_neuro,$cont_neuro);
+echo generarAccordion($ico_neuro,$tit_neuro,$cont_neuro,$array_neuro);
 
 ?>
 
@@ -429,22 +631,31 @@ echo generarAccordion($ico_neuro,$tit_neuro,$cont_neuro);
 
 <?php
 
-$hepato_dc1 = generarCheckDoble('Hepatitis', 'ant_hepatitis',$ant_hepatitis, 'Cirrosis', 'ant_cirrosis',$ant_cirrosis, $is_disabled);
-$hepato_dc2 = generarCheckDoble('Ictericia', 'ant_ictericia',$ant_ictericia, 'Ascitis', 'ant_ascitis',$ant_ascitis, $is_disabled);
+$hepato_dc1 = generarCheckDoble('Hepatitis', 'ant_hepatitis',$ant_hepatitis, $is_disabled);
+$hepato_dc2 = generarCheckDoble( 'Cirrosis', 'ant_cirrosis',$ant_cirrosis, $is_disabled);
+$hepato_dc3 = generarCheckDoble('Ictericia', 'ant_ictericia',$ant_ictericia, $is_disabled);
+$hepato_dc4 = generarCheckDoble('Ascitis', 'ant_ascitis',$ant_ascitis, $is_disabled);
 
 $arr_hepato_oth = ["Otro / Detalles / CHILD-MELD",false, "otro_hepatico", "", $otro_hepatico_original, "", $is_disabled, ""];
 $hepato_oth = generarInputGral(...$arr_hepato_oth);
 
+$accordion_hepato = [$ant_hepatitis,$ant_cirrosis,$ant_ictericia,$ant_ascitis,$otro_hepatico_original];
+assignZeroIfAllEmpty($accordion_hepato,$array_hepato);
+
+
 $ico_hepato = "fa-solid fa-gears";
 $tit_hepato = "Hepático";
 
-$cont_hepato = 
-				$hepato_dc1
+$cont_hepato = 	$entrada_dc
+				.$hepato_dc1
 				.$hepato_dc2
+				.$hepato_dc3
+				.$hepato_dc4
+				.$salida_dc				
 				.$hepato_oth;
 
 
-echo generarAccordion($ico_hepato,$tit_hepato,$cont_hepato);
+echo generarAccordion($ico_hepato,$tit_hepato,$cont_hepato,$array_hepato);
 
 ?>
 
@@ -453,51 +664,39 @@ echo generarAccordion($ico_hepato,$tit_hepato,$cont_hepato);
 
 <?php
 
-$nefro_dc1 = generarCheckDoble('ERC', 'ant_erc',$ant_erc, 'AKI', 'ant_aki',$ant_aki, $is_disabled);
+$nefro_dc1 = generarCheckDoble('ERC', 'ant_erc',$ant_erc, $is_disabled);
+$nefro_dc2 = generarCheckDoble( 'AKI', 'ant_aki',$ant_aki, $is_disabled);
+$nefro_dc3 = generarCheckDoble( 'Hemodiálisis', 'chk_hd',$chk_hd, $is_disabled);
 
 $arr_nefro_oth = ["Otro / Detalles / VFG",false, "otro_renal", "", $otro_renal_original, "", $is_disabled, ""];
 $nefro_oth = generarInputGral(...$arr_nefro_oth);
 
+
+$accordion_nefro = [$ant_erc,$ant_aki,$chk_hd,$ultima_hd,$otro_renal_original];
+assignZeroIfAllEmpty($accordion_nefro,$array_nefro);
+
+
 $ico_nefro = "fa-solid fa-filter";
 $tit_nefro= "Renal";
 
+$arr_nefro_uhd = ["Última Diálisis",false, "ultima_hd", "", $ultima_hd, "class='form-control my-input2'", true, ""];
+$nefro_ultima_hd = generarInputGral(...$arr_nefro_uhd);
 
-function transformaCheck($value){
-		if($value=='1'){
-			$value="checked";
-		} else {
-			$value="";
-		}
-		return $value;
-}
 
-$chk_hd = transformaCheck($chk_hd);
-
-$cont_nefro = 
-				$nefro_dc1.
-				"<div class='row my-3 mx-1'>
-					<div class='col-4'>
-						<div class='form-check'>
-						  <input class='form-check-input'  type='checkbox' value='1' id='chk_hd' name='chk_hd' ".$is_disabled_html." ".$chk_hd.">
-						  <label class='form-check-label float-start' for='chk_hd'>
-						    Hemodiálisis
-						  </label>
-						</div>
-					</div>
-					<div class='col-8'>
-						<label class='float-start' for='ultima_hd'>Última</label>
-						<input type='text' class='form-control my-input2' name='ultima_hd' id='ultima_hd' value='".$ultima_hd."' disabled>
-					</div>
-				</div>
-
-				<script>
+$cont_nefro = 	$entrada_dc
+				.$nefro_dc1
+				.$nefro_dc2
+				.$nefro_dc3
+				.$salida_dc
+				.$nefro_ultima_hd
+				."<script>
 				$(document).ready(function() {
 				  $('#chk_hd').change(function() {
 				    if ($(this).is(':checked')) {
-				      $('.my-input2').prop('disabled', false);
+				      $('#ultima_hd').prop('disabled', false); //SUBITEM NO ES REQUIRED
 				      $('#ultima_hd').prop('required', true);		      
 				    } else {
-				      $('.my-input2').prop('disabled', true);
+				      $('#ultima_hd').prop('disabled', true);
 				      $('#ultima_hd').prop('required', false);						      
 				    }
 				  });
@@ -506,7 +705,7 @@ $cont_nefro =
 				.$nefro_oth;
 
 
-echo generarAccordion($ico_nefro,$tit_nefro,$cont_nefro);
+echo generarAccordion($ico_nefro,$tit_nefro,$cont_nefro,$array_nefro);
 
 ?>
 
@@ -514,24 +713,34 @@ echo generarAccordion($ico_nefro,$tit_nefro,$cont_nefro);
 
 <?php
 
-$gastro_dc1 = generarCheckDoble('Reflujo GE', 'ant_rge',$ant_rge, 'H. Hiatal', 'ant_hiatal',$ant_hiatal, $is_disabled);
-$gastro_dc2 = generarCheckDoble('Ulcera GD', 'ant_ugd',$ant_ugd, 'Obstr. Intestinal', 'ant_obstr',$ant_obstr, $is_disabled);
-$gastro_dc3 = generarCheckDoble('Gastritis Ag/Cr', 'ant_gastritis',$ant_gastritis, 'Vómito/Diarrea', 'ant_vomito',$ant_vomito, $is_disabled);
+$gastro_dc1 = generarCheckDoble('Reflujo GE', 'ant_rge',$ant_rge,  $is_disabled);
+$gastro_dc2 = generarCheckDoble('H. Hiatal', 'ant_hiatal',$ant_hiatal, $is_disabled);
+$gastro_dc3 = generarCheckDoble('Ulcera GD', 'ant_ugd',$ant_ugd,$is_disabled);
+$gastro_dc4 = generarCheckDoble('Obstr. Intestinal', 'ant_obstr',$ant_obstr, $is_disabled);
+$gastro_dc5 = generarCheckDoble('Gastritis Ag/Cr', 'ant_gastritis',$ant_gastritis, $is_disabled);
+$gastro_dc6 = generarCheckDoble('Vómito/Diarrea', 'ant_vomito',$ant_vomito, $is_disabled);
 
 $arr_gastro_oth = ["Otro / Detalles",false, "otro_gastro", "", $otro_gastro_original, "", $is_disabled, ""];
 $gastro_oth = generarInputGral(...$arr_gastro_oth);
 
+$accordion_gastro = [$ant_rge,$ant_hiatal,$ant_ugd,$ant_obstr,$ant_gastritis,$ant_vomito,$otro_gastro_original];
+assignZeroIfAllEmpty($accordion_gastro,$array_gastro);
+
 $ico_gastro = "fa-solid fa-cookie-bite";
 $tit_gastro = "Gastrointestinal";
 
-$cont_gastro = 
-				$gastro_dc1
+$cont_gastro = 	$entrada_dc
+				.$gastro_dc1
 				.$gastro_dc2
 				.$gastro_dc3
+				.$gastro_dc4
+				.$gastro_dc5
+				.$gastro_dc6	
+				.$salida_dc	
 				.$gastro_oth;
 
 
-echo generarAccordion($ico_gastro,$tit_gastro,$cont_gastro);
+echo generarAccordion($ico_gastro,$tit_gastro,$cont_gastro,$array_gastro);
 
 ?>
 
@@ -539,25 +748,35 @@ echo generarAccordion($ico_gastro,$tit_gastro,$cont_gastro);
 
 <?php
 
-$hemato_dc1 = generarCheckDoble('Anemia', 'ant_anemia',$ant_anemia, 'Tx Previas', 'ant_tx',$ant_tx, $is_disabled);
-$hemato_dc2 = generarCheckDoble('Coagulopatía', 'ant_coagulop',$ant_coagulop, 'R.A. Transfusional', 'ant_reactx',$ant_reactx, $is_disabled);
-$hemato_dc3 = generarCheckDoble('Trombocitopenia', 'ant_trombocit',$ant_trombocit, 'Recibe Tx.', 'ant_aceptatx',$ant_aceptatx, $is_disabled);
+$hemato_dc1 = generarCheckDoble('Anemia', 'ant_anemia',$ant_anemia, $is_disabled);
+$hemato_dc2 = generarCheckDoble('Tx Previas', 'ant_tx',$ant_tx, $is_disabled);
+$hemato_dc3 = generarCheckDoble('Coagulopatía', 'ant_coagulop',$ant_coagulop, $is_disabled);
+$hemato_dc4 = generarCheckDoble('R.Adversa Tx', 'ant_reactx',$ant_reactx, $is_disabled);
+$hemato_dc5 = generarCheckDoble('Trombocitopenia', 'ant_trombocit',$ant_trombocit,$is_disabled);
+$hemato_dc6 = generarCheckDoble( 'Recibe Tx.', 'ant_aceptatx',$ant_aceptatx, $is_disabled);
 
 $arr_hemato_oth = ["Otro / Detalles",false, "otro_hemato", "", $otro_hemato_original, "", $is_disabled, ""];
 $hemato_oth = generarInputGral(...$arr_hemato_oth);
 
 
+$accordion_hemato = [$ant_anemia,$ant_tx,$ant_coagulop,$ant_reactx,$ant_trombocit,$ant_aceptatx,$otro_hemato_original];
+assignZeroIfAllEmpty($accordion_hemato,$array_hemato);
+
 $ico_hemato = "fa-solid fa-droplet";
 $tit_hemato = "Hematología";
 
-$cont_hemato = 
-				$hemato_dc1
+$cont_hemato = 	$entrada_dc
+				.$hemato_dc1
 				.$hemato_dc2
 				.$hemato_dc3
+				.$hemato_dc4
+				.$hemato_dc5
+				.$hemato_dc6
+				.$salida_dc							
 				.$hemato_oth;
 
 
-echo generarAccordion($ico_hemato,$tit_hemato,$cont_hemato);
+echo generarAccordion($ico_hemato,$tit_hemato,$cont_hemato,$array_hemato);
 
 ?>
 
@@ -566,22 +785,30 @@ echo generarAccordion($ico_hemato,$tit_hemato,$cont_hemato);
 
 <?php
 
-$endocrino_dc1 = generarCheckDoble('Hipotiroidismo', 'ant_hipot',$ant_hipot, 'Diabetes', 'ant_dm',$ant_dm, $is_disabled);
-$endocrino_dc2 = generarCheckDoble('Hipertiroidismo', 'ant_hipert',$ant_hipert, 'Uso Corticoides', 'ant_corticoid',$ant_corticoid, $is_disabled);
+$endocrino_dc1 = generarCheckDoble('Hipotiroidismo', 'ant_hipot',$ant_hipot, $is_disabled);
+$endocrino_dc2 = generarCheckDoble('Diabetes', 'ant_dm',$ant_dm, $is_disabled);
+$endocrino_dc3 = generarCheckDoble('Hipertiroidismo', 'ant_hipert',$ant_hipert, $is_disabled);
+$endocrino_dc4 = generarCheckDoble('Uso Corticoides', 'ant_corticoid',$ant_corticoid, $is_disabled);
 
 $arr_endocrino_oth = ["Otro / Detalles",false, "otro_endocrino", "", $otro_endrocrino_original, "", $is_disabled, ""];
 $endocrino_oth = generarInputGral(...$arr_endocrino_oth);
 
+$accordion_endocrino = [$ant_hipot,$ant_dm,$ant_hipert,$ant_corticoid,$otro_endrocrino_original];
+assignZeroIfAllEmpty($accordion_endocrino,$array_endocrino);
+
 $ico_endocrino = "fa-solid fa-cloud";
 $tit_endocrino = "Endocrino";
 
-$cont_endocrino = 
-				$endocrino_dc1
+$cont_endocrino = $entrada_dc
+				.$endocrino_dc1
 				.$endocrino_dc2
+				.$endocrino_dc3
+				.$endocrino_dc4
+				.$salida_dc			
 				.$endocrino_oth;
 
 
-echo generarAccordion($ico_endocrino,$tit_endocrino,$cont_endocrino);
+echo generarAccordion($ico_endocrino,$tit_endocrino,$cont_endocrino,$array_endocrino);
 
 ?>
 
@@ -589,22 +816,30 @@ echo generarAccordion($ico_endocrino,$tit_endocrino,$cont_endocrino);
 
 <?php
 
-$musculo_dc1 = generarCheckDoble('Dolor Lumbar', 'ant_dlumbar',$ant_dlumbar, 'Artritis/AR', 'ant_artritis',$ant_artritis, $is_disabled);
-$musculo_dc2 = generarCheckDoble('Distrofia Muscular', 'ant_distrofia',$ant_distrofia, 'Escoliosis', 'ant_escoliosis',$ant_escoliosis, $is_disabled);
+$musculo_dc1 = generarCheckDoble('Dolor Lumbar', 'ant_dlumbar',$ant_dlumbar, $is_disabled);
+$musculo_dc2 = generarCheckDoble('Artritis/AR', 'ant_artritis',$ant_artritis, $is_disabled);
+$musculo_dc3 = generarCheckDoble('Distrofia Muscular', 'ant_distrofia',$ant_distrofia, $is_disabled);
+$musculo_dc4 = generarCheckDoble('Escoliosis', 'ant_escoliosis',$ant_escoliosis, $is_disabled);
 
 $arr_musculo_oth = ["Otro / Detalles",false, "otro_musculo", "", $otro_musculo_original, "", $is_disabled, ""];
 $musculo_oth = generarInputGral(...$arr_musculo_oth);
 
+$accordion_musculo = [$ant_dlumbar,$ant_artritis,$ant_distrofia,$ant_escoliosis,$otro_musculo_original];
+assignZeroIfAllEmpty($accordion_musculo,$array_musculo);
+
 $ico_musculo = "fa-solid fa-person-running";
 $tit_musculo = "Musculoesquelético";
 
-$cont_musculo = 
-				$musculo_dc1
+$cont_musculo = $entrada_dc
+				.$musculo_dc1
 				.$musculo_dc2
+				.$musculo_dc3
+				.$musculo_dc4
+				.$salida_dc
 				.$musculo_oth;
 
 
-echo generarAccordion($ico_musculo,$tit_musculo,$cont_musculo);
+echo generarAccordion($ico_musculo,$tit_musculo,$cont_musculo,$array_musculo);
 
 ?>
 
@@ -612,22 +847,30 @@ echo generarAccordion($ico_musculo,$tit_musculo,$cont_musculo);
 
 <?php
 
-$mental_dc1 = generarCheckDoble('Depresión', 'ant_depresion',$ant_depresion, 'Esquizofrenia', 'ant_eqz',$ant_eqz, $is_disabled);
-$mental_dc2 = generarCheckDoble('Tr. Ansiedad', 'ant_ansiedad',$ant_ansiedad, 'Psicofármacos', 'ant_psicofarmacos',$ant_psicofarmacos, $is_disabled);
+$mental_dc1 = generarCheckDoble('Depresión', 'ant_depresion',$ant_depresion, $is_disabled);
+$mental_dc2 = generarCheckDoble('Esquizofrenia', 'ant_eqz',$ant_eqz, $is_disabled);
+$mental_dc3 = generarCheckDoble('Tr. Ansiedad', 'ant_ansiedad',$ant_ansiedad, $is_disabled);
+$mental_dc4 = generarCheckDoble('Psicofármacos', 'ant_psicofarmacos',$ant_psicofarmacos, $is_disabled);
 
 $arr_mental_oth = ["Otro / Detalles",false, "otro_mental", "", $otro_mental_original, "", $is_disabled, ""];
 $mental_oth = generarInputGral(...$arr_mental_oth);
 
+$accordion_mental = [$ant_depresion,$ant_eqz,$ant_ansiedad,$ant_psicofarmacos,$otro_mental_original];
+assignZeroIfAllEmpty($accordion_mental,$array_mental);
+
 $ico_mental = "fa-solid fa-face-frown";
 $tit_mental = "Salud Mental";
 
-$cont_mental = 
-				$mental_dc1
+$cont_mental = 	$entrada_dc
+				.$mental_dc1
 				.$mental_dc2
+				.$mental_dc3
+				.$mental_dc4
+				.$salida_dc
 				.$mental_oth;
 
 
-echo generarAccordion($ico_mental,$tit_mental,$cont_mental);
+echo generarAccordion($ico_mental,$tit_mental,$cont_mental,$array_mental);
 
 ?>
 
@@ -635,8 +878,8 @@ echo generarAccordion($ico_mental,$tit_mental,$cont_mental);
 
 <?php
 
-$gine_dc1 = generarCheckDoble('ACO', 'ant_aco',$ant_aco, 'Menopausia', 'ant_meno',$ant_meno, $is_disabled);
-
+$gine_dc1 = generarCheckDoble('ACO', 'ant_aco',$ant_aco, $is_disabled);
+$gine_dc2 = generarCheckDoble('Menopausia', 'ant_meno',$ant_meno, $is_disabled);
 
 $arr_gine_formula = ["Fórmula Obstétrica",false, "ant_formulaob", "", $ant_formulaob, "", $is_disabled, ""];
 $gine_formula = generarInputGral(...$arr_gine_formula);
@@ -644,20 +887,33 @@ $gine_formula = generarInputGral(...$arr_gine_formula);
 $arr_gine_oth = ["Otro / Detalles",false, "otro_gine", "", $otro_gine_original, "", $is_disabled, ""];
 $gine_oth = generarInputGral(...$arr_gine_oth);
 
+$arr_gine_oth = ["Otro / Detalles",false, "otro_gine", "", $otro_gine_original, "", $is_disabled, ""];
+$gine_oth = generarInputGral(...$arr_gine_oth);
+
+$arr_ant_fur = ["Fecha Última Regla (dd/mm/aaaa)",false, "ant_fur", "", $ant_fur, "autocomplete='off'", $is_disabled, ""];
+$gine_ant_fur = generarInputGral(...$arr_ant_fur);
+
+
+$accordion_gine = [$ant_aco,$ant_meno,$ant_formulaob,$ant_fur,$otro_gine_original];
+assignZeroIfAllEmpty($accordion_gine,$array_gine);
+
 $ico_gine = "fa-solid fa-person-pregnant";
 $tit_gine = "Ant. Gineco-Ostétricos";
 
-$cont_gine = 
-				$gine_dc1.
-				"	<div class='text-muted text-start'>Fecha Última Regla (dd/mm/aaaa)</div>
-				 <div class='input-group date'>
-				  <input type='text' class='form-control' name='ant_fur' value='".$ant_fur."' id='datepicker2".$is_disabled_dp."' autocomplete='off' ".$is_disabled_html.">
-				  </div>"
+
+
+
+
+$cont_gine = 	$entrada_dc
+				.$gine_dc1
+				.$gine_dc2
+				.$salida_dc
+				.$gine_ant_fur
 				.$gine_formula
 				.$gine_oth;
 
 
-echo generarAccordion($ico_gine,$tit_gine,$cont_gine);
+echo generarAccordion($ico_gine,$tit_gine,$cont_gine,$array_gine);
 
 ?>
 
@@ -681,10 +937,7 @@ echo generarAccordion($ico_gine,$tit_gine,$cont_gine);
 
 <?php
 
-$chk_emb = transformaCheck($chk_emb);
-$chk_oh = transformaCheck($chk_oh);
-$chk_tabaco = transformaCheck($chk_tabaco);
-$chk_drogas = transformaCheck($chk_drogas);
+
 
 
 function transformaInput($value){
@@ -699,73 +952,86 @@ $frecuencia_oh = transformaInput($frecuencia_oh);
 $cig_dia = transformaInput($cig_dia);
 $detalle_drogas = transformaInput($detalle_drogas);
 
-
-
 ?>
 
 				<div class="row">
+
+<?php
+echo generarCheckDoble('Embarazo', 'chk_emb',$chk_emb, $is_disabled);
+?>
+					<div class="col-6 px-2">
+					</div>
 					<div class="col-4 px-2">
-						<div class="form-check px-4">
-						  <input class="form-check-input"  type="checkbox" value="1" id="chk_emb" name="chk_emb" <?php echo $is_disabled_html." ".$chk_emb; ?>>
-						  <label class="form-check-label float-start" for="chk_emb">
-						    Embarazo
-						  </label>
-						</div>
 					</div>
 					<div class="col-8 px-2">
-						<label class="float-start" for="ultima_hd">E.Gestacional</label>
-						<input type="text" class="form-control my-input3" name="e_gestacional" id="e_gestacional" value="<?php echo $e_gestacional;?>" disabled>
+<?php
+
+$arr_e_estacional = ["E.Gestacional",false, "e_gestacional", "", $e_gestacional, "autocomplete='off'", true, ""];
+echo generarInputGral(...$arr_e_estacional);
+
+?>
 					</div>
 				</div>
 
-				<hr class="opacity-25">
-
 				<div class="row">
+
+<?php
+echo generarCheckDoble('OH', 'chk_oh',$chk_oh, $is_disabled);
+?>
+					<div class="col-6 px-2">
+					</div>
 					<div class="col-4 px-2">
-						<div class="form-check px-4">
-						  <input class="form-check-input"  type="checkbox" value="1" id="chk_oh" name="chk_oh" <?php echo $is_disabled_html." ".$chk_oh; ?>>
-						  <label class="form-check-label float-start" for="chk_oh">
-						    OH
-						  </label>
-						</div>
 					</div>
 					<div class="col-8 px-2">
-						<label class="float-start" for="ultima_hd">Frecuencia</label>
-						<input type="text" class="form-control my-input4" name="frecuencia_oh" id="frecuencia_oh" value="<?php echo $frecuencia_oh;?>" disabled>
+<?php
+
+				$arr_frec_oh = ["Frecuencia",false, "frecuencia_oh", "", $frecuencia_oh, "autocomplete='off'", true, ""];
+				echo generarInputGral(...$arr_frec_oh);
+
+?>
 					</div>
 				</div>
 
-				<hr class="opacity-25">
-
 				<div class="row">
+
+<?php
+echo generarCheckDoble('Tabaco', 'chk_tabaco',$chk_tabaco, $is_disabled);
+?>
+	
+					<div class="col-6 px-2">
+					</div>
 					<div class="col-4 px-2">
-						<div class="form-check px-4">
-						  <input class="form-check-input"  type="checkbox" value="1" id="chk_tabaco" name="chk_tabaco" <?php echo $is_disabled_html." ".$chk_tabaco ?>>
-						  <label class="form-check-label float-start" for="chk_tabaco">
-						    Tabaco
-						  </label>
-						</div>
 					</div>
 					<div class="col-8 px-2">
-						<label class="float-start" for="ultima_hd">Cigarrillos /dia</label>
-						<input type="text" class="form-control my-input5" name="cig_dia" id="cig_dia" value="<?php echo $cig_dia;?>" disabled>
+
+<?php
+
+				$arr_cig_dia = ["Cigarrillos /dia",false, "cig_dia", "", $cig_dia, "autocomplete='off'", true, ""];
+				echo generarInputGral(...$arr_cig_dia);
+
+?>						
 					</div>
 				</div>
 
-				<hr class="opacity-25">
-
 				<div class="row">
-					<div class="col-4 px-2">
-						<div class="form-check px-4">
-						  <input class="form-check-input"  type="checkbox" value="1" id="chk_drogas" name="chk_drogas" <?php echo $is_disabled_html." ".$chk_drogas ?>>
-						  <label class="form-check-label float-start" for="chk_drogas">
-						    Drogas
-						  </label>
-						</div>
+
+
+<?php
+echo generarCheckDoble('Drogas', 'chk_drogas',$chk_drogas, $is_disabled);
+?>
+	
+					<div class="col-6 px-2">
 					</div>
+					<div class="col-4 px-2">
+					</div>
+
 					<div class="col-8 px-2">
-						<label class="float-start" for="ultima_hd">Detalle</label>
-						<input type="text" class="form-control my-input6" name="detalle_drogas" id="detalle_drogas" value="<?php echo $detalle_drogas;?>" disabled>
+<?php
+
+				$arr_detalle_drogas = ["Detalle",false, "detalle_drogas", "", $detalle_drogas, "autocomplete='off'", true, ""];
+				echo generarInputGral(...$arr_detalle_drogas);
+
+?>	
 					</div>
 				</div>
 
@@ -774,30 +1040,30 @@ $detalle_drogas = transformaInput($detalle_drogas);
 				$(document).ready(function() {
 				  $('#chk_emb').change(function() {
 				    if ($(this).is(':checked')) {
-				      $('.my-input3').prop('disabled', false);
+				      $('#e_gestacional').prop('disabled', false);
 				    } else {
-				      $('.my-input3').prop('disabled', true);
+				      $('#e_gestacional').prop('disabled', true);
 				    }
 				  });
 				  $('#chk_oh').change(function() {
 				    if ($(this).is(':checked')) {
-				      $('.my-input4').prop('disabled', false);
+				      $('#frecuencia_oh').prop('disabled', false);
 				    } else {
-				      $('.my-input4').prop('disabled', true);
+				      $('#frecuencia_oh').prop('disabled', true);
 				    }
 				  });
 				  $('#chk_tabaco').change(function() {
 				    if ($(this).is(':checked')) {
-				      $('.my-input5').prop('disabled', false);
+				      $('#cig_dia').prop('disabled', false);
 				    } else {
-				      $('.my-input5').prop('disabled', true);
+				      $('#cig_dia').prop('disabled', true);
 				    }
 				  });
 				  $('#chk_drogas').change(function() {
 				    if ($(this).is(':checked')) {
-				      $('.my-input6').prop('disabled', false);
+				      $('#detalle_drogas').prop('disabled', false);
 				    } else {
-				      $('.my-input6').prop('disabled', true);
+				      $('#detalle_drogas').prop('disabled', true);
 				    }
 				  });
 				});
@@ -876,62 +1142,28 @@ echo generarInputGral(...$array_indic6);
 
 <?php
 
-$chk_alerg = transformaCheck($chk_alerg);
-$chk_alerg_no = transformaCheck($chk_alerg_no);
-$chk_alerg_med = transformaCheck($chk_alerg_med);
-$chk_alerg_alim = transformaCheck($chk_alerg_alim);
-$chk_alerg_latex = transformaCheck($chk_alerg_latex);
-
 ?>
-
-
 		<li class='list-group-item'>
 				<div class="row py-3">
-					<div class="col-1 py-2"></div>
-					<div class="col-3 py-2">					
-						<div class='ps-3'>Alergias:</div>
-					</div>
+<?php
+echo generarCheckDoble('Sí', 'chk_alerg',$chk_alerg, $is_disabled, $is_required,true);
 
-					<div class="col-3 pt-2">
-							<div class="form-check-reverse float-start">
-							<input class="form-check-input" type="checkbox" name="chk_alerg" id="chk_alerg" value="1" <?php echo $is_disabled_html." ".$chk_alerg." ".$is_required; ?>>
-							<label class="float-start chk-si">Sí</label>
-						</div>
+echo generarCheckDoble('No', 'chk_alerg_no',$chk_alerg_no, $is_disabled, $is_required,true);
+?>
+	<div class="row py-4">	
+<?php
+echo generarCheckDoble('Medicamentos', 'chk_alerg_med',$chk_alerg_med,$is_disabled, false, true);
 
-					</div>
-					<div class="col-3 pt-2">
-							<div class="form-check-reverse float-start">
-							<input class="form-check-input" type="checkbox" name="chk_alerg_no" id="chk_alerg_no" value="1" <?php echo $is_disabled_html." ".$chk_alerg_no." ".$is_required; ?>>
-							<label class="float-start chk-no">No</label>
+echo generarCheckDoble('Alimentos', 'chk_alerg_alim',$chk_alerg_alim,$is_disabled, false, true);
 
-					</div>
-					</div>
-					<div class="col-2"></div>
-
-					<div class="row py-4">						
-						<div class="col-5 pt-2">
-							<div class="form-check-reverse">
-							<input class="form-check-input my-input" type="checkbox" name="chk_alerg_med" id="chk_alerg_med" value="1" disabled <?php echo $chk_alerg_med; ?>>
-							<label class="text-break opacity-50 my-input">Medicamentos</label>
-							</div>
-						</div>
-						<div class="col-4 pt-2">
-							<div class="form-check-reverse">
-							<input class="form-check-input my-input" type="checkbox" name="chk_alerg_alim" id="chk_alerg_alim" value="1" disabled <?php echo $chk_alerg_alim; ?>>
-							<label class="text-break opacity-50 my-input">Alimentos</label>
-							</div>
-						</div>
-						<div class="col-3 pt-2">
-							<div class="form-check-reverse">
-							<input class="form-check-input my-input" type="checkbox" name="chk_alerg_latex" id="chk_alerg_latex" value="1" disabled <?php echo $chk_alerg_latex; ?>>
-							<label class="text-break opacity-50 my-input">Látex</label>
-							</div>						
-						</div>							
+echo generarCheckDoble('Látex', 'chk_alerg_latex',$chk_alerg_latex,$is_disabled, false, true);
+?>
+						
 					</div>	
-					<div class="row ps-4 my-3"><div class="col">
+					<div class="row ps-4"><div class="col">
 
 <?php
-			$array_alerg_det = ["Detalles", false, "alerg", "", $alerg, "class='form-control my-input' autocomplete ='off'", $is_disabled, ""];
+			$array_alerg_det = ["Detalle Alimento/Medicamento", false, "alerg", "", $alerg, "class='form-control my-input' autocomplete ='off'", $is_disabled, ""];
 			echo generarInputGral(...$array_alerg_det);
 ?>
 					</div>
@@ -942,20 +1174,33 @@ $chk_alerg_latex = transformaCheck($chk_alerg_latex);
 				$(document).ready(function() {
 				  $('#chk_alerg').change(function() {
 				    if ($(this).is(':checked')) {
-				      $('.my-input').removeClass("opacity-50");	//ACTIVA SUBITEMS
-				      $('.my-input').prop('disabled', false); //ACTIVA SUBITEMS				 
+				      $('#chk_alerg_med').removeClass("opacity-50");	//ACTIVA SUBITEMS
+				      $('#chk_alerg_alim').removeClass("opacity-50");	//ACTIVA SUBITEMS
+				      $('#chk_alerg_latex').removeClass("opacity-50");	//ACTIVA SUBITEMS
+				      $('#chk_alerg_med').prop('disabled', false); //ACTIVA SUBITEMS
+				      $('#chk_alerg_alim').prop('disabled', false); //ACTIVA SUBITEMS
+				      $('#chk_alerg_latex').prop('disabled', false); //ACTIVA SUBITEMS
+
 				      $('#chk_alerg_no').prop('disabled', true); //DESACTIVA NO
-				      $('.chk-no').addClass("opacity-50"); //DESACTIVA NO
+				      $('#chk_alerg_no').addClass("opacity-50"); //DESACTIVA NO
+
 				      $('#chk_alerg_no').prop('required', false); //NO YA NO ES REQUIRED
 				      $('#chk_alerg_med').prop('required', true); //SUBITEM REQUIRED
 				      $('#chk_alerg_alim').prop('required', true); //SUBITEM REQUIRED
 				      $('#chk_alerg_latex').prop('required', true); //SUBITEM REQUIRED
 				      $('#alerg').prop('required', true); //DETALLE REQUIRED
 				    } else {
-				      $('.my-input').prop('disabled', true); //DESACTIVA SUBITEMS
-				      $('.my-input').addClass("opacity-50"); //DESACTIVA SUBITEMS
+				      $('#chk_alerg_med').prop('disabled', true); //DESACTIVA SUBITEMS
+				      $('#chk_alerg_alim').prop('disabled', true); //DESACTIVA SUBITEMS
+				      $('#chk_alerg_latex').prop('disabled', true); //DESACTIVA SUBITEMS
+
+				      $('#chk_alerg_med').addClass("opacity-50"); //DESACTIVA SUBITEMS
+				      $('#chk_alerg_alim').addClass("opacity-50"); //DESACTIVA SUBITEMS
+				      $('#chk_alerg_latex').addClass("opacity-50"); //DESACTIVA SUBITEMS
+
+
 				      $('#chk_alerg_no').prop('disabled', false); //ACTIVA NO
-				      $('.chk-no').removeClass("opacity-50"); //ACTIVA NO
+				      $('#chk_alerg_no').removeClass("opacity-50"); //ACTIVA NO
 				      $('#chk_alerg_no').prop('required', true); //NO  ES REQUIRED
 				      $('#chk_alerg_med').prop('required', false); //SUBITEM NO ES REQUIRED
 				      $('#chk_alerg_alim').prop('required', false); //SUBITEM NO ES REQUIRED
@@ -968,11 +1213,11 @@ $chk_alerg_latex = transformaCheck($chk_alerg_latex);
 				  $('#chk_alerg_no').change(function() {
 				    if ($(this).is(':checked')) {
 				      $('#chk_alerg').prop('disabled', true); //DESACTIVA NO
-				      $('.chk-si').addClass("opacity-50"); //DESACTIVA si
+				      $('#chk_alerg').addClass("opacity-50"); //DESACTIVA si
 				      $('#chk_alerg').prop('required', false); //SI YA NO ES REQUIRED
 				    } else {
 				      $('#chk_alerg').prop('disabled', false); //ACTIVA si
-				      $('.chk-si').removeClass("opacity-50"); //ACTIVA si
+				      $('#chk_alerg').removeClass("opacity-50"); //ACTIVA si
 				      $('#chk_alerg').prop('required', true); //SI  ES REQUIRED
 				    }
 				  });
@@ -1103,14 +1348,16 @@ echo generarSelect("Dolor (EVA)", false, "eva", $options_dolor_eva,$eva_original
             <div class='accordion-body'>
 
 
-				<div class='d-flex justify-content-between'>
-				<div class="form-check py-4 px-4 text-muted">
-				  <input class="form-check-input"  type="checkbox" value="1" id="antec_vad" name="antec_vad" <?php echo "value='".$antec_vad."' ".$is_disabled_html; ?>>
-				  <label class="form-check-label float-start" for="antec_vad">
-				    Historial de VAD Previa
-				  </label>
+
+				<div class='row'>
+
+<?php
+echo generarCheckDoble('Antec. VAD Previa', 'antec_vad',$antec_vad, $is_disabled);
+?>
+
+
 				</div>
-				</div>
+
 
 <?php
 
@@ -1185,13 +1432,10 @@ $fecha_exs_real = transformaInput($fecha_exs);
 	          <div id='collapse6' class='accordion-collapse collapse' aria-labelledby='heading6'>
 	            <div class='accordion-body'>
 
-
-				<div class='text-muted pt-2 text-start'>Fecha Exámenes (dd/mm/aaaa)</div>
-				 <div class="input-group date">
-				  <input type="text" class="form-control" name="fecha_exs" id="datepicker3<?php echo $is_disabled_dp; ?>" autocomplete="off"  <?php echo "value='".$fecha_exs_real."' ".$is_disabled_html; ?>>
-				  </div>
-
 <?php
+
+$arr_fecha_exs = ["Fecha Exámenes (dd/mm/aaaa)",false, "fecha_exs", "", $fecha_exs_real, "autocomplete='off'", $is_disabled, ""];
+echo generarInputGral(...$arr_fecha_exs);
 
 $array_hcto = ["Hcto", false, "hcto", "", $hcto, "type='number' step='0.1' class='form-control'", $is_disabled, "%"];
 echo generarInputGral(...$array_hcto);
@@ -1211,27 +1455,42 @@ echo generarInputGral(...$array_creatinina);
 $array_glicemia = ["Glicemia", false, "glic", "", $glic, "type='number' step='0.1' class='form-control'", $is_disabled, "mg/dL"];
 echo generarInputGral(...$array_glicemia);
 
-
 $e_na = transformaInput($e_na);
 $e_k = transformaInput($e_k);
 $e_cl = transformaInput($e_cl);
 
-?>
 
 
+if($e_na == "" and $e_k == "" and $e_cl == "" and $esconder_campos_nulos == "1"){
 
-				<div>
-				<div class='d-flex justify-content-between pt-3'><div class='text-muted'>Electrolitos</div><div class="fw-lighter text-muted"><small></small></div></div>
-				<div class="input-group mb-3">
-				  <div class='text-muted px-2'> Na: </div><input type="number" step ="0.1" max="200" class="form-control" name="e_na" id="e_na" <?php echo "value='".$e_na."' ".$is_disabled_html; ?>>
-				  <span class="input-group-text" id="basic-addon2">mEq</span>
-				  <div class='text-muted px-2'> K: </div><input type="number" step ="0.1" max="10" class="form-control" name="e_k" id="e_k" <?php echo "value='".$e_k."' ".$is_disabled_html; ?>>
-				  <span class="input-group-text" id="basic-addon2">mEq</span>
-				  <div class='text-muted px-2'> Cl: </div><input type="number" step ="0.1" max="200" class="form-control" name="e_cl" id="e_cl" <?php echo "value='".$e_cl."' ".$is_disabled_html; ?>>
-				  <span class="input-group-text" id="basic-addon2">mEq</span>
-				</div></div>
+} else {
 
-<?php
+echo "<div class='d-flex justify-content-between pt-3'><div class='text-muted'>Electrolitos</div><div class='fw-lighter text-muted'><small></small></div></div>
+				<div class='input-group mb-3'>";
+
+			if ($e_na == "" and $esconder_campos_nulos == "1"){
+			} else {
+			echo "<div class='text-muted px-2'> Na: </div><input type='number' step ='0.1' max='200' class='form-control' name='e_na' id='e_na' value='$e_na' $is_disabled_html >
+				  <span class='input-group-text' id='basic-addon2'>mEq</span>";
+				  }
+
+			if ($e_k == "" and $esconder_campos_nulos == "1"){
+
+			} else {
+			echo "<div class='text-muted px-2'> K: </div><input type='number' step ='0.1' max='10' class='form-control' name='e_k' id='e_k' value='$e_k' $is_disabled_html >
+				  <span class='input-group-text' id='basic-addon2'>mEq</span>";
+				  }
+
+			if ($e_cl == "" and $esconder_campos_nulos == "1"){
+
+			} else {
+			echo "<div class='text-muted px-2'> Cl: </div><input type='number' step ='0.1' max='200' class='form-control' name='e_cl' id='e_cl' value='$e_cl' $is_disabled_html >
+				  <span class='input-group-text' id='basic-addon2'>mEq</span>";
+				  }
+
+				echo "</div>";
+
+}
 
 $array_protrombina = ["Protrombina", false, "tp", "", $tp, "type='number' step='0.1' class='form-control'", $is_disabled, "%"];
 echo generarInputGral(...$array_protrombina);
@@ -1272,7 +1531,9 @@ echo generarInputGral(...$array_ecg_otros);
 
 				echo generarSelect("ASA&nbsp;", false, "asa", $options_asa,$asa,$is_disabled);
 
-$asa_e = transformaCheck($asa_e);
+
+
+
 ?>
 				<div class="px-2"></div>
 				<div class="form-check form-check-inline pt-2">
@@ -1349,15 +1610,26 @@ echo $reservas_dc1;
 				</div>
 				</div>
 				</div>
-
-
 </div>
 
 		<!– RESERVAS->
 			<li class='list-group-item mb-4' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'>
 		    <div class='col-9 py-2'><img class='btn-imagen' src='images/IMG_3977.PNG'/>Observaciones / Comentarios</div>
 
-		    <textarea class="form-control mb-4" style="resize: none;" maxlength="250" rows="3" name="comentarios" id="comentarios" <?php echo $is_disabled_html_ta; ?>><?php echo $comentarios_original; ?></textarea>
+
+
+<?php
+
+			if ($comentarios_original == "" and $esconder_campos_nulos == "1"){
+
+			} else {
+				echo "<textarea class='form-control mb-2' style='resize: none;' maxlength='250' rows='2' name='comentarios' id='comentarios' $is_disabled_html_ta >$comentarios_original</textarea>";
+			   }
+
+
+?>
+
+
 		  	</li>
 
 
@@ -1452,33 +1724,42 @@ function checkRut(rut) {
     	    var today, datepicker;
     			today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
         $(function() {
-            $('#datepicker1').datepicker({
+            $('#fecha_int').datepicker({
             	 		uiLibrary: 'bootstrap5',
             	    format: 'dd/mm/yyyy',
             	    weekStartDay: 1,
             	    autoclose: true,
             	    minDate: today,
-            	    showRightIcon: true,
+            	    icons: {
+             			rightIcon: '<i class="fa-solid fa-calendar"></i>'
+        					}
+        				<?php echo $is_disabled_dp  ?>
            			 });
        		 	});
         $(function() {
-            $('#datepicker2').datepicker({
+            $('#ant_fur').datepicker({
             	 		uiLibrary: 'bootstrap5',
             	    format: 'dd/mm/yyyy',
             	    weekStartDay: 1,
             	    autoclose: true,
             	    maxDate: today,
-            	    showRightIcon: true,
+            	    icons: {
+             			rightIcon: '<i class="fa-solid fa-calendar"></i>'
+        					}
+        				<?php echo $is_disabled_dp  ?>
            			 });
        		 	});
         $(function() {
-            $('#datepicker3').datepicker({
+            $('#fecha_exs').datepicker({
             	 		uiLibrary: 'bootstrap5',
             	    format: 'dd/mm/yyyy',
             	    weekStartDay: 1,
             	    autoclose: true,
             	    maxDate: today,
-            	    showRightIcon: true,
+            	    icons: {
+             			rightIcon: '<i class="fa-solid fa-calendar"></i>'
+        					}
+        				<?php echo $is_disabled_dp  ?>
            			 });
        		 	});
     </script>

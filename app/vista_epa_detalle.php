@@ -1,4 +1,4 @@
-<?php  
+<?php 
 
 //1 Validador login
 	require("valida_pag.php");
@@ -17,8 +17,7 @@
 	  if($usuario['intern_']==1 or $usuario['becad_otro']==1){
 	  	header('Location: login.php');
 	  }
-
-
+ 
 //VARIABLES
 	  	$ID_epa = $_POST['ID_epa'];
 		$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
@@ -75,9 +74,15 @@
 $is_disabled = true; // desabilita select, inputs y checkbox //   true / false
 $is_disabled_html = "disabled";// desabilita objetos escritos en html //  disabled / ""
 $is_disabled_html_ta = "readonly disabled"; // desabilita los objetos textarea html // readonly disabled/ ""
-$is_disabled_dp = "1"; //desabilita los datepickers //  1 / ""
-$is_required = "required"; //alergias requeridas** // required / ""
+$is_disabled_dp = "showOnFocus: true, showRightIcon: false"; //desabilita los datepickers //  showOnFocus: true, showRightIcon: false / ""
+$is_required = true; //alergias requeridas** // true / false
+$esconder_campos_nulos = "1"; // 1 / 0
+$show_accordion = "show"; // show / ""
+
 //******** desabilita lo botones de guardado?
+
+
+
 
 $boton_final = "<span class='float-end pe-3 pb-5'>
 		<button class='btn pull-right btn-primary shadow-sm border-light' style='; --bs-border-opacity: .1;' type='submit' form='epa_edit' value='Submit'><div class='text-white'>
