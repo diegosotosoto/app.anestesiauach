@@ -251,7 +251,7 @@ function generarAccordion($icono, $titulo, $contenido, $valor_elementos=100) {
 
 
 	      	if($show_accordion_ == 'show' and $valor_elementos==0){
-	      	$badge = "<small class='ms-3 mt-0 badge bg-danger'> Negativo </small>";
+	      	$badge = "<small class='ms-2 mt-0 badge bg-danger'> Negativo </small>";
 					} else {
 					$badge = "";
 					}
@@ -1587,7 +1587,7 @@ $array_otro_plan = ["Otras Indicaciones", false, "otro_plan", "", $otro_plan_ori
 echo generarInputGral(...$array_otro_plan);
 
 
-$reservas_dc1 = generarCheckDoble('Reserva de UTI / UCI', 'upc',$upc, 'Consentimiento firmado', 'consent',$consent, $is_disabled);
+$reservas_dc1 = generarCheckDoble('Reserva UTI/UCI', 'upc',$upc, 'Consentimiento firmado', 'consent',$consent, $is_disabled);
 
 echo $reservas_dc1;
 

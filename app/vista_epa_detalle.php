@@ -1,5 +1,5 @@
 <?php 
-
+ 
 //1 Validador login
 	require("valida_pag.php");
 
@@ -22,7 +22,7 @@
 	  	$ID_epa = $_POST['ID_epa'];
 		$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 		$titulo_navbar="<span class='text-white'></span>";
-		$boton_navbar="<button class='btn pull-right btn-primary shadow-sm border-light' style='; --bs-border-opacity: .1;' type='submit' form='epa_edit' value='Submit'><div class='text-white'><i class='fa-solid fa-pen'></i></div></button>";
+		$boton_navbar="<button class='btn pull-right btn-primary shadow-sm border-light' style='; --bs-border-opacity: .1;' type='submit' form='epa_edit' value='Submit'><div class='text-white'><i class='fa-solid fa-pen py-1 px-3'></i></div></button>";
 
 	//Carga Head de la página
 	require("head.php");

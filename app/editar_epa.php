@@ -23,7 +23,7 @@
 		$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 		$titulo_navbar="<span class='text-white'></span>";
 		$boton_navbar="<span class='float-end'>
-					<button class=' d-sm-block d-sm-nonebtn btn-primary shadow-sm border-light' style='; --bs-border-opacity: .1;' type='button' form='epa_guardar' data-bs-toggle='modal' data-bs-target='#confirmarModal'><div class='text-white'><i class='fa-solid fa-floppy-disk pe-2'></i></div></button>
+					<button class='btn pull-right btn-primary shadow-sm border-light' style='; --bs-border-opacity: .1;' type='button' form='epa_guardar' data-bs-toggle='modal' data-bs-target='#confirmarModal'><div class='text-white'><i class='fa-solid fa-floppy-disk py-1 px-3'></i></div></button>
 		</span>";
 		
 	//Carga Head de la página

@@ -1,4 +1,4 @@
-<?php
+f<?php
 
 //Validador login
     require("valida_pag.php");

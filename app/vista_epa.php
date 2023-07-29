@@ -546,9 +546,10 @@ SET
 	<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><div><img class='btn-imagen me-3' src='images/IMG_3977.PNG'/>Nueva Evaluación Preanestésica</div></li>
 		<li class='list-group-item  bg-light'>
 
-		<div class='py-3 ps-3 me-3 d-flex mx-auto'>
-		<a class='btn mx-auto btn-primary shadow-sm border-light' style='width:150px; height:65px; --bs-border-opacity: .1;' href='nueva_epa.php'><i class='fa-solid fa-plus pe-2'></i>Nueva Evaluación</a>
-		</div>
+			    <div class="col text-center my-3 ps-0 pe-0">
+			      	<a href="nueva_epa.php" class="btn shadow btn-danger bg-opacity-25 rounded-3 border-0" style="height: 150px;width: 150px; background-color: #CE2E2E; background-image: linear-gradient(62deg, #FF5A00 25%, #FD904C 83%, #FFDBBD 100%);
+					"> <i class="fa-solid fa-clipboard fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Nueva Evaluación</div></a>
+			    </div>
 
 		</li>	
 
