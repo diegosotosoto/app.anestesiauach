@@ -363,37 +363,20 @@
 				   					echo $otro_elemento;
 
 				   			}
-
-
    			?>
-
 			      }
-
-
-
 			  </script>
 
 
 
-
 			</div>
-
-
 			</br></br>
 
 			</li>
-
-
-
-
-
-
-
-
-
 </div>
 
 </ul>
+
 
 
 </div>

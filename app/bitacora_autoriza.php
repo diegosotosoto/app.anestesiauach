@@ -238,7 +238,7 @@
 		echo "<div class='col'>
 					<div class='d-flex justify-content-between px-4'>
 					<button class='btn btn-primary' type='submit' name='submit_b' value='1'>Autorizar</button>
-					    <button type='button' class='btn btn-danger' data-bs-toggle='modal' data-bs-target='#confirmarModal'>Rechazar</button>
+					    <button type='button' class='btn btn-danger' data-bs-toggle='modal' data-bs-target='#confirmarModal' id='boton_modal'>Rechazar</button>
 					</div></ul></br>";
 		echo "
   <!-- Modal de confirmación -->
@@ -247,7 +247,7 @@
       <div class='modal-content'>
         <div class='modal-header'>
           <h5 class='modal-title' id='confirmarModalLabel'>Confirmar Rechazo</h5>
-          <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+          <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close' id='modal_close'></button>
         </div>
         <div class='modal-body'>
           ¿Estás seguro de que deseas Rechazar? Se notificará al becado del rechazo para su corrección

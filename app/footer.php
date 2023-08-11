@@ -64,6 +64,86 @@
 
 </footer>
 
+<div id="loading-overlay">
+  <div class="loading-icon"></div>
+</div>
+
+<script>
+  $(document).ready(function() {
+    // Función para mostrar el overlay y el icono de carga
+    function showLoadingOverlay() {
+      $('#loading-overlay').show();
+    }
+
+    $('form').submit(function(event) {
+      var form = event.target;
+      if (form.checkValidity()) {
+        // Mostrar el overlay de sombra y la animación de carga solo si el formulario es válido
+        showLoadingOverlay();
+      }
+      else {
+        // Si el formulario no es válido, no se muestra el overlay y se permite mostrar los errores de validación
+        $('#loading-overlay').hide();
+      }
+    });
+
+    $('a').on('click', showLoadingOverlay);
+    $('button').on('click', showLoadingOverlay);
+  });
+</script>
+
+
+<script>
+  $(document).ready(function() {
+    // Función para ocultar el overlay
+    function hideLoadingOverlay() {
+      $('#loading-overlay').hide();
+    }
+
+    // Evento shown.bs.offcanvas para ocultar el overlay cuando se muestra el offcanvas navbar
+    $('#offcanvasNavbar').on('shown.bs.offcanvas', hideLoadingOverlay);
+    $('.btn-close').on('click', hideLoadingOverlay);
+
+    $('.accordion-button').on('click', function() {
+      hideLoadingOverlay();
+    });
+
+    $('a[target="_blank"]').on('click', function() {
+      hideLoadingOverlay();  });
+
+    $('#button-compartir').on('click', function() {
+      hideLoadingOverlay();  });
+
+    $('#button-addon').on('click', function() {  
+      hideLoadingOverlay();  });
+
+    $('#button-addon2').on('click', function() {
+      hideLoadingOverlay();  });
+
+    $('button[role="right-icon"]').on('click', function() {
+      hideLoadingOverlay();
+    });
+
+    $('a[href^="mailto:"], button[href^="mailto:"]').on('click', function() {
+      hideLoadingOverlay();
+    });
+
+    $('a[href^="tel:"], button[href^="tel:"]').on('click', function() {
+      hideLoadingOverlay();
+    });
+
+    $('#boton_modal').on('click', function() {
+      hideLoadingOverlay();  });
+
+    $('#boton_modal2').on('click', function() {
+      hideLoadingOverlay();  });
+
+    $('#modal_close').on('click', function() {
+      hideLoadingOverlay();  });
+
+  });
+</script>
+
 <script src="js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript" src="index.js"></script>
 

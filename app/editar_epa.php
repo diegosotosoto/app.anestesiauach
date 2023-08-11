@@ -23,7 +23,7 @@
 		$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 		$titulo_navbar="<span class='text-white'></span>";
 		$boton_navbar="<span class='float-end'>
-					<button class='btn pull-right btn-primary shadow-sm border-light' style='; --bs-border-opacity: .1;' type='button' form='epa_guardar' data-bs-toggle='modal' data-bs-target='#confirmarModal'><div class='text-white'><i class='fa-solid fa-floppy-disk py-1 px-3'></i></div></button>
+					<button class='btn pull-right btn-primary shadow-sm border-light' style='; --bs-border-opacity: .1;' type='button' form='epa_guardar' data-bs-toggle='modal' data-bs-target='#confirmarModal' id='boton_modal2'><div class='text-white'><i class='fa-solid fa-floppy-disk py-1 px-3'></i></div></button>
 		</span>";
 		
 	//Carga Head de la página
@@ -36,8 +36,8 @@ echo "
       <div class='modal-content'>
         <div class='modal-header'>
           <h5 class='modal-title' id='confirmarModalLabel'>Confirmar Edición</h5>
-          <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
-        </div> 
+          <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close' id='modal_close'></button>
+        </div>
         <div class='modal-body'>
           ¿Estás seguro de que deseas guardar los cambios?
         </div>
@@ -83,7 +83,7 @@ echo "
 		//BOTÓN A LA DERECHA DEL TITULO class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block'
 		echo "<span class='float-end'>
         	<input type='hidden' name='ID_epa' value='".$ID_epa."'/>
-			<button class='btn btn-primary shadow-sm border-light d-none d-sm-block' style='; --bs-border-opacity: .1;' type='button' form='epa_guardar' data-bs-toggle='modal' data-bs-target='#confirmarModal'><div class='text-white'><i class='fa-solid fa-floppy-disk pe-2'></i>Guardar</div></button>
+			<button class='btn btn-primary shadow-sm border-light d-none d-sm-block' style='; --bs-border-opacity: .1;' type='button' form='epa_guardar' data-bs-toggle='modal' data-bs-target='#confirmarModal' id='boton_modal'><div class='text-white'><i class='fa-solid fa-floppy-disk pe-2'></i>Guardar</div></button>
 			</span>";
 
 		//SUBTITULO

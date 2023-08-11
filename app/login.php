@@ -181,8 +181,8 @@
 				  <div class="row pt-3 justify-content-md-center">
 				    <div class="col col-lg-6">
 							<div class='text-muted pt-3'>Contraseña</div>
-							<div class="input-group mb-2">
-<input type="password" name="pass_usuario_v" id="pass_usuario_v" class="form-control" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" placeholder="Contraseña" aria-label="Contraseña" aria-describedby="button-addon2">
+							<div class="input-group mb-2"> 
+<input type="password" name="pass_usuario_v" id="pass_usuario_v" class="form-control" required pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*_=+\-?]).{8,12}$" aria-describedby="button-addon2">
         <button class="btn btn-outline-secondary border-secondary border-opacity-25" type="button" id="button-addon2" onclick="mostrar()"><i id="icono" class="opacity-75 fa-solid fa-eye"></i></button>
         <span class="input-group-text bg-primary text-white" id="basic-addon2"><i class="fa fa-key"></i></span>
         <script type="text/javascript">

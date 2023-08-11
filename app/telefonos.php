@@ -145,7 +145,7 @@ $array_tel = array (
 
 					foreach ($array_tel  as $servicio => $telefono){
 					    
-		        echo "<ul class='list-group'><div class='list-group'><a href='tel:$telefono' class='list-group-item list-group-item-action text-primary fs-5'>
+		        echo "<ul class='list-group'><div class='list-group'><a href='tel:$telefono' class='not-overlay list-group-item list-group-item-action text-primary fs-5'>
 		        	<i class='fa-solid fa-phone pe-3 ps-2 text-success'></i>$servicio</a></div></ul>";
 		      
 					}

@@ -17,7 +17,6 @@ if($chk_alerg_med == '1' or $chk_alerg_alim == '1' or $chk_alerg_latex == '1'){
 		<div class='badge fs-6 py-2 bg-danger'>Alergia!</div>".$med.$alim.$latex
 	.$detalle_alerg_."</li>";
 
-
 }
 
 ?>
@@ -111,7 +110,6 @@ function generarSelect($titulo, $required = false, $id, $options = [], $selected
 {
 
 	$esconder_campos = $GLOBALS['esconder_campos_nulos'];
-
 
 		if ($esconder_campos == '1'){
 
@@ -251,7 +249,7 @@ function generarAccordion($icono, $titulo, $contenido, $valor_elementos=100) {
 
 
 	      	if($show_accordion_ == 'show' and $valor_elementos==0){
-	      	$badge = "<small class='ms-2 mt-0 badge bg-danger'> Negativo </small>";
+	      	$badge = "<small class='ms-2 mt-0 badge bg-success'> Negativo </small>";
 					} else {
 					$badge = "";
 					}
@@ -344,20 +342,14 @@ $array_imc= ["IMC",false,"imc","",$imc,"step='0.1'",true,"Kg/mt2"];
               <div id='collapseOne' class='accordion-collapse collapse' aria-labelledby='headingOne'>
                 <div class='accordion-body'>
 
-		<div class='d-flex justify-content-between pt-3'><div class='text-muted'>PA (PAS / PAD)</div><div class="fw-lighter text-muted"><small></small></div></div>
 				<div class="input-group mb-2">
-
 <?php
 
-	$array_pas=["",false,"pas","",$pas,"type='number'  max='300'",$is_disabled,""];
+	$array_pas=["PAS &nbsp;",false,"pas","",$pas,"type='number'  max='300'",$is_disabled,""];
 	echo generarInputGral(...$array_pas);
 
-?>
- &nbsp; / &nbsp;
 
-<?php
-
-	$array_pad=["",false,"pad","",$pad,"type='number'  max='300'",$is_disabled,""];
+	$array_pad=["&nbsp; / PAD &nbsp;",false,"pad","",$pad,"type='number'  max='300'",$is_disabled,""];
 	echo generarInputGral(...$array_pad);
 
 ?>
@@ -496,10 +488,8 @@ $cardio_dc4 = generarCheckDoble('Valvulopatía', 'ant_valv',$ant_valv, $is_disab
 $cardio_dc5 = generarCheckDoble('C.Coronaria/Angor', 'ant_coronaria',$ant_coronaria, $is_disabled);
 $cardio_dc6 = generarCheckDoble('Arritmia', 'ant_arr',$ant_arr, $is_disabled);
 
-
 $arr_cardio_oth = ["Otro / Detalles",false, "otro_cardio", "", $otro_cardio_original, "", $is_disabled, ""];
 $cardio_oth = generarInputGral(...$arr_cardio_oth);
-
 
 $options_cf_cf = [
     "" => "",
@@ -659,7 +649,6 @@ echo generarAccordion($ico_hepato,$tit_hepato,$cont_hepato,$array_hepato);
 
 ?>
 
-
 <!– Subitem Renal –>
 
 <?php
@@ -779,7 +768,6 @@ $cont_hemato = 	$entrada_dc
 echo generarAccordion($ico_hemato,$tit_hemato,$cont_hemato,$array_hemato);
 
 ?>
-
 
 <!– Subitem Endocrino –>
 
@@ -1567,7 +1555,9 @@ $options_monitorizacion = [
     "Invasiva L.Arterial" => "Invasiva L.Arterial",
     "Invasiva L.Arterial + CVC" => "Invasiva L.Arterial + CVC",
 ];
-echo generarSelect("Monitorización", true, "monitorizacion", $options_monitorizacion,htmlspecialchars_decode($monitorizacion),$is_disabled);
+
+
+echo generarSelect("Monitorización", true, "monitorizacion", $options_monitorizacion, htmlspecialchars_decode(html_entity_decode($monitorizacion)),$is_disabled);
 
 $array_reserva_hemocomponentes = ["Reserva Hemocomponentes", false, "hemoc", "", $hemoc, "list='hemocomponentes' class='form-control mb-2'", $is_disabled, ""];
 echo generarInputGral(...$array_reserva_hemocomponentes);
@@ -1580,7 +1570,7 @@ $options_analgesia_po = [
     "Otra" => "Otra",
 ];
 
-echo generarSelect("Analgesia Post-Op", true, "analgesia_po", $options_analgesia_po,htmlspecialchars_decode($analgesia_po),$is_disabled);
+echo generarSelect("Analgesia Post-Op", true, "analgesia_po", $options_analgesia_po, htmlspecialchars_decode(html_entity_decode($analgesia_po)),$is_disabled);
 
 
 $array_otro_plan = ["Otras Indicaciones", false, "otro_plan", "", $otro_plan_original, "", $is_disabled, ""];
@@ -1696,31 +1686,12 @@ function checkRut(rut) {
 }
 </script>
 
-<script>
-	// Example starter JavaScript for disabling form submissions if there are invalid fields
-(() => {
-  'use strict'
 
-  // Fetch all the forms we want to apply custom Bootstrap validation styles to
-  const forms = document.querySelectorAll('.needs-validation')
-
-  // Loop over them and prevent submission
-  Array.from(forms).forEach(form => {
-    form.addEventListener('submit', event => {
-      if (!form.checkValidity()) {
-        event.preventDefault()
-        event.stopPropagation()
-      }
-
-      form.classList.add('was-validated')
-    }, false)
-  })
-})()
-</script>
 
     <script src="https://unpkg.com/gijgo@1.9.14/js/gijgo.min.js" type="text/javascript"></script>
     <link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript">
+
     	    var today, datepicker;
     			today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
         $(function() {
@@ -1748,6 +1719,7 @@ function checkRut(rut) {
         					}
         				<?php echo $is_disabled_dp  ?>
            			 });
+
        		 	});
         $(function() {
             $('#fecha_exs').datepicker({

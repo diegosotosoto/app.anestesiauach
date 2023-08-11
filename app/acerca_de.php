@@ -34,7 +34,7 @@
 	<ul class="list-group pt-3">
 		<li class='list-group-item bg-light bg-gradient'><div class='d-flex justify-content-between'><div><a class='text-dark text-decoration-none' href='https://app.anestesiauach.cl/'>app.anestesiauach.cl</a></div>
 			
-    <button id="button" class="btn btn-primary">Compartir!</button>
+    <button id="button-compartir" class="btn btn-primary not-overlay">Compartir!</button>
 
     <script>
       let shareData = {
@@ -43,7 +43,7 @@
         url: 'https://app.anestesiauach.cl/',
       }
 
-      const btn = document.querySelector('#button');
+      const btn = document.querySelector('#button-compartir');
       const resultPara = document.querySelector('.result');
 
       btn.addEventListener('click', () => {

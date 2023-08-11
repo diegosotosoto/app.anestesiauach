@@ -3,7 +3,7 @@
   $conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
   $conexion->set_charset("utf8");
 ?>
- 
+  
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -18,6 +18,7 @@
     <link href="css/bootstrap.min.css" rel="stylesheet"/>
 	<link rel="stylesheet" href="css/all.css"/>
 	<link rel="stylesheet" href="style.css"/>
+	<link rel="stylesheet" href="css/overlay.css"/>
 	<script src="js/jquery-3.6.1.min.js"></script>
 
 <body>
@@ -49,7 +50,7 @@
       <div class="offcanvas-body">
           	<div class="container text-center">
 							<div class="row ps-1 pt-3 pb-3">
-	                <a class="navbar-brand d-xs-none d-none d-sm-block" href="#"><img src="images/austral_b.png" style="width: 30% ;"></a>
+	                <div class="navbar-brand d-xs-none d-none d-sm-block" ><img src="images/austral_b.png" style="width: 30% ;"></div>
 	            </div>
 									<div class='list-group' id='offcanvasExampleLabel'>
 									<?php

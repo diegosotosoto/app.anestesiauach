@@ -66,7 +66,7 @@
 	$bec=$confirma_bec->fetch_assoc();
 
 
-	require('../pdf/tfpdf.php');
+	require('../pdf/tfpdf.php');//
 
 	$pdf = new tFPDF('P','mm','Letter');
 	$pdf->AddPage();

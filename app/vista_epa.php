@@ -43,26 +43,6 @@
 		
 			<ul class="list-group">
 
-	<!– TABLA DE REGISTROS –>
-	<?php
-		//TITULO DE LA PAGINA
-		echo "<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'><br><h5 class='mb-1 fw-bold opacity-75'>Evaluación Preanestésica</h5>";
-
-		//BOTON A LA IZQUIERDA DEL TITULO class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block'
-		echo "<div class='pt-1 ps-3 me-3 d-flex float-start'>
-		<a class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>
-		</div>";
-
-		//BOTÓN A LA DERECHA DEL TITULO class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block'
-		echo "<div class='pt-1 ps-3 me-3 d-flex float-end'>
-		<a class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block' style='width:100px; height:40px; --bs-border-opacity: .1;' href='nueva_epa.php'><i class='fa-solid fa-plus pe-2'></i>Nueva</a>
-		</div>";
-
-		//SUBTITULO
-		echo "<div class='mb-1'></div>";
-		echo "<div class='mb-1'></div></li>";
-	?>
-
 <?php
 //Guarda la EPA
 
@@ -543,6 +523,33 @@ SET
 
 ?>
 
+	<!– TABLA DE REGISTROS –>
+	<?php
+		//TITULO DE LA PAGINA
+		echo "<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'><br><h5 class='mb-1 fw-bold opacity-75'>Evaluación Preanestésica</h5>";
+
+		//BOTON A LA IZQUIERDA DEL TITULO class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block'
+		echo "<div class='pt-1 ps-3 me-3 d-flex float-start'>
+		<a class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>
+		</div>";
+
+		//BOTÓN A LA DERECHA DEL TITULO class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block'
+		echo "<div class='pt-1 ps-3 me-3 d-flex float-end'>
+		<a class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block' style='width:100px; height:40px; --bs-border-opacity: .1;' href='nueva_epa.php'><i class='fa-solid fa-plus pe-2'></i>Nueva</a>
+		</div>";
+
+		//SUBTITULO
+		echo "<div class='mb-1'></div>";
+		echo "<div class='mb-1'></div></li>";
+	?>
+
+
+
+
+
+
+
+
 	<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><div><img class='btn-imagen me-3' src='images/IMG_3977.PNG'/>Nueva Evaluación Preanestésica</div></li>
 		<li class='list-group-item  bg-light'>
 
@@ -723,27 +730,6 @@ function checkRut(rut) {
 })()
 </script>
 
-<script>
-	// Example starter JavaScript for disabling form submissions if there are invalid fields
-(() => {
-  'use strict'
-
-  // Fetch all the forms we want to apply custom Bootstrap validation styles to
-  const forms = document.querySelectorAll('.needs-validation')
-
-  // Loop over them and prevent submission
-  Array.from(forms).forEach(form => {
-    form.addEventListener('submit', event => {
-      if (!form.checkValidity()) {
-        event.preventDefault()
-        event.stopPropagation()
-      }
-
-      form.classList.add('was-validated')
-    }, false)
-  })
-})()
-</script>
 	<?php 
 
 		$conexion->close();

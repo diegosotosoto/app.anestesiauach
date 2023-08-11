@@ -257,7 +257,6 @@ list($ant_aco,$ant_meno,$ant_formulaob,$ant_fur)=$arr_antec_gine;
 $arr_nvpo_hm = explode("@", $nvpo_hm);
 list($nvpo,$hipertermia)=$arr_nvpo_hm;
 
-
 $arr_embarazo = explode("@", $embarazo);
 list($chk_emb,$e_gestacional)=$arr_embarazo;
 
