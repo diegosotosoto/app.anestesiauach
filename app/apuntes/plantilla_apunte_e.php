@@ -23,6 +23,8 @@
 
 <div class="col col-sm-9 col-xl-9 pb-5"><!- Columna principal (derecha) responsive->
 
+
+
     <div class="pt-2 collapse navbar-collapse" id="navbarSupportedContent" style="background-color: #42A5FF;">
     	<div class="pt-4 container ms-auto">
 
@@ -115,6 +117,9 @@
    		<li class='list-group-item mb-2'>
    			<div class="ms-4 me-4">
 
+<form id='formPDF' method='post' action='https://anestesiauach.cl/pdf/emergencia_ped_pdf.php' target='_blank'>
+
+
 						<!-  INPUTS  ->   		
    			<?php
    			if($input){
@@ -122,7 +127,7 @@
    						echo "<div class='row pt-4'><div class='col text-start'>";
    						echo $clave_input[0]; //título
    						echo "</div><div class='col input-group'>    	
-				      <input class='form-control' type='number' id='$clave_input[1]'>"; //id
+				      <input class='form-control' type='number' id='$clave_input[1]' name='$clave_input[1]'>"; //id
    						echo "<span class='input-group-text' id='basic-addon2'>";	
    						echo $clave_input[2]; //unidad
    						echo "</span></div></div>	";
@@ -167,11 +172,6 @@
    			?>
 
 
-
-
-
-
-
   <script>
     $(document).ready(function() {
       $('#btnCambiar').click(function() {
@@ -180,10 +180,11 @@
         var inputNuevo = '';
 
         if (esAnios) {
-          inputNuevo = '<input type="number" id="edad" name="edad" class="form-control" placeholder="Edad"><span class="input-group-text" id="basic-addon2">meses</span>';
-          $('#btnCambiar').removeClass('anios').html('<i class="fa-solid fa-rotate"></i>');   
+          inputNuevo = '<input type="number" id="edad" name="edad" class="form-control" placeholder="Edad"><span class="input-group-text" id="basic-addon2">meses</span><input type="hidden" id="hiddenInput" name="meses" value="1">';
+          $('#btnCambiar').removeClass('anios').html('<i class="fa-solid fa-rotate"></i>');
+
         } else {
-          inputNuevo = '<input type="number" id="edad" name="edad"  class="form-control" placeholder="Edad"><span class="input-group-text" id="basic-addon2">años</span>';
+          inputNuevo = '<input type="number" id="edad" name="edad"  class="form-control" placeholder="Edad"><span class="input-group-text" id="basic-addon2">años</span><input type="hidden" id="hiddenInput" name="anios" value="1">';
           $('#btnCambiar').addClass('anios').html('<i class="fa-solid fa-rotate"></i>');
         }
 
@@ -245,6 +246,8 @@
 
 
 
+
+
 	<div class="row pt-4">
 		<div class='col-6 text-start'>   						
 						Edad
@@ -252,9 +255,10 @@
 		<div class="col-5 pe-0 mx-0">
         <div class="input-group mb-2" id="edadInput">
 
-    <input type="number" id="edad" name="edad"  class="form-control" placeholder="Edad"><span class="input-group-text" id="basic-addon2">años</span>
+    <input type="number" id="edad" name="edad"  class="form-control" placeholder="Edad"><span class="input-group-text" id="basic-addon2">años</span><input type="hidden" id="hiddenInput" name="anios" value="1">
 
   			</div>
+  </form>			
   	</div>
   	<div class="col-1 py-2 px-0 mx-0">
         <span class="input-group-text text-white px-0 mx-0 py-0 my-0" id="basic-addon2as"><button class="px-0 mx-0 py-0 my-0 btn btn-outline-secondary opacity-75 anios" id="btnCambiar" type="button" id="button-addon2" style="width: 100%; height: 100%;" ><i class="fa-solid fa-rotate"></i></button></span>
@@ -269,8 +273,10 @@
 				   <div class="row pt-5 ms-1">
 				    <div class="col">
 
-				      <button class="btn btn-primary btn-lg shadow-sm me-4" onclick="doMath();" id="btnCalcular"><i class="fa-solid fa-calculator pe-3"></i>Calcular</button>
-				      
+				      <button class="btn btn-primary shadow-sm me-2" onclick="doMath();" id="btnCalcular"><i class="fa-solid fa-calculator pe-2"></i>Calcular</button>
+
+    <button class ='btn btn-primary shadow-sm ms-2' onclick='envioFormPDF()' class='list-group-item list-group-item-action'><i class="fa-solid fa-file-pdf pe-2"></i>Imprimir PDF</button>				      
+
 				    </div>
 				  </div>
 
@@ -368,6 +374,8 @@
 			  </script>
 
 
+
+<script>function envioFormPDF() {document.getElementById('formPDF').submit(); }</script>
 
 			</div>
 			</br></br>

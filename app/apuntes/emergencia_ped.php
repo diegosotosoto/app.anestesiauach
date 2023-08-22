@@ -31,7 +31,8 @@ $resultado = array(
 				array("Naloxona","naloxona","ug","(parseFloat(pesoVar)*5 > 400) ? (400) : (parseFloat(pesoVar)*5)","0"),
 				array("Flumazenil","flumazenil","ug","(parseFloat(pesoVar)*5 > 100) ? (100) : (parseFloat(pesoVar)*5)","0"),
 				array("Cardioversion 1","cardiov","J","(parseFloat(pesoVar)*0.5 > 100) ? (100) : (parseFloat(pesoVar)*0.5)","0"),
-				array("Desfibrilacion 1","desfibr","J","(parseFloat(pesoVar)*2 > 200) ? (200) : (parseFloat(pesoVar)*2)","0")
+				array("Desfibrilacion 1","desfibr","J","(parseFloat(pesoVar)*2 > 200) ? (200) : (parseFloat(pesoVar)*2)","0"),
+				array("Desfibrilacion 2-3","desfibr2","J","(parseFloat(pesoVar)*4 > 200) ? (200) : (parseFloat(pesoVar)*4)","0")
 				);//array de 2 dimensiones array(array("titulo","id","unidad","calculo en formato JS","decimales en el resultado")); en este caso el array contiene un if a modo de triada que se almacena en la variable: var B = (A ==="red") ? "hot":"cool"; 
 
 
