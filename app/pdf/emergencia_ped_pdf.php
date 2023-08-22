@@ -226,7 +226,7 @@ $calculos2 = array(
 
 
 
-    require('../pdf/tfpdf.php');//
+    require('../pdf/tfpdf.php');//       require('../../pdf/tfpdf.php');   //         require('../pdf/tfpdf.php');
 
     $pdf = new tFPDF('P','mm','Letter');
     $pdf->AddPage();

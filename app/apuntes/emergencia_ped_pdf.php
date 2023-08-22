@@ -226,49 +226,72 @@ $calculos2 = array(
 
 
 
-    require('../pdf/tfpdf.php');//
+    require('../pdf/tfpdf.php');//       require('../../pdf/tfpdf.php');   //         require('../pdf/tfpdf.php');
 
     $pdf = new tFPDF('P','mm','Letter');
     $pdf->AddPage();
     $pdf->SetTitle('pdf_ped',true);
-    $pdf->SetMargins(25,20,25); // Set margins to 0
+
     
     $pdf->SetCreator('www.anestesiauach.cl');
     $pdf->AddFont('DejaVu','','DejaVuSansCondensed.ttf',true);
-    $pdf->SetFont('DejaVu','',14);
 
+
+
+$pdf->Image('../images/austral_b.png', 5, 4, 15.5, 18.5); // $pdf->Image('../app/images/austral_b.png', 5, 4, 15.5, 18.5);
+$pdf->SetFont('DejaVu','',7);
+$pdf->SetY(5);
+$pdf->SetX(22);
+$pdf->Cell(18, 8, 'Programa de Anestesiología', 0, 0);
+
+$pdf->Ln(4);
+$pdf->SetX(22);
+$pdf->Cell(18, 8, 'Universidad Austral de Chile', 0, 0);
+
+$pdf->Ln(4);
+$pdf->SetX(25);
+$pdf->Cell(18, 8, 'app.anestesiauach.cl', 0, 0);
+$pdf->Ln(10);
+
+
+$pdf->SetMargins(25,20,25); // Set margins to 0
+$pdf->SetFont('DejaVu','',14);
 $width = $pdf->GetStringWidth($titulo) + 6; // Get width of the string
 $x = ($pdf->GetPageWidth() - $width) / 2;
-
 $pdf->SetX($x); // Center the string on the page
 $pdf->Cell($width, 10, $titulo, 0, 1, 'C');
 $pdf->Ln(5);
-$pdf->SetFont('DejaVu','',12);
-$pdf->Cell(25, 10, 'Nombre:', 0, 0); // el último '0' indica que no se moverá a la siguiente línea
-$pdf->Rect($pdf->GetX(), $pdf->GetY(), 120, 8);
+$pdf->SetFont('DejaVu','',10);
+$pdf->SetX(20);
+$pdf->Cell(20, 10, 'Nombre:', 0, 0); // el último '0' indica que no se moverá a la siguiente línea
+$pdf->Rect($pdf->GetX(), $pdf->GetY(), 110, 8);
+
+$pdf->SetX(155); 
+date_default_timezone_set('America/Caracas'); // Caracas, Venezuela está en GMT-4
+$pdf->Cell(20, 10, 'Fecha: '.date('d/m/Y'), 0, 0);
 $pdf->Ln(8);
 
 if ($peso){
-$pdf->Cell(15, 10, 'Peso:', 0, 0); // el último '0' indica que no se moverá a la siguiente línea
-$pdf->Cell(10, 10, $peso, 0, 0);
+$pdf->Cell(12, 10, 'Peso:', 0, 0); // el último '0' indica que no se moverá a la siguiente línea
+$pdf->Cell(7, 10, $peso, 0, 0);
 $pdf->Cell(30, 10, 'Kg', 0, 0);
 }
 
 if ($talla){
-$pdf->Cell(15, 10, 'Talla:', 0, 0); // el último '0' indica que no se moverá a la siguiente línea
-$pdf->Cell(10, 10, $talla, 0, 0);
-$pdf->Cell(30, 10, 'mt', 0, 0);
+$pdf->Cell(12, 10, 'Talla:', 0, 0); // el último '0' indica que no se moverá a la siguiente línea
+$pdf->Cell(7, 10, $talla, 0, 0);
+$pdf->Cell(30, 10, 'cm', 0, 0);
 }
 
 if ($edad){
-$pdf->Cell(15, 10, 'Edad:', 0, 0); // el último '0' indica que no se moverá a la siguiente línea
-$pdf->Cell(10, 10, $edad, 0, 0);
+$pdf->Cell(12, 10, 'Edad:', 0, 0); // el último '0' indica que no se moverá a la siguiente línea
+$pdf->Cell(7, 10, $edad, 0, 0);
 $pdf->Cell(10, 10, $tipo, 0, 0);
 }
 
 //Celdas de cada una de los fármacos
 
-$pdf->Ln(12);
+$pdf->Sety(58);
 foreach ($calculos as $medicamento) {
 
     if ($fill) {
@@ -278,19 +301,19 @@ foreach ($calculos as $medicamento) {
     }
 
 
-$pdf->Ln(10); 
+$pdf->Ln(8); 
 $pdf->SetX(15);
-$pdf->Rect($pdf->GetX(), $pdf->GetY(), 55, 10, 'FD');
+$pdf->Rect($pdf->GetX(), $pdf->GetY(), 55, 8, 'FD');
 $pdf->SetX(18);
 $pdf->Cell(80, 10, $medicamento['nombre'], 0, 0);
 
 $pdf->SetX(70);
-$pdf->Rect($pdf->GetX(), $pdf->GetY(), 15, 10, 'FD' );
+$pdf->Rect($pdf->GetX(), $pdf->GetY(), 15, 8, 'FD' );
 $pdf->SetX(72);
 $pdf->Cell(10, 10, $medicamento['valor'], 0, 0);
 
 $pdf->SetX(85);
-$pdf->Rect($pdf->GetX(), $pdf->GetY(), 20, 10, 'FD');
+$pdf->Rect($pdf->GetX(), $pdf->GetY(), 20, 8, 'FD');
 $pdf->SetX(87);
 $pdf->Cell(10, 10, $medicamento['unidad'], 0, 0);
 
@@ -299,7 +322,7 @@ $pdf->Cell(10, 10, $medicamento['unidad'], 0, 0);
 }
 
 
-$pdf->Sety(45);
+$pdf->Sety(58);
 foreach ($calculos2 as $medicamento2) {
     
     if ($fill2) {
@@ -308,19 +331,19 @@ foreach ($calculos2 as $medicamento2) {
         $pdf->SetFillColor(255, 255, 255);  // Establece el color de relleno a blanco
     }    
     
-$pdf->Ln(10); 
+$pdf->Ln(8); 
 $pdf->SetX(110);
-$pdf->Rect($pdf->GetX(), $pdf->GetY(), 55, 10, 'FD');
+$pdf->Rect($pdf->GetX(), $pdf->GetY(), 55, 8, 'FD');
 $pdf->SetX(113);
 $pdf->Cell(80, 10, $medicamento2['nombre'], 0, 0);
 
 $pdf->SetX(165);
-$pdf->Rect($pdf->GetX(), $pdf->GetY(), 15, 10, 'FD');
+$pdf->Rect($pdf->GetX(), $pdf->GetY(), 15, 8, 'FD');
 $pdf->SetX(167);
 $pdf->Cell(10, 10, $medicamento2['valor'], 0, 0);
 
 $pdf->SetX(180);
-$pdf->Rect($pdf->GetX(), $pdf->GetY(),20, 10, 'FD');
+$pdf->Rect($pdf->GetX(), $pdf->GetY(),20, 8, 'FD');
 $pdf->SetX(182);
 $pdf->Cell(10, 10, $medicamento2['unidad'], 0, 0);
 
@@ -329,13 +352,14 @@ $pdf->Cell(10, 10, $medicamento2['unidad'], 0, 0);
 
 }
 
-$pdf->Sety(185);
+$pdf->Sety(177);
 $pdf->SetX(15);
+$pdf->SetFont('DejaVu','',9);
+$pdf->SetTextColor(127, 127, 127);
 $pdf->Cell(10, 10, '* Distancia de CVC desde Vena Yugular Interna Derecha', 0, 0);
 
 
     $pdf->Output('I', 'pdf_ped.pdf');
-
 
 
 ?>
