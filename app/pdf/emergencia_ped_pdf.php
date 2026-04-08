@@ -1,5 +1,5 @@
 <?php
-
+ 
 
 // Recibir los datos enviados por POST
 $peso = isset($_POST['peso']) ? $_POST['peso'] : '';
@@ -168,13 +168,13 @@ $calculos2 = array(
     'fentaInd' => array(
         'id' => 'fentaInd',
         'nombre' => 'Fentanyl (inducción)',
-        'valor' => (floatval($pesoVar) * 3 > 300) ? 300 : floatval($pesoVar) * 3,
+        'valor' => (floatval($pesoVar) * 3 > 300) ? 300 : round(floatval($pesoVar) * 3,0),
         'unidad' => 'ug'
     ),
     'fentaAna' => array(
         'id' => 'fentaAna',
         'nombre' => 'Fentanyl (analgesia)',
-        'valor' => (floatval($pesoVar) * 0.5 > 50) ? 50 : floatval($pesoVar) * 0.5,
+        'valor' => (floatval($pesoVar) * 0.5 > 50) ? 50 : round(floatval($pesoVar) * 0.5,0),
         'unidad' => 'ug'
     ),
     'morfina' => array(
@@ -186,37 +186,37 @@ $calculos2 = array(
     'glucosa' => array(
         'id' => 'glucosa',
         'nombre' => 'Glucosa (30%)',
-        'valor' => (floatval($pesoVar) * 0.15 > 6) ? 6 : floatval($pesoVar) * 0.15,
-        'unidad' => 'gr'
+        'valor' => (floatval($pesoVar) * 0.5 > 60) ? 60 : round(floatval($pesoVar) * 0.5,1),
+        'unidad' => 'ml'
     ),
     'naloxona' => array(
         'id' => 'naloxona',
         'nombre' => 'Naloxona',
-        'valor' => (floatval($pesoVar) * 5 > 400) ? 400 : floatval($pesoVar) * 5,
+        'valor' => (floatval($pesoVar) * 5 > 400) ? 400 : round(floatval($pesoVar) * 5,0),
         'unidad' => 'ug'
     ),
     'flumazenil' => array(
         'id' => 'flumazenil',
         'nombre' => 'Flumazenil',
-        'valor' => (floatval($pesoVar) * 5 > 100) ? 100 : floatval($pesoVar) * 5,
+        'valor' => (floatval($pesoVar) * 5 > 100) ? 100 : round(floatval($pesoVar) * 5,0),
         'unidad' => 'ug'
     ),
     'cardiov' => array(
         'id' => 'cardiov',
         'nombre' => 'Cardioversión 1',
-        'valor' => (floatval($pesoVar) * 0.5 > 100) ? 100 : floatval($pesoVar) * 0.5,
+        'valor' => (floatval($pesoVar) * 0.5 > 100) ? 100 : round(floatval($pesoVar) * 0.5,0),
         'unidad' => 'J'
     ),
     'desfibr' => array(
         'id' => 'desfibr',
         'nombre' => 'Desfibrilación 1',
-        'valor' => (floatval($pesoVar) * 2 > 200) ? 200 : floatval($pesoVar) * 2,
+        'valor' => (floatval($pesoVar) * 2 > 200) ? 200 : round(floatval($pesoVar) * 2,0),
         'unidad' => 'J'
     ),    
     'desfibr2' => array(
         'id' => 'desfibr2',
         'nombre' => 'Desfibrilación 2 y 3',
-        'valor' => (floatval($pesoVar) * 4 > 200) ? 200 : floatval($pesoVar) * 4,
+        'valor' => (floatval($pesoVar) * 4 > 200) ? 200 : round(floatval($pesoVar) * 4,0),
         'unidad' => 'J'
     )
 );

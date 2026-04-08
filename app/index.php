@@ -17,6 +17,18 @@
 
 <div class="col col-sm-9 col-xl-9 pb-5 mx-0"><!- Columna principal (derecha) responsive->
 
+<div class="dashboard-grid pt-5">
+
+
+      <a href='links.php'
+         class='btn shadow dashboard-tile rounded-3 border-0'
+         style='background-image:linear-gradient(145deg,#0a7d3d 0%,#18b565 55%,#7fe0b0 100%);'>
+    <i class="fa-solid fa-link fa-2xl"></i>
+        <div class='tile-label'>Links<br>Útiles</div>
+      </a>
+
+
+
 		<?php 
 					//GUARDAR PACIENTE NUEVO
 
@@ -114,74 +126,97 @@
 
 			}
 
-//Saca a los internos y otros becados del area de dolor
-	  $check_usuario=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
-	  $con_users_b="SELECT `intern_`, `becad_otro`   FROM `usuarios_dolor` WHERE `email_usuario` = '$check_usuario'";
-	  $users_b=$conexion->query($con_users_b);
-	  $usuario=$users_b->fetch_assoc();
-	  if($usuario['intern_']==1 or $usuario['becad_otro']==1){
-
-	  }else{
-
-		echo "
-					<div class='row pt-5 ps-0 pe-0'>
-					    <div class='col text-center  ps-0 pe-0'>
-					      <a href='nuevo_paciente.php' class='btn shadow btn-success ms-2 rounded-3 border-0 text-white' style='height: 150px;width: 150px; background-color: #016932; background-image: linear-gradient(62deg, #016932 0%, #009044 36%, #08d869 83%, #70fbb4 100%);
-						'><i class='fa-solid fa-user-plus fa-2xl pt-5'></i><div class='text-center pt-3'>Nuevo<br> Paciente</div></a>
-					    </div>
-
-						<div class='col text-center ps-0 pe-0'>
-					      <a href='hoja_dolor.php' class='btn shadow me-2 rounded-3 border-0 text-white' style='height: 150px;width: 150px; background-color: #026edd;background-image: linear-gradient(62deg, #026edd 33%, #41aafd 83%, #92c6f9 100%);
-						'><i class='fa-solid fa-syringe fa-2xl pt-5'></i><div class='text-center pt-3 ps-2 pe-2'>Pacientes Dolor</div></a>
-					    </div>
-					</div>
-					";
-
-
-	  }
 
 
 
 
+//Saca a los internos y otros becados del area de dolor  $check_usuario=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
+  $con_users_b="SELECT `intern_`, `becad_otro` FROM `usuarios_dolor` WHERE `email_usuario` = '$check_usuario'";
+  $users_b=$conexion->query($con_users_b);
+  $usuario=$users_b->fetch_assoc();
 
-?>
-			<div class="row pt-5  ps-0 pe-0">
-			    <div class="col text-center ps-0 pe-0">
-			      	<a href="bitacora.php" class="btn shadow btn-danger ms-2 bg-opacity-25 rounded-3 border-0" style="height: 150px;width: 150px; background-color: #CE2E2E; background-image: linear-gradient(62deg, #CE2E2E 25%, #f73f3f 83%, #ff8080 100%);
-					"> <i class="fa-solid fa-clipboard fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Bitácora Procedimientos</div></a>
-			    </div>
+  if(!($usuario['intern_']==1 or $usuario['becad_otro']==1)){
+    echo "
+      <a href='hoja_dolor.php'
+         class='btn shadow dashboard-tile rounded-3 border-0'
+         style='background-image:linear-gradient(145deg,#0f63d8 0%,#2d7fe0 55%,#7fb3f2 100%);'>
+        <i class='fa-solid fa-syringe fa-2xl'></i>
+        <div class='tile-label'>Pacientes<br>Dolor</div>
+      </a>
+    ";
+  }
+  ?>
 
 
-			    <div class="col text-center ps-0 pe-0">
-			      <a href="apuntes.php" class="btn shadow me-2 rounded-3 border-0" style="height: 150px;width: 150px; background-color: #fd980f;background-image: linear-gradient(62deg, #fd980f 30%, #f7de68 83%, #fff5b4 100%);
-				"><div class="opacity-75"><i class="fa-solid fa-calculator fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Cálculos</div></div></a>
-			    </div>
-			</div>
 
-			<div class="row pt-5  ps-0 pe-0">
-			    <div class="col text-center ps-0 pe-0">
-			      	<a href="vista_epa.php" class="btn shadow btn-danger ms-2 bg-opacity-25 rounded-3 border-0" style="height: 150px;width: 150px; background-color: #CE2E2E; background-image: linear-gradient(62deg, #FF5A00 25%, #FD904C 83%, #FFDBBD 100%);
-					"> <i class="fa-solid fa-clipboard fa-2xl pt-4"></i><div class="text-center pt-3 ps-2 pe-2">Evaluación Preanestésica (Beta)</div></a>
-			    </div>
+  <a href="bitacora.php"
+     class="btn shadow dashboard-tile rounded-3 border-0"
+     style="background-image:linear-gradient(145deg,#c82333 0%,#e03a48 55%,#f29aa2 100%);">
+    <i class="fa-solid fa-clipboard fa-2xl"></i>
+    <div class="tile-label">Bitácora<br>Procedimientos</div>
+  </a>
 
-			    <div class="col text-center  ps-0 pe-0">
-			      <a href='telefonos.php' class="btn shadow btn-success me-2 rounded-3 border-0 text-white" style="height: 150px;width: 150px; background-color: #6405d0; background-image: linear-gradient(62deg, #6405d0 32%, #9b4df1 78%, #cea3fb 100%);"><i class="fa-solid fa-phone fa-2xl pt-5"></i><div class="text-center pt-3">Teléfonos<br> Frecuentes</div></a>
-			    </div>
-			</div>
+  <a href="apuntes.php"
+     class="btn shadow dashboard-tile tile-gold rounded-3 border-0"
+     style="background-image:linear-gradient(145deg,#e69500 0%,#f2b632 55%,#f5e3a3 100%);">
+    <i class="fa-solid fa-calculator fa-2xl"></i>
+    <div class="tile-label">
+    	Cálculos<br>y Apuntes
+    </div>
+  </a>
 
-			<div class="row pt-5  ps-0 pe-0">
-			    <div class="col text-center ps-0 pe-0">
-			      	<a href="correos.php" class="btn shadow btn-danger ms-2 bg-opacity-25 rounded-3 border-0" style="height: 150px;width: 150px; background-color: #29A09B; background-image: linear-gradient(62deg, #29A09B 25%, #7BD3CE 83%, #DDF3F2 100%);
-					"> <i class="fa-solid fa-envelope fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Directorio<br>Correos</div></a>
-			    </div>
+  <a href="telefonos.php"
+     class="btn shadow dashboard-tile rounded-3 border-0"
+     style="background-image:linear-gradient(145deg,#5b00b3 0%,#7d2ae8 55%,#c3a5f5 100%);">
+    <i class="fa-solid fa-phone fa-2xl"></i>
+    <div class="tile-label">Teléfonos<br>Frecuentes</div>
+  </a>
 
-			    <div class="col text-center ps-0 pe-0">
+  <a href="correos.php"
+     class="btn shadow dashboard-tile rounded-3 border-0"
+     style="background-image:linear-gradient(145deg,#1f8a8c 0%,#4fb3b5 55%,#bfe4e5 100%);">
+    <i class="fa-solid fa-envelope fa-2xl"></i>
+    <div class="tile-label">Directorio<br>Correos</div>
+  </a>
 
-			    </div>
-			</div>
+  <a href="vista_epa.php"
+     class="btn shadow dashboard-tile rounded-3 border-0"
+     style="background-image:linear-gradient(145deg,#d94c00 0%,#f57a2a 55%,#ffd3b0 100%);">
+    <i class="fa-solid fa-clipboard fa-2xl"></i> 
+    <div class="tile-label">
+      Evaluación<br>Preanestésica
+      <span class="beta-pill">Beta</span>
+    </div>
+  </a>
+
+
+  <a href="https://uachcl-my.sharepoint.com/:f:/r/personal/docentes_anestesia_uach_cl/Documents/Reuniones%20Clinicas?e=5%3a1d4a50a99f8747659eaf40e9bd942188&sharingv2=true&fromShare=true&at=9"
+     target="_blank"
+     class="btn shadow dashboard-tile rounded-3 border-0"
+     style="background-image:linear-gradient(145deg,#9e0059 0%,#c2187a 55%,#e5a3c6 100%);">
+    <i class="fa-solid fa-chalkboard-user fa-2xl"></i>
+    <div class="tile-label">Reuniones<br>Clínicas</div>
+  </a>
+
+
+
+
+
+
+</div>
+
+
+
+
+
 
 
 		</div>
+	</div>
+
+
+
+	
 	</div>
 
 </div>

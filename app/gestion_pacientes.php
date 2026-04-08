@@ -87,11 +87,15 @@
 
 
 
+<div class='form-group text-center ms-3 pt-3 pb-3 mt-2'>
+    <input type='text' class='form-control' style='width:90%' id='search' placeholder='Buscar un Nombre...'>
+</div>
+<div class='pt-2 pb-4' id='mytable'>
 
-<div class='container text-center pt-5'>
 		<div class='row'>
-<?php 
 
+<?php 
+$i=0;
 	$con_users="SELECT `nombre_paciente`,`rut`,`ficha`,`de_alta` FROM `pacientes`";
 
 	$tab_users=$conexion->query($con_users);
@@ -109,14 +113,14 @@
 		}
 
 
-		echo "<form action='gestion_pacientes.php' method='post'>";
-		echo "<div class='col pt-2'>Nombre Paciente<input class='form-control mb-2' type='text' name='nombre_paciente' id='nombre_paciente' value='$nombre_paciente' required/></div>";
+		echo "<ul class='list-group'><li class='list-group-item bg-secondary bg-gradient bg-opacity-10 ms-3 py-3 mb-2 ' style='font-size: min(max(14px, 1.5vw), 16px)'><form action='gestion_pacientes.php' method='post'>";
+		echo "<div class='col pt-2'>Nombre Paciente<input class='form-control mb-2' type='text' name='nombre_paciente' id='nombre_paciente".$i."' value='$nombre_paciente' required/></div>";
 		echo "<div class='col pt-2'>Rut <input class='form-control mb-2' type='text' name='rut' id='rut' value='$rut' required/></div>";
 		echo "<input type='hidden' name='rut_init' value='$rut'/>";
 		echo "<div class='col pt-2'>Ficha <input class='form-control mb-2' type='text' name='ficha' id='ficha' value='$ficha' required/></div>";
 		echo "<div class='col pt-2'>De Alta <input class='form-check-input' type='checkbox' name='de_alta' id='de_alta' value='1' $de_alta/></div>";
-		echo "<div class='col pt-3'><button type='submit' class='btn btn-primary' value'Submit'>OK</button></div></form></div></br><hr></br><div class='row'>";
-
+		echo "<div class='col pt-3'><button type='submit' class='btn btn-primary' value'Submit'>OK</button></div></form></li></ul>";
+	$i++;
 	}
 
 ?>
@@ -126,6 +130,29 @@
 		</div>
 
 	
+<script>
+$(document).ready(function () {
+    $("#search").keyup(function () {
+        let searchText = $(this).val().toLowerCase();
+
+        // Itera a través de los campos de entrada cuyos IDs comienzan por "nombre_paciente"
+        $("[id^='nombre_paciente']").each(function () {
+            let fieldValue = $(this).val().toLowerCase();
+            
+            // Encuentra el elemento li padre
+            let listItem = $(this).closest('li.list-group-item');
+
+            // Comprueba si el valor del campo contiene el texto de búsqueda
+            if (fieldValue.includes(searchText)) {
+                listItem.show();
+            } else {
+                listItem.hide();
+            }
+        });
+    });
+});
+</script>
+
 
 
 

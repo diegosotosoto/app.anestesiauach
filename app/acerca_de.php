@@ -1,100 +1,255 @@
 <?php
-	//No requiere validador de página
+  //No requiere validador de página
 
-	//Variables sin conexion
-		$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
-		$titulo_navbar="<div class='text-white'>Acerca de</div>";
-		$boton_navbar="<span class='navbar-brand mr-auto ms-5' href='#'' role='button'></span>";
+  //Variables sin conexion
+  $boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+  $titulo_navbar="<div class='text-white'>Acerca de</div>";
+  $boton_navbar="<span class='navbar-brand mr-auto ms-5' role='button'></span>";
 
-
-	//Carga Head de la página
-	require("head.php");
+  //Carga Head de la página
+  require("head.php");
 ?>
 
-<div class="col col-sm-9 col-xl-9"><!- Columna principal (derecha) responsive->
+<div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
+  <div class="apunte-surface">
+    <div class="container-fluid px-0 px-md-2">
+      <div class="apuntes-shell">
 
-<div class="container text-center mt-2">
+        <style>
+          .about-shell{
+            max-width:980px;
+            margin:0 auto;
+          }
 
-		<ul class="list-group pt-3">
-		<li class='list-group-item bg-light bg-gradient'>
-	<div class="row">
-		<div class="col pt-2">
-			<img style="width: 80px; height: 80px;" src='images/logo192.png'/>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col pb-2">
-			<h3 class="pt-3">App Anestesia <span class="opacity-50">UACH</span></h3>
-		</div>
-	</div>
-	</li>
-	</ul>
+          .about-topbar{
+            background:linear-gradient(135deg, #27458f, #3559b7);
+            color:#fff;
+            border-radius:1.25rem;
+            box-shadow:0 8px 24px rgba(0,0,0,.06);
+            padding:1.15rem 1.25rem;
+          }
 
+          .about-topbar h1{
+            color:#fff;
+          }
 
-	<ul class="list-group pt-3">
-		<li class='list-group-item bg-light bg-gradient'><div class='d-flex justify-content-between'><div><a class='text-dark text-decoration-none' href='https://app.anestesiauach.cl/'>app.anestesiauach.cl</a></div>
-			
-    <button id="button-compartir" class="btn btn-primary not-overlay">Compartir!</button>
+          .subtle{
+            font-size:.92rem;
+          }
 
-    <script>
-      let shareData = {
-        title: 'Anest UACh',
-        text: 'App Anestesia UACh',
-        url: 'https://app.anestesiauach.cl/',
-      }
+          .pill{
+            display:inline-block;
+            padding:.25rem .6rem;
+            border-radius:999px;
+            font-size:.8rem;
+            font-weight:600;
+          }
 
-      const btn = document.querySelector('#button-compartir');
-      const resultPara = document.querySelector('.result');
+          .about-card{
+            border:0;
+            border-radius:1rem;
+            box-shadow:0 8px 24px rgba(0,0,0,.06);
+            background:#fff;
+          }
 
-      btn.addEventListener('click', () => {
-        navigator.share(shareData)
-          .then(() =>
-            resultPara.textContent = 'MDN shared successfully'
-          )
-          .catch((e) =>
-            resultPara.textContent = 'Error: ' + e
-          )
-      });
-    </script>
+          .about-logo{
+            width:256px;
+            height:256px;
+            object-fit:contain;
+          }
 
-		</li>
-		
-		<li class='list-group-item'><div class='text-center'>
-			<img src="images/IMG0001.jpeg" style="width:300px" class="rounded mx-auto d-block">
-		</div></li>
-		
-	</ul>
+          .about-title{
+            font-size:1.5rem;
+            font-weight:700;
+            color:#1f2a37;
+          }
 
+          .about-link{
+            color:#2453c6;
+            text-decoration:none;
+            font-weight:600;
+            word-break:break-word;
+          }
 
-	<ul class="list-group pt-3">
-		<li class='list-group-item bg-light bg-gradient'><div class='text-center fw-bold'><div>¡Bienvenido a la Aplicación Web de los Residentes de Anestesiología de la UACh!</div></div></li>
-		<li class='list-group-item bg-white bg-gradient'><div class='d-flex justify-content-between text-start text-black-75 ps-2 pe-2'><div>&nbsp;&nbsp;
-			Nuestra aplicación es el lugar perfecto para que los Residentes e Internos de anestesiología encuentren recursos valiosos para mejorar conocimientos y habilidades. Aquí encontrarás contenido exclusivo, herramientas de cálculo, estudio y casos clínicos.<br>
-			&nbsp;&nbsp;
-			Además, nuestra aplicación te permitirá conectar con Residentes de Anestesiología y Especialistas de la UACh, lo que te brindará una valiosa oportunidad para aprender y compartir experiencia.<br>
-			&nbsp;&nbsp;
-			Estamos emocionados de tenerte a bordo y esperamos que disfrutes al máximo tu experiencia en nuestra app.<br> ¡Comienza a explorar ahora mismo!<br>
-		</div></div></li>
-	</ul>
+          .about-link:hover{
+            text-decoration:underline;
+          }
 
+          .about-share{
+            border-radius:.9rem;
+            font-weight:600;
+          }
 
+          .about-image{
+            width:100%;
+            max-width:320px;
+            border-radius:1rem;
+            box-shadow:0 8px 24px rgba(0,0,0,.08);
+          }
 
-	<ul class="list-group py-3">
-		<li class='list-group-item bg-light bg-gradient'><div class='d-flex justify-content-between'><div class="fw-bold">Autor</div><div>Diego Soto Soto</div></div></li>
-		<li class='list-group-item bg-light bg-gradient'><div class='d-flex justify-content-between'><div class="fw-bold">email</div><a class='text-dark text-decoration-none' href='mailto:diego.soto02@uach.cl'>diego.soto02@uach.cl</a></a></div></li>
-		<li class='list-group-item bg-light bg-gradient'><div class='d-flex justify-content-between'><div class="fw-bold">íconos</div><a class='text-dark text-decoration-none' href='https://www.flaticon.com/authors/freepik' target="_blank">Freepik en flaticon.com</a></a></div></li>		
-	</ul>
+          .about-section-title{
+            font-size:.82rem;
+            text-transform:uppercase;
+            letter-spacing:.05em;
+            color:#667085;
+            margin-bottom:.7rem;
+          }
 
+          .about-text-box{
+            border:1px solid #dfe7f2;
+            border-radius:1rem;
+            background:#f8fafc;
+            padding:1rem 1.1rem;
+            color:#4b5563;
+            line-height:1.65;
+            text-align:left;
+          }
 
+          .about-meta{
+            display:grid;
+            gap:.75rem;
+          }
 
+          .about-meta-row{
+            display:flex;
+            justify-content:space-between;
+            align-items:flex-start;
+            gap:1rem;
+            border:1px solid #dfe7f2;
+            border-radius:1rem;
+            background:#f8fafc;
+            padding:1rem 1.1rem;
+          }
+
+          .about-meta-label{
+            font-weight:700;
+            color:#1f2a37;
+          }
+
+          .about-meta-value{
+            text-align:right;
+            color:#4b5563;
+            word-break:break-word;
+          }
+
+          @media (max-width:549px){
+            .about-topbar{
+              padding:1rem;
+            }
+
+            .about-title{
+              font-size:1.25rem;
+            }
+
+            .about-meta-row{
+              flex-direction:column;
+              align-items:flex-start;
+            }
+
+            .about-meta-value{
+              text-align:left;
+            }
+          }
+        </style>
+
+        <div class="about-shell">
+
+          <div class="about-topbar mb-3">
+            <div class="d-flex justify-content-between align-items-start gap-3">
+              <div>
+                <div class="small opacity-75 mb-1">APP clínica • información general</div>
+                <h1 class="h4 mb-2">Acerca de App Anestesia UACh</h1>
+                <div class="subtle text-white-50">Recursos, cálculo clínico y apoyo docente para residentes e internos de Anestesiología.</div>
+              </div>
+              <span class="pill bg-light text-dark">UACh</span>
+            </div>
+          </div>
+
+          <div class="about-card mb-3">
+            <div class="p-4 text-center">
+              <img src="images/logo512.png" class="about-logo mb-3" alt="Logo App Anestesia UACh">
+              <div class="about-title mb-2">App Anestesia <span class="opacity-50">UACh</span></div>
+              <div class="mb-3">
+                <a class="about-link" href="https://app.anestesiauach.cl/">app.anestesiauach.cl</a>
+              </div>
+
+              <button id="button-compartir" class="btn btn-primary about-share not-overlay">Compartir  <i class="fa-solid fa-arrow-up-from-bracket"></i></button>
+
+              <script>
+                let shareData = {
+                  title: 'Anest UACh',
+                  text: 'App Anestesia UACh',
+                  url: 'https://app.anestesiauach.cl/',
+                };
+
+                const btn = document.querySelector('#button-compartir');
+
+                if (btn) {
+                  btn.addEventListener('click', async () => {
+                    try {
+                      if (navigator.share) {
+                        await navigator.share(shareData);
+                      }
+                    } catch (e) {
+                      console.log(e);
+                    }
+                  });
+                }
+              </script>
+            </div>
+          </div>
+
+          <div class="about-card mb-3">
+            <div class="p-4">
+              <div class="row align-items-center g-4">
+                <div class="col-12 col-lg-4 text-center">
+                  <img src="images/IMG0001.jpeg" class="about-image" alt="Imagen App Anestesia UACh">
+                </div>
+                <div class="col-12 col-lg-8">
+                  <div class="about-section-title">Bienvenidos</div>
+                  <div class="about-text-box">
+                    ¡Bienvenido a la Aplicación Web de los Residentes de Anestesiología de la UACh!<br><br>
+                    Nuestra aplicación es el lugar perfecto para que los Residentes e Internos de Anestesiología encuentren recursos valiosos para mejorar conocimientos y habilidades. Aquí encontrarás contenido exclusivo, herramientas de cálculo, estudio y casos clínicos.<br><br>
+                    Además, nuestra aplicación te permitirá conectar con Residentes de Anestesiología y Especialistas de la UACh, lo que te brindará una valiosa oportunidad para aprender y compartir experiencia.<br><br>
+                    Estamos emocionados de tenerte a bordo y esperamos que disfrutes al máximo tu experiencia en nuestra app. ¡Comienza a explorar ahora mismo!
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="about-card">
+            <div class="p-4">
+              <div class="about-section-title">Créditos</div>
+              <div class="about-meta">
+                <div class="about-meta-row">
+                  <div class="about-meta-label">Autor</div>
+                  <div class="about-meta-value">Diego Soto Soto</div>
+                </div>
+
+                <div class="about-meta-row">
+                  <div class="about-meta-label">Email</div>
+                  <div class="about-meta-value">
+                    <a class="about-link" href="mailto:diegosotosoto@gmail.com">diegosotosoto@gmail.com</a>
+                  </div>
+                </div>
+
+                <div class="about-meta-row">
+                  <div class="about-meta-label">Íconos</div>
+                  <div class="about-meta-value">
+                    <a class="about-link" href="https://www.flaticon.com/authors/freepik" target="_blank">Freepik en flaticon.com</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-</div>
 
-<!-  FOOTER  ->
-
-	<?php
-		//Conexión
-		require("footer.php");
-
-	?>
-
+<?php
+  require("footer.php");
+?>

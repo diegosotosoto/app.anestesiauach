@@ -40,6 +40,7 @@
 			$email_init=strtolower(htmlentities(addslashes(strtoupper($_POST['email_init']))));				
 			$nombre_us=htmlentities(addslashes($_POST['nombre_usuario']));			
 			$email_us=htmlentities(addslashes($_POST['email_usuario']));
+			$link_minicex=htmlentities(addslashes($_POST['link_minicex']));
 			if($_POST['verified']=="1"){
 				$verified_us="1";
 			}else{
@@ -76,7 +77,7 @@
 				$becad_otro_us="0";
 			}			
 
-			$consulta_us="UPDATE `usuarios_dolor` SET `nombre_usuario`='$nombre_us', `email_usuario`='$email_us', `verified`='$verified_us', `admin`='$admin_us', `staff_`='$staff_us', `becad_`='$becad_us', `becad_otro`='$becad_otro_us', `intern_`='$intern_us'  WHERE `email_usuario`='$email_init'";
+			$consulta_us="UPDATE `usuarios_dolor` SET `nombre_usuario`='$nombre_us', `email_usuario`='$email_us', `verified`='$verified_us', `admin`='$admin_us', `staff_`='$staff_us', `becad_`='$becad_us', `becad_otro`='$becad_otro_us', `intern_`='$intern_us', `link_minicex`='$link_minicex'   WHERE `email_usuario`='$email_init'";
 			
 
 			$escribir_us=$conexion->query($consulta_us);
@@ -107,11 +108,18 @@
 
 
 
-<div class='container text-center pt-5'>
+
+
+
+<div class='form-group text-center ms-3 pt-3 pb-3 mt-2'>
+    <input type='text' class='form-control' style='width:90%' id='search' placeholder='Buscar un Nombre o Correo...'>
+</div>
+<div class='pt-2 pb-4' id='mytable'>
+
 		<div class='row'>
 <?php 
-
-	$con_users="SELECT `nombre_usuario`,`email_usuario`,`verified`,`admin`,`staff_`,`becad_`,`intern_`,`becad_otro`  FROM `usuarios_dolor` ORDER BY `verified` ASC, `nombre_usuario` ASC";
+$i=0;
+	$con_users="SELECT `nombre_usuario`,`email_usuario`,`verified`,`admin`,`staff_`,`becad_`,`intern_`,`becad_otro`, `link_minicex`  FROM `usuarios_dolor` ORDER BY `verified` ASC, `nombre_usuario` ASC";
 
 	$tab_users=$conexion->query($con_users);
 
@@ -119,6 +127,8 @@
 
 		$user=$row_user['nombre_usuario'];
 		$email=$row_user['email_usuario'];
+
+		$link_minicex=$row_user['link_minicex'];
 
 		if($row_user['verified']=="1"){ 
 			$verified="checked";
@@ -152,10 +162,19 @@
 			$intern="checked";
 		}else {
 			$intern="";
-		}		
-		echo "<form action='gestion_usuarios.php' method='post'>";
-		echo "<div class='col'>Nombre Usuario<input class='form-control mb-2' type='text' name='nombre_usuario' id='nombre_usuario' value='$user' required/></div>";
-		echo "<div class='col'>Email<input class='form-control mb-2' type='text' name='email_usuario' id='email_usuario' value='$email' required/></div>";
+		}
+
+		echo "<ul class='list-group'><li class='list-group-item ms-3 py-3 mb-2 bg-secondary bg-gradient bg-opacity-10' style='font-size: min(max(14px, 1.5vw), 16px)'><form action='gestion_usuarios.php' method='post'>";
+		echo "<div class='col'>Nombre Usuario<input class='form-control mb-2' type='text' name='nombre_usuario' id='nombre_usuario".$i."' value='$user' required/></div>";
+		echo "<div class='col'>Email<input class='form-control mb-2' type='text' name='email_usuario' id='email_usuario".$i."' value='$email' required/></div>";
+
+		if ($row_user['becad_']=="1"){
+
+			echo "<div class='col'>Link Minicex<input class='form-control mb-2' type='text' name='link_minicex' id='link_minicex".$i."' value='$link_minicex'/></div>";
+
+			}
+
+
 		echo "<div class='col'>Verificado <input class='form-check-input' type='checkbox' name='verified' id='verified' value='1' $verified/></div>";
 		echo "<div class='col'>Administrador <input class='form-check-input' type='checkbox' name='admin' id='admin' value='1' $admin/></div>";
 		echo "<div class='col'>Staff <input class='form-check-input' type='checkbox' name='staff' id='staff' value='1' $staff/></div>";
@@ -163,17 +182,45 @@
 		echo "<div class='col'>Intern@ <input class='form-check-input' type='checkbox' name='intern' id='intern' value='1' $intern/></div>";
 		echo "<div class='col'>Becad@ Pasante <input class='form-check-input' type='checkbox' name='becad_otro' id='becad_otro' value='1' $becad_otro/></div>";		
 		echo "</br><input type='hidden' name='email_init' value='$email'/>";
-		echo "<div class='col'><button type='submit' value'Submit'>OK</button></div></form></div></br><hr></br><div class='row'>";
+		echo "<div class='col'><button class='btn btn-primary' type='submit' value'Submit'>OK</button></div></form></li></ul>";
+	$i++;
 
 	}
 
 ?>
+					
+    <!-- Tu tabla y contenido aquí -->
+</div>
 					</div>
 			</div>			
 		</div>
 
 
-	
+<script>
+$(document).ready(function () {
+    $("#search").keyup(function () {
+        let searchText = $(this).val().toLowerCase();
+
+        // Itera a través de los elementos con la estructura <ul><div><form>
+        $("ul.list-group > li.list-group-item > form").each(function () {
+            let fieldValue = $(this).find("[id^='email_usuario'], [id^='nombre_usuario']").val().toLowerCase();
+
+            // Comprueba si el valor del campo contiene el texto de búsqueda
+            if (fieldValue.includes(searchText)) {
+                // Muestra el contenedor de la fila (por ejemplo, el div con clase 'list-group-item' en tu estructura)
+                $(this).closest('.list-group-item').show();
+            } else {
+                // Oculta el contenedor de la fila
+                $(this).closest('.list-group-item').hide();
+            }
+        });
+    });
+});
+</script>
+
+
+
+
 
 
 

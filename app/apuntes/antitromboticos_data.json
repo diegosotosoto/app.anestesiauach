@@ -1,0 +1,485 @@
+[
+  {
+    "grupo": "Antiagregantes",
+    "farmaco": "Aspirina",
+    "condicion": "-",
+    "suspension_pre_procedimiento": "No requiere",
+    "reinicio_post_procedimiento": "No requiere",
+    "suspension_pre_retiro_cateter": "-",
+    "reinicio_post_retiro_cateter": "-",
+    "aliases": [
+      "ácido acetilsalicílico",
+      "aspirina",
+      "cardioaspirina"
+    ]
+  },
+  {
+    "grupo": "Antiagregantes",
+    "farmaco": "Clopidogrel",
+    "condicion": "-",
+    "suspension_pre_procedimiento": "5-7 días",
+    "reinicio_post_procedimiento": "Inmediata, excepto con dosis de carga: 6hrs",
+    "suspension_pre_retiro_cateter": "-",
+    "reinicio_post_retiro_cateter": "-",
+    "aliases": [
+      "clopidogrel",
+      "clopidogrel b",
+      "eurogrel",
+      "clopivitae",
+      "plavix"
+    ]
+  },
+  {
+    "grupo": "Antiagregantes",
+    "farmaco": "Prasugrel",
+    "condicion": "-",
+    "suspension_pre_procedimiento": "7-10 días",
+    "reinicio_post_procedimiento": null,
+    "suspension_pre_retiro_cateter": "-",
+    "reinicio_post_retiro_cateter": "-",
+    "aliases": [
+      "prasugrel",
+      "efient"
+    ]
+  },
+  {
+    "grupo": "Antiagregantes",
+    "farmaco": "Ticagrelor",
+    "condicion": "-",
+    "suspension_pre_procedimiento": "5 días",
+    "reinicio_post_procedimiento": null,
+    "suspension_pre_retiro_cateter": "-",
+    "reinicio_post_retiro_cateter": "-",
+    "aliases": [
+      "ticagrelor",
+      "brilinta"
+    ]
+  },
+  {
+    "grupo": "Antiagregantes",
+    "farmaco": "Dipiridamol",
+    "condicion": "-",
+    "suspension_pre_procedimiento": "24 hrs",
+    "reinicio_post_procedimiento": "6 hrs",
+    "suspension_pre_retiro_cateter": "-",
+    "reinicio_post_retiro_cateter": "-",
+    "aliases": [
+      "dipiridamol",
+      "persantin"
+    ]
+  },
+  {
+    "grupo": "Antiagregantes",
+    "farmaco": "Cangrelor",
+    "condicion": "-",
+    "suspension_pre_procedimiento": "3 hrs",
+    "reinicio_post_procedimiento": "8 hrs",
+    "suspension_pre_retiro_cateter": "-",
+    "reinicio_post_retiro_cateter": "8 hrs",
+    "aliases": [
+      "cangrelor",
+      "kengrexal"
+    ]
+  },
+  {
+    "grupo": "Antiagregantes",
+    "farmaco": "Tirofiban",
+    "condicion": "-",
+    "suspension_pre_procedimiento": "4-8 hrs",
+    "reinicio_post_procedimiento": "NO",
+    "suspension_pre_retiro_cateter": "-",
+    "reinicio_post_retiro_cateter": "-",
+    "aliases": [
+      "tirofiban",
+      "aggrastat"
+    ]
+  },
+  {
+    "grupo": "Antiagregantes",
+    "farmaco": "Cilostazol",
+    "condicion": "-",
+    "suspension_pre_procedimiento": "2 días",
+    "reinicio_post_procedimiento": "6 hrs",
+    "suspension_pre_retiro_cateter": "-",
+    "reinicio_post_retiro_cateter": "8 hrs",
+    "aliases": [
+      "cilostazol",
+      "cilosvitae",
+      "clauter",
+      "ilostal",
+      "pletal"
+    ]
+  },
+  {
+    "grupo": "Cumarínicos",
+    "farmaco": "Acenocumarol",
+    "condicion": "-",
+    "suspension_pre_procedimiento": "3 días + INR <1.5",
+    "reinicio_post_procedimiento": "Post retiro",
+    "suspension_pre_retiro_cateter": "-",
+    "reinicio_post_retiro_cateter": "-",
+    "aliases": [
+      "acenocumarol",
+      "isquelium",
+      "acebron",
+      "neosintrom"
+    ]
+  },
+  {
+    "grupo": "Cumarínicos",
+    "farmaco": "Warfarina",
+    "condicion": "-",
+    "suspension_pre_procedimiento": "5 días + INR <1.5",
+    "reinicio_post_procedimiento": "Post retiro",
+    "suspension_pre_retiro_cateter": "No requiere susp. en 1ras 12-24 hrs. De lo contrario 5 días + INR <1.5",
+    "reinicio_post_retiro_cateter": "-",
+    "aliases": [
+      "warfarina",
+      "cavamed",
+      "coumadin"
+    ]
+  },
+  {
+    "grupo": "Heparinas \n\n(Nivel plasmático de DOAC <30 ng/mL o una actividad anti-Xa ≤0.1 IU/mL)",
+    "farmaco": "HNF",
+    "condicion": "dosis baja sc 5000 c/12-8 hrs",
+    "suspension_pre_procedimiento": "4-6 hrs",
+    "reinicio_post_procedimiento": "1 hora",
+    "suspension_pre_retiro_cateter": "4-6 hrs",
+    "reinicio_post_retiro_cateter": "1 hr",
+    "aliases": [
+      "hnf",
+      "heparina no fraccionada",
+      "heparina sodica",
+      "heparina sódica",
+      "heparina"
+    ]
+  },
+  {
+    "grupo": "Heparinas \n\n(Nivel plasmático de DOAC <30 ng/mL o una actividad anti-Xa ≤0.1 IU/mL)",
+    "farmaco": "HNF",
+    "condicion": "dosis sc 7500-1000",
+    "suspension_pre_procedimiento": "12 hrs",
+    "reinicio_post_procedimiento": "1 hora",
+    "suspension_pre_retiro_cateter": "NO",
+    "reinicio_post_retiro_cateter": "-",
+    "aliases": [
+      "hnf",
+      "heparina no fraccionada",
+      "heparina sodica",
+      "heparina sódica",
+      "heparina"
+    ]
+  },
+  {
+    "grupo": "Heparinas \n\n(Nivel plasmático de DOAC <30 ng/mL o una actividad anti-Xa ≤0.1 IU/mL)",
+    "farmaco": "HNF",
+    "condicion": "Dosis alta SC",
+    "suspension_pre_procedimiento": "24 hrs",
+    "reinicio_post_procedimiento": "12 hrs",
+    "suspension_pre_retiro_cateter": "-",
+    "reinicio_post_retiro_cateter": "-",
+    "aliases": [
+      "hnf",
+      "heparina no fraccionada",
+      "heparina sodica",
+      "heparina sódica",
+      "heparina"
+    ]
+  },
+  {
+    "grupo": "Heparinas \n\n(Nivel plasmático de DOAC <30 ng/mL o una actividad anti-Xa ≤0.1 IU/mL)",
+    "farmaco": "HNF",
+    "condicion": "Dosis alta ev",
+    "suspension_pre_procedimiento": "4-6 hrs",
+    "reinicio_post_procedimiento": "1 hora",
+    "suspension_pre_retiro_cateter": "4-6 hrs",
+    "reinicio_post_retiro_cateter": "1 hr",
+    "aliases": [
+      "hnf",
+      "heparina no fraccionada",
+      "heparina sodica",
+      "heparina sódica",
+      "heparina"
+    ]
+  },
+  {
+    "grupo": "Heparinas \n\n(Nivel plasmático de DOAC <30 ng/mL o una actividad anti-Xa ≤0.1 IU/mL)",
+    "farmaco": "HBPM",
+    "condicion": "Dosis baja",
+    "suspension_pre_procedimiento": "12 hrs",
+    "reinicio_post_procedimiento": "12 hrs (monodosis)",
+    "suspension_pre_retiro_cateter": "12 hrs",
+    "reinicio_post_retiro_cateter": "4 hrs",
+    "aliases": [
+      "hbpm",
+      "heparina de bajo peso molecular",
+      "enoxaparina",
+      "clexane",
+      "dalteparina",
+      "fragmin",
+      "nadroparina",
+      "fraxiparina"
+    ]
+  },
+  {
+    "grupo": "Heparinas \n\n(Nivel plasmático de DOAC <30 ng/mL o una actividad anti-Xa ≤0.1 IU/mL)",
+    "farmaco": "HBPM",
+    "condicion": "Dosis alta",
+    "suspension_pre_procedimiento": "24 hrs",
+    "reinicio_post_procedimiento": "24 o 48-72 hrs*",
+    "suspension_pre_retiro_cateter": "NO",
+    "reinicio_post_retiro_cateter": "4 hrs",
+    "aliases": [
+      "hbpm",
+      "heparina de bajo peso molecular",
+      "enoxaparina",
+      "clexane",
+      "dalteparina",
+      "fragmin",
+      "nadroparina",
+      "fraxiparina"
+    ]
+  },
+  {
+    "grupo": "Heparinas \n\n(Nivel plasmático de DOAC <30 ng/mL o una actividad anti-Xa ≤0.1 IU/mL)",
+    "farmaco": "Fondaparinux",
+    "condicion": "Dosis Baja (2.5 mg) jóvenes",
+    "suspension_pre_procedimiento": "36 hrs",
+    "reinicio_post_procedimiento": null,
+    "suspension_pre_retiro_cateter": null,
+    "reinicio_post_retiro_cateter": "6 hrs",
+    "aliases": [
+      "fondaparinux",
+      "arixtra"
+    ]
+  },
+  {
+    "grupo": "Heparinas \n\n(Nivel plasmático de DOAC <30 ng/mL o una actividad anti-Xa ≤0.1 IU/mL)",
+    "farmaco": "Fondaparinux",
+    "condicion": "Dosis Baja Ancianos",
+    "suspension_pre_procedimiento": "48 hrs",
+    "reinicio_post_procedimiento": null,
+    "suspension_pre_retiro_cateter": null,
+    "reinicio_post_retiro_cateter": null,
+    "aliases": [
+      "fondaparinux",
+      "arixtra"
+    ]
+  },
+  {
+    "grupo": "Heparinas \n\n(Nivel plasmático de DOAC <30 ng/mL o una actividad anti-Xa ≤0.1 IU/mL)",
+    "farmaco": "Fondaparinux",
+    "condicion": "Dosis Baja ERC moderada",
+    "suspension_pre_procedimiento": "58 hrs",
+    "reinicio_post_procedimiento": null,
+    "suspension_pre_retiro_cateter": null,
+    "reinicio_post_retiro_cateter": null,
+    "aliases": [
+      "fondaparinux",
+      "arixtra"
+    ]
+  },
+  {
+    "grupo": "Heparinas \n\n(Nivel plasmático de DOAC <30 ng/mL o una actividad anti-Xa ≤0.1 IU/mL)",
+    "farmaco": "Fondaparinux",
+    "condicion": "Dosis alta (5-10 mg) jovenes",
+    "suspension_pre_procedimiento": "70 hrs",
+    "reinicio_post_procedimiento": null,
+    "suspension_pre_retiro_cateter": null,
+    "reinicio_post_retiro_cateter": null,
+    "aliases": [
+      "fondaparinux",
+      "arixtra"
+    ]
+  },
+  {
+    "grupo": "Heparinas \n\n(Nivel plasmático de DOAC <30 ng/mL o una actividad anti-Xa ≤0.1 IU/mL)",
+    "farmaco": "Fondaparinux",
+    "condicion": "Dosis alta ancianos",
+    "suspension_pre_procedimiento": "105 hrs",
+    "reinicio_post_procedimiento": null,
+    "suspension_pre_retiro_cateter": null,
+    "reinicio_post_retiro_cateter": null,
+    "aliases": [
+      "fondaparinux",
+      "arixtra"
+    ]
+  },
+  {
+    "grupo": "NOACs",
+    "farmaco": "Rivaroxaban",
+    "condicion": "Dosis baja",
+    "suspension_pre_procedimiento": "24h (30h Clcr <30)",
+    "reinicio_post_procedimiento": "6 hrs",
+    "suspension_pre_retiro_cateter": "24 - 30 hrs",
+    "reinicio_post_retiro_cateter": null,
+    "aliases": [
+      "rivaroxaban",
+      "rivaroxabán",
+      "xarelto",
+      "rixovitae",
+      "cotrien",
+      "ribex",
+      "rivoxa",
+      "xaroban"
+    ]
+  },
+  {
+    "grupo": "NOACs",
+    "farmaco": "Rivaroxaban",
+    "condicion": "Dosis alta",
+    "suspension_pre_procedimiento": "72 hrs",
+    "reinicio_post_procedimiento": "24 hrs",
+    "suspension_pre_retiro_cateter": null,
+    "reinicio_post_retiro_cateter": "-",
+    "aliases": [
+      "rivaroxaban",
+      "rivaroxabán",
+      "xarelto",
+      "rixovitae",
+      "cotrien",
+      "ribex",
+      "rivoxa",
+      "xaroban"
+    ]
+  },
+  {
+    "grupo": "NOACs",
+    "farmaco": "Apixaban",
+    "condicion": "Dosis baja",
+    "suspension_pre_procedimiento": "36 hrs",
+    "reinicio_post_procedimiento": "6 hrs",
+    "suspension_pre_retiro_cateter": "36 hrs",
+    "reinicio_post_retiro_cateter": "6 hrs",
+    "aliases": [
+      "apixaban",
+      "eliquis",
+      "alix",
+      "corax",
+      "apitena"
+    ]
+  },
+  {
+    "grupo": "NOACs",
+    "farmaco": "Apixaban",
+    "condicion": "Dosis alta",
+    "suspension_pre_procedimiento": "72 hrs",
+    "reinicio_post_procedimiento": "24 hrs",
+    "suspension_pre_retiro_cateter": "72 hrs",
+    "reinicio_post_retiro_cateter": "24 hrs",
+    "aliases": [
+      "apixaban",
+      "eliquis",
+      "alix",
+      "corax",
+      "apitena"
+    ]
+  },
+  {
+    "grupo": "NOACs",
+    "farmaco": "Edoxaban",
+    "condicion": "Dosis baja",
+    "suspension_pre_procedimiento": "72 hrs",
+    "reinicio_post_procedimiento": "24hrs",
+    "suspension_pre_retiro_cateter": "20-28 hrs",
+    "reinicio_post_retiro_cateter": "-",
+    "aliases": [
+      "edoxaban",
+      "lixiana"
+    ]
+  },
+  {
+    "grupo": "I. Trombina",
+    "farmaco": "Desirudin, Bivalirudin, Argatroban",
+    "condicion": "-",
+    "suspension_pre_procedimiento": "NO",
+    "reinicio_post_procedimiento": "-",
+    "suspension_pre_retiro_cateter": "-",
+    "reinicio_post_retiro_cateter": "-",
+    "aliases": [
+      "desirudin",
+      "bivalirudin",
+      "bivalirudina",
+      "argatroban",
+      "angiomax",
+      "angiox",
+      "novastan"
+    ]
+  },
+  {
+    "grupo": "I. Trombina",
+    "farmaco": "Dabigatran",
+    "condicion": "Dosis Baja",
+    "suspension_pre_procedimiento": "48 hrs",
+    "reinicio_post_procedimiento": "6 hrs",
+    "suspension_pre_retiro_cateter": "48 hrs",
+    "reinicio_post_retiro_cateter": "6 hrs",
+    "aliases": [
+      "dabigatran",
+      "dabigatrán",
+      "dabigatran etexilato",
+      "pradaxa"
+    ]
+  },
+  {
+    "grupo": "I. Trombina",
+    "farmaco": "Dabigatran",
+    "condicion": "Dosis Alta",
+    "suspension_pre_procedimiento": "120 hrs (5d)",
+    "reinicio_post_procedimiento": "24 hrs",
+    "suspension_pre_retiro_cateter": null,
+    "reinicio_post_retiro_cateter": "24 hrs",
+    "aliases": [
+      "dabigatran",
+      "dabigatrán",
+      "dabigatran etexilato",
+      "pradaxa"
+    ]
+  },
+  {
+    "grupo": "I. Trombina",
+    "farmaco": "Dabigatran",
+    "condicion": "ClCr >=50",
+    "suspension_pre_procedimiento": "72 hrs",
+    "reinicio_post_procedimiento": null,
+    "suspension_pre_retiro_cateter": "34-36 hrs",
+    "reinicio_post_retiro_cateter": "6 hrs",
+    "aliases": [
+      "dabigatran",
+      "dabigatrán",
+      "dabigatran etexilato",
+      "pradaxa"
+    ]
+  },
+  {
+    "grupo": "I. Trombina",
+    "farmaco": "Dabigatran",
+    "condicion": "ClCr 30-49",
+    "suspension_pre_procedimiento": "120 hrs",
+    "reinicio_post_procedimiento": null,
+    "suspension_pre_retiro_cateter": "34-36 hrs",
+    "reinicio_post_retiro_cateter": "6 hrs",
+    "aliases": [
+      "dabigatran",
+      "dabigatrán",
+      "dabigatran etexilato",
+      "pradaxa"
+    ]
+  },
+  {
+    "grupo": "I. Trombina",
+    "farmaco": "Dabigatran",
+    "condicion": "ClCr <30",
+    "suspension_pre_procedimiento": "NO (niveles <30ng/ml)",
+    "reinicio_post_procedimiento": null,
+    "suspension_pre_retiro_cateter": "34-36 hrs",
+    "reinicio_post_retiro_cateter": "6 hrs",
+    "aliases": [
+      "dabigatran",
+      "dabigatrán",
+      "dabigatran etexilato",
+      "pradaxa"
+    ]
+  }
+]

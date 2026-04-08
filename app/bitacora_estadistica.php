@@ -38,12 +38,133 @@
 
 ?>
 
-<div class="col col-sm-9 col-xl-9 pb-5"><!- Columna principal (derecha) responsive->
+<div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
+
+<style>
+  .bitacora-shell{
+    max-width:1100px;
+    margin:0 auto;
+  }
+
+  .bitacora-topbar{
+    background:linear-gradient(135deg, #27458f, #3559b7);
+    color:#fff;
+    border-radius:1.25rem;
+    box-shadow:0 8px 24px rgba(0,0,0,.06);
+    padding:1.15rem 1.25rem;
+    margin-bottom:1rem;
+  }
+
+  .bitacora-topbar h1{
+    color:#fff;
+  }
+
+  .subtle{
+    font-size:.92rem;
+  }
+
+  .pill{
+    display:inline-block;
+    padding:.25rem .6rem;
+    border-radius:999px;
+    font-size:.8rem;
+    font-weight:600;
+  }
+
+  .bitacora-tabs{
+    margin-bottom:1rem;
+  }
+
+  .bitacora-tabs .nav-link{
+    border-radius:.85rem;
+    margin-right:.5rem;
+    color:#3559b7;
+  }
+
+  .bitacora-tabs .nav-link.active{
+    background:#3559b7;
+    color:#fff;
+    border-color:#3559b7;
+  }
+
+  .bitacora-tabs span.nav-link{
+    display:block;
+    cursor:default;
+  }
+
+  .bitacora-summary-card,
+  .bitacora-chart-card{
+    border:0;
+    border-radius:1rem;
+    box-shadow:0 8px 24px rgba(0,0,0,.06);
+    background:#fff;
+    overflow:hidden;
+  }
+
+  .bitacora-summary-card{
+    margin-bottom:1rem;
+  }
+
+  .bitacora-summary-header{
+    background:linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);
+    border-bottom:1px solid #e9eef5;
+    padding:1rem 1.1rem;
+  }
+
+  .bitacora-summary-body{
+    padding:1rem 1.1rem;
+  }
+
+  .minicex-link{
+    word-break:break-all;
+  }
+
+  .charts-grid .col-xl-4,
+  .charts-grid .col-md-6{
+    margin-bottom:1rem;
+  }
+
+  .bitacora-chart-card{
+    padding:1rem;
+    min-height:360px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  @media (max-width: 767px){
+    .bitacora-summary-body .d-flex{
+      flex-direction:column;
+      align-items:flex-start !important;
+      gap:.35rem;
+    }
+
+    .bitacora-chart-card{
+      min-height:330px;
+      padding:.8rem;
+    }
+  }
+</style>
+
+<div class="apunte-surface">
+  <div class="container-fluid px-0 px-md-2">
+    <div class="bitacora-shell">
 
   <?php if($usuario['admin']==1 or $usuario['staff_']==1){
 
 echo "
-<ul class='nav nav-tabs pt-1'>
+      <div class='bitacora-topbar'>
+        <div class='d-flex justify-content-between align-items-start gap-3'>
+          <div>
+            <div class='small opacity-75 mb-1'>APP clínica • estadística docente</div>
+            <h1 class='h4 mb-2'>Estadística de Bitácora</h1>
+            <div class='subtle text-white-50'>Visualiza los procedimientos validados por becado y accede a su Mini-CEX.</div>
+          </div>
+          <span class='pill bg-light text-dark'>Staff</span>
+        </div>
+      </div>
+
+<ul class='nav nav-tabs bitacora-tabs pt-1'>
   <li class='nav-item'>
     <a class='nav-link' href='bitacora_autoriza.php'>Validación</a>
   </li>
@@ -55,12 +176,24 @@ echo "
 
 }elseif ($usuario['becad_']==1) {
   
-echo "<ul class='nav nav-tabs pt-1'>
+echo "
+      <div class='bitacora-topbar'>
+        <div class='d-flex justify-content-between align-items-start gap-3'>
+          <div>
+            <div class='small opacity-75 mb-1'>APP clínica • estadística personal</div>
+            <h1 class='h4 mb-2'>Estadística de Bitácora</h1>
+            <div class='subtle text-white-50'>Revisa el resumen de tus procedimientos validados y tu enlace de Mini-CEX.</div>
+          </div>
+          <span class='pill bg-light text-dark'>Becado</span>
+        </div>
+      </div>
+
+<ul class='nav nav-tabs bitacora-tabs pt-1'>
   <li class='nav-item'>
     <a class='nav-link' href='bitacora_ingreso.php'>Ingreso</a>
   </li>
   <li class='nav-item'>
-    <a class='nav-link active' aria-current='page' href='#'>Estadística</a>
+    <span class='nav-link active' aria-current='page'>Estadística</span>
   </li>
   <li class='nav-item'>
     <a class='nav-link' href='bitacora_rechazos.php'>Rechazos</a>
@@ -82,19 +215,26 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 }
 
 
-  $select_name="SELECT `nombre_usuario`  FROM `usuarios_dolor` WHERE `email_usuario` = '$autor_b' ";
+  $select_name="SELECT `nombre_usuario`,`link_minicex`  FROM `usuarios_dolor` WHERE `email_usuario` = '$autor_b' ";
   $name_query=$conexion->query($select_name);
   $name_row=$name_query->fetch_assoc();
 
 
 ?>
+      <div class="bitacora-summary-card">
+        <div class="bitacora-summary-header">
+          <h4 class='mb-1 fw-bold pt-2'>Estadística de <?php  echo $name_row['nombre_usuario']; ?></h4>
+        </div>
+        <div class="bitacora-summary-body">
+          <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap">
+            <div>
+              <div class="text-black-50 small text-uppercase mb-1">Link Mini-CEX</div>
+              <a class="minicex-link text-decoration-none" href="<?php  echo $name_row['link_minicex']; ?>" target="_blank"><?php  echo $name_row['link_minicex']; ?></a>
+            </div>
+          </div>
+        </div>
+      </div>
 
-
-
-	<ul class="list-group">
-	<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><h4 class='mb-1 fw-bold pt-3'>Estadística de <?php  echo $name_row['nombre_usuario']; ?></h4>
-	</li>
-	</ul>
 
 
 <?php
@@ -494,11 +634,11 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
 
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-  <div id="chart_div py-3"></div>
+  
 
 
 
-<div class="container text-center">
+<div class="container text-center"><div class="row charts-grid">
 
 
 
@@ -539,7 +679,7 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
       chart.draw(view, options);
   }
   </script>
-<div id="columnchart_values"></div>
+<div class='bitacora-chart-card'><div id="columnchart_values"></div></div>
 <div class="py-2"></div>
 
 
@@ -590,7 +730,7 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
       chart.draw(view, options);
   }
   </script>
-<div id="columnchart_values2"></div>
+<div class='bitacora-chart-card'><div id="columnchart_values2"></div></div>
 <div class="py-2"></div>
 
     </div>
@@ -628,7 +768,7 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
       chart.draw(view, options);
   }
   </script>
-<div id="columnchart_values3"></div>
+<div class='bitacora-chart-card'><div id="columnchart_values3"></div></div>
 <div class="py-2"></div>
 
     </div>
@@ -685,7 +825,7 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
       chart.draw(view, options);
   }
   </script>
-<div id="columnchart_values4"></div>
+<div class='bitacora-chart-card'><div id="columnchart_values4"></div></div>
 <div class="py-2"></div>
     </div>
 
@@ -806,7 +946,7 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
       chart.draw(view, options);
   }
   </script>
-<div id="columnchart_valuesXX"></div>
+<div class='bitacora-chart-card'><div id="columnchart_valuesXX"></div></div>
 <div class="py-2"></div>
 
     </div>
@@ -850,7 +990,7 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
       chart.draw(view, options);
   }
   </script>
-<div id="columnchart_values7"></div>
+<div class='bitacora-chart-card'><div id="columnchart_values7"></div></div>
 <div class="py-2"></div>
 
     </div>
@@ -899,7 +1039,7 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
       chart.draw(view, options);
   }
   </script>
-<div id="columnchart_values8"></div>
+<div class='bitacora-chart-card'><div id="columnchart_values8"></div></div>
 <div class="py-2"></div>
 
 
@@ -944,7 +1084,7 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
   }
 </script>
   
-<div id="columnchart_values9"></div>
+<div class='bitacora-chart-card'><div id="columnchart_values9"></div></div>
 <div class="py-2"></div>
     </div>
 
@@ -953,13 +1093,11 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
 
 
-
 </div>
-
 
 </div></div></div>
 
-
+</div></div></div>
 
 
   <?php 
