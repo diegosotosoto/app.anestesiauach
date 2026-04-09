@@ -451,13 +451,13 @@ require("head.php");
 
                 <div class="teaching-card">
                   <div class="teaching-label">Segunda etapa del parto</div>
-                  <div class="teaching-text">El dolor sacro suele requerir más volumen</div>
+                  <div class="teaching-text">El dolor sacro puede requerir un bolo inicial de mayor volumen</div>
                   <div class="teaching-soft">
                     Para alivio del dolor durante la segunda etapa del trabajo de parto:
                     <ul class="tip-list mt-2">
                       <li>10 mL de bupivacaína 0,25% si el dolor es importante.</li>
                       <li>10 mL de bupivacaína 0,125% si el dolor es moderado.</li>
-                      <li>Es importante utilizar <strong>volúmenes mayores</strong> para cubrir raíces sacras.</li>
+                      <li>Puede ser necesario utilizar <strong>un bolo inicial con volúmenes mayores</strong> para cubrir raíces sacras.</li>
                     </ul>
                   </div>
                 </div>
@@ -500,7 +500,7 @@ require("head.php");
         </div>
 
         <div class="good-box mb-3">
-          <strong>Perla docente:</strong> en analgesia obstétrica, memorizar solo la “receta” sirve poco. Lo realmente importante es entender <strong>qué volumen usar, en qué etapa del trabajo de parto, qué raíces quieres cubrir, y cómo titular según respuesta clínica</strong>.
+          <strong>Perla docente:</strong> En analgesia obstétrica, memorizar solo la “receta” sirve poco. Lo realmente importante es entender <strong>qué volumen usar, en qué etapa del trabajo de parto, qué raíces quieres cubrir, y cómo titular según respuesta clínica</strong>.
         </div>
 
         <div class="footer-note">

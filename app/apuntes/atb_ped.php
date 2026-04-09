@@ -536,6 +536,17 @@ require("head.php");
               <div class="teaching-title">Perlas para residentes</div>
               <div class="teaching-main">La profilaxis antibiótica efectiva depende tanto de la dosis como del momento de administración</div>
 
+
+              <div class="teaching-grid">
+                <div class="teaching-card">
+                  <div class="teaching-label">Protocolos</div>
+                  <div class="teaching-text">Revisa las recomendaciones y guías locales</div>
+                  <div class="teaching-soft">
+                    Este apunte se basa en recomendaciones internacionales, sin embargo las dosis y tiempo de repetición puede variar según la suceptibilidad antimicrobiana local
+                  </div>
+                </div>
+
+
               <div class="teaching-grid">
                 <div class="teaching-card">
                   <div class="teaching-label">Dosis pediátrica</div>
@@ -603,7 +614,7 @@ const abxData = {
     range: null
   },
   "clindamicina": {
-    label: "Clindamycina",
+    label: "Clindamicina",
     mgkg: 10,
     adultMg: 900,
     redosis: "6 h",
