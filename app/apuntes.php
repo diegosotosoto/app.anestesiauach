@@ -49,7 +49,8 @@ $cabeceras = array(
       array('apuntes/flacc.php','fa-solid fa-hands-holding-child','Escala FLACC'),
       array('apuntes/atb_ped.php','fa-solid fa-bacterium','Profilaxis Antibiótica'),
       array('apuntes/dva_neonato.php','fa-solid fa-heart-circle-bolt','DVA UPC Neonatal'),      
-      array('apuntes/eberhart_ponv.php','fa-solid fa-face-dizzy','Manejo NVPO Pediátrico')      
+      array('apuntes/eberhart_ponv.php','fa-solid fa-face-dizzy','Manejo NVPO Pediátrico'),
+      array('apuntes/regional_ped.php','fa-solid fa-baby','Regional Pediátrica')       
     )),
 'Nefrourología' => array('icono'=>'apuntes/icons/kidney.png',array(
       array('apuntes/bica.php','fa-solid fa-flask-vial','Corrección de bicarbonato'),
@@ -61,6 +62,7 @@ $cabeceras = array(
         array('apuntes/PCEA-PIEB.php','fa-solid fa-square-check','Preparación PIEB')
     )),
 'Regional/Dolor' => array('icono'=>'apuntes/icons/ultrasound.png',array(
+         array('apuntes/regional_ped.php','fa-solid fa-baby','Regional Pediátrica') 
     )),
 'Respiratorio' => array('icono'=>'apuntes/icons/lungs.png',array(
         array('apuntes/ventilacion.php','fa-solid fa-lungs','Ventilación por Peso Ideal'),

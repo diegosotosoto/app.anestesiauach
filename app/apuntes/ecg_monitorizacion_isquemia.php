@@ -216,8 +216,31 @@ require("head.php");
       <b>Fórmula:</b><br>
       <?php echo $formula; ?>
     <?php } ?>
+          <hr>
+          <div class="section-card">
+          <div class="p-3 p-md-4">
+            <div class="section-title mb-3">Imágenes clave</div>
+            <div class="image-grid">
+              <div class="image-card">
+                <img src="<?php echo $img_montajes; ?>" alt="Montajes ECG">
+                <div class="cap"><strong>Montajes útiles en anestesia</strong><br>CS5, CB5 y CM5 para obtener V5 modificada u otras configuraciones prácticas.</div>
+              </div>
+              <div class="image-card">
+                <img src="<?php echo $img_sensibilidad; ?>" alt="Sensibilidad derivaciones">
+                <div class="cap"><strong>Sensibilidad isquémica</strong><br>Una derivación no es igual a dos o tres: la sensibilidad aumenta marcadamente.</div>
+              </div>
+              <div class="image-card">
+                <img src="<?php echo $img_territorios; ?>" alt="Territorios y derivadas">
+                <div class="cap"><strong>Territorio vs derivada</strong><br>Correlación entre localización anatómica, derivadas ECG y territorio miocárdico.</div>
+              </div>
+              <div class="image-card">
+                <img src="<?php echo $img_coronarias; ?>" alt="Anatomía coronaria">
+                <div class="cap"><strong>Anatomía coronaria</strong><br>Piensa siempre qué arteria quieres vigilar antes de elegir la derivación.</div>
+              </div>
+            </div>
+          </div>
+        </div>
   </div>
-
 </div>
 
 
@@ -320,31 +343,7 @@ require("head.php");
 
         <div class="section-card">
           <div class="p-3 p-md-4">
-            <div class="section-title mb-3">4. Imágenes clave</div>
-            <div class="image-grid">
-              <div class="image-card">
-                <img src="<?php echo $img_montajes; ?>" alt="Montajes ECG">
-                <div class="cap"><strong>Montajes útiles en anestesia</strong><br>CS5, CB5 y CM5 para obtener V5 modificada u otras configuraciones prácticas.</div>
-              </div>
-              <div class="image-card">
-                <img src="<?php echo $img_sensibilidad; ?>" alt="Sensibilidad derivaciones">
-                <div class="cap"><strong>Sensibilidad isquémica</strong><br>Una derivación no es igual a dos o tres: la sensibilidad aumenta marcadamente.</div>
-              </div>
-              <div class="image-card">
-                <img src="<?php echo $img_territorios; ?>" alt="Territorios y derivadas">
-                <div class="cap"><strong>Territorio vs derivada</strong><br>Correlación entre localización anatómica, derivadas ECG y territorio miocárdico.</div>
-              </div>
-              <div class="image-card">
-                <img src="<?php echo $img_coronarias; ?>" alt="Anatomía coronaria">
-                <div class="cap"><strong>Anatomía coronaria</strong><br>Piensa siempre qué arteria quieres vigilar antes de elegir la derivación.</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">5. Correlación anatómica</div>
+            <div class="section-title mb-3">4. Correlación anatómica</div>
             <div class="table-wrap">
               <table class="corr-table">
                 <thead>
@@ -400,7 +399,7 @@ require("head.php");
 
         <div class="section-card">
           <div class="p-3 p-md-4">
-            <div class="section-title mb-3">6. Idea clave</div>
+            <div class="section-title mb-3">5. Idea clave</div>
             <div class="note-box">
               En anestesia, con 3 electrodos puedes seguir una derivación continua y cambiarla manualmente según el territorio que te interese. Con 5 electrodos puedes mantener dos derivaciones continuas, lo que mejora claramente la sensibilidad para isquemia. La selección ideal depende de si buscas <strong>screening global</strong> o <strong>vigilar una arteria/territorio específico</strong>.
             </div>
