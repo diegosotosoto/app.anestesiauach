@@ -48,6 +48,7 @@ $cabeceras = array(
       array('apuntes/peri_ped.php','fa-solid fa-baby','Dosis Peridural Ped.'),
       array('apuntes/flacc.php','fa-solid fa-hands-holding-child','Escala FLACC'),
       array('apuntes/atb_ped.php','fa-solid fa-bacterium','Profilaxis Antibiótica'),
+      array('apuntes/dva_neonato.php','fa-solid fa-heart-circle-bolt','DVA UPC Neonatal'),      
       array('apuntes/eberhart_ponv.php','fa-solid fa-face-dizzy','Manejo NVPO Pediátrico')      
     )),
 'Nefrourología' => array('icono'=>'apuntes/icons/kidney.png',array(
