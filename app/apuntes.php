@@ -277,7 +277,12 @@ $cabeceras = array(
               <div class='apuntes-list'>
                 <a href='apuntes/checklist_LAST.php' class='apuntes-link'><i class='fa-solid fa-heart-circle-bolt'></i>Checklist LAST</a>
                 <a href='apuntes/checklist_HM.php' class='apuntes-link'><i class='fa-solid fa-fire'></i>Checklist Hipertermia Maligna</a>
-                <a href='apuntes/hiperkalemia.php' class='apuntes-link'><i class='fa-solid fa-bolt'></i>Manejo Hiperkalemia</a>               
+                <a href='apuntes/hiperkalemia.php' class='apuntes-link'><i class='fa-solid fa-bolt'></i>Manejo Hiperkalemia</a>
+
+   <a href='apuntes/emergencia_ped.php' class='apuntes-link'><i class='fa-solid fa-truck-medical'></i>Dosis de Emergencia Ped</a>
+
+
+
               </div>
             </div>
           </div>
