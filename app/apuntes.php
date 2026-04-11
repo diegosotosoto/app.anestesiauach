@@ -50,7 +50,8 @@ $cabeceras = array(
       array('apuntes/atb_ped.php','fa-solid fa-bacterium','Profilaxis Antibiótica'),
       array('apuntes/dva_neonato.php','fa-solid fa-heart-circle-bolt','DVA UPC Neonatal'),      
       array('apuntes/eberhart_ponv.php','fa-solid fa-face-dizzy','Manejo NVPO Pediátrico'),
-      array('apuntes/regional_ped.php','fa-solid fa-baby','Regional Pediátrica')       
+      array('apuntes/regional_ped.php','fa-solid fa-baby','Regional Pediátrica'),
+      array('apuntes/analgesia_ped.php','fa-solid fa-heart-crack','Analgesia Perioperatoria Pediátrica')     
     )),
 'Nefrourología' => array('icono'=>'apuntes/icons/kidney.png',array(
       array('apuntes/bica.php','fa-solid fa-flask-vial','Corrección de bicarbonato'),
