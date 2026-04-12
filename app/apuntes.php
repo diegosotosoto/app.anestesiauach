@@ -14,8 +14,6 @@ require("head.php");
 
 
 
-
-
 $cabeceras = array(
 'Generalidades' => array('icono'=>'apuntes/icons/anesthesia.png',array(
       array('apuntes/asa.php','fa-solid fa-lightbulb','Clasificación ASA'),
@@ -51,7 +49,8 @@ $cabeceras = array(
       array('apuntes/dva_neonato.php','fa-solid fa-heart-circle-bolt','DVA UPC Neonatal'),      
       array('apuntes/eberhart_ponv.php','fa-solid fa-face-dizzy','Manejo NVPO Pediátrico'),
       array('apuntes/regional_ped.php','fa-solid fa-baby','Regional Pediátrica'),
-      array('apuntes/analgesia_ped.php','fa-solid fa-heart-crack','Analgesia Perioperatoria Pediátrica')     
+      array('apuntes/analgesia_ped.php','fa-solid fa-heart-crack','Analgesia Perioperatoria Pediátrica'),
+      array('apuntes/hidratacion_ped.php','fa-solid fa-glass-water-droplet','Hidratación Pediátrica')
     )),
 'Nefrourología' => array('icono'=>'apuntes/icons/kidney.png',array(
       array('apuntes/bica.php','fa-solid fa-flask-vial','Corrección de bicarbonato'),
@@ -63,15 +62,18 @@ $cabeceras = array(
         array('apuntes/PCEA-PIEB.php','fa-solid fa-square-check','Preparación PIEB')
     )),
 'Regional/Dolor' => array('icono'=>'apuntes/icons/ultrasound.png',array(
-         array('apuntes/regional_ped.php','fa-solid fa-baby','Regional Pediátrica') 
+        array('apuntes/dosis_aall.php','fa-solid fa-syringe','Dosis Máxima AALL'),
+        array('apuntes/regional_ped.php','fa-solid fa-baby','Regional Pediátrica')
+
     )),
 'Respiratorio' => array('icono'=>'apuntes/icons/lungs.png',array(
         array('apuntes/ventilacion.php','fa-solid fa-lungs','Ventilación por Peso Ideal'),
-         array('apuntes/tdl_algoritmo.php','fa-solid fa-lungs','Tamaño Tubo Doble Lumen')       
+        array('apuntes/tdl_algoritmo.php','fa-solid fa-lungs','Tamaño Tubo Doble Lumen')       
     )),
 'Volumen y Reposición' => array('icono'=>'apuntes/icons/transfusion.png',array(
       array('apuntes/perdida_admisible.php','fa-solid fa-droplet','Pérdida Admisible'),
-      array('apuntes/ascenso_hcto.php','fa-solid fa-bottle-droplet','Ascenso de Hematocrito')
+      array('apuntes/ascenso_hcto.php','fa-solid fa-bottle-droplet','Ascenso de Hematocrito'),
+      array('apuntes/hidratacion_ped.php','fa-solid fa-glass-water-droplet','Hidratación Pediátrica')
 
     ))
 );
