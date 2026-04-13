@@ -118,32 +118,52 @@
   .minicex-link{
     word-break:break-all;
   }
+ .charts-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(320px, 360px));
+  justify-content:center;
+  gap:1rem;
+  margin-top:1rem;
+}
 
-  .charts-grid .col-xl-4,
-  .charts-grid .col-md-6{
-    margin-bottom:1rem;
+.chart-col{
+  min-width:0;
+  width:100%;
+}
+
+.bitacora-chart-card{
+  border:0;
+  border-radius:1rem;
+  box-shadow:0 8px 24px rgba(0,0,0,.06);
+  background:#fff;
+  overflow:hidden;
+  padding:1rem;
+  min-height:360px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.chart-canvas{
+  width:100%;
+  height:320px;
+}
+
+@media (max-width:767px){
+  .charts-grid{
+    grid-template-columns:1fr;
+    gap:1.1rem;
   }
 
   .bitacora-chart-card{
-    padding:1rem;
-    min-height:360px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    min-height:330px;
+    padding:.8rem;
   }
 
-  @media (max-width: 767px){
-    .bitacora-summary-body .d-flex{
-      flex-direction:column;
-      align-items:flex-start !important;
-      gap:.35rem;
-    }
-
-    .bitacora-chart-card{
-      min-height:330px;
-      padding:.8rem;
-    }
+  .chart-canvas{
+    height:300px;
   }
+}
 </style>
 
 <div class="apunte-surface">
@@ -636,16 +656,14 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   
 
+  <div class="charts-grid">
 
-
-<div class="container text-center"><div class="row charts-grid">
-
-
-
-  <div class="row">
-
-    <div class="col-xl-4 col-md-6">
- <script type="text/javascript">
+  <div class="chart-col">
+    <div class="bitacora-chart-card">
+      <div id="columnchart_values" class="chart-canvas">      </div>
+      </div>
+    </div>
+<script type="text/javascript">
     google.charts.load("current", {packages:['corechart']});
     google.charts.setOnLoadCallback(drawChart);
     function drawChart() {
@@ -670,8 +688,16 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
       var options = {
         title: "Rango Etáreo",
-        width: 350,
         height: 300,
+        chartArea: {
+          left: 45,
+          right: 20,
+          top: 40,
+          bottom: 70,
+          width: '100%',
+          height: '70%'
+        },
+        legend: { position: "none" },
         bar: {groupWidth: "95%"},
         legend: { position: "none" },
       };
@@ -679,13 +705,14 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
       chart.draw(view, options);
   }
   </script>
-<div class='bitacora-chart-card'><div id="columnchart_values"></div></div>
-<div class="py-2"></div>
 
 
+  <div class="chart-col">
+    <div class="bitacora-chart-card">
+      <div id="columnchart_values2" class="chart-canvas">      </div>
+         </div>
     </div>
 
-    <div class="col-xl-4 col-md-6 mx-0 px-0">
 <script type="text/javascript">
     google.charts.load("current", {packages:['corechart']});
     google.charts.setOnLoadCallback(drawChart);
@@ -717,8 +744,16 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
       var options = {
         title: "Tipo de Procedimiento",
-        width: 350,
         height: 300,
+        chartArea: {
+          left: 45,
+          right: 20,
+          top: 40,
+          bottom: 70,
+          width: '100%',
+          height: '70%'
+        },
+        legend: { position: "none" },
         bar: {groupWidth: "95%"},
         legend: { position: "none" },
     hAxis: {
@@ -730,12 +765,14 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
       chart.draw(view, options);
   }
   </script>
-<div class='bitacora-chart-card'><div id="columnchart_values2"></div></div>
-<div class="py-2"></div>
 
+
+  <div class="chart-col">
+    <div class="bitacora-chart-card">
+      <div id="columnchart_values3" class="chart-canvas">      </div>
     </div>
+  </div>
 
-    <div class="col-xl-4 col-md-6">
 <script type="text/javascript">
     google.charts.load("current", {packages:['corechart']});
     google.charts.setOnLoadCallback(drawChart);
@@ -759,8 +796,16 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
       var options = {
         title: "Manejo de Vía Aérea",
-        width: 350,
         height: 300,
+        chartArea: {
+          left: 45,
+          right: 20,
+          top: 40,
+          bottom: 70,
+          width: '100%',
+          height: '70%'
+        },
+        legend: { position: "none" },
         bar: {groupWidth: "95%"},
         legend: { position: "none" },
       };
@@ -768,22 +813,18 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
       chart.draw(view, options);
   }
   </script>
-<div class='bitacora-chart-card'><div id="columnchart_values3"></div></div>
-<div class="py-2"></div>
 
+
+
+
+
+  <div class="chart-col">
+    <div class="bitacora-chart-card">
+      <div id="columnchart_values4" class="chart-canvas">      </div>
+      
     </div>
-
-
   </div>
-
-
-
-
   
-  <div class="row">
-
-    <div class="col-xl-4 col-md-6">
-
 <script type="text/javascript">
     google.charts.load("current", {packages:['corechart']});
     google.charts.setOnLoadCallback(drawChart);
@@ -812,8 +853,16 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
       var options = {
         title: "Manejo de Vía Aérea Difícil",
-       width: 350,
         height: 300,
+        chartArea: {
+          left: 45,
+          right: 20,
+          top: 40,
+          bottom: 70,
+          width: '100%',
+          height: '70%'
+        },
+        legend: { position: "none" },
         bar: {groupWidth: "95%"},
         legend: { position: "none" },
     hAxis: {
@@ -825,11 +874,14 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
       chart.draw(view, options);
   }
   </script>
-<div class='bitacora-chart-card'><div id="columnchart_values4"></div></div>
-<div class="py-2"></div>
-    </div>
 
-    <div class="col-xl-4 col-md-6">
+
+
+  <div class="chart-col">
+    <div class="bitacora-chart-card">
+      <div id="columnchart_values5" class="chart-canvas">      </div>
+           </div>
+    </div>   
 <script type="text/javascript">
     google.charts.load("current", {packages:['corechart']});
     google.charts.setOnLoadCallback(drawChart);
@@ -853,8 +905,16 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
       var options = {
         title: "Acceso Vascular",
-        width: 350,
         height: 300,
+        chartArea: {
+          left: 45,
+          right: 20,
+          top: 40,
+          bottom: 70,
+          width: '100%',
+          height: '70%'
+        },
+        legend: { position: "none" },
         bar: {groupWidth: "95%"},
         legend: { position: "none" },
       };
@@ -862,12 +922,16 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
       chart.draw(view, options);
   }
   </script>
-<div id="columnchart_values5"></div>
-<div class="py-2"></div>
 
+
+
+
+  <div class="chart-col">
+    <div class="bitacora-chart-card">
+      <div id="columnchart_values6" class="chart-canvas">      </div>
+    
     </div>
-
-    <div class="col-xl-4 col-md-6">
+  </div>    
 <script type="text/javascript">
     google.charts.load("current", {packages:['corechart']});
     google.charts.setOnLoadCallback(drawChart);
@@ -888,8 +952,16 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
       var options = {
         title: "Acceso Vascular Invasivo",
-        width: 350,
         height: 300,
+        chartArea: {
+          left: 45,
+          right: 20,
+          top: 40,
+          bottom: 70,
+          width: '100%',
+          height: '70%'
+        },
+        legend: { position: "none" },
         bar: {groupWidth: "95%"},
         legend: { position: "none" },
       };
@@ -897,24 +969,15 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
       chart.draw(view, options);
   }
   </script>
-<div id="columnchart_values6"></div>
-<div class="py-2"></div>
 
+
+
+  <div class="chart-col">
+    <div class="bitacora-chart-card">
+      <div id="columnchart_values6X" class="chart-canvas">      </div>
+    
     </div>
-
-
-  </div>
-
-
-
-  
-
-  <div class="row">
-
-
-
-
-    <div class="col-xl-4 col-md-6">
+  </div>    
 <script type="text/javascript">
     google.charts.load("current", {packages:['corechart']});
     google.charts.setOnLoadCallback(drawChart);
@@ -937,26 +1000,31 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
       var options = {
         title: "Acceso Venoso Central",
-        width: 350,
         height: 300,
+        chartArea: {
+          left: 45,
+          right: 20,
+          top: 40,
+          bottom: 70,
+          width: '100%',
+          height: '70%'
+        },
+        legend: { position: "none" },
         bar: {groupWidth: "95%"},
         legend: { position: "none" },
       };
-      var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_valuesXX"));
+      var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values6X"));
       chart.draw(view, options);
   }
   </script>
-<div class='bitacora-chart-card'><div id="columnchart_valuesXX"></div></div>
-<div class="py-2"></div>
 
+
+  <div class="chart-col">
+    <div class="bitacora-chart-card">
+      <div id="columnchart_values7" class="chart-canvas">      </div>
+        
     </div>
-
-
-
-
-
-
-    <div class="col-xl-4 col-md-6">
+  </div>
 <script type="text/javascript">
     google.charts.load("current", {packages:['corechart']});
     google.charts.setOnLoadCallback(drawChart);
@@ -981,8 +1049,16 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
       var options = {
         title: "Anestesia Neuroaxial",
-        width: 350,
         height: 300,
+        chartArea: {
+          left: 45,
+          right: 20,
+          top: 40,
+          bottom: 70,
+          width: '100%',
+          height: '70%'
+        },
+        legend: { position: "none" },
         bar: {groupWidth: "95%"},
         legend: { position: "none" },
       };
@@ -990,13 +1066,14 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
       chart.draw(view, options);
   }
   </script>
-<div class='bitacora-chart-card'><div id="columnchart_values7"></div></div>
-<div class="py-2"></div>
+
+
+  <div class="chart-col">
+    <div class="bitacora-chart-card">
+      <div id="columnchart_values8" class="chart-canvas">      </div>
 
     </div>
-
-    <div class="col-xl-4 col-md-6">
-
+  </div>        
 <script type="text/javascript">
     google.charts.load("current", {packages:['corechart']});
     google.charts.setOnLoadCallback(drawChart);
@@ -1026,8 +1103,16 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
       var options = {
         title: "Anestesia Regional",
-        width: 350,
         height: 300,
+        chartArea: {
+          left: 45,
+          right: 20,
+          top: 40,
+          bottom: 70,
+          width: '100%',
+          height: '70%'
+        },
+        legend: { position: "none" },
         bar: {groupWidth: "95%"},
         legend: { position: "none" },
     hAxis: {
@@ -1039,17 +1124,14 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
       chart.draw(view, options);
   }
   </script>
-<div class='bitacora-chart-card'><div id="columnchart_values8"></div></div>
-<div class="py-2"></div>
 
 
-
+  <div class="chart-col">
+    <div class="bitacora-chart-card">
+      <div id="columnchart_values9" class="chart-canvas">      </div>
+        </div>
     </div>
-
-
-<div class="row">    
-
-    <div class="col-xl-4 col-md-6">
+      
 <script type="text/javascript">
     google.charts.load("current", {packages:['corechart']});
     google.charts.setOnLoadCallback(drawChart);
@@ -1074,8 +1156,16 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
       var options = {
         title: "Atenciones de Dolor",
-        width: 350,
         height: 300,
+        chartArea: {
+          left: 45,
+          right: 20,
+          top: 40,
+          bottom: 70,
+          width: '100%',
+          height: '70%'
+        },
+        legend: { position: "none" },
         bar: {groupWidth: "95%"},
         legend: { position: "none" },
       };
@@ -1083,21 +1173,24 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
       chart.draw(view, options);
   }
 </script>
-  
-<div class='bitacora-chart-card'><div id="columnchart_values9"></div></div>
-<div class="py-2"></div>
-    </div>
 
-
-  </div>
 
 
 
 </div>
 
-</div></div></div>
 
-</div></div></div>
+
+
+
+
+
+
+
+
+
+
+
 
 
   <?php 
