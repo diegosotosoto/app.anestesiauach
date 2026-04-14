@@ -330,7 +330,7 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
           $neuroaxial_6='Otro';
 
 
-          $regional_1='Bloqueo de Plexo Braquial';
+          $regional_1='Bloqueo de Plaxo Braquial';
           $regional_2='Bloqueo de EEII';
           $regional_3='Bloqueo de Pared/Interfascial';
           $regional_4='Bloqueo Nervio Dorsal del Pene';
