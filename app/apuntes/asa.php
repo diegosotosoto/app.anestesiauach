@@ -14,7 +14,7 @@ $titulo_apunte = "Clasificación ASA";
 
 $boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm' style='width:80px;height:40px;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm border-light' onclick='toggleInfo()' style='width:50px;height:40px;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px;height:40px;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
 
 require("head.php");
 ?>

@@ -15,7 +15,7 @@ $titulo_apunte = "Reposición Intraoperatoria Pediátrica";
 
 $boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm border-light' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
 
 require("head.php");
 ?>
@@ -480,34 +480,9 @@ require("head.php");
                   <span class="input-group-text">kg</span>
                 </div>
 
-              <label class="form-label-lite">Exposición quirúrgica</label>
-              <div class="choice-grid-3">
-                <div>
-                  <input class="choice-check" type="radio" name="exposicion" id="exp_min" value="minima" checked>
-                  <label class="choice-btn" for="exp_min">
-                    <span>Mínima</span>
-                    <small class="choice-sub">Superficial, corta, escasa exposición</small>
-                  </label>
-                </div>
 
-                <div>
-                  <input class="choice-check" type="radio" name="exposicion" id="exp_mod" value="moderada">
-                  <label class="choice-btn" for="exp_mod">
-                    <span>Moderada</span>
-                    <small class="choice-sub">Abdominal simple, urológica, ORL mayor</small>
-                  </label>
-                </div>
 
-                <div>
-                  <input class="choice-check" type="radio" name="exposicion" id="exp_may" value="mayor">
-                  <label class="choice-btn" for="exp_may">
-                    <span>Mayor</span>
-                    <small class="choice-sub">Laparotomía amplia, tórax, cirugía mayor prolongada</small>
-                  </label>
-                </div>
-              </div>
 
-              <div class="card-block">
                 <label class="form-label-lite">Rango etáreo</label>
                 <div class="choice-grid">
                   <div>
@@ -549,7 +524,38 @@ require("head.php");
                 <div class="small-note mt-2">
                   Los rangos etáreos ajustan la interpretación clínica, el riesgo metabólico y la estimación orientativa de pérdidas por exposición.
                 </div>
+
+
+
+
+              <label class="form-label-lite pt-3">Exposición quirúrgica</label>
+              <div class="choice-grid">
+                <div>
+                  <input class="choice-check" type="radio" name="exposicion" id="exp_min" value="minima" checked>
+                  <label class="choice-btn" for="exp_min">
+                    <span>Mínima</span>
+                    <small class="choice-sub">Superficial, corta, escasa exposición</small>
+                  </label>
+                </div>
+
+                <div>
+                  <input class="choice-check" type="radio" name="exposicion" id="exp_mod" value="moderada">
+                  <label class="choice-btn" for="exp_mod">
+                    <span>Moderada</span>
+                    <small class="choice-sub">Abdominal simple, urológica, ORL mayor</small>
+                  </label>
+                </div>
+
+                <div>
+                  <input class="choice-check" type="radio" name="exposicion" id="exp_may" value="mayor">
+                  <label class="choice-btn" for="exp_may">
+                    <span>Mayor</span>
+                    <small class="choice-sub">Laparotomía amplia, tórax, cirugía mayor prolongada</small>
+                  </label>
+                </div>
               </div>
+
+
             </div>
           </div>
         </div>
