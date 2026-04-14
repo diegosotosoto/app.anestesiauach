@@ -25,7 +25,8 @@ $cabeceras = array(
       array('apuntes/score_lee.php','fa-solid fa-calendar-plus','Índice de Riesgo Cardiaco Revisado'),
       array('apuntes/mallampati.php','fa-solid fa-head-side-cough','Score de Mallampati'),
       array('apuntes/aldrete.php','fa-solid fa-star','Score de Aldrete re Modificado'),
-      array('apuntes/us_gastrico.php','fa-solid fa-burger','Ultrasonido Gástrico')
+      array('apuntes/us_gastrico.php','fa-solid fa-burger','Ultrasonido Gástrico'),
+      array('apuntes/caprini.php','fa-solid fa-file-medical','Score Caprini (TVP)')     
     )),
 'Monitorización' => array('icono'=>'apuntes/icons/vital-signs.png',array(
           array('apuntes/ecg_monitorizacion_isquemia.php','fa-solid fa-heart-pulse','Monitorización ECG')
