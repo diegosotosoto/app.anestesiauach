@@ -204,26 +204,64 @@ $titulo_apunte = "Anticoagulantes / Antiagregantes";//texto obligatorio
         </div>
       </div>
 
-      <div class="accordion-item section-card mb-3">
-        <h2 class="accordion-header" id="heading2">
-          <button class="accordion-button collapsed js-accordion-toggle" type="button" data-bs-target="#collapse2">
-            3. ¿Convulsión?
-          </button>
-        </h2>
-        <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#lastAccordion">
-          <div class="accordion-body">
-            <div class="decision p-3 mb-3">
-              <div class="fw-semibold mb-1">Objetivo</div>
-              <div class="subtle">Control temprano de la vía aérea y manejo de convulsiones con la estrategia recomendada.</div>
-            </div>
-            <div class="d-grid gap-2">
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Asegurar vía aérea y ventilación adecuadas.</label>
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Usar benzodiazepina como primera elección si hay convulsión.</label>
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Si solo hay propofol disponible, usar dosis bajas/tituladas (ejemplo del checklist: incrementos de 20 mg).</label>
-            </div>
+
+
+<div class="accordion-item section-card mb-3">
+  <h2 class="accordion-header" id="heading2">
+    <button class="accordion-button collapsed js-accordion-toggle" type="button" data-bs-target="#collapse2">
+      3. ¿Convulsión?
+    </button>
+  </h2>
+  <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#lastAccordion">
+    <div class="accordion-body">
+      <div class="decision p-3 mb-3">
+        <div class="fw-semibold mb-1">Objetivo</div>
+        <div class="subtle">Control temprano de la vía aérea y manejo anticonvulsivante rápido, priorizando benzodiazepinas.</div>
+      </div>
+
+      <div class="d-grid gap-2 mb-3">
+        <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Asegurar vía aérea y ventilación adecuadas.</label>
+        <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Usar benzodiazepina como primera elección si hay convulsión.</label>
+        <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Si sólo hay propofol disponible, usar dosis bajas/tituladas (ejemplo del checklist: incrementos de 20 mg).</label>
+      </div>
+
+      <div class="warning-box p-3">
+        <div class="fw-semibold mb-2">Dosis orientativas de benzodiazepinas</div>
+        <div class="subtle mb-3">Se calculan automáticamente con el peso ingresado en emulsión lipídica. Si no has ingresado peso, escribe uno en la sección 2.</div>
+
+        <div id="seizureDoseEmpty" class="subtle">
+          Ingresa el peso del paciente para calcular dosis de midazolam y lorazepam.
+        </div>
+
+        <div id="seizureDoseBox" class="d-none">
+          <div class="table-responsive">
+            <table class="table table-bordered small-table align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Peso</th>
+                  <th>Midazolam</th>
+                  <th>Lorazepam</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td id="szWeight" class="mono"></td>
+                  <td id="szMidazolam" class="mono"></td>
+                  <td id="szLorazepam" class="mono"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="small-note mt-2">
+            Sugerencias docentes: <strong>midazolam 0,1 mg/kg</strong> o <strong>lorazepam 0,2 mg/kg</strong>.
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+
 
       <div class="accordion-item section-card mb-3">
         <h2 class="accordion-header" id="heading3">
@@ -245,6 +283,13 @@ $titulo_apunte = "Anticoagulantes / Antiagregantes";//texto obligatorio
                     <li>Dosis menores a las habituales.</li>
                     <li>Comenzar con ≤1 mcg/kg.</li>
                   </ul>
+
+                  <div class="fw-semibold pt-3 mb-2">Amiodarona</div>
+                  <ul class="mb-0">
+                    <li>En caso arritmias ventriculares,</li>
+                    <li>se prefiere la amiodarona</li>
+                  </ul>
+
                 </div>
               </div>
               <div class="col-12 col-md-6">
@@ -336,6 +381,7 @@ $titulo_apunte = "Anticoagulantes / Antiagregantes";//texto obligatorio
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+
 (function () {
     const accordionButtons = Array.from(document.querySelectorAll('.js-accordion-toggle'));
 
@@ -396,8 +442,11 @@ $titulo_apunte = "Anticoagulantes / Antiagregantes";//texto obligatorio
     document.getElementById('notesBox').value = '';
     document.getElementById('doseResult').classList.add('d-none');
     document.getElementById('copyFeedback').classList.add('d-none');
+    document.getElementById('seizureDoseBox').classList.add('d-none');
+    document.getElementById('seizureDoseEmpty').classList.remove('d-none');     
     updateProgress();
     window.scrollTo({top:0, behavior:'smooth'});
+
   });
 
   function renderDose(weight) {
@@ -426,6 +475,7 @@ $titulo_apunte = "Anticoagulantes / Antiagregantes";//texto obligatorio
     outInfusion.textContent = infusionText;
     outMax.textContent = (12 * weight).toFixed(1) + ' mL total';
     doseResult.classList.remove('d-none');
+    renderSeizureDose(weight);    
   }
 
   document.getElementById('calcDoseBtn').addEventListener('click', () => {
@@ -463,6 +513,29 @@ $titulo_apunte = "Anticoagulantes / Antiagregantes";//texto obligatorio
       notes
     ].join('\n');
   }
+  function renderSeizureDose(weight) {
+    const emptyBox = document.getElementById('seizureDoseEmpty');
+    const doseBox = document.getElementById('seizureDoseBox');
+    const szWeight = document.getElementById('szWeight');
+    const szMidazolam = document.getElementById('szMidazolam');
+    const szLorazepam = document.getElementById('szLorazepam');
+
+    if (!weight || weight <= 0) {
+      emptyBox.classList.remove('d-none');
+      doseBox.classList.add('d-none');
+      return;
+    }
+
+    const midazolam = (0.1 * weight).toFixed(2);
+    const lorazepam = (0.2 * weight).toFixed(2);
+
+    szWeight.textContent = weight.toFixed(1) + ' kg';
+    szMidazolam.textContent = midazolam + ' mg';
+    szLorazepam.textContent = lorazepam + ' mg';
+
+    emptyBox.classList.add('d-none');
+    doseBox.classList.remove('d-none');
+  }
 
   document.getElementById('copySummaryBtn').addEventListener('click', async () => {
     const text = buildSummary();
@@ -471,6 +544,16 @@ $titulo_apunte = "Anticoagulantes / Antiagregantes";//texto obligatorio
       document.getElementById('copyFeedback').classList.remove('d-none');
     } catch (e) {
       alert('No se pudo copiar automáticamente. Usa descargar TXT.');
+    }
+  });
+
+  document.getElementById('weightInput').addEventListener('input', () => {
+    const weight = parseFloat(document.getElementById('weightInput').value);
+    if (weight > 0) {
+      renderSeizureDose(weight);
+    } else {
+      document.getElementById('seizureDoseBox').classList.add('d-none');
+      document.getElementById('seizureDoseEmpty').classList.remove('d-none');
     }
   });
 

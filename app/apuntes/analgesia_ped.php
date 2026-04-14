@@ -844,7 +844,7 @@ function calculateAnalgesia(){
 
   if(!modeData){
     doseValue.textContent = 'No aplica';
-    doseNote.textContent = `Este fármaco no tiene esquema de ${modo} en el apunte base.`;
+    doseNote.textContent = `Este fármaco no tiene esquema de ${modo}.`;
     presentationValue.textContent = `${drug.presentacion}`;
     presentationNote.textContent = `${drug.via}`;
     frequencyValue.textContent = '-';

@@ -662,7 +662,7 @@ require("head.php");
                 </div>
 
                 <div class="stack-card warn">
-                  <div class="result-row"><div class="result-left"><div class="result-name">Rocuronio (2 DE95)</div><div class="result-note">Secuencia rápida / intubación</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="rocuronio" readonly><span class="input-group-text">mg</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="result-name">Rocuronio (2 DE95)</div><div class="result-note">Intubación</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="rocuronio" readonly><span class="input-group-text">mg</span></div></div>
                   <div class="result-row"><div class="result-left"><div class="result-name">Midazolam</div><div class="result-note">Valorar contexto hemodinámico</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="midazolam" readonly><span class="input-group-text">mg</span></div></div>
                   <div class="result-row"><div class="result-left"><div class="result-name">Fentanyl (inducción)</div><div class="result-note">Cuidado con rigidez de pared torácica</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="fentaInd" readonly><span class="input-group-text">µg</span></div></div>
                   <div class="result-row"><div class="result-left"><div class="result-name">Fentanyl (analgesia)</div><div class="result-note">Titular según dolor y contexto</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="fentaAna" readonly><span class="input-group-text">µg</span></div></div>
@@ -694,11 +694,11 @@ require("head.php");
                   <div class="result-row"><div class="result-left"><div class="result-name">Cardioversión 1</div><div class="result-note">Energía inicial orientativa</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="cardiov" readonly><span class="input-group-text">J</span></div></div>
                   <div class="result-row"><div class="result-left"><div class="result-name">Desfibrilación 1</div><div class="result-note">Primera descarga</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="desfibr" readonly><span class="input-group-text">J</span></div></div>
                   <div class="result-row"><div class="result-left"><div class="result-name">Desfibrilación 2–3</div><div class="result-note">Escalamiento posterior</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="desfibr2" readonly><span class="input-group-text">J</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="result-name">Desfibrilación 2–3</div><div class="result-note">Escalamiento posterior</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="desfibr2" readonly><span class="input-group-text">J</span></div></div>
                 </div>
               </div>
             </div>
           </div>
-
         </form>
 
         <div class="section-card">

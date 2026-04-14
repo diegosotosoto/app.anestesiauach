@@ -851,15 +851,17 @@ function getContenidoVisual(val){
 }
 
 function applyRiskStyle(level){
-  const box = document.getElementById('interpretacionBox');
-  box.className = '';
+  const box = document.querySelector('.result-main-card');
+  if(!box) return;
+
+  box.classList.remove('good-box', 'warn-box', 'danger-box', 'mint-box');
 
   if(level === 'bajo'){
-    box.className = 'good-box';
+    box.classList.add('good-box');
   } else if(level === 'intermedio'){
-    box.className = 'warn-box';
+    box.classList.add('warn-box');
   } else {
-    box.className = 'danger-box';
+    box.classList.add('danger-box');
   }
 }
 
@@ -968,10 +970,11 @@ function updateGastricUS(){
     riskMain = 'Riesgo aumentado';
   }
 
-  applyRiskStyle(riskLevel === 'alto' ? 'alto' : riskLevel);
-  document.getElementById('interpTitulo').textContent = riskTitle;
-  document.getElementById('interpTexto').textContent = riskText;
-  document.getElementById('riesgoFinal').textContent = riskMain;
+applyRiskStyle(riskLevel === 'alto' ? 'alto' : riskLevel);
+document.getElementById('riesgoFinal').innerHTML =
+  riskMain + '<br><span style="font-size:.95rem;font-weight:600;">' +
+  riskTitle + '</span><br><span style="font-size:.82rem;font-weight:500;color:#5f6b76;line-height:1.35;display:inline-block;margin-top:.35rem;">' +
+  riskText + '</span>';
 }
 
 document.addEventListener('DOMContentLoaded', function(){
