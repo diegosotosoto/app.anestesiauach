@@ -28,16 +28,18 @@ $cabeceras = array(
       array('apuntes/aldrete.php','fa-solid fa-star','Score de Aldrete re Modificado'),
       array('apuntes/us_gastrico.php','fa-solid fa-burger','Ultrasonido Gástrico'),
       array('apuntes/caprini.php','fa-solid fa-file-medical','Score Caprini (TVP)'),
-       array('apuntes/dasi.php','fa-solid fa-clipboard-list','DASI adaptado a pobl. Chilena')          
+      array('apuntes/dasi.php','fa-solid fa-clipboard-list','DASI adaptado a pobl. Chilena')          
     )),
 'Monitorización' => array('icono'=>'apuntes/icons/vital-signs.png',array(
           array('apuntes/ecg_monitorizacion_isquemia.php','fa-solid fa-heart-pulse','Monitorización ECG')
     )),
 'Farmacología' => array('icono'=>'apuntes/icons/vaccination.png',array(
-        array('apuntes/dilucion_farmacos.php','fa-solid fa-syringe','Dilución de Drogas'),
+        array('apuntes/dilucion_farmacos.php','fa-solid fa-syringe','Dilución y Etiquetado de Drogas'),
         array('apuntes/antitromboticos_buscador.php','fa-solid fa-pills','Anticoagulantes'),
         array('apuntes/checklist_preparacion_HM.php','fa-solid fa-fire','Preparación libre de gatillantes'),
-        array('apuntes/dosis_aall.php','fa-solid fa-syringe','Dosis Máxima AALL')
+        array('apuntes/dosis_aall.php','fa-solid fa-syringe','Dosis Máxima AALL'),
+        array('apuntes/escalares.php','fa-solid fa-calculator','Escalares de Peso'),
+        array('apuntes/dosis_obeso.php','fa-solid fa-weight-scale','Dosis Paciente Obeso')               
     )),
 'Cardiovascular' => array('icono'=>'apuntes/icons/heart.png',array(
       array('apuntes/deltapp.php','fa-solid fa-wave-square','Delta PP'),
