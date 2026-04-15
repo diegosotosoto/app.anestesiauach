@@ -121,171 +121,411 @@ $array_tel = array(
 
         <style>
           .telefonos-shell{
-            max-width:980px;
+            max-width:1080px;
             margin:0 auto;
           }
 
-          .telefonos-topbar{
-            background:linear-gradient(135deg, #27458f, #3559b7);
+          .telefonos-hero{
+            background:linear-gradient(135deg, #0f2f6d 0%, #21479d 55%, #2f62d0 100%);
             color:#fff;
-            border-radius:1.25rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            padding:1.15rem 1.25rem;
+            border-radius:1.35rem;
+            box-shadow:0 14px 34px rgba(22,34,66,.14);
+            padding:1.25rem;
+            overflow:hidden;
+            position:relative;
           }
 
-          .telefonos-topbar h1{
+          .telefonos-hero:after{
+            content:"";
+            position:absolute;
+            inset:auto -60px -60px auto;
+            width:180px;
+            height:180px;
+            border-radius:50%;
+            background:rgba(255,255,255,.08);
+          }
+
+          .telefonos-hero h1{
             color:#fff;
+            margin-bottom:.25rem;
           }
 
-          .subtle{
-            font-size:.92rem;
+          .telefonos-subtitle{
+            color:rgba(255,255,255,.78);
+            font-size:.95rem;
+            max-width:680px;
           }
 
-          .pill{
-            display:inline-block;
-            padding:.25rem .6rem;
+          .hero-badge{
+            display:inline-flex;
+            align-items:center;
+            gap:.4rem;
+            background:rgba(255,255,255,.12);
+            color:#fff;
+            border:1px solid rgba(255,255,255,.14);
             border-radius:999px;
-            font-size:.8rem;
+            padding:.38rem .75rem;
+            font-size:.82rem;
             font-weight:600;
+            backdrop-filter:blur(4px);
           }
 
-          .telefono-card{
-            border:0;
+          .hero-stats{
+            display:flex;
+            gap:.65rem;
+            flex-wrap:wrap;
+            margin-top:.9rem;
+          }
+
+          .hero-stat{
+            background:rgba(255,255,255,.10);
+            border:1px solid rgba(255,255,255,.12);
             border-radius:1rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
+            padding:.75rem .95rem;
+            min-width:120px;
+          }
+
+          .hero-stat-number{
+            font-size:1.2rem;
+            font-weight:800;
+            line-height:1;
+          }
+
+          .hero-stat-label{
+            font-size:.78rem;
+            color:rgba(255,255,255,.72);
+            margin-top:.2rem;
+          }
+
+          .telefono-panel{
+            border:1px solid #e5ebf5;
+            border-radius:1.15rem;
             background:#fff;
+            box-shadow:0 8px 24px rgba(26,39,68,.06);
           }
 
-          .telefono-search-input{
-            min-height:56px;
-            border-radius:1rem;
-            border:1px solid #dfe7f2;
-            font-size:1rem;
+          .telefono-panel-header{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:1rem;
+            margin-bottom:1rem;
           }
 
           .telefono-section-title{
             font-size:.82rem;
             text-transform:uppercase;
-            letter-spacing:.05em;
-            color:#667085;
-            margin-bottom:.7rem;
+            letter-spacing:.08em;
+            color:#6b7280;
+            margin-bottom:.35rem;
+            font-weight:700;
+          }
+
+          .telefono-section-heading{
+            font-size:1.12rem;
+            font-weight:800;
+            color:#162033;
+            margin:0;
+          }
+
+          .section-counter{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            min-width:34px;
+            height:34px;
+            border-radius:999px;
+            padding:0 .75rem;
+            font-size:.86rem;
+            font-weight:700;
+            color:#24449a;
+            background:#eef4ff;
+            border:1px solid #dbe7ff;
+          }
+
+          .telefono-search-wrap{
+            position:relative;
+          }
+
+          .telefono-search-icon{
+            position:absolute;
+            left:1rem;
+            top:50%;
+            transform:translateY(-50%);
+            color:#8a94a6;
+            pointer-events:none;
+          }
+
+          .telefono-search-input{
+            min-height:58px;
+            border-radius:1rem;
+            border:1px solid #d9e2ef;
+            font-size:1rem;
+            padding-left:2.8rem;
+            padding-right:7rem;
+            background:#fbfcfe;
+          }
+
+          .telefono-search-input:focus{
+            border-color:#2f62d0;
+            box-shadow:0 0 0 .2rem rgba(47,98,208,.12);
+            background:#fff;
+          }
+
+          .telefono-search-meta{
+            position:absolute;
+            right:1rem;
+            top:50%;
+            transform:translateY(-50%);
+            font-size:.8rem;
+            color:#6b7280;
+            background:#fff;
+            border:1px solid #e6ebf2;
+            border-radius:999px;
+            padding:.22rem .55rem;
+          }
+
+          .telefono-grid{
+            display:grid;
+            gap:1rem;
           }
 
           .telefono-list{
             display:grid;
-            gap:.75rem;
+            gap:.72rem;
           }
 
           .telefono-item{
             display:block;
             text-decoration:none;
-            color:#1f2a37;
-            background:#f8fafc;
-            border:1px solid #dfe7f2;
+            color:#1f2937;
+            background:linear-gradient(180deg, #ffffff 0%, #f9fbfe 100%);
+            border:1px solid #e4eaf3;
             border-radius:1rem;
-            padding:1rem 1rem;
-            box-shadow:0 6px 18px rgba(33,55,98,.06);
-            transition:transform .15s ease, box-shadow .15s ease, background-color .15s ease;
+            padding:.95rem 1rem;
+            box-shadow:0 6px 16px rgba(26,39,68,.05);
+            transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
           }
 
           .telefono-item:hover{
             transform:translateY(-1px);
-            box-shadow:0 10px 22px rgba(33,55,98,.10);
-            background:#ffffff;
-            color:#1f2a37;
+            box-shadow:0 12px 24px rgba(26,39,68,.09);
+            border-color:#cfdaf0;
+            color:#1f2937;
           }
 
           .telefono-item-inner{
             display:flex;
             align-items:center;
-            gap:.9rem;
+            justify-content:space-between;
+            gap:1rem;
           }
 
-          .telefono-item i{
-            min-width:22px;
-            text-align:center;
+          .telefono-main{
+            display:flex;
+            align-items:flex-start;
+            gap:.9rem;
+            min-width:0;
+          }
+
+          .telefono-icon{
+            width:42px;
+            height:42px;
+            border-radius:.95rem;
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            flex:0 0 42px;
+            font-size:1rem;
+          }
+
+          .telefono-icon-featured{
+            background:#fff4d6;
+            color:#c88a00;
+          }
+
+          .telefono-icon-regular{
+            background:#edf4ff;
+            color:#2252c5;
+          }
+
+          .telefono-text{
+            min-width:0;
           }
 
           .telefono-name{
-            font-weight:700;
-            margin-bottom:.15rem;
+            font-weight:800;
+            color:#142033;
+            line-height:1.2;
+            margin-bottom:.2rem;
+          }
+
+          .telefono-caption{
+            font-size:.78rem;
+            color:#7b8794;
+          }
+
+          .telefono-actions{
+            text-align:right;
+            flex:0 0 auto;
           }
 
           .telefono-number{
-            color:#2453c6;
-            word-break:break-word;
+            color:#1d4ed8;
+            font-weight:800;
+            letter-spacing:.02em;
+            font-variant-numeric:tabular-nums;
+            white-space:nowrap;
+          }
+
+          .telefono-call{
+            margin-top:.25rem;
+            font-size:.78rem;
+            color:#6b7280;
           }
 
           .telefono-empty{
-            color:#6c757d;
+            color:#6b7280;
             text-align:center;
-            padding:1rem;
+            padding:1.25rem 1rem .5rem;
+          }
+
+          @media (min-width: 992px){
+            .telefono-grid{
+              grid-template-columns: 1fr 1.35fr;
+              align-items:start;
+            }
+          }
+
+          @media (max-width: 575.98px){
+            .telefono-item-inner{
+              align-items:flex-start;
+            }
+
+            .telefono-actions{
+              min-width:92px;
+            }
+
+            .telefono-number{
+              white-space:normal;
+            }
           }
         </style>
 
         <div class="telefonos-shell">
 
-          <div class="telefonos-topbar mb-3">
-            <div class="d-flex justify-content-between align-items-start gap-3">
+          <div class="telefonos-hero mb-3 mb-md-4">
+            <div class="d-flex flex-column flex-md-row justify-content-between gap-3 position-relative" style="z-index:1;">
               <div>
-                <div class="small opacity-75 mb-1">APP clínica • acceso rápido</div>
-                <h1 class="h4 mb-2">Teléfonos Frecuentes</h1>
-                <div class="subtle text-white-50">Busca por servicio o unidad y llama directamente desde la app.</div>
+                <span class="hero-badge"><i class="fa-solid fa-phone-volume"></i> Acceso rápido hospitalario</span>
+                <h1 class="h3 mt-2">Teléfonos frecuentes</h1>
+                <div class="telefonos-subtitle">Directorio clínico ordenado para encontrar rápido una unidad, llamar desde el móvil y reducir el ruido visual.</div>
+                <div class="hero-stats">
+                  <div class="hero-stat">
+                    <div class="hero-stat-number"><?php echo count($array_frec); ?></div>
+                    <div class="hero-stat-label">Destacados</div>
+                  </div>
+                  <div class="hero-stat">
+                    <div class="hero-stat-number"><?php echo count($array_tel); ?></div>
+                    <div class="hero-stat-label">Otros teléfonos</div>
+                  </div>
+                  <div class="hero-stat">
+                    <div class="hero-stat-number"><?php echo count($array_frec) + count($array_tel); ?></div>
+                    <div class="hero-stat-label">Total disponible</div>
+                  </div>
+                </div>
               </div>
-              <span class="pill bg-light text-dark">HBV</span>
+              <div class="d-flex align-items-start justify-content-md-end">
+                <span class="hero-badge"><i class="fa-solid fa-hospital"></i> HBV</span>
+              </div>
             </div>
           </div>
 
-          <div class="telefono-card mb-3">
+          <div class="telefono-panel mb-3 mb-md-4">
             <div class="p-3 p-md-4">
-              <div class="section-title mb-2">Buscar</div>
-              <input type="text" class="form-control telefono-search-input" id="search" placeholder="Busca un servicio...">
+              <div class="telefono-section-title">Buscar</div>
+              <div class="telefono-search-wrap">
+                <i class="fa-solid fa-magnifying-glass telefono-search-icon"></i>
+                <input type="text" class="form-control telefono-search-input" id="telefonoSearchInput" placeholder="Busca por servicio, unidad o área...">
+                <span class="telefono-search-meta" id="searchCount"><?php echo count($array_frec) + count($array_tel); ?> resultados</span>
+              </div>
             </div>
           </div>
 
-          <div class="telefono-card mb-3">
-            <div class="p-3 p-md-4">
-              <div class="telefono-section-title">Destacados</div>
-              <div class="telefono-list" id="telefonosDestacados">
-                <?php
-                foreach ($array_frec as $servicio1 => $telefono1){
-                  echo "<a href='tel:$telefono1' class='telefono-item telefono-entry'>
-                          <div class='telefono-item-inner'>
-                            <i class='fa-solid fa-star text-warning'></i>
-                            <div>
-                              <div class='telefono-name'>$servicio1</div>
-                              <div class='telefono-number'>$telefono1</div>
+          <div class="telefono-grid">
+
+            <div class="telefono-panel">
+              <div class="p-3 p-md-4">
+                <div class="telefono-panel-header">
+                  <div>
+                    <div class="telefono-section-title">Prioridad</div>
+                    <h2 class="telefono-section-heading">Destacados</h2>
+                  </div>
+                  <span class="section-counter" id="countDestacados"><?php echo count($array_frec); ?></span>
+                </div>
+
+                <div class="telefono-list" id="telefonosDestacados">
+                  <?php
+                  foreach ($array_frec as $servicio1 => $telefono1){
+                    echo "<a href='tel:$telefono1' class='telefono-item telefono-entry telefono-entry-featured'>
+                            <div class='telefono-item-inner'>
+                              <div class='telefono-main'>
+                                <span class='telefono-icon telefono-icon-featured'><i class='fa-solid fa-star'></i></span>
+                                <div class='telefono-text'>
+                                  <div class='telefono-name'>$servicio1</div>
+                                  <div class='telefono-caption'>Contacto frecuente</div>
+                                </div>
+                              </div>
+                              <div class='telefono-actions'>
+                                <div class='telefono-number'>$telefono1</div>
+                                <div class='telefono-call'>Tocar para llamar</div>
+                              </div>
                             </div>
-                          </div>
-                        </a>";
-                }
-                ?>
+                          </a>";
+                  }
+                  ?>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="telefono-card">
-            <div class="p-3 p-md-4">
-              <div class="telefono-section-title">Otros</div>
-              <div class="telefono-list" id="telefonosOtros">
-                <?php
-                foreach ($array_tel as $servicio => $telefono){
-                  echo "<a href='tel:$telefono' class='telefono-item telefono-entry not-overlay'>
-                          <div class='telefono-item-inner'>
-                            <i class='fa-solid fa-phone text-success'></i>
-                            <div>
-                              <div class='telefono-name'>$servicio</div>
-                              <div class='telefono-number'>$telefono</div>
+            <div class="telefono-panel">
+              <div class="p-3 p-md-4">
+                <div class="telefono-panel-header">
+                  <div>
+                    <div class="telefono-section-title">Directorio</div>
+                    <h2 class="telefono-section-heading">Otros teléfonos</h2>
+                  </div>
+                  <span class="section-counter" id="countOtros"><?php echo count($array_tel); ?></span>
+                </div>
+
+                <div class="telefono-list" id="telefonosOtros">
+                  <?php
+                  foreach ($array_tel as $servicio => $telefono){
+                    echo "<a href='tel:$telefono' class='telefono-item telefono-entry telefono-entry-regular'>
+                            <div class='telefono-item-inner'>
+                              <div class='telefono-main'>
+                                <span class='telefono-icon telefono-icon-regular'><i class='fa-solid fa-phone'></i></span>
+                                <div class='telefono-text'>
+                                  <div class='telefono-name'>$servicio</div>
+                                  <div class='telefono-caption'>Línea interna</div>
+                                </div>
+                              </div>
+                              <div class='telefono-actions'>
+                                <div class='telefono-number'>$telefono</div>
+                                <div class='telefono-call'>Tocar para llamar</div>
+                              </div>
                             </div>
-                          </div>
-                        </a>";
-                }
-                ?>
+                          </a>";
+                  }
+                  ?>
+                </div>
+                <div id="noResults" class="telefono-empty d-none">
+                  <i class="fa-solid fa-circle-info me-1"></i>No se encontraron coincidencias.
+                </div>
               </div>
-              <div id="noResults" class="telefono-empty d-none">No se encontraron coincidencias.</div>
             </div>
-          </div>
 
+          </div>
         </div>
       </div>
     </div>
@@ -294,25 +534,41 @@ $array_tel = array(
 
 <script>
 $(document).ready(function(){
-  $("#search").keyup(function(){
-    const query = $(this).val().toLowerCase().trim();
+  function filtrarTelefonos() {
+    const query = $("#telefonoSearchInput").val().toLowerCase().trim();
     let visibleCount = 0;
+    let visibleDestacados = 0;
+    let visibleOtros = 0;
 
     $.each($(".telefono-entry"), function() {
-      if($(this).text().toLowerCase().indexOf(query) === -1){
-        $(this).hide();
-      } else {
-        $(this).show();
+      const matches = $(this).text().toLowerCase().indexOf(query) !== -1;
+      $(this).toggle(matches);
+
+      if(matches){
         visibleCount++;
+        if($(this).hasClass("telefono-entry-featured")){
+          visibleDestacados++;
+        }
+        if($(this).hasClass("telefono-entry-regular")){
+          visibleOtros++;
+        }
       }
     });
 
-    if (visibleCount === 0) {
-      $("#noResults").removeClass("d-none");
-    } else {
-      $("#noResults").addClass("d-none");
-    }
+    $("#searchCount").text(visibleCount + (visibleCount === 1 ? " resultado" : " resultados"));
+    $("#countDestacados").text(visibleDestacados);
+    $("#countOtros").text(visibleOtros);
+    $("#noResults").toggleClass("d-none", visibleCount !== 0);
+  }
+
+  $("#telefonoSearchInput").on("input keyup search", filtrarTelefonos);
+
+  // Ejecuta también al pegar texto o al autocompletar
+  document.getElementById("telefonoSearchInput").addEventListener("paste", function(){
+    setTimeout(filtrarTelefonos, 0);
   });
+
+  filtrarTelefonos();
 });
 </script>
 
