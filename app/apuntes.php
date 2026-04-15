@@ -39,6 +39,7 @@ $cabeceras = array(
     )),
 'Cardiovascular' => array('icono'=>'apuntes/icons/heart.png',array(
       array('apuntes/deltapp.php','fa-solid fa-wave-square','Delta PP'),
+      array('apuntes/score_lee.php','fa-solid fa-calendar-plus','Índice de Riesgo Cardiaco Revisado')      
     )),
 'Neurocirugía' => array('icono'=>'apuntes/icons/brain.png',array(
       array('apuntes/glasgow.php','fa-solid fa-brain','Escala de Glasgow')
@@ -46,9 +47,9 @@ $cabeceras = array(
 'Pediatría' => array('icono'=>'apuntes/icons/children.png',array(
       array('apuntes/emergencia_ped.php','fa-solid fa-truck-medical','Dosis de Emergencia Ped.'),
       array('apuntes/peri_ped.php','fa-solid fa-baby','Dosis Peridural Ped.'),
-      array('apuntes/flacc.php','fa-solid fa-hands-holding-child','Escala FLACC'),
+      array('apuntes/flacc.php','fa-solid fa-hands-holding-child','Escala FLACC de Dolor'),
       array('apuntes/atb_ped.php','fa-solid fa-bacterium','Profilaxis Antibiótica'),
-      array('apuntes/dva_neonato.php','fa-solid fa-heart-circle-bolt','DVA UPC Neonatal'),      
+      array('apuntes/dva_neonato.php','fa-solid fa-heart-circle-bolt','D. Vasoactivas UPC Neonatal'),      
       array('apuntes/eberhart_ponv.php','fa-solid fa-face-dizzy','Manejo NVPO Pediátrico'),
       array('apuntes/regional_ped.php','fa-solid fa-baby','Regional Pediátrica'),
       array('apuntes/analgesia_ped.php','fa-solid fa-heart-crack','Analgesia Perioperatoria Pediátrica'),
@@ -57,7 +58,9 @@ $cabeceras = array(
 'Nefrourología' => array('icono'=>'apuntes/icons/kidney.png',array(
       array('apuntes/bica.php','fa-solid fa-flask-vial','Corrección de bicarbonato'),
       array('apuntes/vfg.php','fa-solid fa-filter','Velocidad Filtración Glomerular'),
-      array('apuntes/hiperkalemia.php','fa-solid fa-bolt','Manejo Hiperkalemia')
+      array('apuntes/hiperkalemia.php','fa-solid fa-bolt','Manejo Hiperkalemia'),
+      array('apuntes/hipernatremia.php','fa-solid fa-cubes-stacked','Corrección Hipernatremia'),
+      array('apuntes/hipocalcemia.php','fa-solid fa-bone','Manejo HipoCalcemia')
     )),
 'Obstetricia' => array('icono'=>'apuntes/icons/pregnancy.png',array(
         array('apuntes/epidural.php','fa-solid fa-person-pregnant','Dosis Analgesia Epidural'),
