@@ -19,14 +19,16 @@ $cabeceras = array(
       array('apuntes/asa.php','fa-solid fa-lightbulb','Clasificación ASA'),
       array('apuntes/cormack.php','fa-solid fa-lungs','Clasificación de Cormack-Lehane'),
       array('apuntes/apfel_ponv.php','fa-solid fa-face-dizzy','Manejo NVPO Adultos'),
-      array('apuntes/hiperglicemia.php','fa-solid fa-candy-cane','Manejo Glicemia e Insulina')     
+      array('apuntes/hiperglicemia.php','fa-solid fa-candy-cane','Manejo Glicemia e Insulina'),
+      array('apuntes/corticoides.php','fa-solid fa-pills','Suplementación Corticoides')         
     )),
 'Evaluación y Riesgo' => array('icono'=>'apuntes/icons/compliance.png',array(
       array('apuntes/score_lee.php','fa-solid fa-calendar-plus','Índice de Riesgo Cardiaco Revisado'),
       array('apuntes/mallampati.php','fa-solid fa-head-side-cough','Score de Mallampati'),
       array('apuntes/aldrete.php','fa-solid fa-star','Score de Aldrete re Modificado'),
       array('apuntes/us_gastrico.php','fa-solid fa-burger','Ultrasonido Gástrico'),
-      array('apuntes/caprini.php','fa-solid fa-file-medical','Score Caprini (TVP)')     
+      array('apuntes/caprini.php','fa-solid fa-file-medical','Score Caprini (TVP)'),
+       array('apuntes/dasi.php','fa-solid fa-clipboard-list','DASI adaptado a pobl. Chilena')          
     )),
 'Monitorización' => array('icono'=>'apuntes/icons/vital-signs.png',array(
           array('apuntes/ecg_monitorizacion_isquemia.php','fa-solid fa-heart-pulse','Monitorización ECG')
