@@ -1,638 +1,150 @@
 <?php
-
-$titulo_info = "Utilidad Clínica";
-$descripcion_info = "Apunte interactivo para estimar riesgo de supresión del eje hipotálamo-hipófisis-suprarrenal en pacientes con uso crónico de glucocorticoides y proponer suplementación perioperatoria según magnitud del procedimiento. Incluye conversión interna a equivalentes de prednisona y sugerencia de manejo inmediato postoperatorio.";
-$formula = "La nota convierte la dosis diaria habitual del corticoide a mg equivalentes de prednisona. Regla práctica docente: >5 mg/día de prednisona o equivalente debe hacer pensar en supresión posible del eje, especialmente si el uso ha sido prolongado o se suspendió en los últimos 3 meses. La suplementación se escala según el estrés quirúrgico.";
-$referencias = array(
-  "1.- Nazar C, Bastidas J, Zamora M, Coloma R, Fuentes R. Manejo perioperatorio de pacientes con patología tiroidea y tratamiento crónico con corticoides. Rev Chil Cir. 2016;68(1):87-93.",
-  "2.- Woodcock T, Barker P, Daniel S, et al. Guidelines for the management of glucocorticoids during the peri-operative period for patients with adrenal insufficiency. Anaesthesia. 2020;75(5):654-663.",
-  "3.- OpenAnesthesia. Adrenal Insufficiency and Perioperative Corticosteroids. Actualizado 24 mayo 2024.",
-  "4.- Miggelbrink LA, Marsman M, van de Wetering J, van Klei WA, Kappen TH. Peri-operative corticosteroid supplementation guideline adherence. Anaesthesia. 2025;80(4):454-455.",
-  "5.- RCCC. Cálculo equivalencias de corticoides. Tabla práctica de equivalencias y dosis aproximadas supresoras del eje HH."
-);
-
-$icono_apunte = "<i class='fa-solid fa-capsules pe-3 pt-2'></i>";
-$titulo_apunte = "Suplementación de Corticoides Perioperatorios";
-
+$titulo_pagina = "Corticoides perioperatorios";
+$navbar_titulo = "Apuntes";
 $boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; border:0; --bs-border-opacity:0;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
 
-require("head.php");
+$titulo_info = "Utilidad clínica";
+$descripcion_info = "Nota interactiva para estimar riesgo de supresión del eje HH y orientar suplementación perioperatoria en pacientes con uso crónico de glucocorticoides. Convierte la dosis habitual a prednisona equivalente y propone una cobertura práctica según el estrés quirúrgico.";
+$formula = "La dosis habitual se convierte a mg equivalentes de prednisona usando tablas docentes de equivalencia antiinflamatoria. Regla práctica: >5 mg/día de prednisona equivalente por más de 3 semanas o suspensión en los últimos 3 meses obliga a pensar en supresión del eje. La fludrocortisona se agrega a la tabla por equivalencia docente, pero no debe interpretarse como reemplazo glucocorticoide suficiente para estrés perioperatorio.";
+$referencias = array(
+  "Nazar C, Bastidas J, Zamora M, Coloma R, Fuentes R. Manejo perioperatorio de pacientes con patología tiroidea y tratamiento crónico con corticoides. Rev Chil Cir. 2016;68(1):87-93.",
+  "Woodcock T, Barker P, Daniel S, et al. Guidelines for the management of glucocorticoids during the peri-operative period for patients with adrenal insufficiency. Anaesthesia. 2020;75(5):654-663.",
+  "OpenAnesthesia. Adrenal Insufficiency and Perioperative Corticosteroids. Actualizado 24 mayo 2024.",
+  "Tabla práctica de equivalencias de corticoides y dosis aproximadas supresoras del eje HH."
+);
+
+include('head.php');
 ?>
+<link rel="stylesheet" href="css/clinical-note-system.css?v=1">
+<script src="js/clinical-note-system.js?v=1"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
     <div class="container-fluid px-0 px-md-2">
-      <div class="steroid-shell">
+      <div class="note-shell steroid-shell px-1 px-md-0 py-0">
 
         <style>
-          :root{
-            --brand:#27458f;
-            --brand2:#3559b7;
-            --bg:#f4f7fb;
-            --soft:#f8fafc;
-            --line:#dfe7f2;
-            --text:#1f2a37;
-            --muted:#667085;
-            --good:#edf8f7;
-            --warn:#fff9e8;
-            --danger:#fff5f3;
-            --mint:#eef7ff;
-            --mint-border:#cfe1ff;
-          }
-
-          body{background:var(--bg);}
-          .steroid-shell{max-width:1060px;margin:0 auto;}
-
-          .steroid-topbar{
-            background:linear-gradient(135deg,var(--brand),var(--brand2));
-            color:#fff;
-            border-radius:1.25rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            padding:1.15rem 1.25rem;
-            margin-bottom:1rem;
-            overflow:hidden;
-          }
-
-          .steroid-topbar h1{color:#fff;}
-
-          .section-card{
-            border:0;
-            border-radius:1rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            background:#fff;
-            overflow:hidden;
-            margin-bottom:1rem;
-          }
-
-          .section-title{
-            font-size:.8rem;
-            letter-spacing:.05em;
-            text-transform:uppercase;
-            color:var(--muted);
-          }
-
-          .pill{
-            display:inline-block;
-            padding:.2rem .55rem;
-            border-radius:999px;
-            font-size:.78rem;
-            background:#eef3ff;
-            color:#3559b7;
-            font-weight:600;
-          }
-
-          .subtle{font-size:.94rem;color:#5f6b76;}
-          .small-note{font-size:.82rem;color:#667085;line-height:1.45;}
-          .footer-note{font-size:.82rem;color:#6c757d;}
-
-          .info-box{
-            background:#fff;
-            border-radius:1rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            margin-bottom:1rem;
-            overflow:hidden;
-          }
-
-          .info-box-header{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            gap:1rem;
-            padding:1rem;
-          }
-
-          .info-box-title{
-            font-size:.8rem;
-            text-transform:uppercase;
-            color:#667085;
-            letter-spacing:.08em;
-          }
-
-          .info-toggle-btn{
-            border-radius:.6rem;
-            font-size:.85rem;
-            padding:.35rem .7rem;
-            white-space:nowrap;
-            background:#6c757d;
-            border:none;
-            color:white;
-            transition:.2s;
-          }
-
-          .info-toggle-btn:hover{
-            background:#5a6268;
-            color:white;
-          }
-
-          .info-box-content{
-            padding:1rem;
-            display:none;
-            animation:fadeIn .2s ease-in-out;
-            border-top:1px solid #e9eef5;
-          }
-
-          @keyframes fadeIn{
-            from{opacity:0; transform:translateY(-5px);}
-            to{opacity:1; transform:translateY(0);}
-          }
-
-          .calc-grid{
-            display:grid;
-            grid-template-columns:repeat(2,1fr);
-            gap:1rem;
-          }
-
-          .card-block{
-            border:1px solid var(--line);
-            border-radius:1rem;
-            background:var(--soft);
-            padding:1rem;
-          }
-
-          .choice-grid-2,
-          .choice-grid-3,
-          .choice-grid-4{
-            display:grid;
-            gap:.6rem;
-          }
-
-          .choice-grid-2{grid-template-columns:repeat(2,1fr);}
-          .choice-grid-3{grid-template-columns:repeat(3,1fr);}
-          .choice-grid-4{grid-template-columns:repeat(4,1fr);}
-
-          .choice-check{display:none;}
-
-          .choice-btn{
-            display:flex;
-            flex-direction:column;
-            align-items:flex-start;
-            justify-content:center;
-            text-align:left;
-            min-height:74px;
-            border:1px solid #dfe7f2;
-            background:#fff;
-            border-radius:.9rem;
-            padding:.72rem .8rem;
-            font-weight:700;
-            color:#1f2a37;
-            cursor:pointer;
-            transition:.15s ease;
-            line-height:1.12;
-            box-shadow:0 4px 14px rgba(0,0,0,.04);
-            font-size:.9rem;
-          }
-
-          .choice-btn small{
-            font-weight:500;
-            color:#667085;
-            margin-top:.15rem;
-            line-height:1.22;
-            font-size:.72rem;
-          }
-
-          .choice-btn i{
-            font-size:1rem;
-            margin-bottom:.28rem;
-            color:#3559b7;
-          }
-
-          .choice-check:checked + .choice-btn{
-            background:#eef3ff;
-            border-color:#9fb9f8;
-            color:#27458f;
-            box-shadow:0 0 0 2px rgba(39,69,143,.05) inset, 0 8px 18px rgba(0,0,0,.06);
-            transform:translateY(-1px);
-          }
-
-          .form-label-lite{
-            font-size:.92rem;
-            font-weight:600;
-            color:var(--text);
-            margin-bottom:.35rem;
-          }
-
-          .summary-grid{
-            display:grid;
-            grid-template-columns:repeat(5,1fr);
-            gap:.75rem;
-          }
-
-          .summary-card{
-            background:#fff;
-            border:1px solid #e6e9ef;
-            border-radius:1rem;
-            padding:.9rem;
-          }
-
-          .summary-label{
-            font-size:.76rem;
-            text-transform:uppercase;
-            letter-spacing:.06em;
-            color:#667085;
-            margin-bottom:.25rem;
-          }
-
-          .summary-value{
-            font-size:1rem;
-            font-weight:700;
-            color:#1f2a37;
-            line-height:1.35;
-          }
-
-          .main-result-card{
-            background:#eef4ff;
-            border:3px solid #9fb9f8;
-            border-radius:1.2rem;
-            padding:1.15rem 1.2rem;
-            text-align:center;
-            box-shadow:0 8px 20px rgba(39,69,143,.08);
-          }
-          .dose-result-card{
-            background:#eef4ff;
-            border:3px solid #9fb9f8;
-            border-radius:1.2rem;
-            padding:1.15rem 1.2rem;
-            text-align:center;
-            box-shadow:0 8px 20px rgba(39,69,143,.08);
-            margin-top:1rem;
-          }
-
-          .dose-result-label{
-            font-size:.85rem;
-            text-transform:uppercase;
-            letter-spacing:.06em;
-            color:#5d6b85;
-            font-weight:700;
-            margin-bottom:.25rem;
-          }
-
-          .dose-result-note{
-            font-size:.9rem;
-            color:#667085;
-            margin-bottom:.55rem;
-          }
-
-          .dose-result-value{
-            font-size:1.55rem;
-            font-weight:800;
-            line-height:1.15;
-            color:#27458f;
-          }
-          .main-result-label{
-            font-size:.85rem;
-            text-transform:uppercase;
-            letter-spacing:.06em;
-            color:#5d6b85;
-            font-weight:700;
-            margin-bottom:.25rem;
-          }
-
-          .main-result-note{
-            font-size:.9rem;
-            color:#667085;
-            margin-bottom:.55rem;
-          }
-
-          .main-result-value{
-            font-size:1.9rem;
-            font-weight:800;
-            line-height:1.05;
-            color:#27458f;
-          }
-
-          .result-row{
-            display:flex;
-            align-items:flex-start;
-            justify-content:space-between;
-            gap:1rem;
-            padding:.9rem 1rem;
-            border:1px solid #e6e9ef;
-            border-radius:.9rem;
-            background:#fff;
-            margin-bottom:.65rem;
-          }
-
-          .result-row:last-child{margin-bottom:0;}
-
-          .result-name{
-            font-weight:700;
-            color:#1f2a37;
-            line-height:1.2;
-          }
-
-          .result-note{
-            font-size:.82rem;
-            color:#667085;
-            margin-top:.2rem;
-            line-height:1.4;
-          }
-
-          .result-value{
-            min-width:230px;
-            text-align:right;
-            font-weight:800;
-            color:#27458f;
-            line-height:1.25;
-          }
-
-          .good-box{
-            background:var(--good);
-            border:1px solid #cfe8e6;
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .warn-box{
-            background:var(--warn);
-            border:1px solid #ecd798;
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .danger-box{
-            background:var(--danger);
-            border:1px solid #efc4be;
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .mint-box{
-            background:var(--mint);
-            border:1px solid var(--mint-border);
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .tip-list{
-            margin:0;
-            padding-left:1.1rem;
-          }
-
-          .tip-list li{margin-bottom:.45rem;}
-
-          @media (max-width:980px){
-            .summary-grid{grid-template-columns:repeat(3,1fr);}
-          }
-
+          .steroid-shell{max-width:1040px;margin:0 auto;}
+          .steroid-drug-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem;}
+          .steroid-drug-grid .note-option{min-height:92px;align-items:flex-start;justify-content:flex-start;text-align:left;gap:.28rem;padding:.78rem .82rem;}
+          .steroid-drug-grid .note-option i{margin-bottom:.08rem;}
+          .steroid-muted-card{background:#fff;border:1px solid var(--note-line);border-radius:1rem;padding:1rem;}
+          .steroid-quick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;}
+          .steroid-selector-sections{display:grid;grid-template-columns:1fr;gap:1rem;}
+          .steroid-selector-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;}
+          .steroid-interpret-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;}
+          .steroid-mini-card{background:#fff;border:1px solid var(--note-line-strong);border-radius:1rem;padding:.9rem;}
+          .steroid-mini-card .k{font-size:.76rem;text-transform:uppercase;letter-spacing:.06em;color:var(--note-muted);margin-bottom:.2rem;}
+          .steroid-mini-card .v{font-size:1rem;font-weight:800;line-height:1.25;color:var(--note-text);}
+          .steroid-mini-card .n{font-size:.85rem;color:var(--note-muted);line-height:1.35;margin-top:.2rem;}
+          .steroid-highlight{background:linear-gradient(180deg,var(--note-brand-soft) 0%, #f7faff 100%);border:1px solid var(--note-brand-soft-border);border-radius:1rem;padding:1rem;}
+          .steroid-highlight .k{font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:#3559b7;font-weight:700;margin-bottom:.25rem;}
+          .steroid-highlight .v{font-size:1.45rem;font-weight:900;line-height:1.1;color:var(--note-text);}
+          .steroid-highlight .n{font-size:.9rem;color:var(--note-muted);line-height:1.4;margin-top:.3rem;}
+          .steroid-grade-summary{border-radius:1rem;padding:1rem;}
+          .steroid-fludro{background:#fff6ea;border:1px solid #efd3aa;}
+          .steroid-fludro .note-summary-box-title{color:#9a5a00;}
+          .steroid-input-help{font-size:.82rem;color:var(--note-muted);margin-top:.3rem;line-height:1.35;}
           @media (max-width:900px){
-            .choice-grid-4{grid-template-columns:repeat(2,1fr);}
+            .steroid-drug-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
           }
-
           @media (max-width:768px){
-            .calc-grid{grid-template-columns:1fr;}
-            .result-row{flex-direction:column;align-items:flex-start;}
-            .result-value{text-align:left;min-width:0;}
-            .summary-grid{grid-template-columns:repeat(2,1fr);}
+            .steroid-quick-grid,.steroid-interpret-grid{grid-template-columns:1fr;}
           }
-
-          @media (max-width:576px){
-            .choice-grid-4,.choice-grid-3,.choice-grid-2{grid-template-columns:repeat(2,1fr);}
-            .summary-grid{grid-template-columns:1fr;}
-            .info-box-header{flex-direction:row;}
-            .info-toggle-btn{margin-left:auto;}
+          @media (max-width:460px){
+            .steroid-drug-grid,.steroid-selector-options{grid-template-columns:1fr;}
           }
         </style>
 
-        <div class="steroid-topbar">
-          <div class="d-flex justify-content-between align-items-start gap-3">
-            <div>
-              <div class="small opacity-75 mb-1">APP clínica • endocrino perioperatorio</div>
-              <h1 class="h3 mb-2">Suplementación de Corticoides Perioperatorios</h1>
-              <div class="subtle text-white-50">Conversión a prednisona equivalente, riesgo de supresión del eje y cobertura intra/postoperatoria.</div>
-            </div>
-            <span class="pill bg-light text-dark">Stress dose</span>
-          </div>
+        <div class="note-hero mb-3">
+          <div class="note-hero-kicker">APP CLÍNICA · ENDOCRINO PERIOPERATORIO</div>
+          <h2>Suplementación de corticoides perioperatorios</h2>
+          <div class="note-hero-subtitle">Conversión a equivalente, riesgo de supresión del eje y cobertura según estrés quirúrgico.</div>
         </div>
 
-        <div class="info-box">
+        <div class="info-box mb-3">
           <div class="info-box-header">
             <div class="info-box-title">Información</div>
             <button type="button" onclick="toggleInfo()" class="btn btn-sm info-toggle-btn">Mostrar / ocultar</button>
           </div>
-
           <div id="infoContent" class="info-box-content">
-            <?php echo $descripcion_info; ?>
-
-            <?php if(!empty($formula)){ ?>
-              <hr>
-              <b>Comentario:</b><br>
-              <?php echo $formula; ?>
-            <?php } ?>
-
-            <?php if(!empty($referencias)){ ?>
-              <hr>
-              <b>Referencias:</b>
-              <ul class="mt-2 mb-0">
-                <?php foreach($referencias as $ref){ ?>
-                  <li><?php echo $ref; ?></li>
-                <?php } ?>
-              </ul>
-            <?php } ?>
+            <p class="mb-2"><?php echo $descripcion_info; ?></p>
+            <hr>
+            <b>Comentario:</b><br>
+            <?php echo $formula; ?>
+            <hr>
+            <b>Referencias:</b>
+            <ul class="mt-2 mb-0">
+              <?php foreach($referencias as $ref){ ?>
+                <li><?php echo $ref; ?></li>
+              <?php } ?>
+            </ul>
           </div>
         </div>
 
-        <!-- A. DATOS -->
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">A. Datos de entrada</div>
-
-            <div class="calc-grid">
-              <div class="card-block">
-                <label class="form-label-lite">Glucocorticoide habitual</label>
-                <div class="choice-grid-4 mb-3">
-                  <div>
-                    <input class="choice-check calc-trigger-radio" type="radio" name="steroid" id="st_prednisone" value="prednisone" checked>
-                    <label class="choice-btn" for="st_prednisone">
-                      <i class="fa-solid fa-tablets"></i>
-                      Prednisona
-                      <small>5 mg = ref</small>
-                    </label>
-                  </div>
-                  <div>
-                    <input class="choice-check calc-trigger-radio" type="radio" name="steroid" id="st_prednisolone" value="prednisolone">
-                    <label class="choice-btn" for="st_prednisolone">
-                      <i class="fa-solid fa-tablets"></i>
-                      Prednisolona
-                      <small>5 mg = ref</small>
-                    </label>
-                  </div>
-                  <div>
-                    <input class="choice-check calc-trigger-radio" type="radio" name="steroid" id="st_methylpred" value="methylpred">
-                    <label class="choice-btn" for="st_methylpred">
-                      <i class="fa-solid fa-syringe"></i>
-                      Metilpred
-                      <small>4 mg = 5 mg pred</small>
-                    </label>
-                  </div>
-                  <div>
-                    <input class="choice-check calc-trigger-radio" type="radio" name="steroid" id="st_hydrocortisone" value="hydrocortisone">
-                    <label class="choice-btn" for="st_hydrocortisone">
-                      <i class="fa-solid fa-capsules"></i>
-                      Hidrocortisona
-                      <small>20 mg = 5 mg pred</small>
-                    </label>
-                  </div>
-                  <div>
-                    <input class="choice-check calc-trigger-radio" type="radio" name="steroid" id="st_dexamethasone" value="dexamethasone">
-                    <label class="choice-btn" for="st_dexamethasone">
-                      <i class="fa-solid fa-bolt"></i>
-                      Dexametasona
-                      <small>0,75 mg = 5 mg pred</small>
-                    </label>
-                  </div>
-                  <div>
-                    <input class="choice-check calc-trigger-radio" type="radio" name="steroid" id="st_betamethasone" value="betamethasone">
-                    <label class="choice-btn" for="st_betamethasone">
-                      <i class="fa-solid fa-bolt"></i>
-                      Betametasona
-                      <small>0,75 mg = 5 mg pred</small>
-                    </label>
-                  </div>
-                  <div>
-                    <input class="choice-check calc-trigger-radio" type="radio" name="steroid" id="st_triamcinolone" value="triamcinolone">
-                    <label class="choice-btn" for="st_triamcinolone">
-                      <i class="fa-solid fa-vial"></i>
-                      Triamcinolona
-                      <small>4 mg = 5 mg pred</small>
-                    </label>
-                  </div>
-                  <div>
-                    <input class="choice-check calc-trigger-radio" type="radio" name="steroid" id="st_cortisone" value="cortisone">
-                    <label class="choice-btn" for="st_cortisone">
-                      <i class="fa-solid fa-vial"></i>
-                      Cortisona
-                      <small>25 mg = 5 mg pred</small>
-                    </label>
-                  </div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Datos de entrada</div>
+            <div class="note-grid">
+              <div class="note-input-group">
+                <label class="note-label">Glucocorticoide habitual</label>
+                <div class="steroid-drug-grid">
+                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_prednisone" value="prednisone" checked><label class="note-option drug-other" for="st_prednisone"><i class="fa-solid fa-tablets"></i>Prednisona<small>5 mg = ref</small></label></div>
+                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_prednisolone" value="prednisolone"><label class="note-option drug-other" for="st_prednisolone"><i class="fa-solid fa-tablets"></i>Prednisolona<small>5 mg = ref</small></label></div>
+                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_hydrocortisone" value="hydrocortisone"><label class="note-option drug-other" for="st_hydrocortisone"><i class="fa-solid fa-capsules"></i>Hidrocortisona<small>20 mg = 5 mg pred</small></label></div>
+                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_cortisone" value="cortisone"><label class="note-option drug-other" for="st_cortisone"><i class="fa-solid fa-capsules"></i>Cortisona<small>25 mg = 5 mg pred</small></label></div>
+                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_methylpred" value="methylpred"><label class="note-option drug-other" for="st_methylpred"><i class="fa-solid fa-syringe"></i>Metilprednisolona<small>4 mg = 5 mg pred</small></label></div>
+                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_triamcinolone" value="triamcinolone"><label class="note-option drug-other" for="st_triamcinolone"><i class="fa-solid fa-vial"></i>Triamcinolona<small>4 mg = 5 mg pred</small></label></div>
+                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_deflazacort" value="deflazacort"><label class="note-option drug-other" for="st_deflazacort"><i class="fa-solid fa-capsules"></i>Deflazacort<small>7,5 mg = 5 mg pred</small></label></div>
+                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_dexamethasone" value="dexamethasone"><label class="note-option drug-other" for="st_dexamethasone"><i class="fa-solid fa-bolt"></i>Dexametasona<small>0,75 mg = 5 mg pred</small></label></div>
+                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_betamethasone" value="betamethasone"><label class="note-option drug-other" for="st_betamethasone"><i class="fa-solid fa-bolt"></i>Betametasona<small>0,6 mg = 5 mg pred</small></label></div>
+                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_fludrocortisone" value="fludrocortisone"><label class="note-option drug-other" for="st_fludrocortisone"><i class="fa-solid fa-wind"></i>Fludrocortisona<small>2 mg = 5 mg pred*</small></label></div>
                 </div>
-
-                <label class="form-label-lite">Dosis diaria habitual</label>
-                <div class="input-group mb-3">
-                  <input class="form-control calc-trigger" type="number" step="0.1" id="dailyDose" value="">
-                  <span class="input-group-text">mg/día</span>
-                </div>
-
-                <label class="form-label-lite">Duración de uso</label>
-                <div class="choice-grid-3">
-                  <div>
-                    <input class="choice-check calc-trigger-radio" type="radio" name="duration" id="dur_short" value="lt3w">
-                    <label class="choice-btn" for="dur_short">
-                      <i class="fa-regular fa-clock"></i>
-                      &lt;3 semanas
-                      <small>menor riesgo</small>
-                    </label>
-                  </div>
-                  <div>
-                    <input class="choice-check calc-trigger-radio" type="radio" name="duration" id="dur_long" value="gt3w" checked>
-                    <label class="choice-btn" for="dur_long">
-                      <i class="fa-solid fa-hourglass-half"></i>
-                      &gt;3 semanas
-                      <small>más relevante</small>
-                    </label>
-                  </div>
-                  <div>
-                    <input class="choice-check calc-trigger-radio" type="radio" name="duration" id="dur_unknown" value="unknown">
-                    <label class="choice-btn" for="dur_unknown">
-                      <i class="fa-solid fa-circle-question"></i>
-                      Desconocida
-                      <small>ser conservador</small>
-                    </label>
-                  </div>
-                </div>
+                <div class="steroid-input-help">*La fludrocortisona se incluye por equivalencia docente de la tabla adjunta, pero su potente efecto mineralocorticoide obliga a interpretar con cautela la equivalencia glucocorticoide.</div>
               </div>
 
-              <div class="card-block">
-                <label class="form-label-lite">Situación clínica del eje</label>
-                <div class="choice-grid-4 mb-3">
-                  <div>
-                    <input class="choice-check calc-trigger-radio" type="radio" name="axisStatus" id="axis_none" value="none" checked>
-                    <label class="choice-btn" for="axis_none">
-                      <i class="fa-regular fa-circle"></i>
-                      Sin diagnóstico
-                      <small>evaluar por dosis</small>
-                    </label>
-                  </div>
-                  <div>
-                    <input class="choice-check calc-trigger-radio" type="radio" name="axisStatus" id="axis_primary" value="Primaria">
-                    <label class="choice-btn" for="axis_primary">
-                      <i class="fa-solid fa-triangle-exclamation"></i>
-                      Primaria
-                      <small>Addison / adrenal</small>
-                    </label>
-                  </div>
-                  <div>
-                    <input class="choice-check calc-trigger-radio" type="radio" name="axisStatus" id="axis_secondary" value="Secundaria">
-                    <label class="choice-btn" for="axis_secondary">
-                      <i class="fa-solid fa-brain"></i>
-                      Secundaria
-                      <small>hipófisis</small>
-                    </label>
-                  </div>
-                  <div>
-                    <input class="choice-check calc-trigger-radio" type="radio" name="axisStatus" id="axis_tertiary" value="Terciaria">
-                    <label class="choice-btn" for="axis_tertiary">
-                      <i class="fa-solid fa-capsules"></i>
-                      Terciaria
-                      <small>supresión exógena</small>
-                    </label>
-                  </div>
+              <div class="note-input-group">
+                <label class="note-label" for="dailyDose">Dosis diaria habitual</label>
+                <div class="note-input-inline">
+                  <input type="text" id="dailyDose" class="note-input calc-trigger" inputmode="decimal" placeholder="Ej: 10">
+                  <div class="note-input-unit">mg/día</div>
                 </div>
 
-                <label class="form-label-lite">Factores que suben sospecha</label>
-                <div class="choice-grid-2 mb-3">
+                <div class="steroid-selector-sections mt-3">
                   <div>
-                    <input class="choice-check calc-trigger-radio" type="radio" name="recentStop" id="recentStop_no" value="no" checked>
-                    <label class="choice-btn" for="recentStop_no">
-                      <i class="fa-solid fa-ban"></i>
-                      No suspendido
-                      <small>continúa terapia</small>
-                    </label>
+                    <div class="note-label mb-2">Duración</div>
+                    <div class="steroid-selector-options">
+                      <div><input class="note-check calc-trigger" type="radio" name="duration" id="dur_short" value="lt3w"><label class="note-option" for="dur_short">&lt; 3 semanas<small>menor riesgo</small></label></div>
+                      <div><input class="note-check calc-trigger" type="radio" name="duration" id="dur_long" value="gt3w" checked><label class="note-option" for="dur_long">&gt; 3 semanas<small>más relevante</small></label></div>
+                      <div><input class="note-check calc-trigger" type="radio" name="duration" id="dur_unknown" value="unknown"><label class="note-option" for="dur_unknown">Desconocida<small>ser conservador</small></label></div>
+                    </div>
                   </div>
                   <div>
-                    <input class="choice-check calc-trigger-radio" type="radio" name="recentStop" id="recentStop_yes" value="yes">
-                    <label class="choice-btn" for="recentStop_yes">
-                      <i class="fa-solid fa-arrow-rotate-left"></i>
-                      Suspendido &lt;3 meses
-                      <small>seguir considerándolo</small>
-                    </label>
-                  </div>
-                </div>
-
-                <label class="form-label-lite">Tipo de procedimiento</label>
-                <div class="choice-grid-4">
-                  <div>
-                    <input class="choice-check calc-trigger-radio" type="radio" name="surgery" id="sx_superficial" value="superficial">
-                    <label class="choice-btn" for="sx_superficial">
-                      <i class="fa-solid fa-bandage"></i>
-                      Superficial
-                      <small>biopsia, dental</small>
-                    </label>
+                    <div class="note-label mb-2">Eje / diagnóstico</div>
+                    <div class="steroid-selector-options">
+                      <div><input class="note-check calc-trigger" type="radio" name="axisStatus" id="axis_none" value="none" checked><label class="note-option" for="axis_none">Sin diagnóstico<small>evaluar por dosis</small></label></div>
+                      <div><input class="note-check calc-trigger" type="radio" name="axisStatus" id="axis_primary" value="primary"><label class="note-option" for="axis_primary">Primaria<small>Addison</small></label></div>
+                      <div><input class="note-check calc-trigger" type="radio" name="axisStatus" id="axis_secondary" value="secondary"><label class="note-option" for="axis_secondary">Secundaria<small>hipófisis</small></label></div>
+                      <div><input class="note-check calc-trigger" type="radio" name="axisStatus" id="axis_tertiary" value="tertiary"><label class="note-option" for="axis_tertiary">Terciaria<small>supresión exógena</small></label></div>
+                    </div>
                   </div>
                   <div>
-                    <input class="choice-check calc-trigger-radio" type="radio" name="surgery" id="sx_minor" value="minor" checked>
-                    <label class="choice-btn" for="sx_minor">
-                      <i class="fa-solid fa-scissors"></i>
-                      Menor
-                      <small>hernioplastía, colonoscopia</small>
-                    </label>
+                    <div class="note-label mb-2">Suspensión reciente</div>
+                    <div class="steroid-selector-options">
+                      <div><input class="note-check calc-trigger" type="radio" name="recentStop" id="recentStop_no" value="no" checked><label class="note-option" for="recentStop_no">No<small>continúa terapia</small></label></div>
+                      <div><input class="note-check calc-trigger" type="radio" name="recentStop" id="recentStop_yes" value="yes"><label class="note-option" for="recentStop_yes">&lt; 3 meses<small>seguir considerándolo</small></label></div>
+                    </div>
                   </div>
                   <div>
-                    <input class="choice-check calc-trigger-radio" type="radio" name="surgery" id="sx_moderate" value="moderate">
-                    <label class="choice-btn" for="sx_moderate">
-                      <i class="fa-solid fa-hospital"></i>
-                      Moderado
-                      <small>cole, colectomía</small>
-                    </label>
-                  </div>
-                  <div>
-                    <input class="choice-check calc-trigger-radio" type="radio" name="surgery" id="sx_major" value="major">
-                    <label class="choice-btn" for="sx_major">
-                      <i class="fa-solid fa-heart-pulse"></i>
-                      Severo / UCI
-                      <small>cardio, Whipple, shock</small>
-                    </label>
+                    <div class="note-label mb-2">Estrés quirúrgico</div>
+                    <div class="steroid-selector-options">
+                      <div><input class="note-check calc-trigger" type="radio" name="surgery" id="sx_superficial" value="superficial"><label class="note-option" for="sx_superficial">Superficial<small>dental / biopsia</small></label></div>
+                      <div><input class="note-check calc-trigger" type="radio" name="surgery" id="sx_minor" value="minor" checked><label class="note-option" for="sx_minor">Menor<small>endoscopia / hernia</small></label></div>
+                      <div><input class="note-check calc-trigger" type="radio" name="surgery" id="sx_moderate" value="moderate"><label class="note-option" for="sx_moderate">Moderado<small>cole / colectomía</small></label></div>
+                      <div><input class="note-check calc-trigger" type="radio" name="surgery" id="sx_major" value="major"><label class="note-option" for="sx_major">Severo / UCI<small>mayor o shock</small></label></div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -640,145 +152,105 @@ require("head.php");
           </div>
         </div>
 
-        <!-- B. RESUMEN -->
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">B. Tarjeta resumen</div>
-
-            <div class="summary-grid">
-              <div class="summary-card">
-                <div class="summary-label">Droga</div>
-                <div id="sumDrug" class="summary-value">-</div>
-              </div>
-              <div class="summary-card">
-                <div class="summary-label">Dosis habitual</div>
-                <div id="sumDose" class="summary-value">-</div>
-              </div>
-              <div class="summary-card">
-                <div class="summary-label">Prednisona eq.</div>
-                <div id="sumPredEq" class="summary-value">-</div>
-              </div>
-              <div class="summary-card">
-                <div class="summary-label">Riesgo eje</div>
-                <div id="sumAxis" class="summary-value">-</div>
-              </div>
-              <div class="summary-card">
-                <div class="summary-label">Procedimiento</div>
-                <div id="sumSurgery" class="summary-value">-</div>
-              </div>
-            </div>
+        <div class="note-summary-box mb-3" id="summaryBox">
+          <div class="note-summary-box-title">Resumen</div>
+          <div id="summaryNarrative" class="note-summary-box-text">Completa la dosis habitual y confirma el estrés quirúrgico para ver la recomendación.</div>
+          <div class="note-summary-grid-2">
+            <div class="note-summary-item"><div class="note-summary-k">Droga</div><div id="sumDrug" class="note-summary-v">-</div></div>
+            <div class="note-summary-item"><div class="note-summary-k">Dosis habitual</div><div id="sumDose" class="note-summary-v">-</div></div>
+            <div class="note-summary-item"><div class="note-summary-k">Prednisona eq.</div><div id="sumPredEq" class="note-summary-v">-</div></div>
+            <div class="note-summary-item"><div class="note-summary-k">Riesgo eje</div><div id="sumAxis" class="note-summary-v">-</div></div>
           </div>
         </div>
 
-        <!-- C. RESULTADO PRINCIPAL -->
-        <!-- C. RESULTADO PRINCIPAL -->
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">C. Resultado principal</div>
-
-            <div class="main-result-card">
-              <div class="main-result-label">Conducta sugerida</div>
-              <div class="main-result-note">Basada en prednisona equivalente, contexto del eje y magnitud del estrés quirúrgico</div>
-              <div id="mainDecision" class="main-result-value">-</div>
-            </div>
-
-            <div class="dose-result-card">
-              <div class="dose-result-label">Suplementación perioperatoria sugerida</div>
-              <div class="dose-result-note">Dosis operativa rápida para el día de cirugía y postoperatorio inmediato</div>
-              <div id="mainDosePlan" class="dose-result-value">-</div>
-            </div>
-
-            <div class="mt-3">
-              <div class="result-row">
-                <div>
-                  <div class="result-name">Interpretación del eje</div>
-                  <div class="result-note">Riesgo clínico de respuesta insuficiente al estrés quirúrgico.</div>
-                </div>
-                <div id="outAxisInterp" class="result-value">-</div>
-              </div>
-
-              <div class="result-row">
-                <div>
-                  <div class="result-name">Dosis del día de cirugía</div>
-                  <div class="result-note">Suplementación perioperatoria inmediata cuando corresponde.</div>
-                </div>
-                <div id="outDaySurgery" class="result-value">-</div>
-              </div>
-
-              <div class="result-row">
-                <div>
-                  <div class="result-name">Postoperatorio inmediato</div>
-                  <div class="result-note">Primeras 24–48 h o manejo inicial de paciente crítico.</div>
-                </div>
-                <div id="outPostop" class="result-value">-</div>
-              </div>
-
-              <div class="result-row">
-                <div>
-                  <div class="result-name">Equivalente en metilprednisolona</div>
-                  <div class="result-note">Alternativa útil si no usarás hidrocortisona.</div>
-                </div>
-                <div id="outMethylEq" class="result-value">-</div>
-              </div>
-
-              <div class="result-row">
-                <div>
-                  <div class="result-name">Retorno a dosis basal</div>
-                  <div class="result-note">Cuándo simplificar el esquema.</div>
-                </div>
-                <div id="outReturn" class="result-value">-</div>
-              </div>
-            </div>
+        <div class="note-result-grid-2 mb-3">
+          <div class="note-result-card">
+            <div class="note-result-card-label">Conducta sugerida</div>
+            <div id="mainDecision" class="note-result-card-value">Complete required fields to view result</div>
+            <div class="note-result-card-note">Decisión operativa según exposición y estrés quirúrgico.</div>
+          </div>
+          <div class="note-result-card">
+            <div class="note-result-card-label">Suplementación perioperatoria</div>
+            <div id="mainDosePlan" class="note-result-card-value">-</div>
+            <div class="note-result-card-note">Esquema práctico para el día de cirugía y postoperatorio inicial.</div>
+          </div>
+          <div class="note-result-card">
+            <div class="note-result-card-label">Dosis día de cirugía</div>
+            <div id="outDaySurgery" class="note-result-card-value">-</div>
+            <div class="note-result-card-note">Lo que debería recibir al inicio según riesgo y cirugía.</div>
+          </div>
+          <div class="note-result-card">
+            <div class="note-result-card-label">Equivalente metilpred</div>
+            <div id="outMethylEq" class="note-result-card-value">-</div>
+            <div class="note-result-card-note">Alternativa útil si no usarás hidrocortisona.</div>
           </div>
         </div>
 
-        <!-- D. INTERPRETACIÓN -->
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">D. Interpretación clínica</div>
-
-            <div id="riskBox" class="good-box">
-              <strong id="riskTitle">Lectura clínica</strong><br>
-              <div id="riskText" class="small-note mt-2">
-                Ingresa la dosis diaria del corticoide y confirma el tipo de cirugía para activar la recomendación.
-              </div>
-            </div>
-
-            <div id="anesthBox" class="warn-box mt-3">
-              <strong>Implicancias anestésicas</strong><br>
-              <div id="anesthText" class="small-note mt-2">-</div>
-            </div>
-
-            <div id="caveatBox" class="mint-box mt-3">
-              <strong>Limitaciones / cautelas</strong><br>
-              <div id="caveatText" class="small-note mt-2">-</div>
-            </div>
+        <div class="steroid-interpret-grid mb-3">
+          <div class="steroid-highlight">
+            <div class="k">Interpretación clínica</div>
+            <div id="outAxisInterp" class="v">-</div>
+            <div id="riskText" class="n">La lectura final depende de dosis, duración y contexto del eje.</div>
+          </div>
+          <div class="steroid-highlight">
+            <div class="k">Retorno a basal</div>
+            <div id="outReturn" class="v">-</div>
+            <div id="outPostop" class="n">-</div>
           </div>
         </div>
 
-        <!-- E. DOCENCIA -->
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">E. Tips docentes</div>
+        <div id="validityWarning" class="note-warning mb-3 note-hidden">
+          <strong>Advertencia visible</strong><br>
+          <span id="validityWarningText"></span>
+        </div>
 
-            <div class="warn-box">
-              <ul class="tip-list">
-                <li>La pregunta importante no es solo “usa corticoides”, sino si el paciente puede montar una respuesta adecuada al estrés.</li>
-                <li>Regla docente útil: más de 5 mg/día de prednisona equivalente merece manejo prudente, aunque no siempre exista prueba formal de supresión.</li>
-                <li>Los pacientes con insuficiencia suprarrenal primaria, secundaria o terciaria conocida deben tratarse como de alto riesgo aunque su dosis actual parezca baja.</li>
-                <li>En procedimientos muy menores o exposición baja y breve, muchas veces basta con la dosis basal. No sobretrates por reflejo.</li>
-                <li>La suplementación es para prevenir hipotensión, shock y fracaso de respuesta al estrés, no para analgesia ni profilaxis de NVPO.</li>
-                <li>Los corticoides perioperatorios también tienen costo: hiperglicemia, infección, debilidad muscular y mala cicatrización si se usan en exceso.</li>
-                <li>Si hay hipotensión refractaria, hiponatremia, hiperkalemia, hipoglicemia o shock distributivo, piensa en crisis suprarrenal y actúa antes de “confirmar” todo.</li>
-                <li>La evidencia moderna sigue siendo imperfecta; por eso esta nota privilegia una conducta conservadora y clínicamente segura.</li>
-              </ul>
-            </div>
+        <div id="fludroWarning" class="note-warning mb-3 note-hidden">
+          <strong>Fludrocortisona: cautela importante</strong><br>
+          <span id="fludroWarningText">La fludrocortisona tiene gran potencia mineralocorticoide. Aunque la tabla entregue una equivalencia glucocorticoide docente, no debe asumirse como sustituto suficiente de hidrocortisona para cubrir estrés perioperatorio.</span>
+        </div>
+
+        <div class="steroid-muted-card mb-3">
+          <div class="note-card-title mb-3">Tabla orientativa de equivalencias</div>
+          <div class="note-detail-table-wrap">
+            <table class="note-detail-table">
+              <thead>
+                <tr>
+                  <th>Fármaco</th>
+                  <th>Dosis equiv. (mg)</th>
+                  <th>Pot. gluco.</th>
+                  <th>Pot. mineral.</th>
+                  <th>Vida media (h)</th>
+                  <th>Dosis supresora eje HH (mg)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Cortisona</td><td>25</td><td>0,8</td><td>0,8</td><td>8–12</td><td>20–32</td></tr>
+                <tr><td>Hidrocortisona</td><td>20</td><td>1,0</td><td>1,0</td><td>8–12</td><td>20–32</td></tr>
+                <tr><td>Prednisona / Prednisolona</td><td>5</td><td>4</td><td>0,8</td><td>18–36</td><td>7,5</td></tr>
+                <tr><td>Metilprednisolona</td><td>4</td><td>5</td><td>0,5</td><td>18–36</td><td>6</td></tr>
+                <tr><td>Triamcinolona</td><td>4</td><td>5</td><td>0</td><td>18–36</td><td>6</td></tr>
+                <tr><td>Fludrocortisona</td><td>2</td><td>10</td><td>125</td><td>18–36</td><td>2,5</td></tr>
+                <tr><td>Deflazacort</td><td>7,5</td><td>4</td><td>0,5</td><td>18–36</td><td>9</td></tr>
+                <tr><td>Dexametasona</td><td>0,75</td><td>25</td><td>0</td><td>36–54</td><td>1</td></tr>
+                <tr><td>Betametasona</td><td>0,6</td><td>30</td><td>0</td><td>36–54</td><td>1</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="note-mobile-detail mt-3">
+            <div class="note-mobile-detail-card"><div class="note-mobile-detail-row"><div class="note-mobile-detail-label">Fludrocortisona</div><div class="note-mobile-detail-value">2 mg; potencia glucocorticoide 10; potencia mineralocorticoide 125; vida media 18–36 h; dosis supresora eje HH ≈ 2,5 mg.</div></div></div>
           </div>
         </div>
 
-        <div class="footer-note">
-          Herramienta docente y de apoyo clínico. No reemplaza juicio endocrinológico ni manejo de crisis suprarrenal establecida. Si el contexto es séptico, en shock o de UCI, prioriza la clínica por sobre el algoritmo.
+        <div class="note-teaching-wrap">
+          <div class="note-teaching-title">Tips docentes</div>
+          <div class="note-teaching-main">Piensa en el eje, no solo en el nombre del corticoide</div>
+          <div class="note-tips"><strong>Qué hacer:</strong> usa la dosis equivalente para estimar riesgo, pero adapta la cobertura al estrés quirúrgico y a la fisiología del paciente.</div>
+          <div class="note-tips"><strong>Qué evitar:</strong> dar stress dose alta por reflejo en cirugías superficiales o asumir que una equivalencia de tabla resuelve toda la interpretación clínica.</div>
+          <div class="note-tips"><strong>Error frecuente:</strong> simplificar un paciente con insuficiencia suprarrenal conocida porque su dosis actual parece baja.</div>
+          <div class="note-tips mb-0"><strong>Perla de residente:</strong> si existe hipotensión desproporcionada, hipoglicemia, hiponatremia o hiperkalemia en el perioperatorio, piensa temprano en insuficiencia suprarrenal relativa o crisis.</div>
         </div>
+
+        <div class="footer-note mt-3">Herramienta docente y de apoyo clínico. No reemplaza juicio endocrinológico ni manejo de crisis suprarrenal establecida.</div>
 
       </div>
     </div>
@@ -786,249 +258,278 @@ require("head.php");
 </div>
 
 <script>
-function toggleInfo(){
-  let box = document.getElementById("infoContent");
-  box.style.display = (box.style.display === "none" || box.style.display === "") ? "block" : "none";
-}
-
-function getSelected(name){
-  const el = document.querySelector('input[name="' + name + '"]:checked');
-  return el ? el.value : null;
-}
-
-function fmt(num, decimals=1){
-  if(num === null || num === undefined || isNaN(num)) return '-';
-  return Number(num).toFixed(decimals).replace('.', ',');
-}
-
-function steroidLabel(v){
-  const map = {
-    prednisone:'Prednisona',
-    prednisolone:'Prednisolona',
-    methylpred:'Metilprednisolona',
-    hydrocortisone:'Hidrocortisona',
-    dexamethasone:'Dexametasona',
-    betamethasone:'Betametasona',
-    triamcinolone:'Triamcinolona',
-    cortisone:'Cortisona'
+(function(){
+  const CNS = window.ClinicalNoteSystem;
+  const DRUGS = {
+    prednisone:{label:'Prednisona', eqDose:5, methylFactor:0.8, suppressive:7.5},
+    prednisolone:{label:'Prednisolona', eqDose:5, methylFactor:0.8, suppressive:7.5},
+    methylpred:{label:'Metilprednisolona', eqDose:4, methylFactor:1, suppressive:6},
+    hydrocortisone:{label:'Hidrocortisona', eqDose:20, methylFactor:0.2, suppressive:20},
+    cortisone:{label:'Cortisona', eqDose:25, methylFactor:0.16, suppressive:20},
+    triamcinolone:{label:'Triamcinolona', eqDose:4, methylFactor:1, suppressive:6},
+    deflazacort:{label:'Deflazacort', eqDose:7.5, methylFactor:(4/7.5), suppressive:9},
+    dexamethasone:{label:'Dexametasona', eqDose:0.75, methylFactor:(4/0.75), suppressive:1},
+    betamethasone:{label:'Betametasona', eqDose:0.6, methylFactor:(4/0.6), suppressive:1},
+    fludrocortisone:{label:'Fludrocortisona', eqDose:2, methylFactor:2, suppressive:2.5}
   };
-  return map[v] || '-';
-}
 
-function surgeryLabel(v){
-  const map = {
+  const SURGERY_LABELS = {
     superficial:'Superficial',
     minor:'Menor',
     moderate:'Moderado',
     major:'Severo / UCI'
   };
-  return map[v] || '-';
-}
 
-function getPredEqFactor(steroid){
-  const factors = {
-    prednisone:1,
-    prednisolone:1,
-    methylpred:5/4,
-    hydrocortisone:5/20,
-    dexamethasone:5/0.75,
-    betamethasone:5/0.75,
-    triamcinolone:5/4,
-    cortisone:5/25
-  };
-  return factors[steroid] || 1;
-}
+  const doseInput = document.getElementById('dailyDose');
 
-function updateSteroidNote(){
-  const steroid = getSelected('steroid') || 'prednisone';
-  const dose = parseFloat(document.getElementById('dailyDose').value);
-  const duration = getSelected('duration') || 'gt3w';
-  const axisStatus = getSelected('axisStatus') || 'none';
-  const recentStop = getSelected('recentStop') || 'no';
-  const surgery = getSelected('surgery') || 'minor';
-
-  const predEq = (!isNaN(dose) && dose > 0) ? dose * getPredEqFactor(steroid) : NaN;
-
-  document.getElementById('sumDrug').textContent = steroidLabel(steroid);
-  document.getElementById('sumDose').textContent = (!isNaN(dose) && dose > 0) ? fmt(dose,1) + ' mg/día' : '-';
-  document.getElementById('sumPredEq').textContent = (!isNaN(predEq)) ? fmt(predEq,1) + ' mg pred/día' : '-';
-  document.getElementById('sumAxis').textContent = axisStatus === 'none' ? 'Por exposición' : axisStatus.charAt(0).toUpperCase() + axisStatus.slice(1);
-  document.getElementById('sumSurgery').textContent = surgeryLabel(surgery);
-
-  if(isNaN(dose) || dose <= 0){
-    document.getElementById('mainDecision').textContent = '-';
-    document.getElementById('mainDosePlan').innerHTML = '-';
-    document.getElementById('outAxisInterp').textContent = '-';
-    document.getElementById('outDaySurgery').textContent = '-';
-    document.getElementById('outPostop').textContent = '-';
-    document.getElementById('outMethylEq').textContent = '-';
-    document.getElementById('outReturn').textContent = '-';
-    document.getElementById('riskTitle').textContent = 'Lectura clínica';
-    document.getElementById('riskText').textContent = 'Ingresa la dosis diaria del corticoide y confirma el tipo de cirugía para activar la recomendación.';
-    document.getElementById('riskBox').className = 'good-box';
-    document.getElementById('anesthText').textContent = '-';
-    document.getElementById('caveatText').textContent = '-';
-    return;
+  function getSelected(name){
+    return CNS.getSelected(name);
   }
 
-  let highRisk = false;
-  let axisInterp = '';
+  function calculate(){
+    const steroid = getSelected('steroid') || 'prednisone';
+    const duration = getSelected('duration') || 'gt3w';
+    const axisStatus = getSelected('axisStatus') || 'none';
+    const recentStop = getSelected('recentStop') || 'no';
+    const surgery = getSelected('surgery') || 'minor';
+    const drug = DRUGS[steroid];
+    const dailyDose = CNS.parseDecimal(doseInput.value);
 
-  if(axisStatus !== 'none'){
-    highRisk = true;
-    axisInterp = 'Insuficiencia suprarrenal conocida';
-  } else if(recentStop === 'yes'){
-    highRisk = true;
-    axisInterp = 'Riesgo persistente por suspensión reciente';
-  } else if(predEq > 20 && duration !== 'lt3w'){
-    highRisk = true;
-    axisInterp = 'Supresión del eje muy probable';
-  } else if(predEq > 5 && duration !== 'lt3w'){
-    highRisk = true;
-    axisInterp = 'Supresión del eje probable';
-  } else if(predEq <= 5 && duration === 'lt3w'){
-    highRisk = false;
-    axisInterp = 'Riesgo clínico bajo';
-  } else if(predEq <= 5){
-    highRisk = false;
-    axisInterp = 'Riesgo bajo, pero contexto importa';
-  } else {
-    highRisk = false;
-    axisInterp = 'Zona gris';
+    const validDose = Number.isFinite(dailyDose) && dailyDose > 0;
+    const predEq = validDose ? (dailyDose * 5 / drug.eqDose) : NaN;
+
+    return {steroid, duration, axisStatus, recentStop, surgery, drug, dailyDose, validDose, predEq};
   }
 
-  let mainDecision = '';
-  let daySurgery = '';
-  let postop = '';
-  let methylEq = '';
-  let returnPlan = '';
-  let riskTitle = '';
-  let riskText = '';
-  let riskClass = 'good-box';
-  let mainDosePlan = '';
+  function updateSummary(state){
+    CNS.safeSetText('sumDrug', state.drug.label);
+    CNS.safeSetText('sumDose', state.validDose ? CNS.formatNumber(state.dailyDose, 1) + ' mg/día' : '-');
+    CNS.safeSetText('sumPredEq', state.validDose ? CNS.formatNumber(state.predEq, 1) + ' mg pred/día' : '-');
+    const axisLabelMap = {none:'Por exposición', primary:'Primaria', secondary:'Secundaria', tertiary:'Terciaria'};
+    CNS.safeSetText('sumAxis', axisLabelMap[state.axisStatus] || '-');
 
-  if(!highRisk){
-    if(surgery === 'superficial'){
-      mainDecision = 'Solo dosis basal';
-      daySurgery = 'Sin suplemento adicional';
-      postop = 'Sin esquema suplementario';
-      methylEq = 'No aplica';
-      returnPlan = 'Continuar esquema habitual';
-      riskTitle = 'Probable no supresión del eje';
-      riskText = 'Con exposición baja y breve, o sin datos fuertes de supresión, un procedimiento superficial rara vez exige stress dose.';
-      riskClass = 'good-box';
-    } else if(predEq <= 5){
-      mainDecision = 'Basal ± vigilancia';
-      daySurgery = 'Mantener dosis basal el día de cirugía';
-      postop = 'Sin suplemento sistemático';
-      methylEq = 'No aplica';
-      returnPlan = 'Retomar o mantener basal';
-      riskTitle = 'Riesgo bajo';
-      riskText = 'La tabla de Nazar y cols. deja claro que ≤5 mg/día de prednisona equivalente suele manejarse con la dosis basal. Si la historia es poco confiable o el contexto es de alto estrés, sé más prudente.';
+    const narrative = !state.validDose
+      ? 'Completa la dosis habitual y confirma el estrés quirúrgico para ver la recomendación.'
+      : `${state.drug.label} ${CNS.formatNumber(state.dailyDose,1)} mg/día; equivalente a ${CNS.formatNumber(state.predEq,1)} mg/día de prednisona. Estrés quirúrgico ${SURGERY_LABELS[state.surgery]}.`;
 
-      riskClass = 'warn-box';
+    CNS.safeSetText('summaryNarrative', narrative);
+
+    const summaryBox = document.getElementById('summaryBox');
+    summaryBox.classList.toggle('steroid-fludro', state.steroid === 'fludrocortisone');
+  }
+
+  function clearResults(){
+    CNS.safeSetText('mainDecision', 'Complete required fields to view result');
+    CNS.safeSetText('mainDosePlan', '-');
+    CNS.safeSetText('outDaySurgery', '-');
+    CNS.safeSetText('outMethylEq', '-');
+    CNS.safeSetText('outAxisInterp', '-');
+    CNS.safeSetText('riskText', 'La lectura final depende de dosis, duración y contexto del eje.');
+    CNS.safeSetText('outReturn', '-');
+    CNS.safeSetText('outPostop', '-');
+  }
+
+  function updateWarning(state){
+    CNS.hideValidityWarning('validityWarning', 'validityWarningText');
+    if (!state.validDose) return;
+
+    if (state.dailyDose > 500) {
+      CNS.showValidityWarning('validityWarning', 'validityWarningText', 'La dosis ingresada es implausiblemente alta. Revisa si la unidad o la cifra son correctas antes de interpretar la recomendación.');
+      return;
+    }
+
+    if (state.steroid === 'fludrocortisone') {
+      CNS.showElement('fludroWarning', 'note-hidden');
     } else {
-      mainDecision = 'Valorar caso a caso';
-      daySurgery = 'Considerar 25 mg hidrocortisona EV si hay duda real';
-      postop = 'Observación clínica y hemodinámica';
-      methylEq = '≈ 5 mg metilpred EV';
-      returnPlan = 'Volver a basal precozmente';
-      riskTitle = 'Zona gris';
-      riskText = 'Cuando la exposición está en terreno intermedio o la duración no es clara, el cálculo solo no basta. En duda razonable, es preferible una cobertura modesta.';
-      riskClass = 'warn-box';
-    }
-  } else {
-    if(surgery === 'superficial'){
-      mainDecision = 'Basal / mínima cobertura';
-      daySurgery = 'Mantener dosis habitual; generalmente sin stress dose adicional';
-      postop = 'Sin suplemento adicional si estable';
-      methylEq = 'No suele requerirse';
-      returnPlan = 'Continuar basal';
-      riskTitle = 'Riesgo endocrino real, bajo estrés quirúrgico';
-      riskText = 'Aunque el eje parezca suprimido, una cirugía realmente superficial no necesita el mismo esquema que una laparotomía o una cirugía cardíaca.';
-      riskClass = 'warn-box';
-    }
-
-    if(surgery === 'minor'){
-      mainDecision = 'Suplementación menor';
-      daySurgery = '25 mg hidrocortisona EV';
-      postop = 'Luego continuar dosis basal habitual';
-      methylEq = '≈ 5 mg metilpred EV';
-      returnPlan = 'Retomar basal el mismo día o al reiniciar VO';
-      riskTitle = 'Supresión probable + cirugía menor';
-      riskText = 'Para cirugía menor, la cobertura sugerida es limitada y no debe extenderse innecesariamente.';
-      riskClass = 'warn-box';
-    }
-
-    if(surgery === 'moderate'){
-      mainDecision = 'Suplementación 24–48 h';
-      daySurgery = '50–75 mg hidrocortisona EV';
-      postop = 'Mantener cobertura y volver progresivamente a basal en 24–48 h';
-      methylEq = '≈ 10–15 mg metilpred EV';
-      returnPlan = 'Descenso a basal dentro de 24–48 h si estable';
-      riskTitle = 'Supresión probable + cirugía moderada';
-      riskText = 'Aquí el estrés ya es relevante. El objetivo es prevenir respuesta insuficiente al trauma quirúrgico, no “dar corticoides por si acaso”.';
-      riskClass = 'danger-box';
-    }
-
-    if(surgery === 'major'){
-      mainDecision = 'Suplementación alta / paciente crítico';
-      daySurgery = '100–150 mg hidrocortisona EV';
-      postop = 'Si cirugía mayor: volver progresivamente a basal en 24–48 h. Si shock/UCI: 50–100 mg c/6–8 h inicialmente';
-      methylEq = '≈ 20–30 mg metilpred EV';
-      returnPlan = 'Taper progresivo; más lento si UCI, sepsis o inestabilidad';
-      riskTitle = 'Supresión probable + cirugía severa o UCI';
-      riskText = 'En cirugía mayor o paciente crítico, la incapacidad de responder al estrés puede traducirse en hipotensión refractaria o shock. Aquí la cobertura sí debe ser agresiva.';
-      riskClass = 'danger-box';
+      CNS.hideElement('fludroWarning', 'note-hidden');
     }
   }
 
-    if(daySurgery === 'Sin suplemento adicional' || daySurgery === 'Mantener dosis basal el día de cirugía'){
-    mainDosePlan = daySurgery + '<br><span class="small-note">' + postop + '</span>';
-  } else {
-    mainDosePlan = daySurgery + '<br><span class="small-note">' + postop + '</span>';
+  function derivePlan(state){
+    if (!state.validDose) return null;
+
+    let axisRisk = 'Riesgo bajo';
+    let highRisk = false;
+    let grayZone = false;
+
+    if (state.axisStatus !== 'none') {
+      highRisk = true;
+      axisRisk = 'Insuficiencia suprarrenal conocida';
+    } else if (state.recentStop === 'yes') {
+      highRisk = true;
+      axisRisk = 'Suspensión reciente: riesgo persistente';
+    } else if (state.predEq > 20 && state.duration !== 'lt3w') {
+      highRisk = true;
+      axisRisk = 'Supresión del eje muy probable';
+    } else if (state.predEq > 5 && state.duration !== 'lt3w') {
+      highRisk = true;
+      axisRisk = 'Supresión del eje probable';
+    } else if (state.predEq <= 5 && state.duration === 'lt3w') {
+      axisRisk = 'Riesgo clínico bajo';
+    } else if (state.predEq <= 5) {
+      axisRisk = 'Riesgo bajo, pero contexto importa';
+      grayZone = true;
+    } else {
+      grayZone = true;
+      axisRisk = 'Zona gris';
+    }
+
+    let decision = '';
+    let dosePlan = '';
+    let daySurgery = '';
+    let postop = '';
+    let methylEq = '';
+    let returnPlan = '';
+    let riskText = '';
+
+    if (state.steroid === 'fludrocortisone') {
+      grayZone = false;
+      highRisk = true;
+      axisRisk = 'Interpretación especial por fludrocortisona';
+    }
+
+    if (!highRisk && !grayZone) {
+      if (state.surgery === 'superficial') {
+        decision = 'Solo dosis basal';
+        dosePlan = 'Sin suplemento adicional';
+        daySurgery = 'Mantener esquema basal';
+        postop = 'Sin suplementación sistemática';
+        methylEq = 'No aplica';
+        returnPlan = 'Continuar basal';
+        riskText = 'Con exposición baja y procedimiento superficial, una stress dose suele ser innecesaria.';
+      } else {
+        decision = 'Basal + vigilancia';
+        dosePlan = 'Mantener dosis habitual; reevaluar si aparece hipotensión o inestabilidad';
+        daySurgery = 'Dosis basal el día de cirugía';
+        postop = 'Observación clínica y hemodinámica';
+        methylEq = 'No aplica de rutina';
+        returnPlan = 'Seguir basal';
+        riskText = 'No todos los pacientes en corticoides crónicos necesitan suplementación extra. Aquí pesa más la vigilancia que la escalada automática.';
+      }
+    } else if (grayZone && !highRisk) {
+      if (state.surgery === 'major') {
+        decision = 'Cobertura conservadora';
+        dosePlan = 'Considerar hidrocortisona 50–100 mg EV al inicio y luego reevaluar';
+        daySurgery = '50–100 mg hidrocortisona EV';
+        postop = 'Descenso rápido a basal si evolución estable';
+        methylEq = '≈ 10–20 mg metilpred EV';
+        returnPlan = 'Volver a basal en 24 h si no hay inestabilidad';
+      } else if (state.surgery === 'moderate') {
+        decision = 'Valorar caso a caso';
+        dosePlan = 'Si hay duda real, 25–50 mg hidrocortisona EV';
+        daySurgery = '25–50 mg hidrocortisona EV';
+        postop = 'Continuar solo si contexto lo exige';
+        methylEq = '≈ 5–10 mg metilpred EV';
+        returnPlan = 'Volver precozmente a basal';
+      } else {
+        decision = 'Basal ± cobertura modesta';
+        dosePlan = 'Probablemente basta con basal; suplementar solo si la historia es poco confiable';
+        daySurgery = 'Basal o 25 mg hidrocortisona EV si duda razonable';
+        postop = 'Sin esquema fijo';
+        methylEq = '≈ 5 mg metilpred EV si decides cubrir';
+        returnPlan = 'Mantener basal';
+      }
+      riskText = 'Hay datos insuficientes o exposición intermedia. En esta zona, la conducta debe ser prudente pero no exagerada.';
+    } else {
+      if (state.steroid === 'fludrocortisone') {
+        if (state.surgery === 'superficial') {
+          decision = 'No usar fludrocortisona como stress dose';
+          dosePlan = 'Mantener fludrocortisona habitual; si se requiere cobertura glucocorticoide, usar hidrocortisona';
+          daySurgery = 'Basal + valorar hidrocortisona según contexto';
+          postop = 'No escales por equivalencia teórica solamente';
+          methylEq = 'Preferir traducir la cobertura a hidrocortisona/metilpred, no a fludrocortisona';
+          returnPlan = 'Volver al esquema basal cuando el estrés ceda';
+        } else if (state.surgery === 'minor') {
+          decision = 'Cobertura glucocorticoide pequeña';
+          dosePlan = '25 mg hidrocortisona EV si el contexto hace sospechar dependencia del eje';
+          daySurgery = '25 mg hidrocortisona EV';
+          postop = 'Luego basal';
+          methylEq = '≈ 5 mg metilpred EV';
+          returnPlan = 'Retomar basal al reiniciar VO';
+        } else if (state.surgery === 'moderate') {
+          decision = 'Cobertura glucocorticoide 24 h';
+          dosePlan = '50–75 mg hidrocortisona EV y luego descenso a basal';
+          daySurgery = '50–75 mg hidrocortisona EV';
+          postop = '24 h de cobertura inicial';
+          methylEq = '≈ 10–15 mg metilpred EV';
+          returnPlan = 'Descenso a basal en 24–48 h';
+        } else {
+          decision = 'Cobertura alta con hidrocortisona';
+          dosePlan = '100 mg hidrocortisona EV inicial, luego 50 mg c/6–8 h o equivalente';
+          daySurgery = '100 mg hidrocortisona EV';
+          postop = '50 mg c/6–8 h inicialmente si cirugía mayor / UCI';
+          methylEq = '≈ 20 mg metilpred EV';
+          returnPlan = 'Taper según estabilidad hemodinámica';
+        }
+        riskText = 'La fludrocortisona puede aparecer como equivalente en la tabla, pero su perfil mineralocorticoide la vuelve una mala opción para pensar cobertura perioperatoria automática.';
+      } else if (state.surgery === 'superficial') {
+        decision = 'Basal o mínima cobertura';
+        dosePlan = 'En muchos casos basta con mantener la dosis habitual';
+        daySurgery = 'Mantener basal';
+        postop = 'Sin esquema suplementario fijo';
+        methylEq = 'No suele requerirse';
+        returnPlan = 'Continuar basal';
+        riskText = 'Aunque el eje esté suprimido, el estrés quirúrgico superficial rara vez exige una cobertura agresiva.';
+      } else if (state.surgery === 'minor') {
+        decision = 'Suplementación menor';
+        dosePlan = '25 mg hidrocortisona EV al inicio; luego volver a basal';
+        daySurgery = '25 mg hidrocortisona EV';
+        postop = 'Luego continuar basal';
+        methylEq = '≈ 5 mg metilpred EV';
+        returnPlan = 'Retomar basal el mismo día o al reiniciar VO';
+        riskText = 'Cirugía menor + supresión probable: cubrir de forma acotada, no prolongada.';
+      } else if (state.surgery === 'moderate') {
+        decision = 'Suplementación 24–48 h';
+        dosePlan = '50–75 mg hidrocortisona EV y descenso progresivo';
+        daySurgery = '50–75 mg hidrocortisona EV';
+        postop = 'Cobertura inicial y retorno a basal en 24–48 h si estable';
+        methylEq = '≈ 10–15 mg metilpred EV';
+        returnPlan = 'Bajar a basal en 24–48 h';
+        riskText = 'Aquí el estrés ya es relevante. La cobertura busca evitar respuesta insuficiente al trauma, no añadir esteroides sin propósito.';
+      } else {
+        decision = 'Suplementación alta / paciente crítico';
+        dosePlan = '100 mg hidrocortisona EV inicial; luego 50 mg c/6–8 h o equivalente';
+        daySurgery = '100 mg hidrocortisona EV';
+        postop = '50 mg c/6–8 h inicialmente si cirugía mayor, shock o UCI';
+        methylEq = '≈ 20 mg metilpred EV';
+        returnPlan = 'Descenso progresivo según estabilidad';
+        riskText = 'En cirugía mayor o paciente crítico, la incapacidad de responder al estrés puede traducirse en hipotensión refractaria. Aquí la cobertura sí debe ser más agresiva.';
+      }
+    }
+
+    return {axisRisk, decision, dosePlan, daySurgery, postop, methylEq, returnPlan, riskText};
   }
 
-  let anesthText = 'El déficit de cortisol reduce tono vascular y respuesta a catecolaminas, por lo que puede aparecer hipotensión desproporcionada tras inducción, vasoplejía o shock distributivo. Además, pueden coexistir hiponatremia, hiperkalemia e hipoglicemia.';
-  if(surgery === 'major'){
-    anesthText += ' En cirugía severa o UCI, la reevaluación clínica y hemodinámica pesa más que la belleza del esquema inicial.';
+  function updateUI(){
+    const state = calculate();
+    updateSummary(state);
+    updateWarning(state);
+
+    if (!state.validDose) {
+      clearResults();
+      CNS.hideElement('fludroWarning', 'note-hidden');
+      return;
+    }
+
+    const plan = derivePlan(state);
+    CNS.safeSetText('mainDecision', plan.decision);
+    CNS.safeSetText('mainDosePlan', plan.dosePlan);
+    CNS.safeSetText('outDaySurgery', plan.daySurgery);
+    CNS.safeSetText('outMethylEq', plan.methylEq);
+    CNS.safeSetText('outAxisInterp', plan.axisRisk);
+    CNS.safeSetText('riskText', plan.riskText);
+    CNS.safeSetText('outReturn', plan.returnPlan);
+    CNS.safeSetText('outPostop', plan.postop);
   }
 
-  let caveatText = 'Las recomendaciones perioperatorias sobre stress dose no están apoyadas por evidencia perfecta y varias guías difieren en intensidad. Este apunte privilegia una estrategia conservadora y práctica.';
-  if(recentStop === 'yes'){
-    caveatText += ' La suspensión en los últimos 3 meses no elimina el riesgo de supresión.';
-  }
-  if(axisStatus !== 'none'){
-    caveatText += ' Si ya existe insuficiencia suprarrenal diagnosticada, no simplifiques por una dosis habitual aparentemente baja.';
-  }
-
-  document.getElementById('mainDecision').textContent = mainDecision;
-  document.getElementById('mainDosePlan').innerHTML = mainDosePlan;
-  document.getElementById('outAxisInterp').textContent = axisInterp;
-  document.getElementById('outDaySurgery').innerHTML = daySurgery;
-  document.getElementById('outPostop').innerHTML = postop;
-  document.getElementById('outMethylEq').innerHTML = methylEq;
-  document.getElementById('outReturn').innerHTML = returnPlan;
-
-  document.getElementById('riskTitle').textContent = riskTitle;
-  document.getElementById('riskText').textContent = riskText;
-  document.getElementById('riskBox').className = riskClass;
-  document.getElementById('anesthText').textContent = anesthText;
-  document.getElementById('caveatText').textContent = caveatText;
-}
-
-document.addEventListener('DOMContentLoaded', function(){
-  document.querySelectorAll('.calc-trigger').forEach(el => {
-    el.addEventListener('input', updateSteroidNote);
-    el.addEventListener('change', updateSteroidNote);
+  document.querySelectorAll('.calc-trigger').forEach(function(el){
+    el.addEventListener('input', updateUI);
+    el.addEventListener('change', updateUI);
   });
 
-  document.querySelectorAll('.calc-trigger-radio').forEach(el => {
-    el.addEventListener('change', updateSteroidNote);
-  });
-
-  updateSteroidNote();
-});
+  if (CNS && CNS.bindSelectionSync) CNS.bindSelectionSync('.note-check');
+  updateUI();
+})();
 </script>
 
-<?php require("footer.php"); ?>
+<?php include('footer.php'); ?>

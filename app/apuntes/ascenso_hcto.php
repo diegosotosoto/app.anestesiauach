@@ -1,534 +1,503 @@
 <?php
-
-$titulo_info = "Utilidad Clínica";
-$descripcion_info = "Cálculo rápido para estimar el volumen de concentrado eritrocitario (CE) necesario para alcanzar un hematocrito objetivo, y también para estimar el ascenso esperado del hematocrito cuando se transfunde una alícuota en pediatría.";
-$formula = "
-Volumen CE requerido (mL) = ((Hto deseado - Hto actual) × VSE) / Hto del CE<br>
-Ascenso esperado de Hto (%) = (Volumen transfundido × Hto del CE) / VSE<br><br>
-Donde VSE = peso × volumen sanguíneo estimado (mL/kg)
-";
-$referencias = array(
-  "1.- Royal Children's Hospital Melbourne. Clinical Practice Guidelines: Blood product prescription.",
-  "2.- Guidelines for the Management of Transfusion-Dependent β-Thalassaemia (NCBI Bookshelf). Cálculo de volumen para alcanzar Hb/Hto objetivo; asume volumen sanguíneo total de 70 mL/kg.",
-  "3.- Canadian Paediatric Society. Minimizing blood loss and need for transfusions in newborns. Fórmula basada en peso, volumen sanguíneo estimado y Hb/Hto del donante.",
-  "4.- PICU Handbook / AccessPediatrics. Fórmulas prácticas de transfusión pediátrica y estimación de volumen sanguíneo."
-);
-
-$icono_apunte = "<i class='fa-solid fa-droplet pe-3 pt-2'></i>";
-$titulo_apunte = "Ascenso de Hematocrito por Transfusión en Alícuotas";
-
+$titulo_pagina = "Transfusión de CE en alícuotas";
+$navbar_titulo = "Apuntes";
 $boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
 $boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
 
+$titulo_info = "Utilidad clínica";
+$descripcion_info = "Calculadora docente para estimar volumen de concentrado eritrocitario necesario para alcanzar un hematocrito objetivo y el ascenso esperado tras transfundir una alícuota, especialmente útil en pediatría.";
+$formula = "VSE = peso × volemia estimada. Volumen CE requerido = [(Hto deseado − Hto actual) × VSE] / Hto del CE. Ascenso esperado del Hto = [volumen transfundido × Hto del CE] / VSE. Los hematocritos se ingresan como porcentaje y los volúmenes en mL. Para CE, 55% se usa como concentración habitual orientativa; 50–60% permite ajustar según banco de sangre.";
+$referencias = array(
+  "Roseff SD, Luban NLC, Manno CS. Guidelines for assessing appropriateness of pediatric transfusion. Transfusion. 2002;42(11):1398-1413.",
+  "Kleinman S, et al. Red blood cell transfusion in children: indications and dosing principles. Transfusion medicine references and institutional practice standards.",
+  "British Committee for Standards in Haematology. Guidelines on transfusion for fetuses, neonates and older children.",
+  "Protocolos docentes locales de transfusión perioperatoria pediátrica."
+);
+
 require("head.php");
 ?>
+<link rel="stylesheet" href="css/clinical-note-system.css?v=2">
+<script src="js/clinical-note-system.js?v=2"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
     <div class="container-fluid px-0 px-md-2">
-      <div class="transf-shell">
+      <div class="note-shell px-1 px-md-0 py-0">
 
         <style>
-          :root{
-            --brand:#27458f;
-            --brand2:#3559b7;
-            --bg:#f4f7fb;
-            --soft:#f8fafc;
-            --line:#dfe7f2;
-            --text:#1f2a37;
-            --muted:#667085;
-            --good:#edf8f7;
-            --warn:#fff9e8;
-            --danger:#fff5f3;
+          .hcto-choice-grid{
+            display:grid;
+            grid-template-columns:repeat(3,minmax(0,1fr));
+            gap:.75rem;
           }
 
-          body{background:var(--bg);}
-          .transf-shell{max-width:980px;margin:0 auto;}
-
-          .topbar{
-            background:linear-gradient(135deg,var(--brand),var(--brand2));
-            color:#fff;
-            border-radius:1.25rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            padding:1.15rem 1.25rem;
-            margin-bottom:1rem;
-          }
-          .topbar h1{color:#fff;}
-
-          .section-card{
-            border:0;
-            border-radius:1rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            background:#fff;
-            overflow:hidden;
-            margin-bottom:1rem;
+          .hcto-choice-grid.hcto-grid-2{
+            grid-template-columns:repeat(2,minmax(0,1fr));
           }
 
-          .section-title{
-            font-size:.8rem;
-            letter-spacing:.05em;
-            text-transform:uppercase;
-            color:var(--muted);
+          .hcto-input{
+            position:absolute;
+            opacity:0;
+            pointer-events:none;
           }
 
-          .pill{
-            display:inline-block;
-            padding:.2rem .55rem;
-            border-radius:999px;
-            font-size:.78rem;
-            background:#eef3ff;
-            color:#3559b7;
-            font-weight:600;
-          }
-
-          .subtle{font-size:.94rem;color:#5f6b76;}
-
-          .info-box{
-            background:#fff;
-            border-radius:1rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            margin-bottom:1rem;
-            overflow:hidden;
-          }
-
-          .info-box-header{
+          .hcto-option{
             display:flex;
-            justify-content:space-between;
+            flex-direction:column;
             align-items:center;
-            gap:1rem;
-            padding:1rem;
-          }
-
-          .info-box-title{
-            font-size:.8rem;
-            text-transform:uppercase;
-            color:#667085;
-            letter-spacing:.08em;
-          }
-
-          .info-toggle-btn{
-            border-radius:.6rem;
-            font-size:.85rem;
-            padding:.35rem .7rem;
-            white-space:nowrap;
-            background:#6c757d;
-            border:none;
-            color:white;
-            transition:.2s;
-          }
-
-          .info-toggle-btn:hover{
-            background:#5a6268;
-            color:white;
-          }
-
-          .info-box-content{
-            padding:1rem;
-            display:none;
-            animation:fadeIn .2s ease-in-out;
-            border-top:1px solid #e9eef5;
-          }
-
-          @keyframes fadeIn{
-            from{opacity:0; transform:translateY(-5px);}
-            to{opacity:1; transform:translateY(0);}
-          }
-
-          .calc-grid{
-            display:grid;
-            grid-template-columns:repeat(2,1fr);
-            gap:1rem;
-          }
-
-          .card-block{
-            border:1px solid var(--line);
-            border-radius:1rem;
-            background:var(--soft);
-            padding:1rem;
-          }
-
-          .form-label-lite{
-            font-size:.92rem;
-            font-weight:600;
-            color:var(--text);
-            margin-bottom:.35rem;
-          }
-
-          .result-box{
-            border-radius:1rem;
-            border:1px solid var(--line);
-            background:var(--soft);
-            padding:1rem;
-          }
-
-          .result-main{
-            font-size:1.08rem;
-            font-weight:700;
-            color:var(--text);
-          }
-
-          .result-num{
-            font-size:2rem;
-            font-weight:800;
-            line-height:1;
-            color:#3559b7;
-          }
-
-          .conduct-box{
-            padding:1rem;
-            border-radius:1rem;
-            border:1px solid var(--line);
-          }
-
-          .conduct-ok{background:var(--good);}
-          .conduct-mid{background:var(--warn);}
-          .conduct-no{background:var(--danger);}
-
-          .conduct-title{
-            font-size:1.08rem;
-            font-weight:800;
-            color:#1f2a37;
-            margin-bottom:.65rem;
-          }
-
-          .small-note{font-size:.84rem;color:var(--muted);}
-          .footer-note{font-size:.82rem;color:#6c757d;}
-
-          .teaching-wrap{
-            border:1px solid var(--line);
-            border-radius:1.4rem;
-            background:var(--soft);
-            padding:1.25rem;
-            overflow:hidden;
-          }
-
-          .teaching-title{
-            font-size:1rem;
-            letter-spacing:.08em;
-            text-transform:uppercase;
-            color:#64748b;
+            justify-content:center;
             text-align:center;
-            margin-bottom:1rem;
-          }
-
-          .teaching-main{
-            font-size:1.6rem;
-            font-weight:800;
-            text-align:center;
-            color:#1f2a37;
-            line-height:1.15;
-            margin-bottom:1.2rem;
-            max-width:100%;
-            overflow-wrap:anywhere;
-          }
-
-          .teaching-grid{
-            display:grid;
-            grid-template-columns:1fr;
-            gap:1rem;
-          }
-
-          .teaching-card{
+            min-height:68px;
+            border:2px solid var(--note-line);
             background:#fff;
-            border:1px solid #e6e9ef;
-            border-radius:1.25rem;
-            padding:1.1rem 1rem;
-            text-align:center;
-            max-width:100%;
-            overflow:hidden;
+            border-radius:1rem;
+            padding:.5rem .65rem;
+            cursor:pointer;
+            transition:.15s ease;
+            box-shadow:0 3px 10px rgba(15,23,42,.04);
+            gap:.12rem;
+            color:var(--note-text);
           }
 
-          .teaching-label{
-            font-size:.78rem;
-            letter-spacing:.08em;
-            text-transform:uppercase;
-            color:#667085;
-            margin-bottom:.55rem;
-          }
-
-          .teaching-text{
-            font-size:1rem;
-            line-height:1.45;
-            color:#1f2a37;
-            font-weight:600;
-            max-width:100%;
-            overflow-wrap:anywhere;
-          }
-
-          .teaching-soft{
+          .hcto-option i{
+            color:#3559b7;
             font-size:.95rem;
-            line-height:1.5;
-            color:#667085;
-            font-weight:500;
-            margin-top:.35rem;
-            max-width:100%;
-            overflow-wrap:anywhere;
-            word-break:normal;
           }
 
-          .fraction{
-            display:inline-block;
-            width:100%;
+          .hcto-input:checked + .hcto-option{
+            box-shadow:0 0 0 3px rgba(47,128,237,.14), 0 8px 18px rgba(15,23,42,.10);
+            border:4px solid var(--note-selected);
+            transform:translateY(-1px);
+          }
+
+          .hcto-option-title{
+            font-size:.92rem;
+            font-weight:850;
+            line-height:1.12;
+            color:var(--note-text);
+          }
+
+          .hcto-option-sub{
+            font-size:.74rem;
+            line-height:1.18;
+            color:var(--note-muted);
+            font-weight:650;
+          }
+
+          .hcto-result-low{
+            background:#edf8f1 !important;
+            border-color:#b7ddc3 !important;
+          }
+
+          .hcto-result-mid{
+            background:#fff9e8 !important;
+            border-color:#ead38a !important;
+          }
+
+          .hcto-result-high{
+            background:#fff1f1 !important;
+            border-color:#efc0bd !important;
+          }
+
+          .hcto-action-list{
+            display:grid;
+            gap:.75rem;
+          }
+
+          .hcto-action-item{
+            display:flex;
+            align-items:flex-start;
+            gap:.65rem;
+            border:1px solid #d9e2ef;
+            border-radius:1rem;
+            background:#fff;
+            padding:.75rem .85rem;
+          }
+
+          .hcto-action-mark{
+            flex:0 0 auto;
+            width:30px;
+            height:30px;
+            border-radius:999px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#fff;
+            margin-top:.08rem;
+          }
+
+          .hcto-action-mark.ok{background:#2ea663;}
+          .hcto-action-mark.mid{background:#f4c542;}
+          .hcto-action-mark.high{background:#d92d20;}
+
+          .hcto-action-copy{min-width:0;flex:1;}
+
+          .hcto-action-title{
+            font-size:.95rem;
+            font-weight:800;
+            line-height:1.18;
+            color:var(--note-text);
+            margin-bottom:.1rem;
+          }
+
+          .hcto-action-note{
+            margin:0;
+            font-size:.82rem;
+            line-height:1.32;
+            color:var(--note-muted);
+          }
+
+          .hcto-plan-line{
+            padding:.75rem .85rem;
+            border-radius:.9rem;
+            background:#fff;
+            border:1px solid var(--note-line-strong);
+            margin-bottom:.6rem;
+          }
+
+          .hcto-plan-line:last-child{
+            margin-bottom:0;
+          }
+
+          .hcto-formula-grid{
+            display:grid;
+            grid-template-columns:repeat(2,minmax(0,1fr));
+            gap:.75rem;
+          }
+
+          .hcto-formula-box{
+            background:#fff;
+            border:1px solid var(--note-line);
+            border-radius:1rem;
+            padding:1rem;
+            min-width:0;
+          }
+
+          .hcto-formula-title{
+            font-size:.96rem;
+            font-weight:850;
+            color:var(--note-text);
             text-align:center;
-            line-height:1.35;
+            margin-bottom:.75rem;
           }
 
-          .fraction .top{
-            display:block;
-            padding:0 8px 6px 8px;
-            border-bottom:2px solid #212529;
-            font-weight:500;
-            word-break:break-word;
+          .hcto-fraction{
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            text-align:center;
+            color:var(--note-text);
+            font-size:.92rem;
+            line-height:1.3;
+            min-width:0;
           }
 
-          .fraction .bottom{
-            display:block;
-            padding-top:6px;
-            font-weight:500;
+          .hcto-fraction-top,
+          .hcto-fraction-bottom{
+            width:100%;
+            overflow-wrap:anywhere;
+          }
+
+          .hcto-fraction-top{
+            border-bottom:2px solid #98a2b3;
+            padding:0 .25rem .4rem .25rem;
+            font-weight:800;
+          }
+
+          .hcto-fraction-bottom{
+            padding:.4rem .25rem 0 .25rem;
+            font-weight:800;
           }
 
           @media (max-width:768px){
-            .calc-grid{grid-template-columns:1fr;}
+            .hcto-choice-grid,
+            .hcto-choice-grid.hcto-grid-2{
+              grid-template-columns:repeat(2,minmax(0,1fr));
+            }
+
+            .hcto-formula-grid{
+              grid-template-columns:1fr;
+            }
           }
 
-          @media (max-width:576px){
-            .info-box-header{flex-direction:row;}
-            .info-toggle-btn{margin-left:auto;}
-            .result-num{font-size:1.8rem;}
-            .teaching-main{font-size:1.35rem;}
-            .fraction{font-size:1rem !important;}
-          }
-
-           .form-select{
-            border-radius:.75rem;
+          @media (max-width:420px){
+            .hcto-choice-grid,
+            .hcto-choice-grid.hcto-grid-2{
+              grid-template-columns:1fr;
+            }
           }
         </style>
 
-        <div class="topbar">
-          <div class="d-flex justify-content-between align-items-start gap-3">
-            <div>
-              <div class="small opacity-75 mb-1">APP clínica • cálculo interactivo</div>
-              <h1 class="h3 mb-2">Transfusión de CE en alícuotas</h1>
-              <div class="subtle text-white-50">Estimación del volumen requerido y del ascenso esperado del hematocrito en pediatría.</div>
-            </div>
-            <span class="pill bg-light text-dark">Pediatría</span>
-          </div>
+        <div class="note-hero mb-3">
+          <div class="note-hero-kicker">APP CLÍNICA · HEMOTERAPIA · PEDIATRÍA</div>
+          <h2>Transfusión de CE en alícuotas</h2>
+          <div class="note-hero-subtitle">Estima volumen requerido y ascenso esperado del hematocrito, priorizando reevaluación clínica y seguridad transfusional.</div>
         </div>
 
-        <div class="info-box">
+        <div class="info-box mb-3">
           <div class="info-box-header">
             <div class="info-box-title">Información</div>
-            <button type="button" onclick="toggleInfo()" class="btn btn-sm info-toggle-btn">
-              Mostrar / ocultar
-            </button>
+            <button type="button" onclick="toggleInfo()" class="btn btn-sm info-toggle-btn">Mostrar / ocultar</button>
           </div>
           <div id="infoContent" class="info-box-content">
-            <?php echo $descripcion_info; ?>
+            <p class="mb-2"><?php echo $descripcion_info; ?></p>
             <?php if(!empty($formula)){ ?>
               <hr>
               <b>Fórmulas:</b><br>
               <?php echo $formula; ?>
             <?php } ?>
-            <?php if(!empty($referencias)){ ?>
-              <hr>
-              <b>Referencias:</b>
-              <ul class="mt-2 mb-0 small-note">
-                <?php foreach($referencias as $ref){ ?>
-                  <li><?php echo $ref; ?></li>
-                <?php } ?>
-              </ul>
-            <?php } ?>
+            <hr>
+            <b>Referencias:</b>
+            <ul class="mb-0 mt-2">
+              <?php foreach($referencias as $ref){ ?>
+                <li class="mb-2"><?php echo $ref; ?></li>
+              <?php } ?>
+            </ul>
           </div>
         </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">Datos del paciente y del hemocomponente</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Datos del paciente</div>
 
-            <div class="calc-grid">
-              <div class="card-block">
-                <label class="form-label-lite">Peso</label>
-                <div class="input-group mb-3">
-                  <input class="form-control transf-calc" type="number" step="0.1" id="peso" value="">
-                  <span class="input-group-text">kg</span>
-                </div>
-
-                <label class="form-label-lite">Hto actual</label>
-                <div class="input-group mb-3">
-                  <input class="form-control transf-calc" type="number" step="0.1" id="hto_actual" value="">
-                  <span class="input-group-text">%</span>
-                </div>
-
-                <label class="form-label-lite">Hto deseado</label>
-                <div class="input-group">
-                  <input class="form-control transf-calc" type="number" step="0.1" id="hto_deseado" value="">
-                  <span class="input-group-text">%</span>
+            <div class="note-grid mb-3">
+              <div class="note-input-group">
+                <label class="note-label">Peso</label>
+                <div class="note-input-inline">
+                  <input id="peso" type="text" inputmode="decimal" class="note-input">
+                  <div class="note-input-unit">kg</div>
                 </div>
               </div>
 
-
-<div class="card-block">
-  <label class="form-label-lite">Hto del CE</label>
-  <div class="input-group mb-3">
-    <select class="form-select transf-calc" id="hto_ce">
-      <option value="50">50 %</option>
-      <option value="55" selected>55 %</option>
-      <option value="60">60 %</option>
-    </select>
-    <span class="input-group-text">%</span>
-  </div>
-
-  <label class="form-label-lite">Volemia estimada</label>
-  <div class="input-group mb-3">
-    <select class="form-select transf-calc" id="vse_kg">
-      <option value="70" selected>Adulto promedio (70 mL/kg)</option>
-      <option value="65">Adulto mayor / menor volemia relativa (65 mL/kg)</option>
-      <option value="75">Mujer joven / adulto delgado (75 mL/kg)</option>
-      <option value="80">Niño mayor (80 mL/kg)</option>
-      <option value="85">Lactante (85 mL/kg)</option>
-      <option value="90">Recién nacido (90 mL/kg)</option>
-    </select>
-    <span class="input-group-text">mL/kg</span>
-  </div>
-
-  <label class="form-label-lite">Alícuota a transfundir</label>
-  <div class="input-group">
-    <input class="form-control transf-calc" type="number" step="0.1" id="aliquota" value="">
-    <span class="input-group-text">mL</span>
-  </div>
-</div>
-
-
-            </div>
-
-            <div class="small-note mt-3">
-              Sugerencia práctica: en la mayoría de los niños puedes comenzar con VSE 70 mL/kg; en lactantes pequeños o neonatos ese valor puede ser mayor.
-            </div>
-          </div>
-        </div>
-
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">Resultados</div>
-
-            <div class="calc-grid">
-              <div>
-                <div class="result-box mb-3">
-                  <div class="d-flex justify-content-between align-items-center gap-3">
-                    <div>
-                      <div class="small-note">Volumen sanguíneo estimado</div>
-                      <div id="vse_text" class="result-main">Ingresa los datos.</div>
-                    </div>
-                    <div id="vse_num" class="result-num">0</div>
-                  </div>
-                </div>
-
-                <div class="result-box">
-                  <div class="d-flex justify-content-between align-items-center gap-3">
-                    <div>
-                      <div class="small-note">Volumen de CE requerido</div>
-                      <div id="req_text" class="result-main">Para alcanzar el Hto objetivo.</div>
-                    </div>
-                    <div id="req_num" class="result-num">0</div>
-                  </div>
+              <div class="note-input-group">
+                <label class="note-label">Alícuota a transfundir</label>
+                <div class="note-input-inline">
+                  <input id="aliquota" type="text" inputmode="decimal" class="note-input">
+                  <div class="note-input-unit">mL</div>
                 </div>
               </div>
 
-              <div>
-                <div class="result-box mb-3">
-                  <div class="d-flex justify-content-between align-items-center gap-3">
-                    <div>
-                      <div class="small-note">Ascenso esperado de Hto</div>
-                      <div id="rise_text" class="result-main">Si transfundes la alícuota indicada.</div>
-                    </div>
-                    <div id="rise_num" class="result-num">0</div>
-                  </div>
+              <div class="note-input-group">
+                <label class="note-label">Hto actual</label>
+                <div class="note-input-inline">
+                  <input id="hto_actual" type="text" inputmode="decimal" class="note-input">
+                  <div class="note-input-unit">%</div>
                 </div>
+              </div>
 
-                <div class="result-box">
-                  <div class="small-note mb-2">Hto estimado postransfusión</div>
-                  <div id="post_hto" class="result-main">-</div>
+              <div class="note-input-group">
+                <label class="note-label">Hto deseado</label>
+                <div class="note-input-inline">
+                  <input id="hto_deseado" type="text" inputmode="decimal" class="note-input">
+                  <div class="note-input-unit">%</div>
                 </div>
               </div>
             </div>
 
-            <div id="conduct_box" class="conduct-box conduct-mid mt-3">
-              <div class="conduct-title">Interpretación</div>
-              <div id="conduct_text">
-                Completa los campos para calcular volumen requerido y ascenso esperado.
-              </div>
+            <div class="note-section-label">Volemia estimada</div>
+            <div class="hcto-choice-grid mb-3">
+              <label>
+                <input class="hcto-input hcto-trigger" type="radio" name="vseKg" value="70" checked>
+                <div class="hcto-option">
+                  <i class="fa-solid fa-person"></i>
+                  <div class="hcto-option-title">70 mL/kg</div>
+                  <div class="hcto-option-sub">adulto / referencia</div>
+                </div>
+              </label>
+              <label>
+                <input class="hcto-input hcto-trigger" type="radio" name="vseKg" value="80">
+                <div class="hcto-option">
+                  <i class="fa-solid fa-child"></i>
+                  <div class="hcto-option-title">80 mL/kg</div>
+                  <div class="hcto-option-sub">niño mayor</div>
+                </div>
+              </label>
+              <label>
+                <input class="hcto-input hcto-trigger" type="radio" name="vseKg" value="85">
+                <div class="hcto-option">
+                  <i class="fa-solid fa-baby-carriage"></i>
+                  <div class="hcto-option-title">85 mL/kg</div>
+                  <div class="hcto-option-sub">lactante</div>
+                </div>
+              </label>
+              <label>
+                <input class="hcto-input hcto-trigger" type="radio" name="vseKg" value="90">
+                <div class="hcto-option">
+                  <i class="fa-solid fa-baby"></i>
+                  <div class="hcto-option-title">90 mL/kg</div>
+                  <div class="hcto-option-sub">recién nacido</div>
+                </div>
+              </label>
+              <label>
+                <input class="hcto-input hcto-trigger" type="radio" name="vseKg" value="65">
+                <div class="hcto-option">
+                  <i class="fa-solid fa-user-minus"></i>
+                  <div class="hcto-option-title">65 mL/kg</div>
+                  <div class="hcto-option-sub">menor volemia relativa</div>
+                </div>
+              </label>
+              <label>
+                <input class="hcto-input hcto-trigger" type="radio" name="vseKg" value="75">
+                <div class="hcto-option">
+                  <i class="fa-solid fa-user-plus"></i>
+                  <div class="hcto-option-title">75 mL/kg</div>
+                  <div class="hcto-option-sub">adulto delgado</div>
+                </div>
+              </label>
             </div>
-          </div>
-        </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">Fórmula visual</div>
-
-            <div class="card-block mb-3">
-              <p class="mb-3"><strong>Volumen de CE requerido</strong></p>
-              <div class="fraction mb-3" style="font-size:1.15rem;">
-                <div class="top">[Hto deseado − Hto actual] × VSE</div>
-                <div class="bottom">Hto del CE</div>
-              </div>
-              <div class="small-note">Expresa hematocritos en porcentaje y VSE en mL.</div>
-            </div>
-
-            <div class="card-block">
-              <p class="mb-3"><strong>Ascenso esperado del Hto por la alícuota</strong></p>
-              <div class="fraction mb-3" style="font-size:1.15rem;">
-                <div class="top">Volumen transfundido × Hto del CE</div>
-                <div class="bottom">VSE</div>
-              </div>
-              <div class="small-note">Te entrega el incremento esperado en puntos de hematocrito (%).</div>
+            <div class="note-section-label">Hematocrito del concentrado eritrocitario</div>
+            <div class="hcto-choice-grid hcto-grid-2">
+              <label>
+                <input class="hcto-input hcto-trigger" type="radio" name="htoCE" value="50">
+                <div class="hcto-option">
+                  <i class="fa-solid fa-droplet"></i>
+                  <div class="hcto-option-title">50%</div>
+                  <div class="hcto-option-sub">CE menos concentrado</div>
+                </div>
+              </label>
+              <label>
+                <input class="hcto-input hcto-trigger" type="radio" name="htoCE" value="55" checked>
+                <div class="hcto-option">
+                  <i class="fa-solid fa-droplet"></i>
+                  <div class="hcto-option-title">55%</div>
+                  <div class="hcto-option-sub">concentración habitual</div>
+                </div>
+              </label>
+              <label>
+                <input class="hcto-input hcto-trigger" type="radio" name="htoCE" value="60">
+                <div class="hcto-option">
+                  <i class="fa-solid fa-droplet"></i>
+                  <div class="hcto-option-title">60%</div>
+                  <div class="hcto-option-sub">CE más concentrado</div>
+                </div>
+              </label>
             </div>
           </div>
         </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="teaching-wrap">
-              <div class="teaching-title">Docencia para residentes</div>
-              <div class="teaching-main">La fórmula sirve para orientarte, no para apagar el juicio clínico</div>
+        <div class="note-summary-box mb-3">
+          <div class="note-summary-box-title">Resumen</div>
+          <div id="summaryNarrative" class="note-summary-box-text">Ingresa peso y hematocritos para estimar volumen requerido. Ingresa alícuota para estimar ascenso.</div>
+          <div class="note-summary-grid-2">
+            <div class="note-summary-item">
+              <div class="note-summary-k">Paciente / VSE</div>
+              <div id="summaryVSE" class="note-summary-v">-</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Objetivo</div>
+              <div id="summaryTarget" class="note-summary-v">-</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">CE</div>
+              <div id="summaryCE" class="note-summary-v">Hto 55%</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Alícuota</div>
+              <div id="summaryAliquot" class="note-summary-v">-</div>
+            </div>
+          </div>
+        </div>
 
-              <div class="teaching-grid">
-                <div class="teaching-card">
-                  <div class="teaching-label">Perla 1</div>
-                  <div class="teaching-text">El VSE es una estimación</div>
-                  <div class="teaching-soft">Si el niño está hemodiluido, sangrando o muy vasoconstricto, la respuesta real puede alejarse de la calculada.</div>
+        <div class="note-result-grid-2 mb-3">
+          <div id="requiredCard" class="note-result-card">
+            <div class="note-result-card-label">Volumen de CE requerido</div>
+            <div id="reqValue" class="note-result-card-value">-</div>
+            <div id="reqNote" class="note-result-card-note">Para alcanzar Hto objetivo.</div>
+          </div>
+          <div id="riseCard" class="note-result-card">
+            <div class="note-result-card-label">Ascenso esperado del Hto</div>
+            <div id="riseValue" class="note-result-card-value">-</div>
+            <div id="riseNote" class="note-result-card-note">Según alícuota ingresada.</div>
+          </div>
+        </div>
+
+        <div class="note-result-grid-2 mb-3">
+          <div id="vseCard" class="note-result-card">
+            <div class="note-result-card-label">Volumen sanguíneo estimado</div>
+            <div id="vseValue" class="note-result-card-value">-</div>
+            <div id="vseNote" class="note-result-card-note">Peso × volemia estimada.</div>
+          </div>
+          <div id="postCard" class="note-result-card">
+            <div class="note-result-card-label">Hto estimado postransfusión</div>
+            <div id="postValue" class="note-result-card-value">-</div>
+            <div id="postNote" class="note-result-card-note">Hto actual + ascenso esperado.</div>
+          </div>
+        </div>
+
+        <div id="algoBox" class="note-interpretation mb-3">
+          <div class="note-interpretation-label">Interpretación clínica</div>
+          <div id="conductTitle" class="note-interpretation-main">Pendiente</div>
+          <div id="conductText" class="note-interpretation-soft">Completa los campos para generar una orientación. El cálculo no reemplaza reevaluación clínica ni control postransfusional.</div>
+
+          <div class="mt-3 text-start">
+            <div class="hcto-plan-line"><strong>Lectura del objetivo:</strong> <span id="targetLine">-</span></div>
+            <div class="hcto-plan-line"><strong>Lectura de la alícuota:</strong> <span id="aliquotLine">-</span></div>
+            <div class="hcto-plan-line"><strong>Limitación:</strong> <span>La respuesta real cambia con sangrado activo, hemodilución, fluidos, hemólisis, tiempos de control y laboratorio.</span></div>
+          </div>
+        </div>
+
+        <div id="validityWarning" class="note-danger note-hidden mb-3">
+          <strong>Dato a verificar:</strong>
+          <div id="validityWarningText" class="mt-2"></div>
+        </div>
+
+        <div class="note-warning mb-3">
+          <strong>Advertencia clínica:</strong>
+          <div class="mt-2">No transfundas solo por el número calculado. Integra perfusión, sangrado activo, cardiopatía, lactato, ventilación, tendencia de Hb/Hto, disponibilidad de sangre y protocolo local.</div>
+        </div>
+
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Fórmula visual</div>
+            <div class="hcto-formula-grid">
+              <div class="hcto-formula-box">
+                <div class="hcto-formula-title">Volumen de CE requerido</div>
+                <div class="hcto-fraction">
+                  <div class="hcto-fraction-top">[Hto deseado − Hto actual] × VSE</div>
+                  <div class="hcto-fraction-bottom">Hto del CE</div>
                 </div>
-
-                <div class="teaching-card">
-                  <div class="teaching-label">Perla 2</div>
-                  <div class="teaching-text">No transfundas un número aislado</div>
-                  <div class="teaching-soft">Cruza el resultado con perfusión, sangrado, lactato, contexto quirúrgico, cardiopatía, ventilación y tendencia de Hb/Hto.</div>
-                </div>
-
-                <div class="teaching-card">
-                  <div class="teaching-label">Perla 3</div>
-                  <div class="teaching-text">Las alícuotas permiten corrección gradual</div>
-                  <div class="teaching-soft">En pediatría, fraccionar en mL o mL/kg ayuda a evitar sobretransfusión, sobrecarga y correcciones excesivamente rápidas.</div>
-                </div>
-
-                <div class="teaching-card">
-                  <div class="teaching-label">Perla 4</div>
-                  <div class="teaching-text">Regla rápida útil</div>
-                  <div class="teaching-soft">Una dosis de 10–15 mL/kg de CE suele generar un ascenso moderado de Hb/Hto, pero la magnitud real depende mucho del contexto clínico.</div>
-                </div>
-
-                <div class="teaching-card">
-                  <div class="teaching-label">Perla 5</div>
-                  <div class="teaching-text">Control postransfusional inteligente</div>
-                  <div class="teaching-soft">Interpreta el valor de control según el tiempo transcurrido, balance de fluidos, persistencia del sangrado y estabilidad hemodinámica.</div>
+              </div>
+              <div class="hcto-formula-box">
+                <div class="hcto-formula-title">Ascenso esperado por alícuota</div>
+                <div class="hcto-fraction">
+                  <div class="hcto-fraction-top">Volumen transfundido × Hto del CE</div>
+                  <div class="hcto-fraction-bottom">VSE</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="footer-note">
-          Herramienta docente de apoyo. No reemplaza protocolos institucionales, banco de sangre ni el juicio clínico perioperatorio.
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Conducta práctica</div>
+            <div id="actionList" class="hcto-action-list">
+              <div class="hcto-action-item">
+                <div class="hcto-action-mark mid"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="hcto-action-copy">
+                  <div class="hcto-action-title">Completa datos para calcular</div>
+                  <p class="hcto-action-note">Peso y volemia permiten estimar VSE; hematocritos y alícuota permiten estimar volumen requerido y respuesta esperada.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="note-teaching-wrap">
+          <div class="note-teaching-title">Perlas docentes</div>
+          <div class="note-teaching-main">En pediatría, la alícuota ayuda a corregir de forma gradual</div>
+          <div class="note-tips"><strong>Qué hacer:</strong> calcula volumen, transfunde con vigilancia, reevalúa sangrado y controla Hb/Hto según contexto y timing.</div>
+          <div class="note-tips"><strong>Qué evitar:</strong> perseguir un hematocrito objetivo sin considerar perfusión, hemodilución, pérdidas activas y reserva cardiopulmonar.</div>
+          <div class="note-tips"><strong>VSE:</strong> es una estimación; recién nacidos y lactantes tienen volemia relativa mayor que adultos.</div>
+          <div class="note-tips"><strong>Alícuotas:</strong> fraccionar permite evitar sobretransfusión y facilita reevaluación entre dosis.</div>
+          <div class="note-tips"><strong>Regla rápida:</strong> 10–15 mL/kg de CE suele producir un ascenso moderado, pero el efecto real depende del contexto.</div>
+          <div class="note-tips mb-0"><strong>Mensaje final:</strong> si hay sangrado activo, la fórmula describe un escenario que ya está cambiando; reevalúa en ciclos cortos.</div>
+        </div>
+
+        <div class="note-footer mt-3">
+          Herramienta docente de apoyo. No reemplaza protocolos institucionales, banco de sangre ni juicio clínico perioperatorio.
         </div>
 
       </div>
@@ -537,97 +506,195 @@ require("head.php");
 </div>
 
 <script>
-function toggleInfo(){
-  let box = document.getElementById("infoContent");
-  box.style.display = (box.style.display === "none" || box.style.display === "") ? "block" : "none";
-}
+(function(){
+  const CNS = window.ClinicalNoteSystem || {};
 
-function calcTransfusion(){
-  const peso = parseFloat(document.getElementById('peso').value);
-  const htoActual = parseFloat(document.getElementById('hto_actual').value);
-  const htoDeseado = parseFloat(document.getElementById('hto_deseado').value);
-  const htoCE = parseFloat(document.getElementById('hto_ce').value);
-  const vseKg = parseFloat(document.getElementById('vse_kg').value);
-  const aliquota = parseFloat(document.getElementById('aliquota').value);
-
-  const vseNum = document.getElementById('vse_num');
-  const vseText = document.getElementById('vse_text');
-  const reqNum = document.getElementById('req_num');
-  const reqText = document.getElementById('req_text');
-  const riseNum = document.getElementById('rise_num');
-  const riseText = document.getElementById('rise_text');
-  const postHto = document.getElementById('post_hto');
-  const conductBox = document.getElementById('conduct_box');
-  const conductText = document.getElementById('conduct_text');
-
-  if (isNaN(peso) || isNaN(vseKg) || peso <= 0 || vseKg <= 0){
-    vseNum.textContent = '0';
-    vseText.textContent = 'Ingresa peso y VSE.';
-    reqNum.textContent = '0';
-    riseNum.textContent = '0';
-    postHto.textContent = '-';
-    conductBox.className = 'conduct-box conduct-mid mt-3';
-    conductText.textContent = 'Completa al menos peso y VSE para comenzar.';
-    return;
+  function parseLocal(value){
+    if(CNS.parseDecimal) return CNS.parseDecimal(value);
+    const n = Number(String(value || '').replace(',', '.'));
+    return Number.isFinite(n) ? n : null;
   }
 
-  const vse = peso * vseKg;
-  vseNum.textContent = vse.toFixed(0);
-  vseText.textContent = 'VSE estimado: ' + vse.toFixed(0) + ' mL';
-
-  let reqVolume = null;
-  if (!isNaN(htoActual) && !isNaN(htoDeseado) && !isNaN(htoCE) && htoCE > 0 && htoDeseado >= htoActual){
-    reqVolume = ((htoDeseado - htoActual) * vse) / htoCE;
-    reqNum.textContent = reqVolume.toFixed(0);
-    reqText.textContent = 'Volumen estimado de CE para llegar al objetivo.';
-  } else {
-    reqNum.textContent = '0';
-    reqText.textContent = 'Ingresa Hto actual, deseado y Hto del CE.';
+  function fmt(value, decimals){
+    if(!Number.isFinite(value)) return '-';
+    if(CNS.formatNumber) return CNS.formatNumber(value, decimals);
+    return Number(value).toLocaleString('es-CL', {maximumFractionDigits:decimals});
   }
 
-  let rise = null;
-  if (!isNaN(aliquota) && !isNaN(htoCE) && aliquota > 0 && htoCE > 0){
-    rise = (aliquota * htoCE) / vse;
-    riseNum.textContent = rise.toFixed(1);
-    riseText.textContent = 'Ascenso esperado del Hto: ' + rise.toFixed(1) + ' puntos';
-  } else {
-    riseNum.textContent = '0';
-    riseText.textContent = 'Ingresa una alícuota para estimar ascenso.';
+  function setText(id, value){
+    const el = document.getElementById(id);
+    if(CNS.safeSetText) CNS.safeSetText(el, value);
+    else if(el) el.textContent = value;
   }
 
-  if (!isNaN(htoActual) && rise !== null){
-    postHto.textContent = (htoActual + rise).toFixed(1) + ' %';
-  } else {
-    postHto.textContent = '-';
+  function getSelectedNumber(name){
+    const el = document.querySelector('input[name="' + name + '"]:checked');
+    return el ? parseLocal(el.value) : null;
   }
 
-  if (reqVolume !== null && rise !== null){
-    conductBox.className = 'conduct-box conduct-ok mt-3';
-    conductText.innerHTML = 'Ya tienes ambas estimaciones: <strong>volumen requerido</strong> y <strong>ascenso esperado por la alícuota</strong>. Úsalas como orientación y reevalúa según sangrado activo, hemodilución y respuesta clínica.';
-  } else if (reqVolume !== null || rise !== null){
-    conductBox.className = 'conduct-box conduct-mid mt-3';
-    conductText.textContent = 'Tienes una estimación parcial. Completa los otros campos si quieres calcular también el objetivo transfusional o el ascenso esperado.';
-  } else {
-    conductBox.className = 'conduct-box conduct-mid mt-3';
-    conductText.textContent = 'Completa Hto actual, objetivo, Hto del CE y/o alícuota para obtener resultados útiles.';
+  function showWarning(text){
+    const box = document.getElementById('validityWarning');
+    box.classList.remove('note-hidden');
+    setText('validityWarningText', text);
   }
 
-  if (!isNaN(htoDeseado) && !isNaN(htoActual) && htoDeseado < htoActual){
-    conductBox.className = 'conduct-box conduct-no mt-3';
-    conductText.textContent = 'El Hto deseado es menor que el actual. Revisa los datos ingresados.';
+  function hideWarning(){
+    const box = document.getElementById('validityWarning');
+    box.classList.add('note-hidden');
+    setText('validityWarningText', '');
   }
-}
 
-document.addEventListener('DOMContentLoaded', function(){
-  document.querySelectorAll('.transf-calc').forEach(el => {
-    el.addEventListener('input', calcTransfusion);
-    el.addEventListener('change', calcTransfusion);
+  function renderActions(state, reqVolume, rise, aliquota, peso){
+    let items = [];
+
+    if(state === 'pending'){
+      items = [
+        ['mid','Completa datos para calcular','Peso y volemia permiten estimar VSE; hematocritos y alícuota permiten estimar volumen requerido y respuesta esperada.']
+      ];
+    } else {
+      if(Number.isFinite(reqVolume)){
+        items.push(['ok','Volumen objetivo calculado','Usa el volumen requerido como orientación y considera transfundir en alícuotas si el contexto lo permite.']);
+      }
+      if(Number.isFinite(rise)){
+        items.push(['ok','Ascenso esperado disponible','La alícuota ingresada permite estimar el Hto postransfusional, pero debe confirmarse con control clínico/laboratorio.']);
+      }
+      if(Number.isFinite(aliquota) && Number.isFinite(peso)){
+        const mlkg = aliquota / peso;
+        if(mlkg > 20){
+          items.unshift(['high','Alícuota alta en mL/kg','La alícuota equivale a ' + fmt(mlkg,1) + ' mL/kg. Revisa indicación, velocidad y riesgo de sobrecarga.']);
+        } else if(mlkg >= 10){
+          items.push(['mid','Alícuota clínicamente significativa','Equivale a ' + fmt(mlkg,1) + ' mL/kg. Reevalúa antes de repetir.']);
+        }
+      }
+      items.push(['mid','Reevaluar contexto','Sangrado activo, fluidos, hemodilución y laboratorio pueden modificar mucho la respuesta real.']);
+    }
+
+    document.getElementById('actionList').innerHTML = items.map(function(item){
+      const icon = item[0] === 'ok' ? 'fa-check' : (item[0] === 'mid' ? 'fa-triangle-exclamation' : 'fa-bolt');
+      return '<div class="hcto-action-item">' +
+        '<div class="hcto-action-mark ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
+        '<div class="hcto-action-copy">' +
+          '<div class="hcto-action-title">' + item[1] + '</div>' +
+          '<p class="hcto-action-note">' + item[2] + '</p>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function updateHcto(){
+    const peso = parseLocal(document.getElementById('peso').value);
+    const aliquota = parseLocal(document.getElementById('aliquota').value);
+    const htoActual = parseLocal(document.getElementById('hto_actual').value);
+    const htoDeseado = parseLocal(document.getElementById('hto_deseado').value);
+    const htoCE = getSelectedNumber('htoCE') || 55;
+    const vseKg = getSelectedNumber('vseKg') || 70;
+
+    const hasPeso = peso !== null && peso > 0;
+    const vse = hasPeso ? peso * vseKg : null;
+
+    setText('summaryCE', 'Hto ' + fmt(htoCE,0) + '%');
+    setText('summaryAliquot', aliquota !== null && aliquota > 0 ? fmt(aliquota,0) + ' mL' + (hasPeso ? ' · ' + fmt(aliquota / peso,1) + ' mL/kg' : '') : '-');
+    setText('summaryTarget', (htoActual !== null && htoDeseado !== null) ? fmt(htoActual,1) + '% → ' + fmt(htoDeseado,1) + '%' : '-');
+
+    if(hasPeso){
+      setText('vseValue', fmt(vse,0) + ' mL');
+      setText('vseNote', fmt(peso,2) + ' kg × ' + fmt(vseKg,0) + ' mL/kg.');
+      setText('summaryVSE', fmt(peso,2) + ' kg · VSE ' + fmt(vse,0) + ' mL');
+    } else {
+      setText('vseValue', '-');
+      setText('vseNote', 'Peso × volemia estimada.');
+      setText('summaryVSE', '-');
+    }
+
+    let warnings = [];
+    if(peso !== null && (peso < 0.5 || peso > 250)) warnings.push('El peso ingresado parece implausible para esta herramienta.');
+    if(htoActual !== null && (htoActual < 0 || htoActual > 75)) warnings.push('Hto actual fuera de rango esperable; verifica el dato.');
+    if(htoDeseado !== null && (htoDeseado < 0 || htoDeseado > 75)) warnings.push('Hto deseado fuera de rango esperable; verifica el dato.');
+    if(htoActual !== null && htoDeseado !== null && htoDeseado < htoActual) warnings.push('El Hto deseado es menor que el actual; esta calculadora está pensada para metas ascendentes.');
+    if(warnings.length) showWarning(warnings.join(' ')); else hideWarning();
+
+    let reqVolume = null;
+    if(hasPeso && htoActual !== null && htoDeseado !== null && htoCE > 0 && htoDeseado >= htoActual){
+      reqVolume = ((htoDeseado - htoActual) * vse) / htoCE;
+      setText('reqValue', fmt(reqVolume,0) + ' mL');
+      setText('reqNote', 'Para subir de ' + fmt(htoActual,1) + '% a ' + fmt(htoDeseado,1) + '%.');
+      document.getElementById('requiredCard').className = 'note-result-card hcto-result-mid';
+      setText('targetLine', 'Volumen requerido estimado: ' + fmt(reqVolume,0) + ' mL de CE.');
+    } else {
+      setText('reqValue', '-');
+      setText('reqNote', 'Para alcanzar Hto objetivo.');
+      document.getElementById('requiredCard').className = 'note-result-card';
+      setText('targetLine', 'Completa Hto actual, Hto deseado y peso.');
+    }
+
+    let rise = null;
+    if(hasPeso && aliquota !== null && aliquota > 0 && htoCE > 0){
+      rise = (aliquota * htoCE) / vse;
+      setText('riseValue', '+' + fmt(rise,1) + ' puntos');
+      setText('riseNote', 'Con ' + fmt(aliquota,0) + ' mL de CE Hto ' + fmt(htoCE,0) + '%.');
+      document.getElementById('riseCard').className = 'note-result-card hcto-result-low';
+      setText('aliquotLine', 'La alícuota equivale a ' + fmt(aliquota / peso,1) + ' mL/kg y subiría el Hto cerca de ' + fmt(rise,1) + ' puntos.');
+    } else {
+      setText('riseValue', '-');
+      setText('riseNote', 'Según alícuota ingresada.');
+      document.getElementById('riseCard').className = 'note-result-card';
+      setText('aliquotLine', 'Ingresa alícuota y peso para estimar ascenso.');
+    }
+
+    if(htoActual !== null && rise !== null){
+      setText('postValue', fmt(htoActual + rise,1) + '%');
+      setText('postNote', 'Estimación matemática; confirmar según timing y contexto.');
+      document.getElementById('postCard').className = 'note-result-card hcto-result-low';
+    } else {
+      setText('postValue', '-');
+      setText('postNote', 'Hto actual + ascenso esperado.');
+      document.getElementById('postCard').className = 'note-result-card';
+    }
+
+    if(!hasPeso){
+      setText('summaryNarrative', 'Ingresa peso y hematocritos para estimar volumen requerido. Ingresa alícuota para estimar ascenso.');
+      setText('conductTitle', 'Pendiente');
+      setText('conductText', 'Completa peso para estimar VSE y realizar cálculos útiles.');
+      renderActions('pending', reqVolume, rise, aliquota, peso);
+      return;
+    }
+
+    let narrativeParts = ['VSE ' + fmt(vse,0) + ' mL'];
+    if(reqVolume !== null) narrativeParts.push('requerimiento ' + fmt(reqVolume,0) + ' mL');
+    if(rise !== null) narrativeParts.push('ascenso esperado +' + fmt(rise,1) + ' puntos');
+    setText('summaryNarrative', narrativeParts.join(' · ') + '. Reevalúa según sangrado activo y control postransfusional.');
+
+    if(reqVolume !== null && rise !== null){
+      setText('conductTitle', 'Cálculo completo disponible');
+      setText('conductText', 'Dispones de volumen requerido y ascenso esperado por alícuota. Úsalos como orientación y reevalúa en ciclos clínicos.');
+      document.getElementById('algoBox').className = 'note-interpretation mb-3';
+      renderActions('complete', reqVolume, rise, aliquota, peso);
+    } else if(reqVolume !== null || rise !== null){
+      setText('conductTitle', 'Estimación parcial disponible');
+      setText('conductText', 'El cálculo ya entrega una orientación útil, pero faltan datos para una lectura completa de objetivo y respuesta esperada.');
+      renderActions('partial', reqVolume, rise, aliquota, peso);
+    } else {
+      setText('conductTitle', 'Faltan datos relevantes');
+      setText('conductText', 'Completa hematocritos y/o alícuota para obtener resultados clínicamente útiles.');
+      renderActions('pending', reqVolume, rise, aliquota, peso);
+    }
+  }
+
+  document.querySelectorAll('#peso, #aliquota, #hto_actual, #hto_deseado').forEach(function(el){
+    el.addEventListener('input', updateHcto);
   });
 
-  calcTransfusion();
-});
+  document.querySelectorAll('.hcto-trigger').forEach(function(el){
+    el.addEventListener('change', updateHcto);
+  });
+
+  updateHcto();
+})();
+
+function toggleInfo(){
+  const box = document.getElementById("infoContent");
+  box.style.display = (box.style.display === "none" || box.style.display === "") ? "block" : "none";
+}
 </script>
 
-<?php
-require("footer.php");
-?>
+<?php require("footer.php"); ?>

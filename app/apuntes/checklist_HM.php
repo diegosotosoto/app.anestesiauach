@@ -1,573 +1,656 @@
 <?php
-$titulo_info = "Utilidad Clínica";//texto obligatorio
-$descripcion_info = "Anticoagulantes / Antiagregantes 
-              ";//texto obligatorio
+$titulo_info = "Utilidad clínica";
+$descripcion_info = "Checklist interactivo para sospecha y manejo inicial de Hipertermia Maligna en Pabellón";
 
-$formula = "";//texto opcional en formato html
-$referencias = array("Kopp, S. L., Vandermeulen, E., McBane, R. D., Perlas, A., Leffert, L., & Horlocker, T. (2025). Regional anesthesia in the patient receiving antithrombotic or thrombolytic therapy: American Society of Regional Anesthesia and Pain Medicine Evidence-Based Guidelines (fifth edition). Regional Anesthesia and Pain Medicine. https://doi.org/10.1136/rapm-2024-105766"); //array opcional ordenada por números
+$referencias = array(
+  "Larach MG, Brandom BW, Allen GC, et al. Malignant hyperthermia deaths related to inadequate temperature monitoring, 1990–2010: a review of reports to the North American Malignant Hyperthermia Registry. Anesth Analg. 2014.",
+  "Rosenberg H, Pollock N, Schiemann A, Bulger T, Stowell K. Malignant Hyperthermia: a review. Orphanet J Rare Dis. 2015;10:93.",
+  "MHAUS. Malignant Hyperthermia Association of the United States. Emergency Therapy for MH. Consultado para estructura operativa del checklist."
+);
 
-$icono_apunte = "<i class='fa-solid fa-pills pe-3 pt-2'></i>";//formato obligatorio fontawesome pe-3 pt-2
-$titulo_apunte = "Anticoagulantes / Antiagregantes";//texto obligatorio
-  ?>
+$titulo_pagina = "Checklist HM";
+$navbar_titulo = "Apuntes";
+
+$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$titulo_navbar = "<span class='text-white'>Apuntes</span>";
+$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' style='width:50px; height:40px; --bs-border-opacity: .1;' type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation'> ? </button>";
 
 
+require("head.php");
+?>
 
-<?php
+<link rel="stylesheet" href="css/clinical-note-system.css?v=1">
+<script src="js/clinical-note-system.js?v=1"></script>
 
-  // Ve si está activa la cookie o redirige al login
-  // if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
-  //  header('Location: ../login.php');
-  // }
-
-  //Conexión
-  require("../conectar.php");
-  $conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
-  $conexion->set_charset("utf8");
-
-  //Variables
-    $boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
-    $titulo_navbar="<span class='text-white'>Apuntes</span>";
-    $boton_navbar="<button class='navbar-toggler text-white shadow-sm' style='width:50px; height:40px; --bs-border-opacity: .1;' type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation'> ? </button>";
-
-  //Carga Head de la página
-  require("head.php");
- 
-
-  ?>
-
-  <style>
-    :root{
-      --brand:#7b1e2b;
-      --brand2:#b73445;
-      --soft-red:#fbeaec;
-      --soft-red-border:#efc7cd;
-      --teal:#4f9c9b;
-      --soft-green:#edf8f7;
-      --soft-green-border:#cfe8e6;
-      --warn:#fff6df;
-      --warn-border:#ecd798;
-      --bg:#f4f7fb;
-    }
-    body{background:var(--bg);}
-    
-.topbar{
-  background:linear-gradient(135deg,var(--brand),#3559b7);
+<style>
+.hm-shell{max-width:980px;margin:0 auto;}
+.hm-warning-card{
+  background:#fff8e8;
+  border:1px solid #e6cb7a;
+  border-radius:1.15rem;
+  padding:1rem 1.1rem;
+}
+.hm-warning-title{
+  font-size:.9rem;
+  font-weight:800;
+  text-align:center;
+  color:#1f2a37;
+  margin-bottom:.45rem;
+}
+.hm-section-icon{
+  color:#64748b;
+  font-size:1.1rem;
+}
+.hm-section-chevron{
+  color:#64748b;
+  font-size:1.2rem;
+  transition:transform .18s ease;
+}
+.note-checklist-section.is-collapsed .hm-section-chevron{
+  transform:rotate(-90deg);
+}
+.last-check-item{
+  display:flex;
+  align-items:flex-start;
+  gap:.8rem;
+  border:1px solid #cfe8d9;
+  border-radius:1rem;
+  background:#fff;
+  padding:.9rem 1rem;
+  cursor:pointer;
+  transition:.16s ease;
+}
+.last-check-item:hover{
+  border-color:#b9d9c8;
+  box-shadow:0 4px 12px rgba(15,23,42,.04);
+}
+.last-check-input{
+  position:absolute;
+  opacity:0;
+  pointer-events:none;
+  width:1px;
+  height:1px;
+}
+.last-check-mark{
+  flex:0 0 auto;
+  width:34px;
+  height:34px;
+  border-radius:999px;
+  border:2px solid #b8c2d0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#fff;
   color:#fff;
-  border-radius:1.5rem;
-  margin-bottom:1rem;
-} 
-    .section-card{border:0;border-radius:1rem;box-shadow:0 8px 24px rgba(0,0,0,.06);}
-    .section-title{font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:#6c757d;}
-    .decision{background:var(--soft-red);border:1px solid var(--soft-red-border);border-radius:1rem;}
-    .good-box{background:var(--soft-green);border:1px solid var(--soft-green-border);border-radius:1rem;}
-    .warning-box{background:var(--warn);border:1px solid var(--warn-border);border-radius:1rem;}
-    .check-item{padding:.75rem .9rem;border-radius:.9rem;background:#f8f9fa;border:1px solid #eceff3;display:block;}
-    .check-item.done{background:#edf8f7;border-color:#c6e4e2;}
-    .subtle{font-size:.92rem;color:#5f6b76;}
-    .sticky-tools{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-bottom:1px solid #e9ecef;}
-    .pill{display:inline-block;padding:.2rem .55rem;border-radius:999px;font-size:.78rem;background:#eef3ff;color:#3559b7;font-weight:600}
-    .small-table td,.small-table th{padding:.45rem .5rem;font-size:.86rem;vertical-align:middle;}
-    .drug-badge{display:inline-block;padding:.3rem .55rem;border-radius:999px;font-size:.8rem;border:1px solid #d7dde6;background:#fff;margin:.15rem;}
-    .footer-note{font-size:.8rem;color:#6c757d;}
-    .mono{font-variant-numeric:tabular-nums;}
-    @media (max-width:576px){
-      .small-table td,.small-table th{padding:.35rem .4rem;font-size:.78rem;}
-      .btn{--bs-btn-padding-y:.45rem}
-      .check-item{padding:.65rem .75rem;}
-    }
-  </style>
-
+  margin-top:.08rem;
+  transition:.16s ease;
+}
+.last-check-mark i{font-size:.95rem;}
+.last-check-copy{
+  min-width:0;
+  flex:1;
+}
+.last-check-title{
+  font-size:1rem;
+  font-weight:800;
+  line-height:1.22;
+  color:var(--note-text);
+  margin-bottom:.15rem;
+  text-align:center;
+}
+.last-check-note{
+  margin:0;
+  font-size:.9rem;
+  line-height:1.4;
+  color:var(--note-muted);
+  text-align:center;
+}
+.last-check-item.is-done{
+  background:#edf8f1;
+  border-color:#b7ddc3;
+}
+.last-check-item.is-done .last-check-mark{
+  background:#2ea663;
+  border-color:#2ea663;
+}
+.hm-dantrolene-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:.75rem;
+}
+.hm-dantrolene-card{
+  background:linear-gradient(180deg,var(--note-brand-soft) 0%, #f7faff 100%);
+  border:1px solid var(--note-brand-soft-border);
+  border-radius:1rem;
+  padding:1rem;
+}
+.hm-dantrolene-card .k{
+  font-size:.8rem;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  color:#3559b7;
+  font-weight:700;
+  margin-bottom:.25rem;
+  text-align:center;
+}
+.hm-dantrolene-card .v{
+  font-size:1.25rem;
+  font-weight:800;
+  color:var(--note-text);
+  line-height:1.15;
+  text-align:center;
+}
+.hm-dantrolene-card .n{
+  margin-top:.25rem;
+  font-size:.9rem;
+  line-height:1.35;
+  color:var(--note-muted);
+  text-align:center;
+}
+.hm-inline-inputs{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:.75rem;
+}
+.hm-record-label{
+  font-size:.82rem;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  color:var(--note-muted);
+  font-weight:700;
+  margin-bottom:.35rem;
+}
+@media (max-width: 768px){
+  .hm-dantrolene-grid,
+  .hm-inline-inputs{
+    grid-template-columns:1fr;
+  }
+}
+</style>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
     <div class="container-fluid px-0 px-md-2">
-      <div class="hk-shell">
+      <div class="last-shell px-1 px-md-0 py-0  ">
 
+  <div class="note-hero note-hero-emergency mb-3">
+    <div class="note-hero-kicker">APP CLÍNICA · CHECKLIST DE URGENCIA</div>
+    <h2>Hipertermia maligna</h2>
+    <div class="note-hero-subtitle">
+      Checklist interactivo para sospecha diagnóstica, tratamiento agudo, cálculo rápido de dantrolene, fase post-aguda y registro resumido de la crisis.
+    </div>
+  </div>
 
+  <div class="note-checklist-progress-block px-3 py-2 mb-3">
+    <div class="note-checklist-progress-head">
+      <div class="note-checklist-progress-title">Progreso del checklist</div>
+      <div id="progressText" class="note-checklist-progress-badge">0%</div>
+    </div>
 
-  <div class="topbar p-3 p-md-4">
-    <div class="d-flex justify-content-between align-items-start gap-3">
+    <div class="note-checklist-progress-track">
+      <div id="progressBar" class="note-checklist-progress-bar"></div>
+    </div>
+
+    <div class="note-checklist-toolbar">
+      <button type="button" id="expandAllBtn" class="btn note-checklist-btn">Expandir todo</button>
+      <button type="button" id="collapseAllBtn" class="btn note-checklist-btn">Colapsar todo</button>
+      <button type="button" id="resetBtn" class="btn note-checklist-btn note-checklist-btn-danger">Reiniciar</button>
+    </div>
+  </div>
+
+  <div class="hm-warning-card mb-3">
+    <div class="hm-warning-title">Advertencia visible</div>
+    <p class="mb-0 text-center">
+      Ante sospecha real de hipertermia maligna, la prioridad es suspender gatillantes, hiperventilar con O<sub>2</sub> al 100%, pedir ayuda y administrar dantrolene precozmente. Este checklist ordena la respuesta, pero no reemplaza juicio clínico ni protocolos institucionales.
+    </p>
+  </div>
+
+  <div class="info-box mb-3">
+    <div class="info-box-header">
+      <div class="info-box-title">Información</div>
+      <button type="button" onclick="toggleInfo()" class="btn btn-sm info-toggle-btn">Mostrar / ocultar</button>
+    </div>
+    <div id="infoContent" class="info-box-content">
+      <p class="mb-2">
+        Utiliza este checklist para reconocer una crisis compatible con hipertermia maligna, priorizar medidas inmediatas, calcular una dosis inicial de dantrolene y ordenar el registro del evento.
+      </p>
+      <hr>
+      <div class="small-note mb-2"><strong>Punto crítico:</strong> ETCO<sub>2</sub> en ascenso con ventilación adecuada, rigidez, hipertermia tardía, acidosis, hiperkalemia y rabdomiólisis deben hacer actuar precozmente.</div>
+      <hr>
+      <strong>Referencias:</strong>
+      <ul class="mb-0">
+        <?php foreach($referencias as $ref){ ?>
+          <li><?php echo $ref; ?></li>
+        <?php } ?>
+      </ul>
+    </div>
+  </div>
+
+  <div class="note-checklist-section">
+    <div class="note-checklist-section-head">
       <div>
-        <div class="small opacity-75 mb-1">APP clínica • checklist interactivo</div>
-        <h1 class="h3 mb-2">Hipertermia Maligna</h1>
-        <div class="subtle text-white-50">Checklist interactivo basado en la guía clínica de la Sociedad de Anestesiología de Chile.</div>
+        <div class="note-checklist-section-title">1. Sospecha diagnóstica inmediata</div>
+        <div class="note-checklist-section-help">Signos clínicos de alarma que deben disparar la respuesta.</div>
       </div>
-      <span class="pill bg-light text-dark">SACHILE</span>
+      <div class="hm-section-chevron"><i class="fa-solid fa-chevron-down"></i></div>
+    </div>
+
+    <div class="note-checklist-section-body">
+      <div class="note-checklist-list">
+        <label class="last-check-item">
+          <input class="last-check-input task-check" type="checkbox">
+          <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+          <div class="last-check-copy">
+            <div class="last-check-title">Aumento real y significativo de ETCO₂</div>
+            <p class="last-check-note">Con ventilación aparentemente adecuada y sin otra explicación inmediata.</p>
+          </div>
+        </label>
+
+        <label class="last-check-item">
+          <input class="last-check-input task-check" type="checkbox">
+          <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+          <div class="last-check-copy">
+            <div class="last-check-title">Taquicardia, hipertensión o taquipnea sin causa clara</div>
+            <p class="last-check-note">Puede preceder a hipertermia franca.</p>
+          </div>
+        </label>
+
+        <label class="last-check-item">
+          <input class="last-check-input task-check" type="checkbox">
+          <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+          <div class="last-check-copy">
+            <div class="last-check-title">Rigidez muscular o espasmo del masetero</div>
+            <p class="last-check-note">Especialmente tras succinilcolina.</p>
+          </div>
+        </label>
+
+        <label class="last-check-item">
+          <input class="last-check-input task-check" type="checkbox">
+          <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+          <div class="last-check-copy">
+            <div class="last-check-title">Acidosis, hiperkalemia, mioglobinuria o hipertermia rápida</div>
+            <p class="last-check-note">No esperes a que todos los signos estén presentes.</p>
+          </div>
+        </label>
+      </div>
     </div>
   </div>
 
-  <div class="sticky-tools p-3">
-    <div class="row g-2 align-items-center">
-      <div class="col-12 col-md-6">
-        <div class="small text-muted mb-1">Progreso del checklist</div>
-        <div class="progress" style="height:10px;">
-          <div id="progressBar" class="progress-bar bg-danger" role="progressbar" style="width:0%"></div>
-        </div>
+  <div class="note-checklist-section">
+    <div class="note-checklist-section-head">
+      <div>
+        <div class="note-checklist-section-title">2. Medidas inmediatas</div>
+        <div class="note-checklist-section-help">Acciones prioritarias en los primeros minutos.</div>
       </div>
-      <div class="col-12 col-md-6 text-md-end">
-        <button id="expandAllBtn" class="btn btn-outline-secondary btn-sm">Expandir todo</button>
-        <button id="collapseAllBtn" class="btn btn-outline-secondary btn-sm">Colapsar todo</button>
-        <button id="resetBtn" class="btn btn-outline-danger btn-sm">Reiniciar</button>
+      <div class="hm-section-chevron"><i class="fa-solid fa-chevron-down"></i></div>
+    </div>
+
+    <div class="note-checklist-section-body">
+      <div class="note-checklist-list">
+        <label class="last-check-item">
+          <input class="last-check-input task-check" type="checkbox">
+          <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+          <div class="last-check-copy">
+            <div class="last-check-title">Suspender inmediatamente volátiles y succinilcolina</div>
+            <p class="last-check-note">Eliminar todos los posibles gatillantes.</p>
+          </div>
+        </label>
+
+        <label class="last-check-item">
+          <input class="last-check-input task-check" type="checkbox">
+          <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+          <div class="last-check-copy">
+            <div class="last-check-title">Hiperventilar con O₂ al 100%</div>
+            <p class="last-check-note">Con flujos altos y control agresivo de hipercapnia.</p>
+          </div>
+        </label>
+
+        <label class="last-check-item">
+          <input class="last-check-input task-check" type="checkbox">
+          <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+          <div class="last-check-copy">
+            <div class="last-check-title">Pedir ayuda y activar protocolo institucional</div>
+            <p class="last-check-note">Asignar roles y preparar carro/kit de MH.</p>
+          </div>
+        </label>
+
+        <label class="last-check-item">
+          <input class="last-check-input task-check" type="checkbox">
+          <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+          <div class="last-check-copy">
+            <div class="last-check-title">Iniciar enfriamiento si hay hipertermia relevante</div>
+            <p class="last-check-note">Medidas físicas y fluidos fríos cuando corresponda.</p>
+          </div>
+        </label>
       </div>
     </div>
   </div>
 
-  <div class="p-3 p-md-4">
-    <div class="accordion" id="hmAccordion">
-
-      <div class="accordion-item section-card mb-3">
-        <h2 class="accordion-header">
-          <button class="accordion-button js-accordion-toggle" type="button" data-bs-target="#hm0" aria-expanded="true">
-            1. Sospecha diagnóstica inmediata
-          </button>
-        </h2>
-        <div id="hm0" class="accordion-collapse collapse show">
-          <div class="accordion-body">
-            <div class="section-title mb-2">Estar atento a los signos clínicos</div>
-            <div class="d-grid gap-2">
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Aumento real y significativo de ETCO₂ con ventilación adecuada.</label>
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Taquicardia / hipertensión / taquipnea sin otra causa clara.</label>
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Rigidez muscular o espasmo del masetero tras succinilcolina.</label>
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Aumento rápido de la temperatura corporal (signo tardío).</label>
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Acidosis, hiperkalemia, mioglobinuria, arritmias o coagulopatía.</label>
-            </div>
-
-            <div class="table-responsive mt-3">
-              <table class="table table-bordered small-table align-middle">
-                <thead class="table-light">
-                  <tr>
-                    <th>Criterio</th>
-                    <th>Dato guía</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td>Acidosis respiratoria</td><td>ETCO₂ >55 mmHg o PaCO₂ >60 mmHg con ventilación adecuada.</td></tr>
-                  <tr><td>Acidosis metabólica</td><td>Déficit de base &lt; -8 mEq/L o pH &lt;7.25.</td></tr>
-                  <tr><td>Destrucción muscular</td><td>CK &gt;10.000 U/L, coluria, mioglobinuria o K &gt;6 mEq/L.</td></tr>
-                  <tr><td>Temperatura</td><td>Elevación rápida, T° &gt;38,8 °C.</td></tr>
-                </tbody>
-              </table>
-            </div>
-
-          </div>
-        </div>
+  <div class="note-checklist-section">
+    <div class="note-checklist-section-head">
+      <div>
+        <div class="note-checklist-section-title">3. Dantrolene</div>
+        <div class="note-checklist-section-help">Cálculo rápido para dosis inicial y carga acumulada.</div>
       </div>
-
-      <div class="accordion-item section-card mb-3">
-        <h2 class="accordion-header">
-          <button class="accordion-button collapsed js-accordion-toggle" type="button" data-bs-target="#hm1">
-            2. Tratamiento agudo inmediato
-          </button>
-        </h2>
-        <div id="hm1" class="accordion-collapse collapse">
-          <div class="accordion-body">
-            <div class="decision p-3 mb-3">
-              <div class="fw-semibold mb-1">Prioridad</div>
-              <div class="subtle">Actuar precozmente, pedir ayuda y administrar dantrolene lo antes posible.</div>
-            </div>
-
-            <div class="d-grid gap-2">
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Pedir ayuda y solicitar dantrolene en pabellón.</label>
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Suspender halogenados y succinilcolina.</label>
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Hiperventilar con O₂ al 100% con flujos altos (≥10 L/min).</label>
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Avisar al cirujano y finalizar el procedimiento lo antes posible.</label>
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Destinar personal a preparar dantrolene.</label>
-            </div>
-
-            <div class="warning-box p-3 mt-3">
-              <div class="fw-semibold mb-2">Preparación del dantrolene</div>
-              <ul class="mb-0">
-                <li>Cada frasco contiene <strong>20 mg</strong> de dantrolene y 3 g de manitol.</li>
-                <li>Disolver cada frasco en <strong>60 mL</strong> de agua bidestilada estéril.</li>
-                <li>Mezclar/batir vigorosamente.</li>
-                <li>Usar jeringa de 60 mL con aguja gruesa 19G.</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="accordion-item section-card mb-3">
-        <h2 class="accordion-header">
-          <button class="accordion-button collapsed js-accordion-toggle" type="button" data-bs-target="#hm2">
-            3. Calculadora de dantrolene
-          </button>
-        </h2>
-        <div id="hm2" class="accordion-collapse collapse">
-          <div class="accordion-body">
-            <div class="row g-3 align-items-end mb-3">
-              <div class="col-12 col-md-4">
-                <label class="form-label fw-semibold">Peso del paciente (kg)</label>
-                <input id="weightInput" type="number" min="1" step="0.1" class="form-control" placeholder="Ej: 70">
-              </div>
-              <div class="col-12 col-md-4">
-                <button id="calcDoseBtn" class="btn btn-danger w-100">Calcular</button>
-              </div>
-              <div class="col-12 col-md-4">
-                <button id="fillDemoBtn" class="btn btn-outline-secondary w-100">Ejemplo 70 kg</button>
-              </div>
-            </div>
-
-            <div id="doseResult" class="d-none">
-              <div class="table-responsive">
-                <table class="table table-bordered small-table align-middle">
-                  <thead class="table-light">
-                    <tr>
-                      <th>Peso</th>
-                      <th>Bolo inicial</th>
-                      <th>Frascos aprox.</th>
-                      <th>Volumen reconstituido</th>
-                      <th>Dosis objetivo 10 mg/kg</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td id="outWeight" class="mono"></td>
-                      <td id="outBolus" class="mono"></td>
-                      <td id="outVials" class="mono"></td>
-                      <td id="outVolume" class="mono"></td>
-                      <td id="outTarget" class="mono"></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <div class="good-box p-3 mt-2">
-                <div class="fw-semibold mb-1">Regla de repetición</div>
-                <div class="subtle">Si persisten taquicardia, rigidez, aumento del ETCO₂ o temperatura, repetir <strong>2,5 mg/kg</strong> cada <strong>5–10 min</strong>. La guía señala que puede requerirse una dosis total &gt;10 mg/kg (hasta 30 mg/kg), aunque recomienda no superar <strong>400 mg/día</strong>.</div>
-              </div>
-            </div>
-
-            <div class="d-grid gap-2 mt-3">
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Calculé bolo inicial 2,5 mg/kg.</label>
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Estimé cantidad de frascos y agua requerida.</label>
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Tengo plan para repetir cada 5–10 min si persisten signos.</label>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="accordion-item section-card mb-3">
-        <h2 class="accordion-header">
-          <button class="accordion-button collapsed js-accordion-toggle" type="button" data-bs-target="#hm3">
-            4. Corrección de acidosis, hipertermia e hiperkalemia
-          </button>
-        </h2>
-        <div id="hm3" class="accordion-collapse collapse">
-          <div class="accordion-body">
-            <div class="row g-3">
-              <div class="col-12 col-md-6">
-                <div class="warning-box p-3 h-100">
-                  <div class="fw-semibold mb-2">Acidosis / hipertermia</div>
-                  <ul class="mb-0">
-                    <li>Bicarbonato guiado por gases; si no hay gases: 1–2 mEq/kg IV.</li>
-                    <li>Lavado de cavidades con solución salina helada.</li>
-                    <li>Solución fisiológica fría IV. <strong>No usar Ringer lactato.</strong></li>
-                    <li>Hielo o sábana hipotérmica.</li>
-                    <li>Monitorizar temperatura central continuamente.</li>
-                    <li>Detener enfriamiento si T° &lt; 38 °C.</li>
-                  </ul>
-                </div>
-              </div>
-              <div class="col-12 col-md-6">
-                <div class="decision p-3 h-100">
-                  <div class="fw-semibold mb-2">Hiperkalemia</div>
-                  <ul class="mb-0">
-                    <li>Hiperventilación, calcio, bicarbonato, glucosa e insulina.</li>
-                    <li>Calcio: cloruro 10 mg/kg o gluconato 10–50 mg/kg EV lento.</li>
-                    <li>Bicarbonato: 1–2 mEq/kg IV.</li>
-                    <li>Adultos: 80 mL G30% + 10 U insulina IV en 30 min.</li>
-                    <li>Niños: 80 mL G30% + 5 U insulina; dosis 1,6 mL/kg IV en 30 min.</li>
-                    <li>Controlar glicemia cada 2 h o más frecuente si se requiere.</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <div class="d-grid gap-2 mt-3">
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Corregí acidosis con bicarbonato según gases o esquema empírico.</label>
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Inicié enfriamiento activo y monitorización de temperatura central.</label>
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Tratamiento de hiperkalemia iniciado si corresponde.</label>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="accordion-item section-card mb-3">
-        <h2 class="accordion-header">
-          <button class="accordion-button collapsed js-accordion-toggle" type="button" data-bs-target="#hm4">
-            5. Arritmias, monitorización y diuresis
-          </button>
-        </h2>
-        <div id="hm4" class="accordion-collapse collapse">
-          <div class="accordion-body">
-            <div class="good-box p-3 mb-3">
-              <div class="fw-semibold mb-2">Arritmias</div>
-              <div class="subtle">Suelen responder al tratamiento de la acidosis e hiperkalemia. Si persisten o comprometen la vida, usar antiarrítmicos comunes, <strong>excepto bloqueadores de canales de calcio</strong>. La guía indica usar protocolo ACLS. No asociar calcioantagonistas con dantrolene.</div>
-            </div>
-
-            <div class="d-grid gap-2 mb-3">
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Evité bloqueadores de canales de calcio.</label>
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Solicité/controlé ETCO₂, gases, temperatura central, CK, potasio, calcio, coagulación y diuresis.</label>
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Mantuve diuresis &gt;1 mL/kg/h con SF fría ± manitol/furosemida.</label>
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Instalé sonda Foley.</label>
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Consideré monitorización invasiva según cambios de volumen e inestabilidad hemodinámica.</label>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="accordion-item section-card mb-3">
-        <h2 class="accordion-header">
-          <button class="accordion-button collapsed js-accordion-toggle" type="button" data-bs-target="#hm5">
-            6. Fase post-aguda / UCI
-          </button>
-        </h2>
-        <div id="hm5" class="accordion-collapse collapse">
-          <div class="accordion-body">
-            <div class="warning-box p-3 mb-3">
-              <div class="fw-semibold mb-2">Riesgo de recaída</div>
-              <div class="subtle">La guía recomienda observación en UCI al menos 24 h. Puede haber recaída en 24–36 h y se describe hasta en 25% de los casos.</div>
-            </div>
-            <div class="d-grid gap-2">
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Ingresé/solicité UCI por al menos 24 h.</label>
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Indiqué dantrolene 1 mg/kg IV cada 4–6 h o infusión 0,25 mg/kg/h por al menos 24 h.</label>
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Consideré luego dantrolene VO 1 mg/kg cada 6 h por 24 h si es necesario.</label>
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Control continuo de temperatura central hasta estabilización.</label>
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Terapia intensiva estándar de rabdomiolisis/mioglobinuria con meta de diuresis 2 mL/kg/h.</label>
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Controlé gases, CK, K, Ca, mioglobina urinaria/sérica y coagulación cada 6 h hasta normalización.</label>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="accordion-item section-card mb-3">
-        <h2 class="accordion-header">
-          <button class="accordion-button collapsed js-accordion-toggle" type="button" data-bs-target="#hm6">
-            7. Complicaciones y consejo familiar
-          </button>
-        </h2>
-        <div id="hm6" class="accordion-collapse collapse">
-          <div class="accordion-body">
-            <div class="mb-3">
-              <span class="drug-badge">Insuficiencia renal aguda</span>
-              <span class="drug-badge">Coagulopatía de consumo</span>
-              <span class="drug-badge">Hiperkalemia</span>
-              <span class="drug-badge">Edema/necrosis muscular</span>
-              <span class="drug-badge">Secuela neurológica</span>
-              <span class="drug-badge">Hipotermia inadvertida</span>
-              <span class="drug-badge">Alteraciones de la conducción</span>
-              <span class="drug-badge">Recurrencia de HM</span>
-            </div>
-            <div class="d-grid gap-2">
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Vigilé activamente complicaciones de la crisis.</label>
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Aconsejé al paciente y familia sobre HM y precauciones futuras.</label>
-              <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Referí/consideré derivación al Comité de Hipertermia Maligna de la Sociedad Chilena de Anestesiología.</label>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="accordion-item section-card mb-3">
-        <h2 class="accordion-header">
-          <button class="accordion-button collapsed js-accordion-toggle" type="button" data-bs-target="#hm8">
-            8. Registro rápido
-          </button>
-        </h2>
-        <div id="hm8" class="accordion-collapse collapse">
-          <div class="accordion-body">
-            <div class="row g-3">
-              <div class="col-12 col-md-4">
-                <label class="form-label fw-semibold">Hora sospecha HM</label>
-                <input type="time" id="timeStart" class="form-control">
-              </div>
-              <div class="col-12 col-md-4">
-                <label class="form-label fw-semibold">Peso (kg)</label>
-                <input type="number" min="1" step="0.1" id="weightLog" class="form-control">
-              </div>
-              <div class="col-12 col-md-4">
-                <label class="form-label fw-semibold">Temperatura máxima (°C)</label>
-                <input type="number" min="30" step="0.1" id="tempMax" class="form-control">
-              </div>
-              <div class="col-12">
-                <label class="form-label fw-semibold">Notas clínicas</label>
-                <textarea id="notesBox" rows="5" class="form-control" placeholder="Ej: ETCO2, rigidez, temperatura, dosis de dantrolene, hiperkalemia, respuesta clínica..."></textarea>
-              </div>
-            </div>
-            <div class="mt-3 d-flex flex-wrap gap-2">
-              <button id="copySummaryBtn" class="btn btn-danger">Copiar resumen</button>
-              <button id="downloadTxtBtn" class="btn btn-outline-secondary">Descargar TXT</button>
-            </div>
-            <div id="copyFeedback" class="small text-success mt-2 d-none">Resumen copiado al portapapeles.</div>
-          </div>
-        </div>
-      </div>
-
+      <div class="hm-section-chevron"><i class="fa-solid fa-chevron-down"></i></div>
     </div>
 
-    <div class="footer-note mt-4">
-      Esta herramienta resume y organiza la guía clínica en formato interactivo para uso rápido. Debe usarse junto al juicio clínico y los protocolos institucionales.
+    <div class="note-checklist-section-body">
+      <div class="hm-inline-inputs mb-3">
+        <div class="note-input-group">
+          <label class="note-label" for="weightInput">Peso</label>
+          <div class="note-input-inline">
+            <input type="text" id="weightInput" class="note-input" inputmode="decimal" placeholder="Ej: 70">
+            <div class="note-input-unit">kg</div>
+          </div>
+        </div>
+
+        <div class="note-input-group">
+          <label class="note-label" for="weightLog">Peso usado en registro</label>
+          <div class="note-input-inline">
+            <input type="text" id="weightLog" class="note-input" inputmode="decimal" placeholder="Opcional">
+            <div class="note-input-unit">kg</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="note-checklist-toolbar mb-3">
+        <button type="button" id="calcDoseBtn" class="btn note-checklist-btn"><i class="fa-solid fa-calculator me-1"></i> Calcular</button>
+        <button type="button" id="fillDemoBtn" class="btn note-checklist-btn"><i class="fa-solid fa-wand-magic-sparkles me-1"></i> Ejemplo 70 kg</button>
+      </div>
+
+      <div class="hm-dantrolene-grid">
+        <div class="hm-dantrolene-card">
+          <div class="k">Peso usado</div>
+          <div id="outWeight" class="v">-</div>
+          <div class="n">Base del cálculo actual.</div>
+        </div>
+        <div class="hm-dantrolene-card">
+          <div class="k">Dosis inicial</div>
+          <div id="outInitialDose" class="v">-</div>
+          <div class="n">Orientativa: 2,5 mg/kg IV.</div>
+        </div>
+        <div class="hm-dantrolene-card">
+          <div class="k">Viales de 20 mg</div>
+          <div id="outVials20" class="v">-</div>
+          <div class="n">Redondeo práctico para preparación rápida.</div>
+        </div>
+        <div class="hm-dantrolene-card">
+          <div class="k">Carga acumulada 10 mg/kg</div>
+          <div id="outMaxDose" class="v">-</div>
+          <div class="n">Si persiste la sospecha o respuesta incompleta.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note-checklist-section">
+    <div class="note-checklist-section-head">
+      <div>
+        <div class="note-checklist-section-title">4. Tratamiento de complicaciones</div>
+        <div class="note-checklist-section-help">Reanimación paralela mientras se corrige la crisis.</div>
+      </div>
+      <div class="hm-section-chevron"><i class="fa-solid fa-chevron-down"></i></div>
     </div>
 
+    <div class="note-checklist-section-body">
+      <div class="note-checklist-list">
+        <label class="last-check-item">
+          <input class="last-check-input task-check" type="checkbox">
+          <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+          <div class="last-check-copy">
+            <div class="last-check-title">Tratar hiperkalemia y acidosis</div>
+            <p class="last-check-note">Calcio, bicarbonato, insulina/glucosa según contexto.</p>
+          </div>
+        </label>
+
+        <label class="last-check-item">
+          <input class="last-check-input task-check" type="checkbox">
+          <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+          <div class="last-check-copy">
+            <div class="last-check-title">Tratar arritmias evitando bloqueadores cálcicos</div>
+            <p class="last-check-note">No combinar dantrolene con calcioantagonistas.</p>
+          </div>
+        </label>
+
+        <label class="last-check-item">
+          <input class="last-check-input task-check" type="checkbox">
+          <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+          <div class="last-check-copy">
+            <div class="last-check-title">Mantener diuresis y vigilar rabdomiólisis</div>
+            <p class="last-check-note">Mioglobinuria, CK, función renal y potasio.</p>
+          </div>
+        </label>
+      </div>
+    </div>
   </div>
+
+  <div class="note-checklist-section">
+    <div class="note-checklist-section-head">
+      <div>
+        <div class="note-checklist-section-title">5. Registro rápido</div>
+        <div class="note-checklist-section-help">Resumen exportable del evento.</div>
+      </div>
+      <div class="hm-section-chevron"><i class="fa-solid fa-chevron-down"></i></div>
+    </div>
+
+    <div class="note-checklist-section-body">
+      <div class="hm-inline-inputs mb-3">
+        <div>
+          <div class="hm-record-label">Hora de sospecha</div>
+          <input type="time" id="timeStart" class="note-text-input">
+        </div>
+        <div>
+          <div class="hm-record-label">Notas breves</div>
+          <input type="text" id="notesBox" class="note-text-input" placeholder="Ej: ETCO2 68, rigidez, se administra dantrolene">
+        </div>
+      </div>
+
+      <div class="note-checklist-record">
+        <div class="note-card-title mb-2">Registro resumido</div>
+        <textarea id="recordOutput" class="note-checklist-record-box"></textarea>
+
+        <div class="note-checklist-toolbar mt-2">
+          <button type="button" id="copySummaryBtn" class="btn note-checklist-btn"><i class="fa-solid fa-copy me-1"></i> Copiar</button>
+          <button type="button" id="downloadTxtBtn" class="btn note-checklist-btn"><i class="fa-solid fa-file-arrow-down me-1"></i> Descargar TXT</button>
+        </div>
+        <div id="copyFeedback" class="small-note mt-2 note-hidden">Resumen copiado al portapapeles.</div>
+      </div>
+    </div>
   </div>
+
+  <div class="note-teaching-wrap mt-3">
+    <div class="note-teaching-title">Perlas docentes</div>
+    <div class="note-teaching-main">Actúa antes de tener la foto completa</div>
+
+    <div class="note-tips">
+      <strong>Qué hacer:</strong> Suspender gatillantes, ventilar con O₂ al 100%, pedir ayuda y preparar dantrolene sin esperar hipertermia franca.
+    </div>
+    <div class="note-tips">
+      <strong>Qué evitar:</strong> Retrasar tratamiento esperando confirmación completa o usar calcioantagonistas junto con dantrolene.
+    </div>
+    <div class="note-tips mb-0">
+      <strong>Error frecuente:</strong> Asociar MH sólo a temperatura elevada. El aumento de ETCO₂ y la rigidez suelen aparecer antes.
+    </div>
   </div>
+
 </div>
-</div>
-
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</div></div></div>
 <script>
-(function () {
-      const accordionButtons = Array.from(document.querySelectorAll('.js-accordion-toggle'));
-
-      accordionButtons.forEach(btn => {
-        btn.addEventListener('click', function (e) {
-          e.preventDefault();
-
-          const targetSelector = this.getAttribute('data-bs-target');
-          const targetEl = document.querySelector(targetSelector);
-          if (!targetEl) return;
-
-          const collapseInstance = bootstrap.Collapse.getOrCreateInstance(targetEl, {
-            toggle: false
-          });
-
-          if (targetEl.classList.contains('show')) {
-            collapseInstance.hide();
-          } else {
-            collapseInstance.show();
-          }
-        });
-      });
+(function(){
+  const CNS = window.ClinicalNoteSystem;
   const checks = Array.from(document.querySelectorAll('.task-check'));
   const progressBar = document.getElementById('progressBar');
-  const accordions = Array.from(document.querySelectorAll('.accordion-collapse'));
-  const expandAllBtn = document.getElementById('expandAllBtn');
-  const collapseAllBtn = document.getElementById('collapseAllBtn');
-  const resetBtn = document.getElementById('resetBtn');
+  const progressText = document.getElementById('progressText');
 
-  function updateProgress() {
+  const weightInput = document.getElementById('weightInput');
+  const weightLog = document.getElementById('weightLog');
+  const outWeight = document.getElementById('outWeight');
+  const outInitialDose = document.getElementById('outInitialDose');
+  const outVials20 = document.getElementById('outVials20');
+  const outMaxDose = document.getElementById('outMaxDose');
+
+  const recordOutput = document.getElementById('recordOutput');
+  const copyFeedback = document.getElementById('copyFeedback');
+
+  function setChecklistItemState(input){
+    const item = input.closest('.last-check-item');
+    if(item) item.classList.toggle('is-done', !!input.checked);
+  }
+
+  function updateProgress(){
     const total = checks.length;
     const done = checks.filter(c => c.checked).length;
     const percent = total ? Math.round((done / total) * 100) : 0;
     progressBar.style.width = percent + '%';
-    progressBar.textContent = percent ? percent + '%' : '';
-    checks.forEach(ch => {
-      const wrapper = ch.closest('.check-item');
-      if (wrapper) wrapper.classList.toggle('done', ch.checked);
-    });
+    progressText.textContent = percent + '%';
+    checks.forEach(setChecklistItemState);
+    updateRecordOutput();
   }
 
-  checks.forEach(c => c.addEventListener('change', updateProgress));
-  updateProgress();
-
-  expandAllBtn.addEventListener('click', () => {
-    accordions.forEach(el => bootstrap.Collapse.getOrCreateInstance(el, {toggle:false}).show());
-  });
-
-  collapseAllBtn.addEventListener('click', () => {
-    accordions.forEach(el => bootstrap.Collapse.getOrCreateInstance(el, {toggle:false}).hide());
-  });
-
-  resetBtn.addEventListener('click', () => {
-    checks.forEach(c => c.checked = false);
-    ['weightInput','weightLog','timeStart','tempMax','notesBox'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.value = '';
-    });
-    document.getElementById('doseResult').classList.add('d-none');
-    document.getElementById('copyFeedback').classList.add('d-none');
-    updateProgress();
-    window.scrollTo({top:0, behavior:'smooth'});
-  });
-
-  function renderDose(weight) {
-    if (!weight || weight <= 0) return;
-    const bolusMg = 2.5 * weight;
-    const vialsInitial = Math.ceil(bolusMg / 20);
-    const volumeInitial = vialsInitial * 60;
-    const target10 = 10 * weight;
-
-    document.getElementById('outWeight').textContent = weight.toFixed(1) + ' kg';
-    document.getElementById('outBolus').textContent = bolusMg.toFixed(1) + ' mg';
-    document.getElementById('outVials').textContent = vialsInitial + ' frascos';
-    document.getElementById('outVolume').textContent = volumeInitial + ' mL';
-    document.getElementById('outTarget').textContent = target10.toFixed(1) + ' mg';
-    document.getElementById('doseResult').classList.remove('d-none');
+  function toggleSection(section, force){
+    const shouldCollapse = typeof force === 'boolean' ? force : !section.classList.contains('is-collapsed');
+    section.classList.toggle('is-collapsed', shouldCollapse);
   }
 
-  document.getElementById('calcDoseBtn').addEventListener('click', () => {
-    const weight = parseFloat(document.getElementById('weightInput').value);
-    renderDose(weight);
+  document.querySelectorAll('.note-checklist-section-head').forEach(function(head){
+    head.addEventListener('click', function(e){
+      if(e.target.closest('button')) return;
+      const section = head.closest('.note-checklist-section');
+      if(section) toggleSection(section);
+    });
   });
 
-  document.getElementById('fillDemoBtn').addEventListener('click', () => {
-    document.getElementById('weightInput').value = 70;
+  document.getElementById('expandAllBtn').addEventListener('click', function(){
+    document.querySelectorAll('.note-checklist-section').forEach(function(section){ toggleSection(section, false); });
+  });
+
+  document.getElementById('collapseAllBtn').addEventListener('click', function(){
+    document.querySelectorAll('.note-checklist-section').forEach(function(section){ toggleSection(section, true); });
+  });
+
+  function formatWeight(weight){
+    return CNS.formatNumber(weight, 1) + ' kg';
+  }
+
+  function clearDoseOutputs(){
+    CNS.safeSetText(outWeight, '-');
+    CNS.safeSetText(outInitialDose, '-');
+    CNS.safeSetText(outVials20, '-');
+    CNS.safeSetText(outMaxDose, '-');
+  }
+
+  function renderDose(weight){
+    if(!weight || weight <= 0){
+      clearDoseOutputs();
+      updateRecordOutput();
+      return;
+    }
+
+    const initialDose = 2.5 * weight;
+    const maxDose = 10 * weight;
+    const vials20 = Math.ceil(initialDose / 20);
+
+    CNS.safeSetText(outWeight, formatWeight(weight));
+    CNS.safeSetText(outInitialDose, CNS.formatNumber(initialDose, 1) + ' mg');
+    CNS.safeSetText(outVials20, vials20 + ' vial(es)');
+    CNS.safeSetText(outMaxDose, CNS.formatNumber(maxDose, 1) + ' mg');
+    updateRecordOutput();
+  }
+
+  function getCurrentWeight(){
+    const weight = CNS.parseDecimal(weightInput.value);
+    return Number.isFinite(weight) && weight > 0 ? weight : null;
+  }
+
+  document.getElementById('calcDoseBtn').addEventListener('click', function(){
+    renderDose(getCurrentWeight());
+  });
+
+  document.getElementById('fillDemoBtn').addEventListener('click', function(){
+    weightInput.value = '70';
     renderDose(70);
   });
 
-  function buildSummary() {
-    const done = checks.filter(c => c.checked).length;
-    const total = checks.length;
-    const timeStart = document.getElementById('timeStart').value || '-';
-    const weightLog = document.getElementById('weightLog').value || '-';
-    const tempMax = document.getElementById('tempMax').value || '-';
-    const notes = document.getElementById('notesBox').value.trim() || '-';
+  weightInput.addEventListener('input', function(){
+    const weight = getCurrentWeight();
+    if(weight){
+      renderDose(weight);
+    } else {
+      clearDoseOutputs();
+      updateRecordOutput();
+    }
+  });
 
-    const checkedItems = checks
-      .filter(c => c.checked)
-      .map(c => '- ' + c.parentElement.textContent.trim())
-      .join('\n') || '- Ninguno';
+  function buildSummary(){
+    const timeStart = document.getElementById('timeStart').value || '-';
+    const weight = weightLog.value.trim() || (getCurrentWeight() ? CNS.formatNumber(getCurrentWeight(),1) : '-');
+    const notes = document.getElementById('notesBox').value.trim() || '-';
+    const doneItems = checks.filter(function(c){
+      return c.checked;
+    }).map(function(c){
+      return '- ' + c.closest('.last-check-item').querySelector('.last-check-title').textContent.trim();
+    }).join('\n') || '- Ninguna acción marcada';
 
     return [
       'CHECKLIST HIPERTERMIA MALIGNA',
       'Hora sospecha: ' + timeStart,
-      'Peso: ' + weightLog + ' kg',
-      'T° máxima: ' + tempMax + ' °C',
-      'Progreso: ' + done + '/' + total,
+      'Peso: ' + weight + (String(weight).includes('kg') || weight === '-' ? '' : ' kg'),
+      'Progreso: ' + (progressText.textContent || '0%'),
       '',
       'Acciones marcadas:',
-      checkedItems,
+      doneItems,
       '',
       'Notas:',
       notes
     ].join('\n');
   }
 
-  document.getElementById('copySummaryBtn').addEventListener('click', async () => {
-    const text = buildSummary();
-    try {
-      await navigator.clipboard.writeText(text);
-      document.getElementById('copyFeedback').classList.remove('d-none');
-    } catch (e) {
+  function updateRecordOutput(){
+    recordOutput.value = buildSummary();
+  }
+
+  checks.forEach(function(check){ check.addEventListener('change', updateProgress); });
+  document.getElementById('timeStart').addEventListener('input', updateRecordOutput);
+  weightLog.addEventListener('input', updateRecordOutput);
+  document.getElementById('notesBox').addEventListener('input', updateRecordOutput);
+
+  document.getElementById('resetBtn').addEventListener('click', function(){
+    checks.forEach(function(c){ c.checked = false; setChecklistItemState(c); });
+    weightInput.value = '';
+    weightLog.value = '';
+    document.getElementById('timeStart').value = '';
+    document.getElementById('notesBox').value = '';
+    clearDoseOutputs();
+    copyFeedback.classList.add('note-hidden');
+    updateProgress();
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+
+  document.getElementById('copySummaryBtn').addEventListener('click', async function(){
+    try{
+      await navigator.clipboard.writeText(buildSummary());
+      copyFeedback.classList.remove('note-hidden');
+    } catch(e){
       alert('No se pudo copiar automáticamente. Usa descargar TXT.');
     }
   });
 
-  document.getElementById('downloadTxtBtn').addEventListener('click', () => {
+  document.getElementById('downloadTxtBtn').addEventListener('click', function(){
     const text = buildSummary();
     const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'checklist_hipertermia_maligna_SACHILE.txt';
+    a.download = 'checklist_HM.txt';
     a.click();
     URL.revokeObjectURL(a.href);
   });
+
+  clearDoseOutputs();
+  updateProgress();
 })();
 </script>
 
-  <?php 
-    //Cierre Conexión
-    $conexion->close();
-  ?>
-
-
-  <?php
-    //Conexión
-    require("footer.php");
-
-  ?>
-
+<?php
+include("footer.php");
+?>

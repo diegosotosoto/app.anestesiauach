@@ -1,716 +1,238 @@
 <?php
-//Validador login
+$titulo_pagina = "Dilución de Fármacos";
+$navbar_titulo = "Apuntes";
+$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$titulo_navbar = "<span class='text-white'>Apuntes</span>";
+$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
 
+$titulo_info = "Utilidad clínica";
+$descripcion_info = "Referencia de diluciones y concentraciones habituales en anestesia, organizada por categorías para revisión rápida en pabellón.";
 
-//  require("valida_pag.php");   ****   PERMITE QUE LA PÁGINA SEA PÚBLICA   *****
+$referencias = array(
+  "ISO 26825:2020. Anaesthetic and respiratory equipment — User-applied labels for syringes containing drugs used during anaesthesia — Colours, design and performance.",
+  "Miller RD, Cohen NH, Eriksson LI, et al. Miller's Anesthesia. 9th ed. Elsevier.",
+  "Difficult Airway Society / recomendaciones generales de seguridad en anestesia y estandarización visual de fármacos."
+);
 
-//Variables sin conexion
-$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
-$titulo_navbar="<span class='text-white'>Apuntes</span>";
-$boton_navbar="<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()'
- style='width:50px; height:40px; --bs-border-opacity: .1;' type='button' data-bs-toggle='collapse' data-bs-target='#metaApunte' aria-controls='metaApunte' aria-expanded='false' aria-label='Toggle navigation'> <i class='fa-solid fa-circle-info'></i> </button>";
+$drugRows = array(
+  "Opioides" => array(
+    array("droga"=>"Fentanilo", "clase"=>"opioid", "etiqueta"=>"Opioide", "presentacion"=>"2 mL", "dilucion"=>"No se diluye", "final"=>"50 µg/mL"),
+    array("droga"=>"Fentanilo", "clase"=>"opioid", "etiqueta"=>"Opioide", "presentacion"=>"10 mL", "dilucion"=>"No se diluye", "final"=>"50 µg/mL"),
+    array("droga"=>"Remifentanilo", "clase"=>"opioid", "etiqueta"=>"Opioide", "presentacion"=>"Polvo 1 mg", "dilucion"=>"Llevar a 20 mL", "final"=>"50 µg/mL"),
+    array("droga"=>"Remifentanilo", "clase"=>"opioid", "etiqueta"=>"Opioide", "presentacion"=>"Polvo 2 mg", "dilucion"=>"Llevar a 40 mL", "final"=>"50 µg/mL"),
+    array("droga"=>"Remifentanilo", "clase"=>"opioid", "etiqueta"=>"Opioide", "presentacion"=>"Polvo 5 mg", "dilucion"=>"Llevar a 100 mL", "final"=>"50 µg/mL"),
+    array("droga"=>"Morfina", "clase"=>"opioid", "etiqueta"=>"Opioide", "presentacion"=>"10 mg / 1 mL", "dilucion"=>"Llevar a 10 mL", "final"=>"1 mg/mL"),
+    array("droga"=>"Metadona", "clase"=>"opioid", "etiqueta"=>"Opioide", "presentacion"=>"10 mg / 2 mL", "dilucion"=>"Llevar a 10 mL", "final"=>"1 mg/mL"),
+    array("droga"=>"Naloxona", "clase"=>"reversal-opioid", "etiqueta"=>"Antagonista opioide", "presentacion"=>"0,4 mg / mL", "dilucion"=>"Llevar a 10 mL", "final"=>"40 µg/mL")
+  ),
+  "Inductores y sedantes" => array(
+    array("droga"=>"Propofol 1%", "clase"=>"inductor", "etiqueta"=>"Inductor", "presentacion"=>"Ampolla 20 mL", "dilucion"=>"No se diluye", "final"=>"10 mg/mL"),
+    array("droga"=>"Propofol 2%", "clase"=>"inductor", "etiqueta"=>"Inductor", "presentacion"=>"Ampolla 50 mL", "dilucion"=>"No se diluye", "final"=>"20 mg/mL"),
+    array("droga"=>"Propofol 2%", "clase"=>"inductor", "etiqueta"=>"Inductor", "presentacion"=>"Ampolla 100 mL", "dilucion"=>"No se diluye", "final"=>"20 mg/mL"),
+    array("droga"=>"Etomidato", "clase"=>"inductor", "etiqueta"=>"Inductor", "presentacion"=>"20 mg / 10 mL", "dilucion"=>"No se diluye", "final"=>"2 mg/mL"),
+    array("droga"=>"Ketamina", "clase"=>"inductor", "etiqueta"=>"Inductor / adjunto", "presentacion"=>"500 mg / 10 mL", "dilucion"=>"1 cc (50 mg) a 5 mL", "final"=>"10 mg/mL"),
+    array("droga"=>"Midazolam", "clase"=>"benzo", "etiqueta"=>"Benzodiazepina", "presentacion"=>"1 mg / 1 mL", "dilucion"=>"Llevar a 5 mL", "final"=>"1 mg/mL"),
+    array("droga"=>"Midazolam", "clase"=>"benzo", "etiqueta"=>"Benzodiazepina", "presentacion"=>"15 mg / 3 mL", "dilucion"=>"Llevar a 15 mL", "final"=>"1 mg/mL"),
+    array("droga"=>"Flumazenilo", "clase"=>"reversal-benzo", "etiqueta"=>"Antagonista BZD", "presentacion"=>"0,5 mg / 5 mL", "dilucion"=>"No se diluye", "final"=>"0,1 mg/mL")
+  ),
+  "Bloqueantes neuromusculares" => array(
+    array("droga"=>"Succinilcolina", "clase"=>"neuromuscular", "etiqueta"=>"Bloqueante neuromuscular", "presentacion"=>"100 mg / 5 mL", "dilucion"=>"No se diluye", "final"=>"20 mg/mL"),
+    array("droga"=>"Atracurio", "clase"=>"neuromuscular", "etiqueta"=>"Bloqueante neuromuscular", "presentacion"=>"25 mg / 2,5 mL", "dilucion"=>"2 ampollas llevar a 10 mL", "final"=>"5 mg/mL"),
+    array("droga"=>"Rocuronio", "clase"=>"neuromuscular", "etiqueta"=>"Bloqueante neuromuscular", "presentacion"=>"50 mg / 5 mL", "dilucion"=>"Llevar a 10 mL", "final"=>"5 mg/mL"),
+    array("droga"=>"Vecuronio", "clase"=>"neuromuscular", "etiqueta"=>"Bloqueante neuromuscular", "presentacion"=>"Polvo 10 mg", "dilucion"=>"Llevar a 10 mL", "final"=>"1 mg/mL"),
+    array("droga"=>"Neostigmina", "clase"=>"reversal-neuromuscular", "etiqueta"=>"Reversor", "presentacion"=>"0,5 mg / 1 mL", "dilucion"=>"No se diluye", "final"=>"0,5 mg/mL")
+  ),
+  "Vasoactivos y otros" => array(
+    array("droga"=>"Efedrina", "clase"=>"vasoactive", "etiqueta"=>"Vasoactivo", "presentacion"=>"60 mg / 1 mL", "dilucion"=>"Llevar a 10 mL", "final"=>"6 mg/mL"),
+    array("droga"=>"Fenilefrina", "clase"=>"vasoactive", "etiqueta"=>"Vasoactivo", "presentacion"=>"10 mg / 1 mL", "dilucion"=>"Jeringa madre llevar a 20 mL. Hija: 1 mL de madre a 10 mL", "final"=>"50 µg/mL"),
+    array("droga"=>"Lidocaína", "clase"=>"local", "etiqueta"=>"Anestésico local", "presentacion"=>"2% (100 mg / 5 mL)", "dilucion"=>"No se diluye", "final"=>"20 mg/mL"),
+    array("droga"=>"Atropina", "clase"=>"atropine", "etiqueta"=>"Anticolinérgico", "presentacion"=>"1 mg / 1 mL", "dilucion"=>"Llevar a 10 mL", "final"=>"0,1 mg/mL")
+  )
+);
 
+$colorCards = array(
+  array('titulo'=>'Propofol','sub'=>'Inductores anestésicos','clase'=>'drug-inductor-propofol'),
+  array('titulo'=>'Midazolam','sub'=>'Benzodiazepinas','clase'=>'drug-benzo'),
+  array('titulo'=>'Flumazenilo','sub'=>'Antagonista BZD','clase'=>'drug-reversal-benzo'),
+  array('titulo'=>'Succinilcolina','sub'=>'Despolarizante','clase'=>'drug-neuromuscular'),
+  array('titulo'=>'Fentanilo','sub'=>'Opioides','clase'=>'drug-opioid'),
+  array('titulo'=>'Naloxona','sub'=>'Antagonista opioide','clase'=>'drug-reversal-opioid'),
+  array('titulo'=>'Atropina','sub'=>'Anticolinérgicos','clase'=>'drug-atropine'),
+  array('titulo'=>'Lidocaína','sub'=>'Anestésicos locales','clase'=>'drug-local'),
+  array('titulo'=>'Efedrina','sub'=>'Vasoactivos','clase'=>'drug-vasoactive')
+);
 
-//Carga Head de la página
-require("head.php");
+include("head.php");
 ?>
+<link rel="stylesheet" href="css/clinical-note-system.css?v=1">
+<script src="js/clinical-note-system.js?v=1"></script>
 
+<style>
+.dil-shell{max-width:1040px;}
+.dil-group-card{background:#fff;border:1px solid var(--note-line);border-radius:1rem;padding:1rem;margin-bottom:1rem;}
+.dil-group-head{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:.75rem;}
+.dil-group-title{font-size:1rem;font-weight:800;color:var(--note-text);margin:0;}
+.dil-chip{display:inline-flex;align-items:center;gap:.4rem;border-radius:999px;padding:.28rem .6rem;background:#f2f4f7;color:#475467;font-size:.78rem;font-weight:700;}
+.dil-shell .drug-benzo{background:#f29b2f;}
+.dil-shell .drug-reversal-benzo{background-color:#f29b2f;background-size:12px 12px;background-image:repeating-linear-gradient(135deg, rgba(255,255,255,.92) 0 4px, rgba(255,255,255,0) 4px 8px);}
+.dil-table-wrap{overflow-x:visible;}
+.dil-table{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed;}
+.dil-table th,.dil-table td{padding:.75rem .7rem;border-bottom:1px solid #eef2f6;vertical-align:top;text-align:left;word-break:break-word;overflow-wrap:anywhere;}
+.dil-table th{font-size:.8rem;font-weight:800;color:#475467;background:#f8fafc;}
+.dil-table tr:last-child td{border-bottom:none;}
+.dil-col-drug{width:28%;}
+.dil-col-pres{width:24%;}
+.dil-col-dil{width:23%;}
+.dil-col-final{width:25%;}
+.dil-drug-cell{border-radius:.8rem;padding:.7rem .75rem;border:1px solid rgba(31,42,55,.08);}
+.dil-drug-cell .chip-copy{display:inline-block;padding:.12rem .38rem;border-radius:.45rem;background:rgba(255,255,255,.5);}
+.dil-drug-name{font-weight:800;color:var(--note-text);line-height:1.2;margin-bottom:.1rem;}
+.dil-drug-tag{font-size:.8rem;color:#374151;line-height:1.25;}
+.dil-color-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;}
+.dil-color-card{border-radius:1rem;padding:1rem;border:1px solid var(--note-line);position:relative;overflow:hidden;}
+.dil-color-card .copy{
+  display:inline-block;
+  padding:.28rem .6rem;
+  border-radius:.7rem;
+  background:rgba(255,255,255,.68);
+  backdrop-filter:blur(1px);
+}
+.dil-color-card .title{font-weight:800;color:var(--note-text);line-height:1.2;margin-bottom:.15rem;}
+.dil-color-card .sub{font-size:.9rem;color:#374151;line-height:1.35;}
+@media (max-width:768px){
+  .dil-table th,.dil-table td{padding:.6rem .45rem;font-size:.88rem;}
+  .dil-col-drug{width:36%;}
+  .dil-col-pres{width:21%;}
+  .dil-col-dil{width:19%;}
+  .dil-col-final{width:24%;}
+  .dil-color-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+@media (max-width:360px){
+  .dil-color-grid{grid-template-columns:1fr;}
+}
+.dil-shell .drug-inductor-propofol{background:#ece243;}
+.dil-shell .drug-benzo{background:#f29b2f;}
+.dil-shell .drug-reversal-benzo{
+  background-color:#f29b2f;
+  background-size:12px 12px;
+  background-image:repeating-linear-gradient(135deg, rgba(255,255,255,.92) 0 4px, rgba(255,255,255,0) 4px 8px);
+}
+@media (max-width:360px){
+  .dil-color-grid{grid-template-columns:1fr;}
+}
+.dil-color-card:not([class*="drug-"]):not(.drug-benzo):not(.drug-reversal-benzo):not(.drug-inductor-propofol){
+  background:#fff;
+}
+</style>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
-<div class="apunte-surface">
-  <div class="container-fluid px-0 px-md-2">
-    <div class="apuntes-shell">
+  <div class="apunte-surface">
+    <div class="container-fluid px-0 px-md-2">
+      <div class="dil-shell note-shell px-1 px-md-0 py-0">
 
-
-<!-- TOPBAR -->
-<div class="topbar">  
-  <div class="small opacity-75">APP clínica • fármacos de uso habitual</div>
-  <h1 class="h3 mb-1">Dilución de Drogas</h1>
-  <div class="subtle text-white-50">Estandarización de concentraciones y codificación por color para uso seguro en pabellón.</div>
-</div>
-
-      <!-- TOGGLE INFO -->
-<div class="info-box">
-  <div class="info-box-header">
-    <div>Información</div>
-    <button onclick="toggleInfo()" class="btn btn-sm btn-secondary">Mostrar / ocultar</button>
-  </div>
-
-  <div id="infoContent" class="info-box-content">
-
-
-
-
-<p style="line-height:1.6;">
-  Esta tabla resume la <strong>estandarización de diluciones y concentraciones de drogas de uso habitual en anestesia</strong>, junto con su correspondiente <strong>código de color</strong>, utilizado para identificar rápidamente cada grupo farmacológico en el entorno clínico.
-</p>
-
-<p style="line-height:1.6;">
-  El objetivo principal es <strong>disminuir errores de medicación</strong>, especialmente en situaciones de alta carga cognitiva (inducción, emergencia, crisis intraoperatoria), donde la identificación visual rápida puede ser más eficiente que la lectura detallada de la etiqueta.
-</p>
-
-<p style="line-height:1.6;">
-  La tabla integra tres elementos fundamentales que todo residente debe dominar:
-</p>
-
-<ul style="line-height:1.6;">
-  <li><strong>Presentación</strong>: concentración original de la ampolla o vial.</li>
-  <li><strong>Dilución</strong>: procedimiento práctico que se realiza en pabellón.</li>
-  <li><strong>Concentración final</strong>: lo que realmente se administra al paciente.</li>
-</ul>
-
-<hr>
-
-<p style="line-height:1.6;">
-  El <strong>código de colores</strong> se basa en estándares internacionales ampliamente adoptados en anestesia, donde cada grupo farmacológico tiene un color específico:
-</p>
-
-<ul style="line-height:1.6;">
-  <li><strong>Amarillo</strong>: Inductores anestésicos (ej: Propofol)</li>
-  <li><strong>Azul</strong>: Opioides (ej: Fentanilo, Remifentanilo)</li>
-  <li><strong>Rojo</strong>: Relajantes musculares (ej: Rocuronio, Succinilcolina)</li>
-  <li><strong>Naranjo</strong>: Benzodiazepinas (ej: Midazolam)</li>
-  <li><strong>Verde</strong>: Anticolinérgicos (ej: Atropina)</li>
-  <li><strong>Morado / Lila</strong>: Vasopresores (ej: Efedrina)</li>
-  <li><strong>Gris</strong>: Anestésicos locales (ej: Lidocaína)</li>
-  <li><strong>Rayado</strong>: Antagonistas (ej: Naloxona, Flumazenilo, Neostigmina)</li>
-</ul>
-
-<p style="line-height:1.6;">
-  Este sistema permite que, incluso antes de leer la etiqueta, el anestesiólogo pueda <strong>anticipar el tipo de droga</strong>, reduciendo errores por confusión de jeringas.
-</p>
-
-<hr>
-
-<p style="line-height:1.6;">
-  Es importante destacar que, aunque el color ayuda a la identificación, <strong>nunca reemplaza la verificación completa</strong> de la droga, dosis y concentración antes de su administración.
-</p>
-
-<hr>
-
-<b>Referencias:</b>
-<ul class="mt-2 mb-0" style="line-height:1.6;">
-  <li>1. ISO 26825:2020. Anaesthetic and respiratory equipment — User-applied labels for syringes containing drugs used during anaesthesia.</li>
-  <li>2. American Society of Anesthesiologists (ASA). Statement on labeling of pharmaceuticals for use in anesthesiology.</li>
-  <li>3. Association of Anaesthetists of Great Britain and Ireland. Recommendations for standards of monitoring and drug labelling.</li>
-  <li>4. Merry AF, Anderson BJ. Medication errors in anaesthesia: a review. Br J Anaesth.</li>
-  <li>5. Webster CS, Merry AF. The role of labeling in safe medication administration in anesthesia. Curr Opin Anaesthesiol.</li>
-</ul>
-
-
-
-
-
-  </div>
-</div>
-
-      <div id="infoDrugs" style="display:none;">
-        <div class="alert alert-light border mb-3">
-          <strong>Objetivo:</strong> reducir errores de medicación mediante identificación visual rápida y preparación estandarizada de las drogas más usadas en anestesia.
+        <div class="note-hero">
+          <div class="note-hero-kicker">APP CLÍNICA · FÁRMACOS HABITUALES</div>
+          <h2>Dilución de fármacos</h2>
+          <div class="note-hero-subtitle">Referencia organizada por categorías para revisar presentación, dilución y concentración final de uso habitual en anestesia.</div>
         </div>
 
-        <div class="alert alert-primary mb-0">
-          <strong>Perla para R1:</strong> antes de administrar cualquier droga, confirma siempre tres cosas:
-          <br>1. presentación de la ampolla,
-          <br>2. dilución realizada,
-          <br>3. concentración final que quedó en la jeringa.
+        <div class="info-box">
+          <div class="info-box-header">
+            <div class="info-box-title">Información</div>
+            <button type="button" onclick="toggleInfo()" class="btn btn-sm info-toggle-btn">Mostrar / ocultar</button>
+          </div>
+          <div id="infoContent" class="info-box-content">
+            <p class="mb-2"><?php echo $descripcion_info; ?></p>
+            <hr>
+            <p class="mb-2">La lectura útil de esta tabla siempre sigue la misma secuencia: droga, presentación original, dilución realizada y concentración final resultante.</p>
+            <hr>
+            <strong>Referencias:</strong>
+            <ul class="mt-2 mb-0">
+              <?php foreach($referencias as $ref){ ?>
+                <li><?php echo $ref; ?></li>
+              <?php } ?>
+            </ul>
+          </div>
         </div>
+
+        <div class="note-warning mb-3">
+          <div class="note-card-title">Advertencia visible</div>
+          <p class="mb-0">El color ayuda a anticipar la clase farmacológica, pero nunca reemplaza la verificación de droga, concentración y dosis antes de administrar.</p>
+        </div>
+
+        <?php foreach($drugRows as $categoria => $rows){ ?>
+          <div class="dil-group-card">
+            <div class="dil-group-head">
+              <h3 class="dil-group-title"><?php echo $categoria; ?></h3>
+              <span class="dil-chip"><i class="fa-solid fa-table-columns"></i> Referencia rápida</span>
+            </div>
+
+            <div class="dil-table-wrap">
+              <table class="dil-table">
+                <colgroup>
+                  <col class="dil-col-drug">
+                  <col class="dil-col-pres">
+                  <col class="dil-col-dil">
+                  <col class="dil-col-final">
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>Droga / etiqueta</th>
+                    <th>Presentación</th>
+                    <th>Dilución</th>
+                    <th>Concentración</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php foreach($rows as $row){ ?>
+                    <tr>
+                      <td>
+                        <div class="dil-drug-cell drug-<?php echo $row['clase']; ?>">
+                          <div class="chip-copy">
+                            <div class="dil-drug-name"><?php echo $row['droga']; ?></div>
+                            <div class="dil-drug-tag"><?php echo $row['etiqueta']; ?></div>
+                          </div>
+                        </div>
+                      </td>
+                      <td><?php echo $row['presentacion']; ?></td>
+                      <td><?php echo $row['dilucion']; ?></td>
+                      <td><strong><?php echo $row['final']; ?></strong></td>
+                    </tr>
+                  <?php } ?>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        <?php } ?>
+
+        <div class="dil-group-card">
+          <div class="dil-group-head">
+            <h3 class="dil-group-title">Referencia visual rápida por color</h3>
+            <span class="dil-chip"><i class="fa-solid fa-eye"></i> Apoyo visual</span>
+          </div>
+          <div class="dil-color-grid">
+            <?php foreach($colorCards as $card){ ?>
+              <div class="dil-color-card <?php echo $card['clase']; ?>">
+                <div class="copy">
+                  <div class="title"><?php echo $card['titulo']; ?></div>
+                  <div class="sub"><?php echo $card['sub']; ?></div>
+                </div>
+              </div>
+            <?php } ?>
+          </div>
+        </div>
+
+        <div class="note-teaching-wrap mt-3">
+          <div class="note-teaching-title">Perlas docentes</div>
+          <div class="note-teaching-main">Leer la concentración final antes de usar la jeringa</div>
+          <div class="note-tips"><strong>Qué hacer:</strong> comprobar presentación original, dilución realizada y concentración final como una secuencia fija antes de administrar.</div>
+          <div class="note-tips"><strong>Qué evitar:</strong> confiar solo en el color o asumir que todas las preparaciones comerciales comparten la misma concentración.</div>
+          <div class="note-tips mb-0"><strong>Error frecuente:</strong> recordar la dilución pero olvidar la concentración final real en la jeringa preparada.</div>
+        </div>
+
       </div>
-
-      <!-- TABLA DOCENTE PRINCIPAL -->
-      <div class="section-box mt-4">
-        <div class="section-title-ui">Diluciones y concentraciones habituales</div>
-
-        <!-- OPIOIDES E INDUCTORES -->
-        <div class="table-block-title">Opioides</div>
-        <div class="table-responsive mb-4">
-          <table class="table table-bordered align-middle dilution-table mb-0">
-            <thead>
-              <tr>
-                <th>Droga</th>
-                <th>Etiqueta</th>
-                <th>Presentación</th>
-                <th>Dilución</th>
-                <th>Concentración final</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Fentanilo</td>
-                <td><span class="label-chip bg-blue-mini"></span></td>
-                <td>2 mL</td>
-                <td>No se diluye</td>
-                <td>50 µg/mL</td>
-              </tr>
-              <tr>
-                <td>Fentanilo</td>
-                <td><span class="label-chip bg-blue-mini"></span></td>
-                <td>10 mL</td>
-                <td>No se diluye</td>
-                <td>50 µg/mL</td>
-              </tr>
-
-              <tr>
-                <td>Remifentanilo</td>
-                <td><span class="label-chip bg-blue-mini"></span></td>
-                <td>Polvo 1 mg</td>
-                <td>Llevar a 20 mL</td>
-                <td>50 µg/mL</td>
-              </tr>
-              <tr>
-                <td>Remifentanilo</td>
-                <td><span class="label-chip bg-blue-mini"></span></td>
-                <td>Polvo 2 mg</td>
-                <td>Llevar a 40 mL</td>
-                <td>50 µg/mL</td>
-              </tr>
-              <tr>
-                <td>Remifentanilo</td>
-                <td><span class="label-chip bg-blue-mini"></span></td>
-                <td>Polvo 5 mg</td>
-                <td>Llevar a 100 mL</td>
-                <td>50 µg/mL</td>
-              </tr>
-
-              <tr>
-                <td>Morfina</td>
-                <td><span class="label-chip bg-blue-mini"></span></td>
-                <td>10 mg / 1 mL</td>
-                <td>Llevar a 10 mL</td>
-                <td>1 mg/mL</td>
-              </tr>
-              <tr>
-                <td>Metadona</td>
-                <td><span class="label-chip bg-blue-mini"></span></td>
-                <td>10 mg / 2 mL</td>
-                <td>Llevar a 10 mL</td>
-                <td>1 mg/mL</td>
-              </tr>
-              <tr>
-                <td>Naloxona</td>
-                <td><span class="label-chip striped-blue-mini"></span></td>
-                <td>0,4 mg / mL</td>
-                <td>Llevar a 10 mL</td>
-                <td>40 µg/mL</td>
-              </tr>
-           </tbody>
-          </table>
-        </div>
-
-
-        <!-- RELAJANTES Y VASOACTIVOS -->
-        <div class="table-block-title">Inductores</div>
-        <div class="table-responsive mb-4">
-          <table class="table table-bordered align-middle dilution-table mb-0">
-            <thead>
-              <tr>
-                <th>Droga</th>
-                <th>Etiqueta</th>
-                <th>Presentación</th>
-                <th>Dilución</th>
-                <th>Concentración final</th>
-              </tr>
-            </thead>
-            <tbody>
-
-              <tr>
-                <td>Propofol 1%</td>
-                <td><span class="label-chip bg-yellow-mini"></span></td>
-                <td>Ampolla 20 mL</td>
-                <td>No se diluye</td>
-                <td>10 mg/mL</td>
-              </tr>
-              <tr>
-                <td>Propofol 2%</td>
-                <td><span class="label-chip bg-yellow-mini"></span></td>
-                <td>Ampolla 50 mL</td>
-                <td>No se diluye</td>
-                <td>20 mg/mL</td>
-              </tr>
-              <tr>
-                <td>Propofol 2%</td>
-                <td><span class="label-chip bg-yellow-mini"></span></td>
-                <td>Ampolla 100 mL</td>
-                <td>No se diluye</td>
-                <td>20 mg/mL</td>
-              </tr>
-              <tr>
-                <td>Etomidato</td>
-                <td><span class="label-chip bg-yellow-mini"></span></td>
-                <td>20 mg / 10 mL</td>
-                <td>No se diluye</td>
-                <td>2 mg/mL</td>
-              </tr>
-              <tr>
-                <td>Ketamina</td>
-                <td><span class="label-chip bg-yellow-mini"></span></td>
-                <td>500 mg / 10 mL</td>
-                <td>1 cc (50 mg) a 5 mL</td>
-                <td>10 mg/mL</td>
-              </tr>
-              <tr>
-                <td>Midazolam</td>
-                <td><span class="label-chip bg-yellow-mini"></span></td>
-                <td>1 mg / 1 mL</td>
-                <td>Llevar a 5 mL</td>
-                <td>1 mg/mL</td>
-              </tr>
-              <tr>
-                <td>Midazolam</td>
-                <td><span class="label-chip bg-yellow-mini"></span></td>
-                <td>15 mg / 3 mL</td>
-                <td>Llevar a 15 mL</td>
-                <td>1 mg/mL</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- RELAJANTES Y VASOACTIVOS -->
-        <div class="table-block-title">Bloqueantes Neuromusculares</div>
-        <div class="table-responsive mb-4">
-          <table class="table table-bordered align-middle dilution-table mb-0">
-            <thead>
-              <tr>
-                <th>Droga</th>
-                <th>Etiqueta</th>
-                <th>Presentación</th>
-                <th>Dilución</th>
-                <th>Concentración final</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Succinilcolina</td>
-                <td><span class="label-chip bg-red-mini"></span></td>
-                <td>100 mg / 5 mL</td>
-                <td>No se diluye</td>
-                <td>20 mg/mL</td>
-              </tr>
-              <tr>
-                <td>Atracurio</td>
-                <td><span class="label-chip bg-red-mini"></span></td>
-                <td>25 mg / 2,5 mL</td>
-                <td>2 ampollas llevar a 10 mL</td>
-                <td>5 mg/mL</td>
-              </tr>
-              <tr>
-                <td>Rocuronio</td>
-                <td><span class="label-chip bg-red-mini"></span></td>
-                <td>50 mg / 5 mL</td>
-                <td>Llevar a 10 mL</td>
-                <td>5 mg/mL</td>
-              </tr>
-              <tr>
-                <td>Vecuronio</td>
-                <td><span class="label-chip bg-red-mini"></span></td>
-                <td>Polvo 10 mg</td>
-                <td>Llevar a 10 mL</td>
-                <td>1 mg/mL</td>
-              </tr>
-              <tr>
-                <td>Neostigmina</td>
-                <td><span class="label-chip striped-red-mini"></span></td>
-                <td>0,5 mg / 1 mL</td>
-                <td>No se diluye</td>
-                <td>0,5 mg/mL</td>
-              </tr>
-           </tbody>
-          </table>
-        </div>
-
-
-        <!-- RELAJANTES Y VASOACTIVOS -->
-        <div class="table-block-title">Vasoactivos y otros</div>
-        <div class="table-responsive">
-          <table class="table table-bordered align-middle dilution-table mb-0">
-            <thead>
-              <tr>
-                <th>Droga</th>
-                <th>Etiqueta</th>
-                <th>Presentación</th>
-                <th>Dilución</th>
-                <th>Concentración final</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Efedrina</td>
-                <td><span class="label-chip bg-purple-mini"></span></td>
-                <td>60 mg / 1 mL</td>
-                <td>Llevar a 10 mL</td>
-                <td>6 mg/mL</td>
-              </tr>
-              <tr>
-                <td>Fenilefrina</td>
-                <td><span class="label-chip bg-purple-mini"></span></td>
-                <td>10 mg / 1 mL</td>
-                <td>
-                  Jeringa madre llevar a 20 mL<br>
-                  Hija: 1 mL de madre a 10 mL
-                </td>
-                <td>50 µg/mL</td>
-              </tr>
-              <tr>
-                <td>Lidocaína</td>
-                <td><span class="label-chip bg-gray-mini"></span></td>
-                <td>2% (100 mg / 5 mL)</td>
-                <td>No se diluye</td>
-                <td>20 mg/mL</td>
-              </tr>
-              <tr>
-                <td>Atropina</td>
-                <td><span class="label-chip bg-green-mini"></span></td>
-                <td>1 mg / 1 mL</td>
-                <td>Llevar a 10 mL</td>
-                <td>0,1 mg/mL</td>
-              </tr>
-           </tbody>
-          </table>
-          
-        </div>
-
-
-
-
-
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-
-      <!-- TARJETAS DE COLOR -->
-      <div class="section-box mt-4">
-        <div class="section-title-ui">Referencia visual rápida por color</div>
-
-        <div class="drug-grid">
-          <div class="drug-card bg-yellow">
-            <div class="drug-title">Propofol</div>
-            <div class="drug-sub">Inductores anestésicos</div>
-          </div>
-
-          <div class="drug-card bg-orange">
-            <div class="drug-title">Midazolam</div>
-            <div class="drug-sub">Benzodiazepinas</div>
-          </div>
-
-          <div class="drug-card striped-orange">
-            <div class="drug-title">Flumazenilo</div>
-            <div class="drug-sub">Antagonista BZD</div>
-          </div>
-
-          <div class="drug-card bg-red">
-            <div class="drug-title">Succinilcolina</div>
-            <div class="drug-sub">Despolarizante</div>
-          </div>
-
-          <div class="drug-card bg-red">
-            <div class="drug-title">Rocuronio</div>
-            <div class="drug-sub">No despolarizante</div>
-          </div>
-
-          <div class="drug-card striped-red">
-            <div class="drug-title">Neostigmina</div>
-            <div class="drug-sub">Antagonista relajante</div>
-          </div>
-
-          <div class="drug-card bg-gray">
-            <div class="drug-title">Lidocaína</div>
-            <div class="drug-sub">Anestésicos locales</div>
-          </div>
-
-          <div class="drug-card bg-blue">
-            <div class="drug-title">Fentanilo</div>
-            <div class="drug-sub">Opioides</div>
-          </div>
-
-          <div class="drug-card striped-blue">
-            <div class="drug-title">Naloxona</div>
-            <div class="drug-sub">Antagonista opioides</div>
-          </div>
-
-          <div class="drug-card bg-adrenalina">
-            <div class="drug-title text-white">Adrenalina</div>
-            <div class="drug-sub text-white">Vasoactivo</div>
-          </div>
-
-          <div class="drug-card bg-purple">
-            <div class="drug-title">Efedrina</div>
-            <div class="drug-sub">Vasopresores</div>
-          </div>
-
-          <div class="drug-card striped-purple">
-            <div class="drug-title">Nitroglicerina</div>
-            <div class="drug-sub">Hipotensores</div>
-          </div>
-
-          <div class="drug-card bg-green">
-            <div class="drug-title">Atropina</div>
-            <div class="drug-sub">Anticolinérgicos</div>
-          </div>
-
-          <div class="drug-card bg-beige">
-            <div class="drug-title">Droperidol</div>
-            <div class="drug-sub">Antieméticos</div>
-          </div>
-
-          <div class="drug-card bg-white">
-            <div class="drug-title">Heparina</div>
-            <div class="drug-sub">Miscelánea</div>
-          </div>
-
-          <div class="drug-card bg-white">
-            <div class="drug-title">Cefazolina</div>
-            <div class="drug-sub">Miscelánea</div>
-          </div>
-        </div>
-      </div>
-
-
-      <!-- DOCENCIA -->
-      <div class="alert alert-primary mt-4 mb-0" style="line-height:1.6;">
-        <strong>Perla docente para residentes:</strong><br>
-        No memorices solo la droga: memoriza la <strong>presentación habitual</strong>, la <strong>dilución que haces realmente en pabellón</strong> y la <strong>concentración final</strong>.  
-        Ese trípode es lo que evita errores. Si no puedes decir en voz alta “qué había en la ampolla, cuánto agregué y en qué concentración quedó”, todavía no deberías administrarla.
-      </div>
-
     </div>
   </div>
 </div>
 
-
-
-</div>
-</div>
-
-</div>
-</div>
-</div>
-
-
-<style>
-.section-box{
-  background:#fff;
-  border:1px solid #e5e9f2;
-  border-radius:18px;
-  padding:16px;
-  box-shadow:0 8px 20px rgba(0,0,0,.05);
-}
-
-.section-title-ui{
-  font-weight:700;
-  font-size:1.02rem;
-  color:#27458f;
-  margin-bottom:14px;
-}
-
-.table-block-title{
-  font-weight:700;
-  color:#1f2a37;
-  margin-bottom:10px;
-  margin-top:2px;
-}
-
-.drug-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
-}
-
-@media(min-width:768px){
-  .drug-grid{
-    grid-template-columns:repeat(3,1fr);
-  }
-}
-
-.drug-card{
-  border-radius:14px;
-  padding:12px;
-  text-align:center;
-  font-weight:600;
-  border:1px solid #dee2e6;
-}
-
-.drug-title{
-  font-size:1rem;
-}
-
-.drug-sub{
-  font-size:.85rem;
-  opacity:.8;
-}
-
-.bg-yellow{background:#f2e94e;}
-.bg-orange{background:#f39c34;}
-.bg-red{background:#ef3b2d;color:white;}
-.bg-blue{background:#48b7de;color:white;}
-.bg-gray{background:#dfe4ea;}
-.bg-green{background:#5dbb63;color:white;}
-.bg-purple{background:#dab6cf;}
-.bg-beige{background:#efc996;}
-.bg-adrenalina{
-  background: linear-gradient(
-    to bottom,
-    #000000 0%,
-    #000000 45%,
-    #d8b4c8 45%,
-    #d8b4c8 100%
-  );
-  color: #fff;
-}
-.bg-white{background:#fff;}
-
-.striped-orange{
-  background: repeating-linear-gradient(
-    45deg,
-    #fff,
-    #fff 8px,
-    #f39c34 8px,
-    #f39c34 16px
-  );
-}
-
-.striped-red{
-  background: repeating-linear-gradient(
-    45deg,
-    #fff,
-    #fff 8px,
-    #ef3b2d 8px,
-    #ef3b2d 16px
-  );
-}
-
-.striped-blue{
-  background: repeating-linear-gradient(
-    45deg,
-    #fff,
-    #fff 8px,
-    #48b7de 8px,
-    #48b7de 16px
-  );
-}
-
-.striped-purple{
-  background: repeating-linear-gradient(
-    45deg,
-    #fff,
-    #fff 8px,
-    #dab6cf 8px,
-    #dab6cf 16px
-  );
-}
-
-.dilution-table{
-  font-size:.92rem;
-}
-
-.dilution-table th{
-  background:#f8fafc;
-  white-space:nowrap;
-}
-
-.dilution-table td,
-.dilution-table th{
-  vertical-align:middle;
-}
-
-.label-chip{
-  display:inline-block;
-  width:54px;
-  height:24px;
-  border-radius:7px;
-  border:1px solid rgba(0,0,0,.15);
-}
-
-.bg-yellow-mini{background:#f2e94e;}
-.bg-red-mini{background:#ef3b2d;}
-.bg-blue-mini{background:#9eb9d9;}
-.bg-gray-mini{background:#e7eaef;}
-.bg-green-mini{background:#9cca62;}
-.bg-purple-mini{background:#dab6cf;}
-
-.striped-red-mini{
-  background: repeating-linear-gradient(
-    45deg,
-    #fff,
-    #fff 5px,
-    #ef3b2d 5px,
-    #ef3b2d 10px
-  );
-}
-
-.striped-blue-mini{
-  background: repeating-linear-gradient(
-    45deg,
-    #fff,
-    #fff 5px,
-    #48b7de 5px,
-    #48b7de 10px
-  );
-}
-
-@media(max-width:576px){
-  .drug-grid{
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-  }
-
-  .drug-card{
-    padding:10px;
-  }
-
-  .drug-title{
-    font-size:.95rem;
-  }
-
-  .drug-sub{
-    font-size:.78rem;
-  }
-
-  .dilution-table{
-    font-size:.84rem;
-  }
-
-  .label-chip{
-    width:40px;
-    height:18px;
-  }
-}
-.topbar{
-  background:linear-gradient(135deg,#27458f,#3559b7);
-  color:#fff;
-  border-radius:1.25rem;
-  padding:1.2rem;
-  margin-bottom:1rem;
-}
-.info-box{
-  background:#fff;
-  border-radius:1rem;
-  box-shadow:0 8px 24px rgba(0,0,0,.06);
-  margin-bottom:1rem;
-}
-
-.info-box-header{
-  display:flex;
-  justify-content:space-between;
-  padding:1rem;
-}
-
-.info-box-content{
-  display:none;
-  padding:1rem;
-  border-top:1px solid #e5e7eb;
-}
-
-</style>
-<script>
-function toggleInfo(){
-  let box = document.getElementById("infoContent");
-  box.style.display = (box.style.display === "block") ? "none" : "block";
-}
-</script>
-<?php
-  $conexion->close();
-  require("footer.php");
-?>
+<?php include('footer.php'); ?>

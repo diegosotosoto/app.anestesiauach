@@ -1,502 +1,524 @@
-<?php 
-$titulo_info = "Utilidad Clínica";
-$descripcion_info = "Preparación de pabellón en paciente susceptible de Hipertermia Maligna, según las recomendaciones actuales de la SACHILE.";
-$formula = "";
-$referencias = array(
-  "Sociedad de Anestesiología de Chile. Manejo de la Crisis de Hipertermia Maligna y para el Manejo del Paciente Susceptible de Hipertermia Maligna."
-);
-$icono_apunte = "<i class='fa-solid fa-bed-pulse pe-3 pt-2'></i>";
-$titulo_apunte = "Preparación de pabellón: paciente susceptible a HM";
-
-require("../conectar.php");
-$conexion = new mysqli($db_host, $db_usuario, $db_contra, $db_nombre);
-$conexion->set_charset("utf8");
-
+<?php
+$titulo_pagina = "Checklist preparación HM";
+$navbar_titulo = "Apuntes";
 $boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity: .1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
 
-require("head.php");
+$titulo_info = "Utilidad clínica";
+$descripcion_info = "Checklist interactivo para preparación de pabellón en paciente susceptible de Hipertermia Maligna según recomendaciones SACHILE.";
+$formula = "";
+$referencias = array(
+  "Sociedad de Anestesiología de Chile. Manejo de la crisis de Hipertermia Maligna y del paciente susceptible de Hipertermia Maligna.",
+  "Malignant Hyperthermia Association of the United States (MHAUS). Recommendations for preparation of the anesthesia workstation for MH-susceptible patients.",
+  "Rosenberg H, Pollock N, Schiemann A, Bulger T, Stowell K. Malignant Hyperthermia: a review. Orphanet J Rare Dis. 2015;10:93."
+);
+
+include("head.php");
 ?>
+<link rel="stylesheet" href="css/clinical-note-system.css?v=1">
+<script src="js/clinical-note-system.js?v=1"></script>
 
 <style>
-  :root{
-    --brand:#7b1e2b;
-    --brand2:#b73445;
-    --soft-red:#fbeaec;
-    --soft-red-border:#efc7cd;
-    --soft-green:#edf8f7;
-    --soft-green-border:#cfe8e6;
-    --warn:#fff6df;
-    --warn-border:#ecd798;
-    --bg:#f4f7fb;
-  }
-
-  body{
-    background:var(--bg);
-  }
-
-  .hm-shell{
-    max-width:980px;
-    margin:0 auto;
-  }
-
-  .topbar{
-    background:linear-gradient(135deg,var(--brand),var(--brand2));
-    color:#fff;
-    border-radius:1rem;
-    box-shadow:0 8px 24px rgba(0,0,0,.06);
-  }
-
-  .section-card{
-    border:0;
-    border-radius:1rem;
-    box-shadow:0 8px 24px rgba(0,0,0,.06);
-  }
-
-  .section-title{
-    font-size:.78rem;
-    letter-spacing:.06em;
-    text-transform:uppercase;
-    color:#6c757d;
-  }
-
-  .decision{
-    background:var(--soft-red);
-    border:1px solid var(--soft-red-border);
-    border-radius:1rem;
-  }
-
-  .good-box{
-    background:var(--soft-green);
-    border:1px solid var(--soft-green-border);
-    border-radius:1rem;
-  }
-
-  .warning-box{
-    background:var(--warn);
-    border:1px solid var(--warn-border);
-    border-radius:1rem;
-  }
-
-  .check-item{
-    padding:.75rem .9rem;
-    border-radius:.9rem;
-    background:#f8f9fa;
-    border:1px solid #eceff3;
-    display:block;
-  }
-
-  .check-item.done{
-    background:#edf8f7;
-    border-color:#c6e4e2;
-  }
-
-  .subtle{
-    font-size:.92rem;
-    color:#5f6b76;
-  }
-
-  .sticky-tools{
-    position:sticky;
-    top:0;
-    z-index:1000;
-    background:rgba(255,255,255,.95);
-    backdrop-filter:blur(8px);
-    border-bottom:1px solid #e9ecef;
-  }
-
-  .pill{
-    display:inline-block;
-    padding:.2rem .55rem;
-    border-radius:999px;
-    font-size:.78rem;
-    background:#eef3ff;
-    color:#3559b7;
-    font-weight:600;
-  }
-
-  .small-table td,
-  .small-table th{
-    padding:.45rem .5rem;
-    font-size:.86rem;
-    vertical-align:middle;
-  }
-
-  .drug-badge{
-    display:inline-block;
-    padding:.3rem .55rem;
-    border-radius:999px;
-    font-size:.8rem;
-    border:1px solid #d7dde6;
-    background:#fff;
-    margin:.15rem;
-  }
-
-  .footer-note{
-    font-size:.8rem;
-    color:#6c757d;
-  }
-
-  .mono{
-    font-variant-numeric:tabular-nums;
-  }
-
-  .info-box{
-    background:#fff;
-    border-radius:1rem;
-    box-shadow:0 8px 24px rgba(0,0,0,.06);
-    margin-bottom:1rem;
-    overflow:hidden;
-  }
-
-  .info-box-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:1rem;
-    padding:1rem;
-  }
-
-  .info-box-title{
-    font-size:.8rem;
-    text-transform:uppercase;
-    color:#667085;
-    letter-spacing:.08em;
-  }
-
-  .info-toggle-btn{
-    border-radius:.6rem;
-    font-size:.85rem;
-    padding:.35rem .7rem;
-    white-space:nowrap;
-    background:#6c757d;
-    border:none;
-    color:white;
-    transition:.2s;
-  }
-
-  .info-toggle-btn:hover{
-    background:#5a6268;
-    color:white;
-  }
-
-  .info-box-content{
-    padding:1rem;
-    display:none;
-    animation:fadeIn .2s ease-in-out;
-    border-top:1px solid #e9eef5;
-  }
-
-  @keyframes fadeIn{
-    from{opacity:0; transform:translateY(-5px);}
-    to{opacity:1; transform:translateY(0);}
-  }
-
-  @media (max-width:576px){
-    .small-table td,
-    .small-table th{
-      padding:.35rem .4rem;
-      font-size:.78rem;
-    }
-
-    .btn{
-      --bs-btn-padding-y:.45rem;
-    }
-
-    .check-item{
-      padding:.65rem .75rem;
-    }
-
-    .info-box-header{
-      flex-direction:row;
-    }
-
-    .info-toggle-btn{
-      margin-left:auto;
-    }
-  }
+.prep-shell{max-width:980px;margin:0 auto;}
+.prep-warning-card{
+  background:#fff8e8;
+  border:1px solid #e6cb7a;
+  border-radius:1.15rem;
+  padding:1rem 1.1rem;
+}
+.prep-warning-title{
+  font-size:.9rem;
+  font-weight:800;
+  text-align:center;
+  color:#1f2a37;
+  margin-bottom:.45rem;
+}
+.prep-section-chevron{
+  color:#64748b;
+  font-size:1.2rem;
+  transition:transform .18s ease;
+}
+.note-checklist-section.is-collapsed .prep-section-chevron{transform:rotate(-90deg);}
+.last-check-item{
+  display:flex;
+  align-items:flex-start;
+  gap:.8rem;
+  border:1px solid #dfe7f2;
+  border-radius:1rem;
+  background:#fff;
+  padding:.9rem 1rem;
+  cursor:pointer;
+  transition:.16s ease;
+}
+.last-check-item:hover{
+  border-color:#c9d4e5;
+  box-shadow:0 4px 12px rgba(15,23,42,.04);
+}
+.last-check-input{
+  position:absolute;
+  opacity:0;
+  pointer-events:none;
+  width:1px;
+  height:1px;
+}
+.last-check-mark{
+  flex:0 0 auto;
+  width:34px;
+  height:34px;
+  border-radius:999px;
+  border:2px solid #b8c2d0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#fff;
+  color:#fff;
+  margin-top:.08rem;
+  transition:.16s ease;
+}
+.last-check-mark i{font-size:.95rem;}
+.last-check-copy{min-width:0;flex:1;}
+.last-check-title{
+  font-size:1rem;
+  font-weight:800;
+  line-height:1.22;
+  color:var(--note-text);
+  margin-bottom:.15rem;
+}
+.last-check-note{
+  margin:0;
+  font-size:.9rem;
+  line-height:1.4;
+  color:var(--note-muted);
+}
+.last-check-item.is-done{
+  background:#edf8f1;
+  border-color:#b7ddc3;
+}
+.last-check-item.is-done .last-check-mark{
+  background:#2ea663;
+  border-color:#2ea663;
+}
+.prep-record-label{
+  font-size:.82rem;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  color:var(--note-muted);
+  font-weight:700;
+  margin-bottom:.35rem;
+}
+.prep-grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;}
+.prep-chip-list{display:flex;flex-wrap:wrap;gap:.35rem;}
+.prep-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:.35rem;
+  padding:.35rem .6rem;
+  border-radius:999px;
+  border:1px solid var(--note-line-strong);
+  background:#fff;
+  font-size:.82rem;
+  font-weight:700;
+  color:var(--note-text);
+}
+.prep-chip-danger{
+  background:#fff5f3;
+  border-color:#efc4be;
+  color:#b42318;
+}
+.prep-chip-safe{
+  background:#edf8f7;
+  border-color:#cfe8e6;
+  color:#1e7a5a;
+}
+@media (max-width:768px){
+  .prep-grid-2{grid-template-columns:1fr;}
+}
 </style>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
     <div class="container-fluid px-0 px-md-2">
-      <div class="hm-shell">
+      <div class="prep-shell note-shell px-1 px-md-0 py-0">
 
-        <div class="topbar p-3 p-md-4 mb-3">
-          <div class="d-flex justify-content-between align-items-start gap-3">
-            <div>
-              <div class="small opacity-75 mb-1">APP clínica • checklist interactivo</div>
-              <h1 class="h3 mb-2">Preparación de pabellón en paciente susceptible a Hipertermia Maligna</h1>
-              <div class="subtle text-white-50">Checklist interactivo basado en la guía clínica de la Sociedad de Anestesiología de Chile.</div>
-            </div>
-            <span class="pill bg-light text-dark">SACHILE</span>
+        <div class="note-hero mb-3">
+          <div class="note-hero-kicker">APP CLÍNICA · CHECKLIST</div>
+          <h2>Preparación de pabellón: paciente susceptible a HM</h2>
+          <div class="note-hero-subtitle">
+            Checklist interactivo para organizar preparación de pabellón en un paciente susceptible de Hipertermia Maligna.
           </div>
         </div>
 
-        <div class="info-box">
+        <div class="note-checklist-progress-block px-3 py-2 mb-3">
+          <div class="note-checklist-progress-head">
+            <div class="note-checklist-progress-title">Progreso del checklist</div>
+            <div id="progressText" class="note-checklist-progress-badge">0%</div>
+          </div>
+
+          <div class="note-checklist-progress-track">
+            <div id="progressBar" class="note-checklist-progress-bar"></div>
+          </div>
+
+          <div class="note-checklist-toolbar">
+            <button type="button" id="expandAllBtn" class="btn note-checklist-btn">Expandir todo</button>
+            <button type="button" id="collapseAllBtn" class="btn note-checklist-btn">Colapsar todo</button>
+            <button type="button" id="resetBtn" class="btn note-checklist-btn note-checklist-btn-danger">Reiniciar</button>
+          </div>
+        </div>
+
+        <div class="prep-warning-card mb-3">
+          <div class="prep-warning-title">Advertencia visible</div>
+          <p class="mb-0 text-center">
+            Este checklist es para <strong>preparación</strong> de un paciente susceptible a Hipertermia Maligna, no para el manejo de una crisis activa. La meta es evitar exposición a gatillantes y tener los recursos críticos listos antes de iniciar la anestesia.
+          </p>
+        </div>
+
+        <div class="info-box mb-3">
           <div class="info-box-header">
             <div class="info-box-title">Información</div>
-            <button type="button" onclick="toggleInfo()" class="btn btn-sm info-toggle-btn">
-              Mostrar / ocultar
-            </button>
+            <button type="button" onclick="toggleInfo()" class="btn btn-sm info-toggle-btn">Mostrar / ocultar</button>
           </div>
           <div id="infoContent" class="info-box-content">
-            <?php echo $descripcion_info; ?>
-
+            <p class="mb-2"><?php echo $descripcion_info; ?></p>
             <?php if(!empty($formula)){ ?>
               <hr>
               <b>Fórmula:</b><br>
               <?php echo $formula; ?>
             <?php } ?>
-
-            <?php if(!empty($referencias)){ ?>
-              <hr>
-              <b>Referencias:</b>
-              <ul class="mt-2 mb-0">
-                <?php foreach($referencias as $ref){ ?>
-                  <li><?php echo $ref; ?></li>
-                <?php } ?>
-              </ul>
-            <?php } ?>
+            <hr>
+            <div class="small-note mb-2">Punto clave: la preparación correcta del pabellón y de la máquina de anestesia disminuye exposición inadvertida a gatillantes y reduce demoras críticas si apareciera una crisis.</div>
+            <hr>
+            <b>Referencias:</b>
+            <ul class="mt-2 mb-0">
+              <?php foreach($referencias as $ref){ ?>
+                <li><?php echo $ref; ?></li>
+              <?php } ?>
+            </ul>
           </div>
         </div>
 
-        <div class="sticky-tools p-3">
-          <div class="row g-2 align-items-center">
-            <div class="col-12 col-md-6">
-              <div class="small text-muted mb-1">Progreso del checklist</div>
-              <div class="progress" style="height:10px;">
-                <div id="progressBar" class="progress-bar bg-danger" role="progressbar" style="width:0%"></div>
-              </div>
+        <div class="note-checklist-section">
+          <div class="note-checklist-section-head">
+            <div>
+              <div class="note-checklist-section-title">1. Identificación del paciente susceptible</div>
+              <div class="note-checklist-section-help">Confirmar el riesgo real antes de programar el procedimiento.</div>
             </div>
-            <div class="col-12 col-md-6 text-md-end">
-              <button id="expandAllBtn" class="btn btn-outline-secondary btn-sm">Expandir todo</button>
-              <button id="collapseAllBtn" class="btn btn-outline-secondary btn-sm">Colapsar todo</button>
-              <button id="resetBtn" class="btn btn-outline-danger btn-sm">Reiniciar</button>
+            <div class="prep-section-chevron"><i class="fa-solid fa-chevron-down"></i></div>
+          </div>
+          <div class="note-checklist-section-body">
+            <div class="note-checklist-list">
+              <label class="last-check-item">
+                <input class="last-check-input task-check" type="checkbox">
+                <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+                <div class="last-check-copy">
+                  <div class="last-check-title">Antecedente personal de crisis previa de HM</div>
+                  <p class="last-check-note">Confirmado o altamente sospechoso.</p>
+                </div>
+              </label>
+              <label class="last-check-item">
+                <input class="last-check-input task-check" type="checkbox">
+                <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+                <div class="last-check-copy">
+                  <div class="last-check-title">Antecedente familiar de Hipertermia Maligna</div>
+                  <p class="last-check-note">Incluye muerte anestésica inexplicada o evento grave en pabellón.</p>
+                </div>
+              </label>
+              <label class="last-check-item">
+                <input class="last-check-input task-check" type="checkbox">
+                <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+                <div class="last-check-copy">
+                  <div class="last-check-title">Miopatía predisponente conocida</div>
+                  <p class="last-check-note">Por ejemplo Central Core disease, Multiminicore disease o síndrome de King-Denborough.</p>
+                </div>
+              </label>
+              <label class="last-check-item">
+                <input class="last-check-input task-check" type="checkbox">
+                <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+                <div class="last-check-copy">
+                  <div class="last-check-title">Otros antecedentes sugerentes revisados</div>
+                  <p class="last-check-note">Rabdomiólisis, orinas oscuras, heat stroke o antecedentes musculares dudosos.</p>
+                </div>
+              </label>
             </div>
           </div>
         </div>
 
-        <div class="p-3 p-md-4">
-          <div class="accordion" id="hmPrepAccordion">
-
-            <div class="accordion-item section-card mb-3">
-              <h2 class="accordion-header">
-                <button class="accordion-button js-accordion-toggle" type="button" data-bs-target="#prep0" aria-expanded="true">
-                  1. Identificación del paciente susceptible
-                </button>
-              </h2>
-              <div id="prep0" class="accordion-collapse collapse show" data-bs-parent="#hmPrepAccordion">
-                <div class="accordion-body">
-                  <div class="section-title mb-2">Confirmar riesgo antes de programar</div>
-                  <div class="d-grid gap-2">
-                    <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Antecedente personal de crisis previa de HM.</label>
-                    <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Antecedente familiar de Hipertermia Maligna.</label>
-                    <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Miopatía predisponente conocida (por ejemplo Central Core disease, Multiminicore disease, síndrome de King-Denborough).</label>
-                    <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Consideré otros antecedentes dudosos: rabdomiolisis previa, orinas oscuras, heat stroke, muerte familiar en pabellón o evento anestésico grave no aclarado.</label>
-                  </div>
-                </div>
-              </div>
+        <div class="note-checklist-section">
+          <div class="note-checklist-section-head">
+            <div>
+              <div class="note-checklist-section-title">2. Programación y coordinación del pabellón</div>
+              <div class="note-checklist-section-help">Asegurar entorno, personal y soporte antes del ingreso del paciente.</div>
             </div>
-
-            <div class="accordion-item section-card mb-3">
-              <h2 class="accordion-header">
-                <button class="accordion-button collapsed js-accordion-toggle" type="button" data-bs-target="#prep1" aria-expanded="false">
-                  2. Programación y coordinación del pabellón
-                </button>
-              </h2>
-              <div id="prep1" class="accordion-collapse collapse" data-bs-parent="#hmPrepAccordion">
-                <div class="accordion-body">
-                  <div class="warning-box p-3 mb-3">
-                    <div class="fw-semibold mb-2">Objetivo</div>
-                    <div class="subtle">Llegar a pabellón con el entorno, personal y recursos ya preparados antes de la inducción.</div>
-                  </div>
-                  <div class="d-grid gap-2">
-                    <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Programé la cirugía idealmente a primera hora de la mañana.</label>
-                    <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Coordiné con laboratorio la toma de exámenes el día de la cirugía.</label>
-                    <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Verifiqué disponibilidad de drogas e insumos necesarios para realizar el procedimiento en forma segura.</label>
-                    <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Aseguré que el personal de apoyo asignado tenga competencias para colaborar con este tipo de paciente.</label>
-                    <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Solicité apoyo de UCI antes del procedimiento.</label>
-                    <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Verifiqué disponibilidad de monitor desfibrilador en pabellón.</label>
-                    <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Dispuse de un algoritmo/póster de tratamiento de crisis de HM en pabellón.</label>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="accordion-item section-card mb-3">
-              <h2 class="accordion-header">
-                <button class="accordion-button collapsed js-accordion-toggle" type="button" data-bs-target="#prep2" aria-expanded="false">
-                  3. Dantrolene y recursos críticos
-                </button>
-              </h2>
-              <div id="prep2" class="accordion-collapse collapse" data-bs-parent="#hmPrepAccordion">
-                <div class="accordion-body">
-                  <div class="good-box p-3 mb-3">
-                    <div class="fw-semibold mb-2">Disponibilidad mínima</div>
-                    <div class="subtle">El pabellón que atiende al paciente susceptible debe contar al menos con la primera dosis de dantrolene y verificar disponibilidad de dosis adicionales.</div>
-                  </div>
-
-                  <div class="d-grid gap-2 mb-3">
-                    <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">La primera dosis de dantrolene está físicamente disponible en pabellón.</label>
-                    <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Verifiqué si las dosis subsiguientes están disponibles en el mismo centro o mediante convenio.</label>
-                    <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Confirmé disponibilidad de agua destilada sin bacteriostáticos junto al dantrolene.</label>
-                    <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Confirmé almacenamiento visible, rotulado, a temperatura ambiente y protegido de la luz.</label>
-                    <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Revisé fechas de vencimiento del stock.</label>
-                  </div>
-
-                  <div class="table-responsive">
-                    <table class="table table-bordered small-table align-middle">
-                      <thead class="table-light">
-                        <tr>
-                          <th>Dato práctico</th>
-                          <th>Referencia</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr><td>Tratamiento completo sugerido</td><td>10 mg/kg/día</td></tr>
-                        <tr><td>Dosis mínima inmediata de ataque durante primera hora</td><td>Aproximadamente 20 frascos para adulto de 70 kg</td></tr>
-                        <tr><td>Condición para reducir stock local</td><td>Disponer de dosis subsiguientes en menos de 1 hora mediante convenio</td></tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="accordion-item section-card mb-3">
-              <h2 class="accordion-header">
-                <button class="accordion-button collapsed js-accordion-toggle" type="button" data-bs-target="#prep3" aria-expanded="false">
-                  4. Preparación de máquina de anestesia
-                </button>
-              </h2>
-              <div id="prep3" class="accordion-collapse collapse" data-bs-parent="#hmPrepAccordion">
-                <div class="accordion-body">
-                  <div class="decision p-3 mb-3">
-                    <div class="fw-semibold mb-2">Eliminar exposición a gatillantes</div>
-                    <div class="subtle">La meta es asegurar una técnica libre de halogenados y succinilcolina desde antes del ingreso del paciente a pabellón.</div>
-                  </div>
-
-                  <div class="d-grid gap-2">
-                    <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Removí los vaporizadores de la máquina de anestesia.</label>
-                    <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Si no fue posible removerlos, los vacié y los dejé en posición cerrada.</label>
-                    <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Consideré cambiar el absorbedor de CO₂.</label>
-                    <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Realicé lavado de la máquina con O₂ 10 L/min por al menos 20 min.</label>
-                    <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Si reemplacé la manguera de gas fresco, realicé lavado por al menos 10 min.</label>
-                    <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Instalé bolsa en la Y del sistema circular y ventilador para inflarla periódicamente durante el lavado.</label>
-                    <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Usé analizador de gases espirados para confirmar ausencia de anestésico residual.</label>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="accordion-item section-card mb-3">
-              <h2 class="accordion-header">
-                <button class="accordion-button collapsed js-accordion-toggle" type="button" data-bs-target="#prep4" aria-expanded="false">
-                  5. Evaluación preoperatoria y medidas preventivas
-                </button>
-              </h2>
-              <div id="prep4" class="accordion-collapse collapse" data-bs-parent="#hmPrepAccordion">
-                <div class="accordion-body">
-                  <div class="d-grid gap-2 mb-3">
-                    <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Solicité o revisé CK preoperatoria cuando correspondía.</label>
-                    <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Dispuse sábana enfriadora sobre la mesa quirúrgica si estaba disponible.</label>
-                    <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Definí técnica anestésica libre de gatillantes.</label>
-                    <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Planifiqué monitorización básica incluyendo presión arterial, temperatura central, ECG, oximetría de pulso y capnografía.</label>
-                    <label class="check-item"><input class="form-check-input me-2 task-check" type="checkbox">Consideré línea arterial, PVC u otro monitoreo invasivo si la cirugía o el paciente lo requerían.</label>
-                  </div>
-
-                  <div class="row g-3">
-                    <div class="col-12 col-md-6">
-                      <div class="good-box p-3 h-100">
-                        <div class="fw-semibold mb-2">Drogas/técnicas seguras</div>
-                        <div class="mb-2">
-                          <span class="drug-badge">Local</span>
-                          <span class="drug-badge">Regional</span>
-                          <span class="drug-badge">Espinal</span>
-                          <span class="drug-badge">Peridural</span>
-                          <span class="drug-badge">Propofol / TIVA</span>
-                          <span class="drug-badge">Benzodiacepinas</span>
-                          <span class="drug-badge">Opioides</span>
-                          <span class="drug-badge">Barbitúricos</span>
-                          <span class="drug-badge">Ketamina</span>
-                          <span class="drug-badge">Óxido nitroso</span>
-                          <span class="drug-badge">Etomidato</span>
-                          <span class="drug-badge">Rocuronio</span>
-                          <span class="drug-badge">Vecuronio</span>
-                          <span class="drug-badge">Pancuronio</span>
-                          <span class="drug-badge">Atracurio</span>
-                          <span class="drug-badge">Mivacurio</span>
-                          <span class="drug-badge">Neostigmina</span>
-                          <span class="drug-badge">Atropina</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-12 col-md-6">
-                      <div class="decision p-3 h-100">
-                        <div class="fw-semibold mb-2">Gatillantes inseguros</div>
-                        <div class="mb-2">
-                          <span class="drug-badge">Sevoflurano</span>
-                          <span class="drug-badge">Halotano</span>
-                          <span class="drug-badge">Isoflurano</span>
-                          <span class="drug-badge">Desflurano</span>
-                          <span class="drug-badge">Enflurano</span>
-                          <span class="drug-badge">Succinilcolina</span>
-                        </div>
-                        <div class="subtle">No usar halogenados ni succinilcolina.</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="warning-box p-3 mt-3">
-                    <div class="fw-semibold mb-2">Profilaxis con dantrolene</div>
-                    <div class="subtle">No se recomienda para la mayoría de los pacientes susceptibles. Considerarla caso a caso. Si se usa, la dosis sugerida es <strong>2,5 mg/kg IV 30 min antes</strong>. No asociar con bloqueadores del calcio.</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="accordion-item section-card mb-3">
-              <h2 class="accordion-header">
-                <button class="accordion-button collapsed js-accordion-toggle" type="button" data-bs-target="#prep5" aria-expanded="false">
-                  6. Registro rápido
-                </button>
-              </h2>
-              <div id="prep5" class="accordion-collapse collapse" data-bs-parent="#hmPrepAccordion">
-                <div class="accordion-body">
-                  <div class="row g-3">
-                    <div class="col-12 col-md-4">
-                      <label class="form-label fw-semibold">Fecha</label>
-                      <input type="date" id="dateLog" class="form-control">
-                    </div>
-                    <div class="col-12 col-md-4">
-                      <label class="form-label fw-semibold">Pabellón</label>
-                      <input type="text" id="theatreLog" class="form-control" placeholder="Ej: Pabellón 3">
-                    </div>
-                    <div class="col-12 col-md-4">
-                      <label class="form-label fw-semibold">Paciente / iniciales</label>
-                      <input type="text" id="patientLog" class="form-control" placeholder="Iniciales o código">
-                    </div>
-                    <div class="col-12">
-                      <label class="form-label fw-semibold">Notas</label>
-                      <textarea id="notesBox" rows="5" class="form-control" placeholder="Ej: vaporizadores retirados, lavado 20 min, dantrolene disponible, apoyo UCI confirmado..."></textarea>
-                    </div>
-                  </div>
-                  <div class="mt-3 d-flex flex-wrap gap-2">
-                    <button id="copySummaryBtn" class="btn btn-danger">Copiar resumen</button>
-                    <button id="downloadTxtBtn" class="btn btn-outline-secondary">Descargar TXT</button>
-                  </div>
-                  <div id="copyFeedback" class="small text-success mt-2 d-none">Resumen copiado al portapapeles.</div>
-                </div>
-              </div>
-            </div>
-
+            <div class="prep-section-chevron"><i class="fa-solid fa-chevron-down"></i></div>
           </div>
-
-          <div class="footer-note mt-4">
-            Checklist interactivo de preparación de pabellón en paciente susceptible a Hipertermia Maligna. Herramienta de apoyo, no reemplaza protocolos institucionales.
+          <div class="note-checklist-section-body">
+            <div class="note-checklist-list">
+              <label class="last-check-item">
+                <input class="last-check-input task-check" type="checkbox">
+                <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+                <div class="last-check-copy">
+                  <div class="last-check-title">Cirugía idealmente programada a primera hora</div>
+                  <p class="last-check-note">Reduce retrasos y facilita preparación completa del pabellón.</p>
+                </div>
+              </label>
+              <label class="last-check-item">
+                <input class="last-check-input task-check" type="checkbox">
+                <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+                <div class="last-check-copy">
+                  <div class="last-check-title">Laboratorio y apoyo crítico coordinados</div>
+                  <p class="last-check-note">Incluye exámenes, disponibilidad de UCI y desfibrilador.</p>
+                </div>
+              </label>
+              <label class="last-check-item">
+                <input class="last-check-input task-check" type="checkbox">
+                <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+                <div class="last-check-copy">
+                  <div class="last-check-title">Personal de apoyo informado y con roles definidos</div>
+                  <p class="last-check-note">Incluye enfermería, arsenalera y apoyo técnico de pabellón.</p>
+                </div>
+              </label>
+              <label class="last-check-item">
+                <input class="last-check-input task-check" type="checkbox">
+                <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+                <div class="last-check-copy">
+                  <div class="last-check-title">Algoritmo o póster de manejo de crisis disponible</div>
+                  <p class="last-check-note">Visible dentro del pabellón o junto al carro de HM.</p>
+                </div>
+              </label>
+            </div>
           </div>
+        </div>
+
+        <div class="note-checklist-section">
+          <div class="note-checklist-section-head">
+            <div>
+              <div class="note-checklist-section-title">3. Dantrolene y recursos críticos</div>
+              <div class="note-checklist-section-help">Verificar stock, acceso y preparación práctica.</div>
+            </div>
+            <div class="prep-section-chevron"><i class="fa-solid fa-chevron-down"></i></div>
+          </div>
+          <div class="note-checklist-section-body">
+            <div class="note-warning mb-3">
+              <div class="note-card-title">Objetivo operativo</div>
+              <div>El pabellón debe contar al menos con la primera dosis de dantrolene y con claridad sobre cómo obtener dosis adicionales oportunamente.</div>
+            </div>
+            <div class="note-checklist-list mb-3">
+              <label class="last-check-item">
+                <input class="last-check-input task-check" type="checkbox">
+                <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+                <div class="last-check-copy">
+                  <div class="last-check-title">Primera dosis de dantrolene físicamente disponible</div>
+                  <p class="last-check-note">No solo “pedida” o “ubicable”.</p>
+                </div>
+              </label>
+              <label class="last-check-item">
+                <input class="last-check-input task-check" type="checkbox">
+                <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+                <div class="last-check-copy">
+                  <div class="last-check-title">Confirmadas dosis subsiguientes o convenio</div>
+                  <p class="last-check-note">Idealmente con acceso en menos de una hora si no están en el mismo centro.</p>
+                </div>
+              </label>
+              <label class="last-check-item">
+                <input class="last-check-input task-check" type="checkbox">
+                <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+                <div class="last-check-copy">
+                  <div class="last-check-title">Agua destilada disponible con el dantrolene</div>
+                  <p class="last-check-note">Verificar además vencimiento, almacenamiento y rotulación.</p>
+                </div>
+              </label>
+            </div>
+            <div class="note-result-grid-2">
+              <div class="note-result-card">
+                <div class="note-result-card-label">Tratamiento completo sugerido</div>
+                <div class="note-result-card-value">10 mg/kg</div>
+                <div class="note-result-card-note">Carga acumulada orientativa si la crisis persiste.</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Referencia práctica adulto 70 kg</div>
+                <div class="note-result-card-value">≈ 20 frascos</div>
+                <div class="note-result-card-note">Para disponer de ataque inicial amplio durante la primera hora.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="note-checklist-section">
+          <div class="note-checklist-section-head">
+            <div>
+              <div class="note-checklist-section-title">4. Preparación de la máquina de anestesia</div>
+              <div class="note-checklist-section-help">Eliminar exposición residual a gatillantes antes del ingreso del paciente.</div>
+            </div>
+            <div class="prep-section-chevron"><i class="fa-solid fa-chevron-down"></i></div>
+          </div>
+          <div class="note-checklist-section-body">
+            <div class="note-danger mb-3">
+              <div class="note-card-title">Meta</div>
+              <div>Asegurar una técnica completamente libre de halogenados y succinilcolina.</div>
+            </div>
+            <div class="note-checklist-list">
+              <label class="last-check-item">
+                <input class="last-check-input task-check" type="checkbox">
+                <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+                <div class="last-check-copy">
+                  <div class="last-check-title">Vaporizadores retirados o vaciados y cerrados</div>
+                  <p class="last-check-note">Eliminar físicamente la posibilidad de administración inadvertida.</p>
+                </div>
+              </label>
+              <label class="last-check-item">
+                <input class="last-check-input task-check" type="checkbox">
+                <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+                <div class="last-check-copy">
+                  <div class="last-check-title">Absorbedor de CO₂ cambiado si corresponde</div>
+                  <p class="last-check-note">Según protocolo local y tipo de máquina.</p>
+                </div>
+              </label>
+              <label class="last-check-item">
+                <input class="last-check-input task-check" type="checkbox">
+                <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+                <div class="last-check-copy">
+                  <div class="last-check-title">Lavado de máquina realizado</div>
+                  <p class="last-check-note">O₂ 10 L/min por al menos 20 min, o 10 min si se reemplazó la manguera de gas fresco.</p>
+                </div>
+              </label>
+              <label class="last-check-item">
+                <input class="last-check-input task-check" type="checkbox">
+                <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+                <div class="last-check-copy">
+                  <div class="last-check-title">Analizador de gases usado para confirmar ausencia de anestésico residual</div>
+                  <p class="last-check-note">Idealmente antes de comenzar el caso.</p>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="note-checklist-section">
+          <div class="note-checklist-section-head">
+            <div>
+              <div class="note-checklist-section-title">5. Evaluación preoperatoria y medidas preventivas</div>
+              <div class="note-checklist-section-help">Checklist final del plan anestésico preventivo.</div>
+            </div>
+            <div class="prep-section-chevron"><i class="fa-solid fa-chevron-down"></i></div>
+          </div>
+          <div class="note-checklist-section-body">
+            <div class="note-checklist-list mb-3">
+              <label class="last-check-item">
+                <input class="last-check-input task-check" type="checkbox">
+                <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+                <div class="last-check-copy">
+                  <div class="last-check-title">CK preoperatoria solicitada o revisada si corresponde</div>
+                  <p class="last-check-note">Según contexto clínico e indicación local.</p>
+                </div>
+              </label>
+              <label class="last-check-item">
+                <input class="last-check-input task-check" type="checkbox">
+                <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+                <div class="last-check-copy">
+                  <div class="last-check-title">Técnica anestésica libre de gatillantes definida</div>
+                  <p class="last-check-note">TIVA, regional o local según el caso.</p>
+                </div>
+              </label>
+              <label class="last-check-item">
+                <input class="last-check-input task-check" type="checkbox">
+                <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+                <div class="last-check-copy">
+                  <div class="last-check-title">Monitorización básica completa asegurada</div>
+                  <p class="last-check-note">PA, temperatura, ECG, SpO₂ y capnografía.</p>
+                </div>
+              </label>
+              <label class="last-check-item">
+                <input class="last-check-input task-check" type="checkbox">
+                <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
+                <div class="last-check-copy">
+                  <div class="last-check-title">Monitoreo invasivo considerado si cirugía o paciente lo requieren</div>
+                  <p class="last-check-note">Incluye línea arterial u otras medidas avanzadas.</p>
+                </div>
+              </label>
+            </div>
+
+            <div class="prep-grid-2">
+              <div class="note-success">
+                <div class="note-card-title">Técnicas / fármacos seguros</div>
+                <div class="prep-chip-list">
+                  <span class="prep-chip prep-chip-safe">TIVA / Propofol</span>
+                  <span class="prep-chip prep-chip-safe">Benzodiacepinas</span>
+                  <span class="prep-chip prep-chip-safe">Opioides</span>
+                  <span class="prep-chip prep-chip-safe">Ketamina</span>
+                  <span class="prep-chip prep-chip-safe">Etomidato</span>
+                  <span class="prep-chip prep-chip-safe">Óxido nitroso</span>
+                  <span class="prep-chip prep-chip-safe">Rocuronio / Vecuronio</span>
+                  <span class="prep-chip prep-chip-safe">Atracurio / Mivacurio</span>
+                  <span class="prep-chip prep-chip-safe">Neostigmina / Atropina</span>
+                  <span class="prep-chip prep-chip-safe">Anestesia local / regional / espinal / peridural</span>
+                </div>
+              </div>
+              <div class="note-danger">
+                <div class="note-card-title">Gatillantes inseguros</div>
+                <div class="prep-chip-list">
+                  <span class="prep-chip prep-chip-danger">Sevoflurano</span>
+                  <span class="prep-chip prep-chip-danger">Isoflurano</span>
+                  <span class="prep-chip prep-chip-danger">Desflurano</span>
+                  <span class="prep-chip prep-chip-danger">Halotano / Enflurano</span>
+                  <span class="prep-chip prep-chip-danger">Succinilcolina</span>
+                </div>
+                <div class="small-note mt-2">No usar halogenados ni succinilcolina.</div>
+              </div>
+            </div>
+
+            <div class="note-warning mt-3 mb-0">
+              <div class="note-card-title">Profilaxis con dantrolene</div>
+              <div>No se recomienda de rutina en la mayoría de los pacientes susceptibles. Considerarla caso a caso. Si se usa, la referencia orientativa es 2,5 mg/kg IV 30 min antes. Evitar asociación con bloqueadores del calcio.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="note-checklist-section">
+          <div class="note-checklist-section-head">
+            <div>
+              <div class="note-checklist-section-title">6. Registro rápido</div>
+              <div class="note-checklist-section-help">Resumen exportable de la preparación completada.</div>
+            </div>
+            <div class="prep-section-chevron"><i class="fa-solid fa-chevron-down"></i></div>
+          </div>
+          <div class="note-checklist-section-body">
+            <div class="prep-grid-2 mb-3">
+              <div>
+                <div class="prep-record-label">Fecha</div>
+                <input type="date" id="dateLog" class="note-text-input">
+              </div>
+              <div>
+                <div class="prep-record-label">Pabellón</div>
+                <input type="text" id="theatreLog" class="note-text-input" placeholder="Ej: Pabellón 3">
+              </div>
+              <div>
+                <div class="prep-record-label">Paciente / iniciales</div>
+                <input type="text" id="patientLog" class="note-text-input" placeholder="Iniciales o código">
+              </div>
+              <div>
+                <div class="prep-record-label">Notas breves</div>
+                <input type="text" id="notesBox" class="note-text-input" placeholder="Ej: vaporizadores retirados, lavado 20 min, UCI avisada">
+              </div>
+            </div>
+
+            <div class="note-checklist-record">
+              <div class="note-card-title mb-2">Registro resumido</div>
+              <textarea id="recordOutput" class="note-checklist-record-box"></textarea>
+              <div class="note-checklist-toolbar mt-2">
+                <button type="button" id="copySummaryBtn" class="btn note-checklist-btn"><i class="fa-solid fa-copy me-1"></i> Copiar</button>
+                <button type="button" id="downloadTxtBtn" class="btn note-checklist-btn"><i class="fa-solid fa-file-arrow-down me-1"></i> Descargar TXT</button>
+              </div>
+              <div id="copyFeedback" class="small-note mt-2 note-hidden">Resumen copiado al portapapeles.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="note-teaching-wrap mt-3">
+          <div class="note-teaching-title">Perlas docentes</div>
+          <div class="note-teaching-main">Preparar bien el entorno es parte del tratamiento preventivo</div>
+          <div class="note-tips"><strong>Qué hacer:</strong> llegar al caso con máquina preparada, dantrolene disponible y equipo coordinado.</div>
+          <div class="note-tips"><strong>Qué evitar:</strong> asumir que “como no habrá gatillantes, no pasa nada” y descuidar el plan de rescate.</div>
+          <div class="note-tips mb-0"><strong>Error frecuente:</strong> recordar succinilcolina y olvidar vaporizadores, analizador de gases o logística de dosis subsiguientes de dantrolene.</div>
         </div>
 
       </div>
@@ -504,112 +526,65 @@ require("head.php");
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-(function () {
-  const accordionButtons = Array.from(document.querySelectorAll('.js-accordion-toggle'));
+(function(){
   const checks = Array.from(document.querySelectorAll('.task-check'));
   const progressBar = document.getElementById('progressBar');
-  const accordions = Array.from(document.querySelectorAll('.accordion-collapse'));
-  const expandAllBtn = document.getElementById('expandAllBtn');
-  const collapseAllBtn = document.getElementById('collapseAllBtn');
-  const resetBtn = document.getElementById('resetBtn');
+  const progressText = document.getElementById('progressText');
+  const sections = Array.from(document.querySelectorAll('.note-checklist-section'));
+  const recordOutput = document.getElementById('recordOutput');
+  const copyFeedback = document.getElementById('copyFeedback');
 
-  function syncAccordionButton(btn, isOpen) {
-    btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-    btn.classList.toggle('collapsed', !isOpen);
+  function setChecklistItemState(input){
+    const item = input.closest('.last-check-item');
+    if(item) item.classList.toggle('is-done', !!input.checked);
   }
 
-  accordionButtons.forEach(btn => {
-    btn.addEventListener('click', function (e) {
-      e.preventDefault();
-
-      const targetSelector = this.getAttribute('data-bs-target');
-      const targetEl = document.querySelector(targetSelector);
-      if (!targetEl) return;
-
-      const collapseInstance = bootstrap.Collapse.getOrCreateInstance(targetEl, { toggle: false });
-      const isOpen = targetEl.classList.contains('show');
-
-      if (isOpen) {
-        collapseInstance.hide();
-        syncAccordionButton(this, false);
-      } else {
-        collapseInstance.show();
-        syncAccordionButton(this, true);
-      }
-    });
-  });
-
-  accordions.forEach(panel => {
-    panel.addEventListener('shown.bs.collapse', function () {
-      const btn = document.querySelector('[data-bs-target="#' + this.id + '"]');
-      if (btn) syncAccordionButton(btn, true);
-    });
-
-    panel.addEventListener('hidden.bs.collapse', function () {
-      const btn = document.querySelector('[data-bs-target="#' + this.id + '"]');
-      if (btn) syncAccordionButton(btn, false);
-    });
-  });
-
-  function updateProgress() {
+  function updateProgress(){
     const total = checks.length;
     const done = checks.filter(c => c.checked).length;
     const percent = total ? Math.round((done / total) * 100) : 0;
     progressBar.style.width = percent + '%';
-    progressBar.textContent = percent ? percent + '%' : '';
-    checks.forEach(ch => {
-      const wrapper = ch.closest('.check-item');
-      if (wrapper) wrapper.classList.toggle('done', ch.checked);
-    });
+    progressText.textContent = percent + '%';
+    checks.forEach(setChecklistItemState);
+    updateRecordOutput();
   }
 
-  checks.forEach(c => c.addEventListener('change', updateProgress));
-  updateProgress();
+  function toggleSection(section, force){
+    const shouldCollapse = typeof force === 'boolean' ? force : !section.classList.contains('is-collapsed');
+    section.classList.toggle('is-collapsed', shouldCollapse);
+  }
 
-  expandAllBtn.addEventListener('click', () => {
-    accordions.forEach(el => {
-      bootstrap.Collapse.getOrCreateInstance(el, {toggle:false}).show();
-      const btn = document.querySelector('[data-bs-target="#' + el.id + '"]');
-      if (btn) syncAccordionButton(btn, true);
+  document.querySelectorAll('.note-checklist-section-head').forEach(function(head){
+    head.addEventListener('click', function(){
+      const section = head.closest('.note-checklist-section');
+      if(section) toggleSection(section);
     });
   });
 
-  collapseAllBtn.addEventListener('click', () => {
-    accordions.forEach(el => {
-      bootstrap.Collapse.getOrCreateInstance(el, {toggle:false}).hide();
-      const btn = document.querySelector('[data-bs-target="#' + el.id + '"]');
-      if (btn) syncAccordionButton(btn, false);
-    });
+  document.getElementById('expandAllBtn').addEventListener('click', function(){
+    sections.forEach(section => toggleSection(section, false));
   });
 
-  resetBtn.addEventListener('click', () => {
-    checks.forEach(c => c.checked = false);
-    ['dateLog','theatreLog','patientLog','notesBox'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.value = '';
-    });
-    document.getElementById('copyFeedback').classList.add('d-none');
-    updateProgress();
-    window.scrollTo({top:0, behavior:'smooth'});
+  document.getElementById('collapseAllBtn').addEventListener('click', function(){
+    sections.forEach(section => toggleSection(section, true));
   });
 
-  function buildSummary() {
+  function buildSummary(){
     const done = checks.filter(c => c.checked).length;
     const total = checks.length;
     const dateLog = document.getElementById('dateLog').value || '-';
-    const theatreLog = document.getElementById('theatreLog').value || '-';
-    const patientLog = document.getElementById('patientLog').value || '-';
+    const theatreLog = document.getElementById('theatreLog').value.trim() || '-';
+    const patientLog = document.getElementById('patientLog').value.trim() || '-';
     const notes = document.getElementById('notesBox').value.trim() || '-';
 
     const checkedItems = checks
       .filter(c => c.checked)
-      .map(c => '- ' + c.parentElement.textContent.trim())
+      .map(c => '- ' + c.closest('.last-check-item').querySelector('.last-check-title').textContent.trim())
       .join('\n') || '- Ninguno';
 
     return [
-      'CHECKLIST PREPARACIÓN DE PABELLÓN - HM SUSCEPTIBLE',
+      'CHECKLIST PREPARACIÓN DE PABELLÓN - PACIENTE SUSCEPTIBLE A HM',
       'Fecha: ' + dateLog,
       'Pabellón: ' + theatreLog,
       'Paciente: ' + patientLog,
@@ -623,17 +598,40 @@ require("head.php");
     ].join('\n');
   }
 
-  document.getElementById('copySummaryBtn').addEventListener('click', async () => {
-    const text = buildSummary();
+  function updateRecordOutput(){
+    recordOutput.value = buildSummary();
+  }
+
+  checks.forEach(check => check.addEventListener('change', updateProgress));
+  ['dateLog','theatreLog','patientLog','notesBox'].forEach(function(id){
+    const el = document.getElementById(id);
+    if(el) el.addEventListener('input', updateRecordOutput);
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', function(){
+    checks.forEach(c => {
+      c.checked = false;
+      setChecklistItemState(c);
+    });
+    ['dateLog','theatreLog','patientLog','notesBox'].forEach(function(id){
+      const el = document.getElementById(id);
+      if(el) el.value = '';
+    });
+    copyFeedback.classList.add('note-hidden');
+    updateProgress();
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  document.getElementById('copySummaryBtn').addEventListener('click', async function(){
     try {
-      await navigator.clipboard.writeText(text);
-      document.getElementById('copyFeedback').classList.remove('d-none');
-    } catch (e) {
+      await navigator.clipboard.writeText(buildSummary());
+      copyFeedback.classList.remove('note-hidden');
+    } catch(e) {
       alert('No se pudo copiar automáticamente. Usa descargar TXT.');
     }
   });
 
-  document.getElementById('downloadTxtBtn').addEventListener('click', () => {
+  document.getElementById('downloadTxtBtn').addEventListener('click', function(){
     const text = buildSummary();
     const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
     const a = document.createElement('a');
@@ -642,16 +640,11 @@ require("head.php");
     a.click();
     URL.revokeObjectURL(a.href);
   });
+
+  updateProgress();
 })();
-</script>
-<script>
-function toggleInfo(){
-  let box = document.getElementById("infoContent");
-  box.style.display = (box.style.display === "none" || box.style.display === "") ? "block" : "none";
-}
 </script>
 
 <?php
-$conexion->close();
-require("footer.php");
+include("footer.php");
 ?>

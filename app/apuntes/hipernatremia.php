@@ -1,693 +1,476 @@
 <?php
-
-$titulo_info = "Utilidad Clínica";
-$descripcion_info = "Apunte interactivo para apoyo en evaluación y corrección de hipernatremia en contexto perioperatorio adulto. Integra estimación de agua corporal total, déficit de agua libre, meta inicial, velocidad segura de corrección y selector de solución para proponer un plan orientativo.";
-$formula = "Déficit de agua libre ≈ ACT × ((Na actual / Na objetivo) - 1). Cambio esperado de Na por litro (orientativo): (Na de la solución - Na sérico) / (ACT + 1). La corrección debe ser gradual, idealmente >48 horas si la hipernatremia es crónica o incierta, con controles seriados.";
-$referencias = array(
-  "1.- Sonani B, Al-Dhahir MA. Hypernatremia. StatPearls [Internet]. Treasure Island (FL): StatPearls Publishing; actualización 2023. NCBI Bookshelf.",
-  "2.- Yun G, Baek SH, Kim S. Evaluation and management of hypernatremia in adults: clinical perspectives. Korean J Intern Med. 2023;38(3):290-302.",
-  "3.- Lewis JL III. Hypernatremia. Merck Manual Professional Edition. Revisado 2025.",
-  "4.- Leung AA, McAlister FA, Finlayson SRG, Bates DW. Preoperative hypernatremia predicts increased perioperative morbidity and mortality. Am J Med. 2013;126(10):877-886.",
-  "5.- Cole JH, Highland KB, Hughey SB, et al. The Association Between Borderline Dysnatremia and Perioperative Morbidity and Mortality. JMIR Perioper Med. 2023.",
-  "6.- Pokhriyal SC, Joshi P, Gupta U, et al. Hypernatremia and Its Rate of Correction: The Evidence So Far. Cureus. 2024;16(2):e54699.",
-  "7.- Goshima T, Terasawa T, Iwata M, et al. Treatment of acute hypernatremia caused by sodium overload in adults: A systematic review. Medicine (Baltimore). 2022;101(8):e28945."
-);
-
-$icono_apunte = "<i class='fa-solid fa-droplet pe-3 pt-2'></i>";
-$titulo_apunte = "Corrección de Hipernatremia";
-
+$titulo_pagina = "Hipernatremia";
+$navbar_titulo = "Apuntes";
 $boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; border:0; --bs-border-opacity:0;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
 
-require("head.php");
+$titulo_info = "Utilidad clínica";
+$descripcion_info = "Apunte interactivo para apoyo en evaluación y corrección de hipernatremia en contexto perioperatorio adulto. Integra estimación de agua corporal total, déficit de agua libre, meta inicial, velocidad segura de corrección y selector de solución para proponer un plan orientativo.";
+$formula = "Déficit de agua libre ≈ ACT × ((Na actual / Na objetivo) - 1). Cambio esperado de Na por litro: (Na de la solución - Na sérico) / (ACT + 1). La corrección debe ser gradual, especialmente si la hipernatremia es crónica o incierta.";
+$referencias = array(
+  "Sonani B, Al-Dhahir MA. Hypernatremia. StatPearls. Actualización 2023.",
+  "Yun G, Baek SH, Kim S. Evaluation and management of hypernatremia in adults: clinical perspectives. Korean J Intern Med. 2023;38(3):290-302.",
+  "Lewis JL III. Hypernatremia. Merck Manual Professional Edition. Revisado 2025.",
+  "Leung AA, McAlister FA, Finlayson SRG, Bates DW. Preoperative hypernatremia predicts increased perioperative morbidity and mortality. Am J Med. 2013;126(10):877-886.",
+  "Cole JH, Highland KB, Hughey SB, et al. The Association Between Borderline Dysnatremia and Perioperative Morbidity and Mortality. JMIR Perioper Med. 2023.",
+  "Pokhriyal SC, Joshi P, Gupta U, et al. Hypernatremia and Its Rate of Correction: The Evidence So Far. Cureus. 2024;16(2):e54699.",
+  "Goshima T, Terasawa T, Iwata M, et al. Treatment of acute hypernatremia caused by sodium overload in adults: A systematic review. Medicine. 2022;101(8):e28945."
+);
+
+include("head.php");
 ?>
+<link rel="stylesheet" href="css/clinical-note-system.css?v=2">
+<script src="js/clinical-note-system.js?v=2"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
     <div class="container-fluid px-0 px-md-2">
-      <div class="hyperna-shell">
+      <div class="note-shell px-1 px-md-0 py-0">
 
         <style>
-          :root{
-            --brand:#27458f;
-            --brand2:#3559b7;
-            --bg:#f4f7fb;
-            --soft:#f8fafc;
-            --line:#dfe7f2;
-            --text:#1f2a37;
-            --muted:#667085;
-            --good:#edf8f7;
-            --warn:#fff9e8;
-            --danger:#fff5f3;
-            --mint:#eef7ff;
-            --mint-border:#cfe1ff;
-          }
-
-          body{background:var(--bg);}
-          .hyperna-shell{max-width:1040px;margin:0 auto;}
-
-          .hyperna-topbar{
-            background:linear-gradient(135deg,var(--brand),var(--brand2));
-            color:#fff;
-            border-radius:1.25rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            padding:1.15rem 1.25rem;
-            margin-bottom:1rem;
-            overflow:hidden;
-          }
-
-          .hyperna-topbar h1{color:#fff;}
-
-          .section-card{
-            border:0;
-            border-radius:1rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            background:#fff;
-            overflow:hidden;
-            margin-bottom:1rem;
-          }
-
-          .section-title{
-            font-size:.8rem;
-            letter-spacing:.05em;
-            text-transform:uppercase;
-            color:var(--muted);
-          }
-
-          .pill{
-            display:inline-block;
-            padding:.2rem .55rem;
-            border-radius:999px;
-            font-size:.78rem;
-            background:#eef3ff;
-            color:#3559b7;
-            font-weight:600;
-          }
-
-          .subtle{font-size:.94rem;color:#5f6b76;}
-          .small-note{font-size:.82rem;color:#667085;line-height:1.45;}
-          .footer-note{font-size:.82rem;color:#6c757d;}
-
-          .info-box{
-            background:#fff;
-            border-radius:1rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            margin-bottom:1rem;
-            overflow:hidden;
-          }
-
-          .info-box-header{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            gap:1rem;
-            padding:1rem;
-          }
-
-          .info-box-title{
-            font-size:.8rem;
-            text-transform:uppercase;
-            color:#667085;
-            letter-spacing:.08em;
-          }
-
-          .info-toggle-btn{
-            border-radius:.6rem;
-            font-size:.85rem;
-            padding:.35rem .7rem;
-            white-space:nowrap;
-            background:#6c757d;
-            border:none;
-            color:white;
-            transition:.2s;
-          }
-
-          .info-toggle-btn:hover{
-            background:#5a6268;
-            color:white;
-          }
-
-          .info-box-content{
-            padding:1rem;
-            display:none;
-            animation:fadeIn .2s ease-in-out;
-            border-top:1px solid #e9eef5;
-          }
-
-          @keyframes fadeIn{
-            from{opacity:0; transform:translateY(-5px);}
-            to{opacity:1; transform:translateY(0);}
-          }
-
-          .calc-grid{
+          .hna-choice-grid{
             display:grid;
-            grid-template-columns:repeat(2,1fr);
-            gap:1rem;
-          }
-
-          .card-block{
-            border:1px solid var(--line);
-            border-radius:1rem;
-            background:var(--soft);
-            padding:1rem;
-          }
-
-          .choice-grid-2{
-            display:grid;
-            grid-template-columns:repeat(2,1fr);
-            gap:.6rem;
-          }
-
-          .choice-grid-3{
-            display:grid;
-            grid-template-columns:repeat(3,1fr);
-            gap:.6rem;
-          }
-
-          .choice-grid-4{
-            display:grid;
-            grid-template-columns:repeat(4,1fr);
-            gap:.6rem;
-          }
-
-          .choice-check{display:none;}
-
-          .choice-btn{
-            display:flex;
-            flex-direction:column;
-            align-items:flex-start;
-            justify-content:center;
-            text-align:left;
-            min-height:70px;
-            border:1px solid #dfe7f2;
-            background:#fff;
-            border-radius:.9rem;
-            padding:.7rem .8rem;
-            font-weight:700;
-            color:#1f2a37;
-            cursor:pointer;
-            transition:.15s ease;
-            line-height:1.12;
-            box-shadow:0 4px 14px rgba(0,0,0,.04);
-            font-size:.92rem;
-          }
-
-          .choice-btn small{
-            font-weight:500;
-            color:#667085;
-            margin-top:.15rem;
-            line-height:1.2;
-            font-size:.72rem;
-          }
-
-          .choice-btn i{
-            font-size:1rem;
-            margin-bottom:.28rem;
-            color:#3559b7;
-          }
-
-          .choice-check:checked + .choice-btn{
-            background:#eef3ff;
-            border-color:#9fb9f8;
-            color:#27458f;
-            box-shadow:0 0 0 2px rgba(39,69,143,.05) inset, 0 8px 18px rgba(0,0,0,.06);
-            transform:translateY(-1px);
-          }
-
-          .form-label-lite{
-            font-size:.92rem;
-            font-weight:600;
-            color:var(--text);
-            margin-bottom:.35rem;
-          }
-
-          .summary-grid{
-            display:grid;
-            grid-template-columns:repeat(4,1fr);
+            grid-template-columns:repeat(2,minmax(0,1fr));
             gap:.75rem;
           }
 
-          .summary-card{
-            background:#fff;
-            border:1px solid #e6e9ef;
-            border-radius:1rem;
-            padding:.9rem;
+          .hna-choice-grid.hna-grid-3{
+            grid-template-columns:repeat(3,minmax(0,1fr));
           }
 
-          .summary-label{
-            font-size:.76rem;
-            text-transform:uppercase;
-            letter-spacing:.06em;
-            color:#667085;
-            margin-bottom:.25rem;
+          .hna-choice-grid.hna-grid-4{
+            grid-template-columns:repeat(4,minmax(0,1fr));
           }
 
-          .summary-value{
-            font-size:1rem;
-            font-weight:700;
-            color:#1f2a37;
-            line-height:1.35;
+          .hna-option-input{
+            position:absolute;
+            opacity:0;
+            pointer-events:none;
           }
 
-          .result-main-card{
-            background:#eef4ff;
-            border:3px solid #9fb9f8;
-            border-radius:1.2rem;
-            padding:1.15rem 1.2rem;
+          .hna-option{
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
             text-align:center;
-            box-shadow:0 8px 20px rgba(39,69,143,.08);
+            min-height:72px;
+            border:2px solid var(--note-line);
+            background:#fff;
+            border-radius:1rem;
+            padding:.65rem .75rem;
+            cursor:pointer;
+            transition:.15s ease;
+            box-shadow:0 3px 10px rgba(15,23,42,.04);
+            gap:.18rem;
           }
 
-          .result-main-label{
-            font-size:.85rem;
-            text-transform:uppercase;
-            letter-spacing:.06em;
-            color:#5d6b85;
-            font-weight:700;
-            margin-bottom:.25rem;
+          .hna-option i{
+            color:#3559b7;
+            font-size:1rem;
           }
 
-          .result-main-note{
+          .hna-option-input:checked + .hna-option{
+            box-shadow:0 0 0 3px rgba(47,128,237,.14), 0 8px 18px rgba(15,23,42,.10);
+            border:4px solid var(--note-selected);
+            transform:translateY(-1px);
+          }
+
+          .hna-option-title{
             font-size:.9rem;
-            color:#667085;
-            margin-bottom:.55rem;
-          }
-
-          .result-main-value{
-            font-size:1.95rem;
             font-weight:800;
-            line-height:1.05;
-            color:#27458f;
+            line-height:1.15;
+            color:var(--note-text);
+            margin:0;
           }
 
-          .result-row{
+          .hna-option-sub{
+            font-size:.76rem;
+            line-height:1.22;
+            color:var(--note-muted);
+            margin:0;
+            font-weight:600;
+          }
+
+          .hna-action-list{
+            display:grid;
+            gap:.75rem;
+          }
+
+          .hna-action-item{
             display:flex;
             align-items:flex-start;
-            justify-content:space-between;
-            gap:1rem;
-            padding:.9rem 1rem;
-            border:1px solid #e6e9ef;
+            gap:.65rem;
+            border:1px solid #d9e2ef;
+            border-radius:1rem;
+            background:#fff;
+            padding:.75rem .85rem;
+          }
+
+          .hna-action-mark{
+            flex:0 0 auto;
+            width:30px;
+            height:30px;
+            border-radius:999px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#fff;
+            margin-top:.08rem;
+          }
+
+          .hna-action-mark.ok{background:#2ea663;}
+          .hna-action-mark.mid{background:#f4c542;}
+          .hna-action-mark.high{background:#d92d20;}
+
+          .hna-action-copy{min-width:0;flex:1;}
+
+          .hna-action-title{
+            font-size:.95rem;
+            font-weight:800;
+            line-height:1.18;
+            color:var(--note-text);
+            margin-bottom:.1rem;
+          }
+
+          .hna-action-note{
+            margin:0;
+            font-size:.82rem;
+            line-height:1.32;
+            color:var(--note-muted);
+          }
+
+          .hna-plan-line{
+            padding:.75rem .85rem;
             border-radius:.9rem;
             background:#fff;
-            margin-bottom:.65rem;
+            border:1px solid var(--note-line-strong);
+            margin-bottom:.6rem;
           }
 
-          .result-row:last-child{margin-bottom:0;}
-
-          .result-name{
-            font-weight:700;
-            color:#1f2a37;
-            line-height:1.2;
+          .hna-plan-line:last-child{
+            margin-bottom:0;
           }
 
-          .result-note{
-            font-size:.82rem;
-            color:#667085;
-            margin-top:.2rem;
-            line-height:1.4;
-          }
-
-          .result-value{
-            min-width:190px;
-            text-align:right;
+          .hna-solution-badge{
+            display:inline-block;
+            padding:.22rem .48rem;
+            border-radius:.6rem;
             font-weight:800;
-            color:#27458f;
-            line-height:1.25;
+            border:1px solid rgba(31,42,55,.12);
+            line-height:1.1;
+            color:#111827;
+            background:#fff;
           }
 
-          .good-box{
-            background:var(--good);
-            border:1px solid #cfe8e6;
-            border-radius:1rem;
-            padding:1rem;
+          .hna-water{background:#dff2ff;}
+          .hna-half{background:#eef4ff;}
+          .hna-iso{background:#fff9e8;}
+          .hna-danger-card{
+            background:#fff1f1 !important;
+            border-color:#efc0bd !important;
           }
 
-          .warn-box{
-            background:var(--warn);
-            border:1px solid #ecd798;
-            border-radius:1rem;
-            padding:1rem;
+          .hna-mid-card{
+            background:#fff9e8 !important;
+            border-color:#ead38a !important;
           }
 
-          .danger-box{
-            background:var(--danger);
-            border:1px solid #efc4be;
-            border-radius:1rem;
-            padding:1rem;
+          .hna-ok-card{
+            background:#edf8f1 !important;
+            border-color:#b7ddc3 !important;
           }
 
-          .mint-box{
-            background:var(--mint);
-            border:1px solid var(--mint-border);
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .tip-list{
-            margin:0;
-            padding-left:1.1rem;
-          }
-
-          .tip-list li{margin-bottom:.45rem;}
-
-          @media (max-width:900px){
-            .choice-grid-4{grid-template-columns:repeat(2,1fr);}
-            .summary-grid{grid-template-columns:repeat(2,1fr);}
+          @media (max-width:992px){
+            .hna-choice-grid.hna-grid-4{
+              grid-template-columns:repeat(2,minmax(0,1fr));
+            }
           }
 
           @media (max-width:768px){
-            .calc-grid{grid-template-columns:1fr;}
-            .result-row{flex-direction:column;align-items:flex-start;}
-            .result-value{text-align:left;min-width:0;}
+            .hna-choice-grid,
+            .hna-choice-grid.hna-grid-3,
+            .hna-choice-grid.hna-grid-4{
+              grid-template-columns:repeat(2,minmax(0,1fr));
+            }
           }
 
-          @media (max-width:576px){
-            .choice-grid-4,.choice-grid-3,.choice-grid-2{grid-template-columns:repeat(2,1fr);}
-            .summary-grid{grid-template-columns:1fr;}
-            .info-box-header{flex-direction:row;}
-            .info-toggle-btn{margin-left:auto;}
+          @media (max-width:420px){
+            .hna-choice-grid,
+            .hna-choice-grid.hna-grid-3,
+            .hna-choice-grid.hna-grid-4{
+              grid-template-columns:1fr;
+            }
           }
         </style>
 
-        <div class="hyperna-topbar">
-          <div class="d-flex justify-content-between align-items-start gap-3">
-            <div>
-              <div class="small opacity-75 mb-1">APP clínica • fluidoterapia y electrolitos</div>
-              <h1 class="h3 mb-2">Corrección de Hipernatremia</h1>
-              <div class="subtle text-white-50">Solo adultos. Déficit de agua libre, velocidad segura, selector de solución y plan orientativo.</div>
-            </div>
-            <span class="pill bg-light text-dark">Adultos</span>
-          </div>
+        <div class="note-hero mb-3">
+          <div class="note-hero-kicker">APP CLÍNICA · ELECTROLITOS · FLUIDOTERAPIA</div>
+          <h2>Corrección de hipernatremia</h2>
+          <div class="note-hero-subtitle">Estima déficit de agua libre, meta inicial segura y velocidad orientativa de corrección en adultos.</div>
         </div>
 
-        <div class="info-box">
+        <div class="info-box mb-3">
           <div class="info-box-header">
             <div class="info-box-title">Información</div>
             <button type="button" onclick="toggleInfo()" class="btn btn-sm info-toggle-btn">Mostrar / ocultar</button>
           </div>
-
           <div id="infoContent" class="info-box-content">
-            <?php echo $descripcion_info; ?>
-
+            <p class="mb-2"><?php echo $descripcion_info; ?></p>
             <?php if(!empty($formula)){ ?>
               <hr>
               <b>Comentario:</b><br>
               <?php echo $formula; ?>
             <?php } ?>
-
-            <?php if(!empty($referencias)){ ?>
-              <hr>
-              <b>Referencias:</b>
-              <ul class="mt-2 mb-0">
-                <?php foreach($referencias as $ref){ ?>
-                  <li><?php echo $ref; ?></li>
-                <?php } ?>
-              </ul>
-            <?php } ?>
+            <hr>
+            <b>Referencias:</b>
+            <ul class="mb-0 mt-2">
+              <?php foreach($referencias as $ref){ ?>
+                <li class="mb-2"><?php echo $ref; ?></li>
+              <?php } ?>
+            </ul>
           </div>
         </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">A. Datos de entrada</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Datos de entrada</div>
 
-            <div class="calc-grid">
-              <div class="card-block">
-                <label class="form-label-lite">Peso</label>
-                <div class="input-group mb-3">
-                  <input class="form-control calc-trigger" type="number" step="0.1" id="peso" value="">
-                  <span class="input-group-text">kg</span>
-                </div>
-
-                <label class="form-label-lite">Natremia actual</label>
-                <div class="input-group mb-3">
-                  <input class="form-control calc-trigger" type="number" step="0.1" id="naActual" value="">
-                  <span class="input-group-text">mEq/L</span>
-                </div>
-
-                <label class="form-label-lite">Sexo / ACT estimada</label>
-                <div class="choice-grid-2">
-                  <div>
-                    <input class="choice-check calc-trigger-radio" type="radio" name="tbwgrp" id="tbw_mujer" value="0.5" checked>
-                    <label class="choice-btn" for="tbw_mujer">
-                      <i class="fa-solid fa-person-dress"></i>
-                      Mujer adulta
-                      <small>ACT 50%</small>
-                    </label>
-                  </div>
-                  <div>
-                    <input class="choice-check calc-trigger-radio" type="radio" name="tbwgrp" id="tbw_hombre" value="0.6">
-                    <label class="choice-btn" for="tbw_hombre">
-                      <i class="fa-solid fa-person"></i>
-                      Hombre adulto
-                      <small>ACT 60%</small>
-                    </label>
-                  </div>
+            <div class="note-grid mb-3">
+              <div class="note-input-group">
+                <label class="note-label">Peso</label>
+                <div class="note-input-inline">
+                  <input id="peso" type="text" inputmode="decimal" class="note-input">
+                  <div class="note-input-unit">kg</div>
                 </div>
               </div>
 
-              <div class="card-block">
-                <label class="form-label-lite">Contexto clínico dominante</label>
-                <div class="choice-grid-3 mb-3">
-                  <div>
-                    <input class="choice-check calc-trigger-radio" type="radio" name="contexto" id="ctx_hipovolemico" value="hipovolemico" checked>
-                    <label class="choice-btn" for="ctx_hipovolemico">
-                      <i class="fa-solid fa-droplet-slash"></i>
-                      Hipovolémico
-                      <small>pérdida de agua</small>
-                    </label>
-                  </div>
-                  <div>
-                    <input class="choice-check calc-trigger-radio" type="radio" name="contexto" id="ctx_euvolemico" value="euvolemico">
-                    <label class="choice-btn" for="ctx_euvolemico">
-                      <i class="fa-solid fa-scale-balanced"></i>
-                      Euvolémico
-                      <small>DI / pérdidas libres</small>
-                    </label>
-                  </div>
-                  <div>
-                    <input class="choice-check calc-trigger-radio" type="radio" name="contexto" id="ctx_hipervolemico" value="hipervolemico">
-                    <label class="choice-btn" for="ctx_hipervolemico">
-                      <i class="fa-solid fa-water"></i>
-                      Hipervolémico
-                      <small>exceso de sodio</small>
-                    </label>
-                  </div>
-                </div>
-
-                <label class="form-label-lite">Duración probable</label>
-                <div class="choice-grid-2">
-                  <div>
-                    <input class="choice-check calc-trigger-radio" type="radio" name="cronologia" id="crono_aguda" value="aguda">
-                    <label class="choice-btn" for="crono_aguda">
-                      <i class="fa-solid fa-bolt"></i>
-                      Aguda
-                      <small>&lt;48 h</small>
-                    </label>
-                  </div>
-                  <div>
-                    <input class="choice-check calc-trigger-radio" type="radio" name="cronologia" id="crono_cronica" value="cronica" checked>
-                    <label class="choice-btn" for="crono_cronica">
-                      <i class="fa-solid fa-hourglass-half"></i>
-                      Crónica / incierta
-                      <small>idealmente &gt;48 h</small>
-                    </label>
-                  </div>
+              <div class="note-input-group">
+                <label class="note-label">Natremia actual</label>
+                <div class="note-input-inline">
+                  <input id="naActual" type="text" inputmode="decimal" class="note-input">
+                  <div class="note-input-unit">mEq/L</div>
                 </div>
               </div>
+            </div>
+
+            <div class="note-section-label">ACT estimada</div>
+            <div class="hna-choice-grid mb-3">
+              <label>
+                <input class="hna-option-input" type="radio" name="tbwgrp" value="0.5" checked>
+                <div class="hna-option">
+                  <i class="fa-solid fa-person-dress"></i>
+                  <div class="hna-option-title">Mujer adulta</div>
+                  <div class="hna-option-sub">ACT 50%</div>
+                </div>
+              </label>
+              <label>
+                <input class="hna-option-input" type="radio" name="tbwgrp" value="0.6">
+                <div class="hna-option">
+                  <i class="fa-solid fa-person"></i>
+                  <div class="hna-option-title">Hombre adulto</div>
+                  <div class="hna-option-sub">ACT 60%</div>
+                </div>
+              </label>
+            </div>
+
+            <div class="note-section-label">Contexto clínico dominante</div>
+            <div class="hna-choice-grid hna-grid-3 mb-3">
+              <label>
+                <input class="hna-option-input" type="radio" name="contexto" value="hipovolemico" checked>
+                <div class="hna-option">
+                  <i class="fa-solid fa-droplet-slash"></i>
+                  <div class="hna-option-title">Hipovolémico</div>
+                  <div class="hna-option-sub">pérdida de agua</div>
+                </div>
+              </label>
+              <label>
+                <input class="hna-option-input" type="radio" name="contexto" value="euvolemico">
+                <div class="hna-option">
+                  <i class="fa-solid fa-scale-balanced"></i>
+                  <div class="hna-option-title">Euvolémico</div>
+                  <div class="hna-option-sub">DI / pérdidas libres</div>
+                </div>
+              </label>
+              <label>
+                <input class="hna-option-input" type="radio" name="contexto" value="hipervolemico">
+                <div class="hna-option">
+                  <i class="fa-solid fa-water"></i>
+                  <div class="hna-option-title">Hipervolémico</div>
+                  <div class="hna-option-sub">exceso de sodio</div>
+                </div>
+              </label>
+            </div>
+
+            <div class="note-section-label">Duración probable</div>
+            <div class="hna-choice-grid">
+              <label>
+                <input class="hna-option-input" type="radio" name="cronologia" value="aguda">
+                <div class="hna-option">
+                  <i class="fa-solid fa-bolt"></i>
+                  <div class="hna-option-title">Aguda</div>
+                  <div class="hna-option-sub">&lt;48 h</div>
+                </div>
+              </label>
+              <label>
+                <input class="hna-option-input" type="radio" name="cronologia" value="cronica" checked>
+                <div class="hna-option">
+                  <i class="fa-solid fa-hourglass-half"></i>
+                  <div class="hna-option-title">Crónica / incierta</div>
+                  <div class="hna-option-sub">corregir lento</div>
+                </div>
+              </label>
             </div>
           </div>
         </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">B. Método de reposición</div>
-
-            <div class="choice-grid-4">
-              <div>
-                <input class="choice-check calc-trigger-radio" type="radio" name="solucion" id="sol_d5w" value="0" checked>
-                <label class="choice-btn" for="sol_d5w">
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Solución seleccionada</div>
+            <div class="hna-choice-grid hna-grid-4">
+              <label>
+                <input class="hna-option-input" type="radio" name="solucion" id="sol_d5w" value="0" checked>
+                <div class="hna-option">
                   <i class="fa-solid fa-flask-vial"></i>
-                  Dextrosa 5%
-                  <small>Na 0 mEq/L</small>
-                </label>
-              </div>
-              <div>
-                <input class="choice-check calc-trigger-radio" type="radio" name="solucion" id="sol_half" value="77">
-                <label class="choice-btn" for="sol_half">
+                  <div class="hna-option-title">Dextrosa 5%</div>
+                  <div class="hna-option-sub">Na 0 mEq/L</div>
+                </div>
+              </label>
+              <label>
+                <input class="hna-option-input" type="radio" name="solucion" id="sol_half" value="77">
+                <div class="hna-option">
                   <i class="fa-solid fa-prescription-bottle-medical"></i>
-                  NaCl 0,45%
-                  <small>Na 77 mEq/L</small>
-                </label>
-              </div>
-              <div>
-                <input class="choice-check calc-trigger-radio" type="radio" name="solucion" id="sol_iso" value="154">
-                <label class="choice-btn" for="sol_iso">
+                  <div class="hna-option-title">NaCl 0,45%</div>
+                  <div class="hna-option-sub">Na 77 mEq/L</div>
+                </div>
+              </label>
+              <label>
+                <input class="hna-option-input" type="radio" name="solucion" id="sol_iso" value="154">
+                <div class="hna-option">
                   <i class="fa-solid fa-kit-medical"></i>
-                  Isotónico
-                  <small>Na 154 mEq/L</small>
-                </label>
-              </div>
-              <div>
-                <input class="choice-check calc-trigger-radio" type="radio" name="solucion" id="sol_enteral" value="0">
-                <label class="choice-btn" for="sol_enteral">
+                  <div class="hna-option-title">Isotónico</div>
+                  <div class="hna-option-sub">Na 154 mEq/L</div>
+                </div>
+              </label>
+              <label>
+                <input class="hna-option-input" type="radio" name="solucion" id="sol_enteral" value="0">
+                <div class="hna-option">
                   <i class="fa-solid fa-glass-water"></i>
-                  Agua enteral/VO
-                  <small>agua libre</small>
-                </label>
-              </div>
-            </div>
-
-            <div class="small-note mt-3">
-              El selector estima un plan matemático orientativo. No reemplaza la reevaluación clínica ni los controles seriados de Na.
+                  <div class="hna-option-title">Agua enteral/VO</div>
+                  <div class="hna-option-sub">agua libre</div>
+                </div>
+              </label>
             </div>
           </div>
         </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">C. Tarjeta resumen</div>
-
-            <div class="summary-grid">
-              <div class="summary-card">
-                <div class="summary-label">Peso</div>
-                <div id="sumPeso" class="summary-value">-</div>
-              </div>
-              <div class="summary-card">
-                <div class="summary-label">Na actual</div>
-                <div id="sumNa" class="summary-value">-</div>
-              </div>
-              <div class="summary-card">
-                <div class="summary-label">ACT estimada</div>
-                <div id="sumACT" class="summary-value">-</div>
-              </div>
-              <div class="summary-card">
-                <div class="summary-label">Solución elegida</div>
-                <div id="sumSol" class="summary-value">-</div>
-              </div>
+        <div class="note-summary-box mb-3">
+          <div class="note-summary-box-title">Resumen</div>
+          <div id="summaryNarrative" class="note-summary-box-text">Ingresa peso y natremia para estimar déficit de agua libre y velocidad orientativa.</div>
+          <div class="note-summary-grid-2">
+            <div class="note-summary-item">
+              <div class="note-summary-k">Peso / ACT</div>
+              <div id="sumPesoAct" class="note-summary-v">-</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Na actual</div>
+              <div id="sumNa" class="note-summary-v">-</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Contexto</div>
+              <div id="sumContexto" class="note-summary-v">Hipovolémico</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Solución</div>
+              <div id="sumSol" class="note-summary-v">Dextrosa 5%</div>
             </div>
           </div>
         </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">D. Resultado principal</div>
+        <div class="note-result-grid-2 mb-3">
+          <div id="naSeverityCard" class="note-result-card">
+            <div class="note-result-card-label">Severidad</div>
+            <div id="severityMain" class="note-result-card-value">-</div>
+            <div id="severityText" class="note-result-card-note">Ingresa natremia actual.</div>
+          </div>
+          <div class="note-result-card">
+            <div class="note-result-card-label">Déficit de agua libre</div>
+            <div id="outDeficit" class="note-result-card-value">-</div>
+            <div id="deficitNote" class="note-result-card-note">Cálculo orientativo según meta inicial.</div>
+          </div>
+        </div>
 
-            <div class="result-main-card">
-              <div class="result-main-label">Plan orientativo</div>
-              <div class="result-main-note">Basado en ritmo seguro, déficit estimado y solución seleccionada</div>
-              <div id="mainDecision" class="result-main-value">-</div>
-            </div>
+        <div id="algoBox" class="note-interpretation mb-3">
+          <div class="note-interpretation-label">Plan orientativo</div>
+          <div id="mainDecision" class="note-interpretation-main">Pendiente</div>
+          <div id="mainSoft" class="note-interpretation-soft">Basado en ritmo seguro, déficit estimado y solución seleccionada.</div>
 
-            <div class="mt-3">
-              <div class="result-row">
-                <div>
-                  <div class="result-name">Agua corporal total estimada</div>
-                  <div class="result-note">Basada en la fracción de ACT seleccionada.</div>
+          <div id="correctionPlan" class="mt-3 text-start">
+            <div class="hna-plan-line"><strong>ACT estimada:</strong> <span id="outACT">-</span></div>
+            <div class="hna-plan-line"><strong>Meta inicial sugerida:</strong> <span id="outMeta">-</span></div>
+            <div class="hna-plan-line"><strong>Velocidad máxima:</strong> <span id="outRate">-</span></div>
+            <div class="hna-plan-line"><strong>Cambio de Na por litro:</strong> <span id="outDeltaLiter">-</span></div>
+            <div class="hna-plan-line"><strong>Controles:</strong> <span id="outMonitoring">Cada 2–3 h durante corrección activa</span></div>
+          </div>
+        </div>
+
+        <div class="note-warning mb-3">
+          <strong>Advertencia clínica:</strong>
+          <div id="warningText" class="mt-2">Si hay hipovolemia o shock, primero restaura perfusión con solución isotónica. La corrección del agua libre viene después de estabilizar hemodinamia.</div>
+        </div>
+
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Lectura clínica</div>
+            <div id="actionList" class="hna-action-list">
+              <div class="hna-action-item">
+                <div class="hna-action-mark mid"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="hna-action-copy">
+                  <div class="hna-action-title">Completa datos de entrada</div>
+                  <p class="hna-action-note">La fórmula solo sirve si se interpreta junto a volemia, pérdidas en curso y controles seriados de sodio.</p>
                 </div>
-                <div id="outACT" class="result-value">-</div>
-              </div>
-
-              <div class="result-row">
-                <div>
-                  <div class="result-name">Meta inicial sugerida</div>
-                  <div class="result-note">Objetivo conservador de primera etapa.</div>
-                </div>
-                <div id="outMeta" class="result-value">-</div>
-              </div>
-
-              <div class="result-row">
-                <div>
-                  <div class="result-name">Déficit de agua libre</div>
-                  <div class="result-note">Cálculo orientativo. No reemplaza balance ni pérdidas en curso.</div>
-                </div>
-                <div id="outDeficit" class="result-value">-</div>
-              </div>
-
-              <div class="result-row">
-                <div>
-                  <div class="result-name">Velocidad máxima sugerida</div>
-                  <div class="result-note">Depende de si el cuadro es agudo o crónico/incierto.</div>
-                </div>
-                <div id="outRate" class="result-value">-</div>
-              </div>
-
-              <div class="result-row">
-                <div>
-                  <div class="result-name">Cambio estimado de Na por litro</div>
-                  <div class="result-note">Aproximación matemática con la solución elegida.</div>
-                </div>
-                <div id="outDeltaLiter" class="result-value">-</div>
-              </div>
-
-              <div class="result-row">
-                <div>
-                  <div class="result-name">Velocidad orientativa</div>
-                  <div class="result-note">mL/h para no exceder la caída segura, si la solución sí baja Na.</div>
-                </div>
-                <div id="outInfusion" class="result-value">-</div>
-              </div>
-
-              <div class="result-row">
-                <div>
-                  <div class="result-name">Controles de Na durante corrección</div>
-                  <div class="result-note">Frecuencia sugerida mientras exista corrección activa.</div>
-                </div>
-                <div id="outMonitoring" class="result-value">Cada 2–3 h</div>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">E. Lectura clínica</div>
-
-            <div id="riskBox" class="good-box">
-              <strong id="riskTitle">Interpretación</strong><br>
-              <div id="riskText" class="small-note mt-2">
-                Completa peso y natremia para interpretar el riesgo y la estrategia de corrección.
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Plan de fluidos / mecanismo / anestesia</div>
+            <div class="hna-action-list">
+              <div class="hna-action-item">
+                <div class="hna-action-mark ok"><i class="fa-solid fa-droplet"></i></div>
+                <div class="hna-action-copy">
+                  <div class="hna-action-title">Plan de corrección / fluidos</div>
+                  <p id="fluidText" class="hna-action-note">-</p>
+                </div>
+              </div>
+              <div class="hna-action-item">
+                <div class="hna-action-mark high"><i class="fa-solid fa-brain"></i></div>
+                <div class="hna-action-copy">
+                  <div class="hna-action-title">Riesgo fisiológico de corrección rápida</div>
+                  <p id="mechanismText" class="hna-action-note">-</p>
+                </div>
+              </div>
+              <div class="hna-action-item">
+                <div class="hna-action-mark mid"><i class="fa-solid fa-mask-ventilator"></i></div>
+                <div class="hna-action-copy">
+                  <div class="hna-action-title">Consideraciones anestésicas</div>
+                  <p id="pharmText" class="hna-action-note">-</p>
+                </div>
               </div>
             </div>
-
-            <div id="fluidBox" class="mint-box mt-3">
-              <strong>Plan de corrección / fluidos</strong><br>
-              <div id="fluidText" class="small-note mt-2">-</div>
-            </div>
-
-            <div id="mechanismBox" class="danger-box mt-3">
-              <strong>Riesgos de corrección rápida y mecanismo fisiológico</strong><br>
-              <div id="mechanismText" class="small-note mt-2">-</div>
-            </div>
-
-            <div id="pharmBox" class="warn-box mt-3">
-              <strong>Interacciones anestésicas / farmacológicas relevantes</strong><br>
-              <div id="pharmText" class="small-note mt-2">-</div>
-            </div>
           </div>
         </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">F. Tips docentes</div>
-
-            <div class="warn-box">
-              <ul class="tip-list">
-                <li>En cirugía electiva, idealmente iniciar anestesia con sodio menor de 150 mEq/L.</li>
-                <li>Entre 145–150 mEq/L no siempre hay que suspender, pero sí interpretar el contexto, el volumen y la urgencia.</li>
-                <li>Si la hipernatremia es crónica o incierta, la corrección idealmente debe hacerse en más de 48 horas, no de forma brusca.</li>
-                <li>Si hay hipovolemia, primero perfundir. Corregir agua libre en un paciente colapsado con soluciones muy hipotónicas es una mala idea.</li>
-                <li>La Dextrosa 5% y el agua enteral son agua libre; NaCl 0,45% corrige más lentamente; el isotónico sirve sobre todo para reanimación inicial.</li>
-                <li>La hipernatremia puede aumentar la MAC y la deshidratación puede hacer que la inducción IV tenga un efecto hemodinámico exagerado.</li>
-                <li>Lo importante no es solo el cálculo, sino la natremia seriada. Si no controlas cada 2–3 horas durante corrección activa, vuelas a ciegas.</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="footer-note">
-          Herramienta docente y de apoyo clínico. Verificar etiología, estado de volumen, osmolaridad, función renal, pérdidas en curso y controles seriados de sodio antes de definir una estrategia.
+        <div class="note-teaching-wrap">
+          <div class="note-teaching-title">Perlas docentes</div>
+          <div class="note-teaching-main">Primero perfusión; después agua libre; siempre sodio seriado</div>
+          <div class="note-tips"><strong>Qué hacer:</strong> define volemia, cronología, pérdidas en curso y función renal antes de confiar en el cálculo.</div>
+          <div class="note-tips"><strong>Qué evitar:</strong> corregir rápido una hipernatremia crónica o incierta, especialmente sin controles de Na cada 2–3 horas.</div>
+          <div class="note-tips"><strong>Perla:</strong> D5W y agua enteral son agua libre; NaCl 0,45% corrige más lento; isotónico es para reanimación, no para bajar sodio.</div>
+          <div class="note-tips mb-0"><strong>Mensaje final:</strong> el déficit calculado es una estimación inicial; la velocidad real la manda la natremia seriada.</div>
         </div>
 
       </div>
@@ -696,212 +479,265 @@ require("head.php");
 </div>
 
 <script>
-function toggleInfo(){
-  let box = document.getElementById("infoContent");
-  box.style.display = (box.style.display === "none" || box.style.display === "") ? "block" : "none";
-}
+(function(){
+  const CNS = window.ClinicalNoteSystem;
 
-function getSelected(name){
-  const el = document.querySelector('input[name="' + name + '"]:checked');
-  return el ? el.value : null;
-}
-
-function round1(n){ return Math.round(n * 10) / 10; }
-function round2(n){ return Math.round(n * 100) / 100; }
-
-function getSolutionLabel(solId){
-  if(solId === 'sol_d5w') return 'Dextrosa 5% IV';
-  if(solId === 'sol_half') return 'NaCl 0,45%';
-  if(solId === 'sol_iso') return 'Isotónico';
-  return 'Agua enteral/VO';
-}
-
-function updateHyperNa(){
-  const peso = parseFloat(document.getElementById('peso').value);
-  const naActual = parseFloat(document.getElementById('naActual').value);
-  const tbwFrac = parseFloat(getSelected('tbwgrp') || '0.5');
-  const contexto = getSelected('contexto') || 'hipovolemico';
-  const cronologia = getSelected('cronologia') || 'cronica';
-  const naInfusate = parseFloat(getSelected('solucion') || '0');
-  const solId = document.querySelector('input[name="solucion"]:checked')?.id || 'sol_d5w';
-
-  document.getElementById('sumPeso').textContent = (!isNaN(peso) && peso > 0) ? peso.toFixed(1) + ' kg' : '-';
-  document.getElementById('sumNa').textContent = (!isNaN(naActual) && naActual > 0) ? naActual.toFixed(1) + ' mEq/L' : '-';
-  document.getElementById('sumACT').textContent = (tbwFrac * 100).toFixed(0) + '%';
-  document.getElementById('sumSol').textContent = getSolutionLabel(solId);
-
-  if(isNaN(peso) || peso <= 0 || isNaN(naActual) || naActual <= 0){
-    document.getElementById('mainDecision').textContent = '-';
-    document.getElementById('outACT').textContent = '-';
-    document.getElementById('outMeta').textContent = '-';
-    document.getElementById('outDeficit').textContent = '-';
-    document.getElementById('outRate').textContent = '-';
-    document.getElementById('outDeltaLiter').textContent = '-';
-    document.getElementById('outInfusion').textContent = '-';
-    document.getElementById('riskTitle').textContent = 'Interpretación';
-    document.getElementById('riskText').textContent = 'Completa peso y natremia para interpretar el riesgo y la estrategia de corrección.';
-    document.getElementById('riskBox').className = 'good-box';
-    document.getElementById('fluidText').textContent = '-';
-    document.getElementById('mechanismText').textContent = '-';
-    document.getElementById('pharmText').textContent = '-';
-    return;
+  function parseLocal(value){
+    if(CNS && typeof CNS.parseDecimal === 'function') return CNS.parseDecimal(value);
+    const n = Number(String(value || '').replace(',', '.'));
+    return Number.isFinite(n) ? n : null;
   }
 
-  const act = peso * tbwFrac;
-
-  let maxRateHour = 0.5;
-  let maxRate24h = 8;
-  if(cronologia === 'aguda'){
-    maxRateHour = 1.5; // centro de rango 1-2
-    maxRate24h = 10;
+  function fmt(value, decimals){
+    if(!Number.isFinite(value)) return '-';
+    if(CNS && typeof CNS.formatNumber === 'function') return CNS.formatNumber(value, decimals);
+    return Number(value).toLocaleString('es-CL', {maximumFractionDigits: decimals});
   }
 
-  let metaInicial = naActual;
-  const maxDropAllowed = maxRate24h;
-
-  if(naActual >= 160){
-    metaInicial = naActual - maxDropAllowed;
-  } else if(naActual >= 150){
-    metaInicial = Math.max(150, naActual - maxDropAllowed);
-  } else if(naActual >= 145){
-    metaInicial = Math.max(145, naActual - maxDropAllowed);
+  function getSelected(name){
+    const selected = document.querySelector('input[name="' + name + '"]:checked');
+    return selected ? selected.value : null;
   }
 
-  let deficit = 0;
-  if(naActual > metaInicial){
-    deficit = act * ((naActual / metaInicial) - 1);
+  function getSolutionId(){
+    const selected = document.querySelector('input[name="solucion"]:checked');
+    return selected ? selected.id : 'sol_d5w';
   }
 
-  const deltaNaPerL = (naInfusate - naActual) / (act + 1);
-
-  let infusionMlH = null;
-  let mainDecision = 'Valorar contexto';
-
-  if(deltaNaPerL < 0){
-    infusionMlH = (maxRateHour / Math.abs(deltaNaPerL)) * 1000;
-    mainDecision = round1(infusionMlH).toString().replace('.', ',') + ' mL/h';
-  } else if(deltaNaPerL === 0){
-    mainDecision = 'No baja Na';
-  } else {
-    mainDecision = 'Puede subir Na';
+  function getSolutionLabel(solId){
+    if(solId === 'sol_d5w') return 'Dextrosa 5%';
+    if(solId === 'sol_half') return 'NaCl 0,45%';
+    if(solId === 'sol_iso') return 'Isotónico';
+    return 'Agua enteral/VO';
   }
 
-  document.getElementById('outACT').textContent = round1(act).toString().replace('.', ',') + ' L';
-  document.getElementById('outMeta').textContent = round1(metaInicial).toString().replace('.', ',') + ' mEq/L';
-  document.getElementById('outDeficit').textContent = round2(deficit).toString().replace('.', ',') + ' L';
-
-  if(cronologia === 'aguda'){
-    document.getElementById('outRate').innerHTML = '1–2 mEq/L/h<br><span class="small-note">máx 8–12 mEq/día</span>';
-  } else {
-    document.getElementById('outRate').innerHTML = '0,5–1 mEq/L/h<br><span class="small-note">máx 8 mEq/día • idealmente >48 h</span>';
+  function getContextLabel(ctx){
+    if(ctx === 'euvolemico') return 'Euvolémico';
+    if(ctx === 'hipervolemico') return 'Hipervolémico';
+    return 'Hipovolémico';
   }
 
-  document.getElementById('outDeltaLiter').textContent = round2(deltaNaPerL).toString().replace('.', ',') + ' mEq/L por L';
-
-  if(infusionMlH !== null && isFinite(infusionMlH)){
-    document.getElementById('outInfusion').innerHTML = round1(infusionMlH).toString().replace('.', ',') + ' mL/h<br><span class="small-note">ajustar con controles</span>';
-  } else {
-    document.getElementById('outInfusion').innerHTML = 'No aplica<br><span class="small-note">la solución no reduce Na</span>';
+  function classifyNa(na){
+    if(!na || na <= 0) return {level:'pending', label:'Pendiente', text:'Ingresa natremia actual.', css:''};
+    if(na < 145) return {level:'normal', label:'No hipernatremia', text:'Bajo el umbral habitual de hipernatremia.', css:'hna-ok-card'};
+    if(na < 150) return {level:'mild', label:'Leve / zona gris', text:'145–149 mEq/L. Evaluar contexto, volemia y tendencia.', css:'hna-mid-card'};
+    if(na < 160) return {level:'significant', label:'Significativa', text:'150–159 mEq/L. Idealmente corregir antes de anestesia electiva.', css:'hna-danger-card'};
+    return {level:'severe', label:'Severa', text:'≥160 mEq/L. Alto riesgo neurológico y cardiovascular.', css:'hna-danger-card'};
   }
 
-  const riskBox = document.getElementById('riskBox');
-  let riskTitle = 'Hipernatremia leve';
-  let riskText = 'No siempre obliga a suspender un procedimiento si el valor está entre 145–150 mEq/L, pero requiere evaluación clínica y del estado de volumen.';
-  let fluidText = '';
-  let mechanismText = '';
-  let pharmText = '';
+  function renderActions(level, ctx, crono, solId){
+    const box = document.getElementById('actionList');
+    let items = [];
 
-  if(naActual < 145){
-    riskTitle = 'No corresponde a hipernatremia';
-    riskText = 'Este apunte fue diseñado para hipernatremia.';
-    riskBox.className = 'mint-box';
-    mainDecision = 'Revisar diagnóstico';
-  } else if(naActual >= 145 && naActual < 150){
-    riskTitle = 'Hipernatremia leve / zona gris';
-    riskText = 'No necesariamente impide anestesia, pero sugiere hiperosmolaridad y posible deshidratación.';
-    riskBox.className = 'warn-box';
-  } else if(naActual >= 150 && naActual < 160){
-    riskTitle = 'Hipernatremia significativa';
-    riskText = 'Idealmente corregir antes de anestesia. La corrección debe ser gradual y monitorizada.';
-    riskBox.className = 'danger-box';
-  } else {
-    riskTitle = 'Hipernatremia severa';
-    riskText = 'Alto riesgo neurológico y cardiovascular. En general no es buena condición para anestesia no impostergable.';
-    riskBox.className = 'danger-box';
-  }
-
-  if(contexto === 'hipovolemico'){
-    if(solId === 'sol_iso'){
-      fluidText = 'Buena elección para la fase inicial si el paciente está hipotenso o con mala perfusión. Pero esto no corrige bien el agua libre. Tras estabilizar, cambia a una estrategia que sí baje el sodio.';
+    if(level === 'pending'){
+      items = [
+        ['mid','Completa datos de entrada','La fórmula solo sirve si se interpreta junto a volemia, pérdidas en curso y controles seriados de sodio.']
+      ];
+    } else if(level === 'normal'){
+      items = [
+        ['ok','Revisar diagnóstico','La natremia ingresada no corresponde a hipernatremia. Verifica valor, unidad y contexto.'],
+        ['ok','No activar corrección de agua libre','No aplicar el algoritmo si no existe hipernatremia real.']
+      ];
+    } else if(level === 'mild'){
+      items = [
+        ['mid','Interpretar contexto perioperatorio','Entre 145–150 no siempre hay que suspender, pero sí entender volemia, causa y tendencia.'],
+        ['mid','Evitar corrección agresiva','Si es crónica o incierta, planifica corrección gradual y controlada.']
+      ];
     } else {
-      fluidText = 'En hipovolemia, esta solución puede ser útil después de restaurar perfusión. Si el paciente está inestable, primero resucita con isotónico y luego corrige agua libre.';
+      items = [
+        ['high','Corregir de forma controlada','Definir meta inicial conservadora, velocidad segura y controles frecuentes de Na.'],
+        ['high','Buscar causa y pérdidas en curso','Diabetes insípida, diuresis osmótica, pérdidas digestivas, fiebre, aporte de sodio o restricción de agua.'],
+        ['mid','Ajustar con natremia seriada','El plan inicial debe modificarse con controles cada 2–3 h durante corrección activa.']
+      ];
     }
-  } else if(contexto === 'euvolemico'){
-    if(solId === 'sol_d5w' || solId === 'sol_enteral'){
-      fluidText = 'Buena herramienta para corregir agua libre en un contexto euvolémico, siempre con control seriado de Na.';
-    } else if(solId === 'sol_half'){
-      fluidText = 'Opción razonable si quieres una corrección más gradual que con agua libre pura.';
+
+    if(ctx === 'hipovolemico' && level !== 'pending' && level !== 'normal'){
+      items.unshift(['high','Primero perfusión','Si hay shock o mala perfusión, reanimar inicialmente con isotónico antes de agua libre.']);
+    }
+
+    if(solId === 'sol_iso' && level !== 'pending' && level !== 'normal'){
+      items.push(['mid','Isotónico no baja sodio','Úsalo para reanimación hemodinámica, no como estrategia principal de corrección de agua libre.']);
+    }
+
+    if(crono === 'cronica' && level !== 'pending' && level !== 'normal'){
+      items.push(['high','Crónica o incierta: más lento','Evita caídas rápidas por riesgo de edema cerebral.']);
+    }
+
+    box.innerHTML = items.map(function(item){
+      const icon = item[0] === 'ok' ? 'fa-check' : (item[0] === 'mid' ? 'fa-triangle-exclamation' : 'fa-bolt');
+      return '<div class="hna-action-item">' +
+        '<div class="hna-action-mark ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
+        '<div class="hna-action-copy">' +
+          '<div class="hna-action-title">' + item[1] + '</div>' +
+          '<p class="hna-action-note">' + item[2] + '</p>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function updateHyperNa(){
+    const peso = parseLocal(document.getElementById('peso').value);
+    const naActual = parseLocal(document.getElementById('naActual').value);
+    const tbwFrac = parseLocal(getSelected('tbwgrp') || '0.5') || 0.5;
+    const contexto = getSelected('contexto') || 'hipovolemico';
+    const cronologia = getSelected('cronologia') || 'cronica';
+    const naInfusate = parseLocal(getSelected('solucion') || '0');
+    const solId = getSolutionId();
+    const naClass = classifyNa(naActual);
+
+    document.getElementById('sumNa').textContent = naActual && naActual > 0 ? fmt(naActual,1) + ' mEq/L' : '-';
+    document.getElementById('sumContexto').textContent = getContextLabel(contexto);
+    document.getElementById('sumSol').textContent = getSolutionLabel(solId);
+    document.getElementById('severityMain').textContent = naClass.label;
+    document.getElementById('severityText').textContent = naClass.text;
+
+    const severityCard = document.getElementById('naSeverityCard');
+    severityCard.className = 'note-result-card ' + naClass.css;
+
+    if(!peso || peso <= 0 || !naActual || naActual <= 0){
+      document.getElementById('sumPesoAct').textContent = peso && peso > 0 ? fmt(peso,1) + ' kg' : '-';
+      document.getElementById('summaryNarrative').textContent = 'Ingresa peso y natremia para estimar déficit de agua libre y velocidad orientativa.';
+      document.getElementById('outDeficit').textContent = '-';
+      document.getElementById('deficitNote').textContent = 'Cálculo orientativo según meta inicial.';
+      document.getElementById('mainDecision').textContent = 'Pendiente';
+      document.getElementById('mainSoft').textContent = 'Basado en ritmo seguro, déficit estimado y solución seleccionada.';
+      document.getElementById('outACT').textContent = '-';
+      document.getElementById('outMeta').textContent = '-';
+      document.getElementById('outRate').textContent = '-';
+      document.getElementById('outDeltaLiter').textContent = '-';
+      document.getElementById('fluidText').textContent = '-';
+      document.getElementById('mechanismText').textContent = '-';
+      document.getElementById('pharmText').textContent = '-';
+      renderActions('pending', contexto, cronologia, solId);
+      return;
+    }
+
+    const act = peso * tbwFrac;
+    document.getElementById('sumPesoAct').textContent = fmt(peso,1) + ' kg / ' + fmt(act,1) + ' L';
+
+    let maxRateHour = cronologia === 'aguda' ? 1.0 : 0.5;
+    let maxRate24h = cronologia === 'aguda' ? 10 : 8;
+
+    let metaInicial = naActual;
+    if(naActual >= 160){
+      metaInicial = naActual - maxRate24h;
+    } else if(naActual >= 150){
+      metaInicial = Math.max(150, naActual - maxRate24h);
+    } else if(naActual >= 145){
+      metaInicial = Math.max(145, naActual - maxRate24h);
+    }
+
+    let deficit = 0;
+    if(naActual > metaInicial){
+      deficit = act * ((naActual / metaInicial) - 1);
+    }
+
+    const deltaNaPerL = (naInfusate - naActual) / (act + 1);
+    let infusionMlH = null;
+    let mainDecision = 'Valorar contexto';
+    let mainSoft = 'El plan depende de volemia, cronología, solución elegida y controles seriados.';
+
+    if(deltaNaPerL < 0){
+      infusionMlH = (maxRateHour / Math.abs(deltaNaPerL)) * 1000;
+      mainDecision = fmt(infusionMlH,0) + ' mL/h';
+      mainSoft = 'Velocidad orientativa para no exceder una caída aproximada de ' + fmt(maxRateHour,1) + ' mEq/L/h con la solución elegida.';
+    } else if(deltaNaPerL === 0){
+      mainDecision = 'No baja Na';
+      mainSoft = 'La solución seleccionada no genera gradiente para disminuir sodio sérico.';
     } else {
-      fluidText = 'El isotónico no suele ser la herramienta de elección para bajar sodio en euvolemia.';
+      mainDecision = 'Puede subir Na';
+      mainSoft = 'La solución seleccionada puede aumentar sodio y no sirve como corrección de agua libre.';
     }
-  } else {
-    if(solId === 'sol_d5w' || solId === 'sol_enteral'){
-      fluidText = 'Puede ayudar a corregir el exceso relativo de sodio, pero en hipervolemia suele requerirse estrategia adicional para eliminar sodio y agua.';
-    } else if(solId === 'sol_half'){
-      fluidText = 'Puede ser útil, pero sigue aportando sodio. Interpreta con prudencia en hipervolemia.';
+
+    if(naActual < 145){
+      mainDecision = 'Revisar diagnóstico';
+      mainSoft = 'La natremia ingresada no corresponde a hipernatremia.';
+    } else if(solId === 'sol_iso' && deltaNaPerL >= 0){
+      mainDecision = 'No usar para bajar Na';
+      mainSoft = 'Isotónico puede ser correcto para reanimación inicial si hay hipovolemia, pero no para corregir agua libre.';
+    } else if(solId === 'sol_half' && infusionMlH !== null && infusionMlH > 350){
+      mainDecision = 'Velocidad alta';
+      mainSoft = 'NaCl 0,45% baja sodio lentamente; puede requerir volúmenes altos. Replantea estrategia y controla Na seriado.';
+    } else if((solId === 'sol_d5w' || solId === 'sol_enteral') && infusionMlH !== null && infusionMlH > 250){
+      mainDecision = 'Corregir lento';
+      mainSoft = 'El cálculo sugiere una velocidad alta para agua libre. Titrar y verificar con sodio seriado.';
+    }
+
+    document.getElementById('outACT').textContent = fmt(act,1) + ' L';
+    document.getElementById('outMeta').textContent = fmt(metaInicial,1) + ' mEq/L';
+    document.getElementById('outDeficit').textContent = fmt(deficit,2) + ' L';
+    document.getElementById('deficitNote').textContent = 'Para meta inicial ' + fmt(metaInicial,1) + ' mEq/L.';
+    document.getElementById('mainDecision').textContent = mainDecision;
+    document.getElementById('mainSoft').textContent = mainSoft;
+
+    document.getElementById('outRate').innerHTML = cronologia === 'aguda'
+      ? 'Hasta 1–2 mEq/L/h; máx. aprox. 8–12 mEq/día'
+      : '0,5–1 mEq/L/h; máx. aprox. 8 mEq/día; idealmente >48 h';
+
+    document.getElementById('outDeltaLiter').textContent = fmt(deltaNaPerL,2) + ' mEq/L por L';
+
+    document.getElementById('summaryNarrative').textContent =
+      'Na ' + fmt(naActual,1) + ' mEq/L, ' + getContextLabel(contexto).toLowerCase() + ', ' + (cronologia === 'aguda' ? 'aguda' : 'crónica/incierta') + '. ' +
+      'Déficit orientativo ' + fmt(deficit,2) + ' L; plan: ' + mainDecision + '.';
+
+    let fluidText = '';
+    if(contexto === 'hipovolemico'){
+      if(solId === 'sol_iso'){
+        fluidText = 'Buena elección para fase inicial si hay hipotensión o mala perfusión. Luego de estabilizar, cambiar a una estrategia que aporte agua libre.';
+      } else {
+        fluidText = 'Útil después de restaurar perfusión. Si el paciente está inestable, primero reanimar con isotónico y luego corregir agua libre.';
+      }
+    } else if(contexto === 'euvolemico'){
+      if(solId === 'sol_d5w' || solId === 'sol_enteral'){
+        fluidText = 'Buena herramienta para corregir agua libre en contexto euvolémico, siempre con control seriado de Na.';
+      } else if(solId === 'sol_half'){
+        fluidText = 'Opción razonable si buscas corrección más gradual que con agua libre pura.';
+      } else {
+        fluidText = 'El isotónico no suele ser la herramienta de elección para bajar sodio en euvolemia.';
+      }
     } else {
-      fluidText = 'El isotónico suele ser mala elección para corregir hipernatremia hipervolémica, salvo una razón hemodinámica muy concreta.';
+      if(solId === 'sol_d5w' || solId === 'sol_enteral'){
+        fluidText = 'Puede ayudar a corregir el exceso relativo de sodio, pero en hipervolemia puede requerirse además eliminar sodio y agua.';
+      } else if(solId === 'sol_half'){
+        fluidText = 'Puede aportar algo de agua libre, pero sigue entregando sodio. Usar con prudencia en hipervolemia.';
+      } else {
+        fluidText = 'Isotónico suele ser mala opción para corregir hipernatremia hipervolémica, salvo razón hemodinámica muy concreta.';
+      }
     }
+
+    if(cronologia === 'cronica'){
+      fluidText += ' Al ser crónica o incierta, planificar corrección lenta, idealmente en más de 48 horas.';
+    }
+
+    const mechanismText = 'En hipernatremia crónica el cerebro acumula osmoles idiogénicos para defender su volumen. Si bajas el sodio demasiado rápido, entra agua a las neuronas y aumenta el riesgo de edema cerebral, convulsiones y deterioro neurológico. La corrección lenta protege el cerebro.';
+    let pharmText = 'La hipernatremia puede aumentar la MAC de halogenados. Si hay deshidratación, la inducción IV puede causar hipotensión desproporcionada por menor volumen efectivo y labilidad hemodinámica. La menor perfusión renal puede prolongar fármacos dependientes de eliminación renal.';
+    if(contexto === 'hipovolemico'){
+      pharmText += ' En hipovolemia, la prioridad anestésica es perfusión: titular inducción y evitar colapso hemodinámico.';
+    }
+    if(cronologia === 'aguda'){
+      pharmText += ' Si realmente es aguda, puede tolerar corrección algo más rápida que la forma crónica, pero requiere monitorización estrecha.';
+    }
+
+    document.getElementById('fluidText').textContent = fluidText;
+    document.getElementById('mechanismText').textContent = mechanismText;
+    document.getElementById('pharmText').textContent = pharmText;
+
+    renderActions(naClass.level, contexto, cronologia, solId);
   }
 
-  if(solId === 'sol_iso' && deltaNaPerL >= 0){
-    mainDecision = 'No usar para bajar Na';
-  }
-
-  if(solId === 'sol_half' && infusionMlH !== null && infusionMlH > 350){
-    mainDecision = 'Velocidad alta';
-  }
-
-  if(solId === 'sol_d5w' && infusionMlH !== null && infusionMlH > 250){
-    mainDecision = 'Corregir lento y monitorizar';
-  }
-
-  if(cronologia === 'cronica'){
-    fluidText += ' Al ser crónica o incierta, idealmente planifica la corrección en más de 48 horas.';
-  }
-
-  mechanismText = 'En hipernatremia crónica, el cerebro acumula osmoles idiogénicos para defender su volumen. Si bajas el sodio demasiado rápido, el agua entra bruscamente a las neuronas, provocando edema cerebral, aumento de la presión intracraneana, convulsiones y eventualmente herniación. Por eso la corrección lenta no es un capricho: es protección cerebral.';
-
-  pharmText = 'La hipernatremia puede aumentar la MAC de los halogenados. Si además hay deshidratación, una dosis estándar de propofol o tiopental puede producir una hipotensión desproporcionada por menor volumen de distribución y mayor labilidad hemodinámica. La menor perfusión renal puede prolongar el efecto de relajantes, y la hiperosmolaridad puede modificar la respuesta a anestésicos locales.';
-
-  if(contexto === 'hipovolemico'){
-    pharmText += ' En el hipovolémico, la inducción es especialmente delicada por riesgo de colapso hemodinámico.';
-  }
-
-  if(cronologia === 'aguda'){
-    pharmText += ' Si realmente es aguda, el cerebro aún no ha desarrollado del todo mecanismos compensadores, por lo que puede tolerar una corrección más rápida que en la forma crónica.';
-  }
-
-  document.getElementById('mainDecision').textContent = mainDecision;
-  document.getElementById('riskTitle').textContent = riskTitle;
-  document.getElementById('riskText').textContent = riskText;
-  document.getElementById('fluidText').textContent = fluidText;
-  document.getElementById('mechanismText').textContent = mechanismText;
-  document.getElementById('pharmText').textContent = pharmText;
-}
-
-document.addEventListener('DOMContentLoaded', function(){
-  document.querySelectorAll('.calc-trigger').forEach(el => {
-    el.addEventListener('input', updateHyperNa);
-    el.addEventListener('change', updateHyperNa);
-  });
-
-  document.querySelectorAll('.calc-trigger-radio').forEach(el => {
-    el.addEventListener('change', updateHyperNa);
+  document.getElementById('peso').addEventListener('input', updateHyperNa);
+  document.getElementById('naActual').addEventListener('input', updateHyperNa);
+  document.querySelectorAll('input[name="tbwgrp"], input[name="contexto"], input[name="cronologia"], input[name="solucion"]').forEach(function(input){
+    input.addEventListener('change', updateHyperNa);
   });
 
   updateHyperNa();
-});
+})();
+
+function toggleInfo(){
+  const box = document.getElementById("infoContent");
+  box.style.display = (box.style.display === "none" || box.style.display === "") ? "block" : "none";
+}
 </script>
 
-<?php require("footer.php"); ?>
+<?php include("footer.php"); ?>

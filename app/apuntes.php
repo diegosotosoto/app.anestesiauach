@@ -18,7 +18,7 @@ $cabeceras = array(
 'Generalidades' => array('icono'=>'apuntes/icons/anesthesia.png',array(
       array('apuntes/asa.php','fa-solid fa-lightbulb','Clasificación ASA'),
       array('apuntes/cormack.php','fa-solid fa-lungs','Clasificación de Cormack-Lehane'),
-      array('apuntes/apfel_ponv.php','fa-solid fa-face-dizzy','Manejo NVPO Adultos'),
+      array('apuntes/apfel_ponv.php','fa-solid fa-face-dizzy','Manejo NVPO Adultos (Apfel)'),
       array('apuntes/hiperglicemia.php','fa-solid fa-candy-cane','Manejo Glicemia e Insulina'),
       array('apuntes/corticoides.php','fa-solid fa-pills','Suplementación Corticoides')         
     )),
@@ -35,7 +35,7 @@ $cabeceras = array(
     )),
 'Farmacología' => array('icono'=>'apuntes/icons/vaccination.png',array(
         array('apuntes/dilucion_farmacos.php','fa-solid fa-syringe','Dilución y Etiquetado de Drogas'),
-        array('apuntes/antitromboticos_buscador.php','fa-solid fa-pills','Anticoagulantes'),
+        array('apuntes/antitromboticos_buscador.php','fa-solid fa-pills','Antitrombóticos/Anticoagulantes'),
         array('apuntes/checklist_preparacion_HM.php','fa-solid fa-fire','Preparación libre de gatillantes'),
         array('apuntes/dosis_aall.php','fa-solid fa-syringe','Dosis Máxima AALL'),
         array('apuntes/escalares.php','fa-solid fa-calculator','Escalares de Peso'),
@@ -54,7 +54,7 @@ $cabeceras = array(
       array('apuntes/flacc.php','fa-solid fa-hands-holding-child','Escala FLACC de Dolor'),
       array('apuntes/atb_ped.php','fa-solid fa-bacterium','Profilaxis Antibiótica'),
       array('apuntes/dva_neonato.php','fa-solid fa-heart-circle-bolt','D. Vasoactivas UPC Neonatal'),      
-      array('apuntes/eberhart_ponv.php','fa-solid fa-face-dizzy','Manejo NVPO Pediátrico'),
+      array('apuntes/eberhart_ponv.php','fa-solid fa-face-dizzy','Manejo NVPO Pediátrico (Eberhart)'),
       array('apuntes/regional_ped.php','fa-solid fa-baby','Regional Pediátrica'),
       array('apuntes/analgesia_ped.php','fa-solid fa-heart-crack','Analgesia Perioperatoria Pediátrica'),
       array('apuntes/hidratacion_ped.php','fa-solid fa-glass-water-droplet','Hidratación Pediátrica')
@@ -72,12 +72,14 @@ $cabeceras = array(
     )),
 'Regional/Dolor' => array('icono'=>'apuntes/icons/ultrasound.png',array(
         array('apuntes/dosis_aall.php','fa-solid fa-syringe','Dosis Máxima AALL'),
-        array('apuntes/regional_ped.php','fa-solid fa-baby','Regional Pediátrica')
+        array('apuntes/regional_ped.php','fa-solid fa-baby','Regional Pediátrica'),
+        array('apuntes/antitromboticos_buscador.php','fa-solid fa-pills','Antitrombóticos/Anticoagulantes')
 
     )),
 'Respiratorio' => array('icono'=>'apuntes/icons/lungs.png',array(
         array('apuntes/ventilacion.php','fa-solid fa-lungs','Ventilación por Peso Ideal'),
-        array('apuntes/tdl_algoritmo.php','fa-solid fa-lungs','Tamaño Tubo Doble Lumen')       
+        array('apuntes/tdl_algoritmo.php','fa-solid fa-lungs','Tamaño Tubo Doble Lumen'),
+        array('apuntes/checklist_intubacion_vigil.php','fa-solid fa-eye','Checklist Intubación Vigil')  
     )),
 'Volumen y Reposición' => array('icono'=>'apuntes/icons/transfusion.png',array(
       array('apuntes/perdida_admisible.php','fa-solid fa-droplet','Pérdida Admisible'),

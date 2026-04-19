@@ -1,4 +1,6 @@
 <?php
+$titulo_pagina = "Emergencia pediátrica";
+$navbar_titulo = "Apuntes";
 
 $titulo_info = "Utilidad Clínica";
 $descripcion_info = "Guía rápida para estimar dosis de fármacos y parámetros útiles en una emergencia pediátrica. Los resultados se actualizan automáticamente al ingresar peso, talla y edad. Mantiene la exportación a PDF para impresión o archivo.";
@@ -18,13 +20,15 @@ $boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
 $boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
 
-require("head.php");
+include("head.php");
 ?>
+<link rel="stylesheet" href="css/clinical-note-system.css?v=1">
+<script src="js/clinical-note-system.js?v=1"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
     <div class="container-fluid px-0 px-md-2">
-      <div class="ped-shell">
+      <div class="note-shell ped-shell px-1 px-md-0 py-0">
 
         <style>
           :root{
@@ -52,36 +56,7 @@ require("head.php");
             margin:0 auto;
           }
 
-          .ped-hero{
-            background:linear-gradient(135deg,var(--brand),var(--brand-2));
-            color:#fff;
-            border-radius:1.25rem;
-            box-shadow:0 14px 34px rgba(33,64,154,.18);
-            padding:1.15rem 1.25rem;
-            margin-bottom:1rem;
-            overflow:hidden;
-          }
-
-          .ped-hero h1{
-            color:#fff;
-            margin-bottom:.35rem;
-          }
-
-          .hero-kicker{
-            font-size:.78rem;
-            letter-spacing:.06em;
-            text-transform:uppercase;
-            opacity:.82;
-            margin-bottom:.35rem;
-          }
-
-          .hero-subtitle{
-            color:rgba(255,255,255,.82);
-            font-size:.95rem;
-            margin-bottom:0;
-          }
-
-          .hero-badge{
+          .note-hero .note-hero-badge{
             display:inline-flex;
             align-items:center;
             justify-content:center;
@@ -122,14 +97,6 @@ require("head.php");
             color:var(--muted);
           }
 
-          .info-card-head{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            gap:1rem;
-            padding:1rem;
-          }
-
           .info-toggle-btn{
             border:none;
             border-radius:.7rem;
@@ -146,11 +113,13 @@ require("head.php");
             color:#fff;
           }
 
-          .info-content{
+          .info-box-content{
             display:none;
-            padding:0 1rem 1rem 1rem;
-            border-top:1px solid #edf2f8;
             animation:fadeIn .18s ease-in-out;
+          }
+
+          .info-box-content.show{
+            display:block;
           }
 
           @keyframes fadeIn{
@@ -298,6 +267,14 @@ require("head.php");
             line-height:1.15;
           }
 
+          .result-name-tag{
+            display:inline-block;
+            padding:.18rem .5rem;
+            border-radius:.55rem;
+            border:1px solid rgba(31,42,55,.08);
+            line-height:1.15;
+          }
+
           .result-note{
             font-size:.78rem;
             color:var(--muted);
@@ -414,30 +391,25 @@ require("head.php");
           }
         </style>
 
-        <div class="ped-hero">
+        <div class="note-hero mb-3">
           <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
             <div>
-              <div class="hero-kicker">Apunte clínico • cálculo automático</div>
-              <h1 class="h3">Dosis de Emergencia Pediátrica</h1>
-              <p class="hero-subtitle">Dosis útiles, parámetros fisiológicos orientativos y exportación directa a PDF para impresión o archivo.</p>
+              <div class="note-hero-kicker">APP CLÍNICA · CÁLCULO AUTOMÁTICO</div>
+              <h2>Dosis de Emergencia Pediátrica</h2>
+              <div class="note-hero-subtitle">Dosis útiles, parámetros fisiológicos orientativos y exportación directa a PDF para impresión o archivo.</div>
             </div>
-            <div class="hero-badge">Pediatría</div>
+            <div class="note-hero-badge">Pediatría</div>
           </div>
         </div>
 
-        <div class="section-card">
-          <div class="info-card-head">
-            <div>
-              <div class="section-title mb-1">Utilidad y referencias</div>
-              <div class="section-subtle">Mostrar / ocultar utilidad clínica, advertencias y referencias del apunte.</div>
-            </div>
-            <button type="button" onclick="toggleInfo()" class="info-toggle-btn" id="infoToggleBtn">
-              Mostrar
-            </button>
+        <div class="info-box mb-3">
+          <div class="info-box-header">
+            <div class="info-box-title">Información</div>
+            <button type="button" onclick="toggleInfo()" class="btn btn-sm info-toggle-btn" id="infoToggleBtn">Mostrar / ocultar</button>
           </div>
 
-          <div id="infoContent" class="info-content">
-            <div class="mb-3"><?php echo $descripcion_info; ?></div>
+          <div id="infoContent" class="info-box-content">
+            <p class="mb-3"><?php echo $descripcion_info; ?></p>
 
             <div class="callout mb-3">
               <strong>Importante:</strong> La frecuencia cardíaca y la presión arterial mostradas corresponden a valores orientativos esperables para un niño <strong>despierto y en reposo</strong>. En un paciente dormido, anestesiado o en reposo profundo, la presión arterial puede ser aproximadamente <strong>20% menor que el basal</strong>.
@@ -467,7 +439,7 @@ require("head.php");
                   <div class="control-box">
                     <label class="field-label">Peso</label>
                     <div class="input-group">
-                      <input class="form-control input-clean calc-trigger" type="number" id="peso" name="peso" value="" placeholder="Ej: 18">
+                      <input class="form-control input-clean calc-trigger" type="text" inputmode="decimal" id="peso" name="peso" value="" placeholder="Ej: 18">
                       <span class="input-group-text">kg</span>
                     </div>
                   </div>
@@ -477,7 +449,7 @@ require("head.php");
                   <div class="control-box">
                     <label class="field-label">Talla</label>
                     <div class="input-group">
-                      <input class="form-control input-clean calc-trigger" type="number" id="talla" name="talla" value="" placeholder="Ej: 105">
+                      <input class="form-control input-clean calc-trigger" type="text" inputmode="decimal" id="talla" name="talla" value="" placeholder="Ej: 105">
                       <span class="input-group-text">cm</span>
                     </div>
                   </div>
@@ -489,7 +461,7 @@ require("head.php");
                     <div class="row g-2 align-items-stretch">
                       <div class="col-8">
                         <div class="input-group" id="edadInput">
-                          <input type="number" id="edad" name="edad" class="form-control input-clean calc-trigger" placeholder="Edad">
+                          <input type="text" inputmode="decimal" id="edad" name="edad" class="form-control input-clean calc-trigger" placeholder="Edad">
                           <span class="input-group-text" id="edadUnit">años</span>
                           <input type="hidden" id="hiddenInput" name="anios" value="1">
                         </div>
@@ -508,33 +480,29 @@ require("head.php");
             </div>
           </div>
 
-          <div class="section-card">
-            <div class="section-inner">
-              <div class="section-title">Resumen del paciente</div>
-              <div class="summary-grid">
-                <div class="summary-chip">
-                  <div class="summary-k">Peso</div>
-                  <div class="summary-v" id="resumenPeso">—</div>
-                  <div class="summary-s">Dato ingresado</div>
-                </div>
-                <div class="summary-chip">
-                  <div class="summary-k">Talla</div>
-                  <div class="summary-v" id="resumenTalla">—</div>
-                  <div class="summary-s">Dato ingresado</div>
-                </div>
-                <div class="summary-chip">
-                  <div class="summary-k">Edad</div>
-                  <div class="summary-v" id="resumenEdad">—</div>
-                  <div class="summary-s" id="resumenEdadUnidad">Sin dato</div>
-                </div>
-                <div class="summary-chip">
-                  <div class="summary-k">Grupo etario</div>
-                  <div class="summary-v" id="grupoEtario">—</div>
-                  <div class="summary-s">Referencia fisiológica</div>
-                </div>
-              </div>
-            </div>
-          </div>
+          
+<div class="note-summary-box mb-3">
+  <div class="note-summary-box-title">Resumen del paciente</div>
+  <div id="summaryNarrative" class="note-summary-box-text">Ingresa peso, talla y edad para resumir el contexto del paciente.</div>
+  <div class="note-summary-grid-2">
+    <div class="note-summary-item">
+      <div class="note-summary-k">Peso</div>
+      <div id="summaryWeight" class="note-summary-v">-</div>
+    </div>
+    <div class="note-summary-item">
+      <div class="note-summary-k">Edad</div>
+      <div id="summaryAge" class="note-summary-v">-</div>
+    </div>
+    <div class="note-summary-item">
+      <div class="note-summary-k">Categoría</div>
+      <div id="summaryCategory" class="note-summary-v">-</div>
+    </div>
+    <div class="note-summary-item">
+      <div class="note-summary-k">Contexto</div>
+      <div id="summaryContext" class="note-summary-v">-</div>
+    </div>
+  </div>
+</div>
 
           <div class="section-card">
             <div class="section-inner">
@@ -651,23 +619,23 @@ require("head.php");
 
               <div class="results-grid">
                 <div class="stack-card danger">
-                  <div class="result-row"><div class="result-left"><div class="result-name">Atropina</div><div class="result-note">Bradicardia sintomática</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="atropina" readonly><span class="input-group-text">mg</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name">Bicarbonato 8%</div><div class="result-note">No usar de rutina en PCR</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="bicarbonato" readonly><span class="input-group-text">mL</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name">Epinefrina (PCR)</div><div class="result-note">Verificar concentración antes de administrar</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="epinefrina" readonly><span class="input-group-text">mg</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name">Calcio cloruro 10%</div><div class="result-note">Preferir vía segura; mayor irritación tisular</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="calcioCl" readonly><span class="input-group-text">mg</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name">Calcio gluconato 10%</div><div class="result-note">Menos irritante que CaCl</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="calcioGl" readonly><span class="input-group-text">mg</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name">Adenosina</div><div class="result-note">Bolo rápido + flush inmediato</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="adenosina" readonly><span class="input-group-text">mg</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name">Amiodarona</div><div class="result-note">Taquiarritmias seleccionadas</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="amiodarona" readonly><span class="input-group-text">mg</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name">Lidocaína</div><div class="result-note">Alternativa según contexto</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="lidocaina" readonly><span class="input-group-text">mg</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-atropine">Atropina</div><div class="result-note">Bradicardia sintomática</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="atropina" readonly><span class="input-group-text">mg</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-other">Bicarbonato 8%</div><div class="result-note">No usar de rutina en PCR</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="bicarbonato" readonly><span class="input-group-text">mL</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-vasoactive">Epinefrina (PCR)</div><div class="result-note">Verificar concentración antes de administrar</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="epinefrina" readonly><span class="input-group-text">mg</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-other">Calcio cloruro 10%</div><div class="result-note">Preferir vía segura; mayor irritación tisular</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="calcioCl" readonly><span class="input-group-text">mg</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-other">Calcio gluconato 10%</div><div class="result-note">Menos irritante que CaCl</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="calcioGl" readonly><span class="input-group-text">mg</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-other">Adenosina</div><div class="result-note">Bolo rápido + flush inmediato</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="adenosina" readonly><span class="input-group-text">mg</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-other">Amiodarona</div><div class="result-note">Taquiarritmias seleccionadas</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="amiodarona" readonly><span class="input-group-text">mg</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-local">Lidocaína</div><div class="result-note">Alternativa según contexto</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="lidocaina" readonly><span class="input-group-text">mg</span></div></div>
                 </div>
 
                 <div class="stack-card warn">
-                  <div class="result-row"><div class="result-left"><div class="result-name">Rocuronio (2 DE95)</div><div class="result-note">Intubación</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="rocuronio" readonly><span class="input-group-text">mg</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name">Midazolam</div><div class="result-note">Valorar contexto hemodinámico</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="midazolam" readonly><span class="input-group-text">mg</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name">Fentanyl (inducción)</div><div class="result-note">Cuidado con rigidez de pared torácica</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="fentaInd" readonly><span class="input-group-text">µg</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name">Fentanyl (analgesia)</div><div class="result-note">Titular según dolor y contexto</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="fentaAna" readonly><span class="input-group-text">µg</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name">Morfina</div><div class="result-note">Vigilar depresión respiratoria</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="morfina" readonly><span class="input-group-text">mg</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name">Glucosa 30%</div><div class="result-note">Corregir hipoglicemia con confirmación clínica</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="glucosa" readonly><span class="input-group-text">mL</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-neuromuscular">Rocuronio (2 DE95)</div><div class="result-note">Intubación</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="rocuronio" readonly><span class="input-group-text">mg</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-inductor">Midazolam</div><div class="result-note">Valorar contexto hemodinámico</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="midazolam" readonly><span class="input-group-text">mg</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-opioid">Fentanyl (Inducción)</div><div class="result-note">Inducción</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="fentaInd" readonly><span class="input-group-text">µg</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-opioid">Fentanyl (analgesia)</div><div class="result-note">Titular según dolor y contexto</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="fentaAna" readonly><span class="input-group-text">µg</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-opioid">Morfina</div><div class="result-note">Vigilar depresión respiratoria</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="morfina" readonly><span class="input-group-text">mg</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-other">Glucosa 30%</div><div class="result-note">Corregir hipoglicemia con confirmación clínica</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="glucosa" readonly><span class="input-group-text">mL</span></div></div>
                 </div>
               </div>
             </div>
@@ -678,8 +646,8 @@ require("head.php");
               <div class="section-title">Reversión</div>
               <div class="results-grid">
                 <div class="stack-card blue">
-                  <div class="result-row"><div class="result-left"><div class="result-name">Naloxona</div><div class="result-note">Reversión de opioides; evitar retiro brusco innecesario</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="naloxona" readonly><span class="input-group-text">µg</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name">Flumazenil</div><div class="result-note">Precaución en pacientes con riesgo convulsivo</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="flumazenil" readonly><span class="input-group-text">µg</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-reversal-opioid">Naloxona</div><div class="result-note">Reversión de opioides; evitar retiro brusco innecesario</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="naloxona" readonly><span class="input-group-text">µg</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-reversal-inductor">Flumazenil</div><div class="result-note">Precaución en pacientes con riesgo convulsivo</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="flumazenil" readonly><span class="input-group-text">µg</span></div></div>
                 </div>
               </div>
             </div>
@@ -691,10 +659,10 @@ require("head.php");
 
               <div class="results-grid">
                 <div class="stack-card danger">
-                  <div class="result-row"><div class="result-left"><div class="result-name">Cardioversión 1</div><div class="result-note">Energía inicial orientativa</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="cardiov" readonly><span class="input-group-text">J</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name">Desfibrilación 1</div><div class="result-note">Primera descarga</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="desfibr" readonly><span class="input-group-text">J</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name">Desfibrilación 2–3</div><div class="result-note">Escalamiento posterior</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="desfibr2" readonly><span class="input-group-text">J</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name">Desfibrilación 2–3</div><div class="result-note">Escalamiento posterior</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="desfibr2" readonly><span class="input-group-text">J</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-other">Cardioversión 1</div><div class="result-note">Energía inicial orientativa</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="cardiov" readonly><span class="input-group-text">J</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-other">Desfibrilación 1</div><div class="result-note">Primera descarga</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="desfibr" readonly><span class="input-group-text">J</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-other">Desfibrilación 2–3</div><div class="result-note">Escalamiento posterior</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="desfibr2" readonly><span class="input-group-text">J</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-other">Desfibrilación 2–3</div><div class="result-note">Escalamiento posterior</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="desfibr2" readonly><span class="input-group-text">J</span></div></div>
                 </div>
               </div>
             </div>
@@ -748,10 +716,8 @@ require("head.php");
 <script>
 function toggleInfo(){
   const box = document.getElementById("infoContent");
-  const btn = document.getElementById("infoToggleBtn");
-  const isOpen = box.style.display === "block";
-  box.style.display = isOpen ? "none" : "block";
-  btn.textContent = isOpen ? "Mostrar" : "Ocultar";
+  if(!box) return;
+  box.classList.toggle("show");
 }
 
 function setFieldValue(id, value, decimals){
@@ -778,18 +744,30 @@ function clearFields(ids){
   });
 }
 
+function normalizeDecimalString(value){
+  if(value === null || value === undefined) return '';
+  return String(value).trim().replace(',', '.');
+}
+
+function parseDecimalLocal(value){
+  const normalized = normalizeDecimalString(value);
+  if(normalized === '') return null;
+  const n = Number(normalized);
+  return Number.isFinite(n) ? n : null;
+}
+
 function isYearsMode(){
   return document.getElementById('btnYears').classList.contains('active-years');
 }
 
 function getAgeInMonths(){
-  const edad = parseFloat(document.getElementById('edad').value);
+  const edad = parseDecimalLocal(document.getElementById('edad').value);
   if(isNaN(edad) || edad < 0) return null;
   return isYearsMode() ? edad * 12 : edad;
 }
 
 function getAgeDisplay(){
-  const edad = parseFloat(document.getElementById('edad').value);
+  const edad = parseDecimalLocal(document.getElementById('edad').value);
   if(isNaN(edad) || edad < 0) return '—';
   return isYearsMode() ? `${edad} años` : `${edad} meses`;
 }
@@ -840,21 +818,54 @@ function getAgeGroupData(){
 function updateSummary(){
   const peso = document.getElementById('peso').value;
   const talla = document.getElementById('talla').value;
-  const edad = parseFloat(document.getElementById('edad').value);
+  const edad = parseDecimalLocal(document.getElementById('edad').value);
   const groupData = getAgeGroupData();
 
-  document.getElementById('resumenPeso').textContent = peso ? `${peso} kg` : '—';
-  document.getElementById('resumenTalla').textContent = talla ? `${talla} cm` : '—';
-  document.getElementById('resumenEdad').textContent = !isNaN(edad) && edad >= 0 ? getAgeDisplay() : '—';
-  document.getElementById('resumenEdadUnidad').textContent = isYearsMode() ? 'Edad expresada en años' : 'Edad expresada en meses';
-  document.getElementById('grupoEtario').textContent = groupData ? groupData.grupo : '—';
+  const weightText = peso ? `${peso} kg` : '—';
+  const ageText = (edad !== null && edad >= 0) ? getAgeDisplay() : '—';
+  const categoryText = groupData ? groupData.grupo : '—';
+  const contextParts = [];
+  if(talla) contextParts.push(`${talla} cm`);
+  if(edad !== null && edad >= 0) contextParts.push(isYearsMode() ? 'Edad expresada en años' : 'Edad expresada en meses');
+  const contextText = contextParts.length ? contextParts.join(' · ') : '—';
+
+  const oldPeso = document.getElementById('resumenPeso');
+  const oldTalla = document.getElementById('resumenTalla');
+  const oldEdad = document.getElementById('resumenEdad');
+  const oldEdadUnidad = document.getElementById('resumenEdadUnidad');
+  if(oldPeso) oldPeso.textContent = weightText;
+  if(oldTalla) oldTalla.textContent = talla ? `${talla} cm` : '—';
+  if(oldEdad) oldEdad.textContent = ageText;
+  if(oldEdadUnidad) oldEdadUnidad.textContent = isYearsMode() ? 'Edad expresada en años' : 'Edad expresada en meses';
+
+  const sWeight = document.getElementById('summaryWeight');
+  const sAge = document.getElementById('summaryAge');
+  const sCategory = document.getElementById('summaryCategory');
+  const sContext = document.getElementById('summaryContext');
+  const sNarrative = document.getElementById('summaryNarrative');
+
+  if(sWeight) sWeight.textContent = weightText;
+  if(sAge) sAge.textContent = ageText;
+  if(sCategory) sCategory.textContent = categoryText;
+  if(sContext) sContext.textContent = contextText;
+
+  if(sNarrative){
+    if(peso || (edad !== null && edad >= 0) || talla){
+      sNarrative.textContent = `Paciente pediátrico con peso ${weightText}, edad ${ageText} y categoría ${categoryText}.`;
+    } else {
+      sNarrative.textContent = 'Ingresa peso, talla y edad para resumir el contexto del paciente.';
+    }
+  }
+
+  const grupoEtario = document.getElementById('grupoEtario');
+  if(grupoEtario) grupoEtario.textContent = groupData ? groupData.grupo : '—';
 
   setFieldValue('fcNormal', groupData ? groupData.fc : '', 0);
   setFieldValue('paNormal', groupData ? groupData.pa : '', 0);
 }
 
 function calculateTubeAndDistance(){
-  const edad = parseFloat(document.getElementById('edad').value);
+  const edad = parseDecimalLocal(document.getElementById('edad').value);
   let resultadoF = '';
   let resultadoF2 = '';
 
@@ -906,7 +917,7 @@ function calculateTubeAndDistance(){
 }
 
 function doMath(){
-  const pesoVar = parseFloat(document.getElementById('peso').value);
+  const pesoVar = parseDecimalLocal(document.getElementById('peso').value);
 
   updateSummary();
 
@@ -1034,5 +1045,5 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 <?php
-require("footer.php");
+include("footer.php");
 ?>

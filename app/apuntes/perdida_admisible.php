@@ -1,410 +1,371 @@
 <?php
-
-$titulo_info = "Utilidad Clínica";
-$descripcion_info = "Estimación de la pérdida sanguínea admisible antes de alcanzar un hematocrito objetivo. Esta herramienta ayuda a anticipar reposición de volumen y eventual necesidad de hemocomponentes en pabellón, siempre integrada al contexto clínico.";
-$formula = "PSA = Volemia estimada x (Hto inicial - Hto objetivo) / Hto inicial";
-$referencias = array(
-  "1.- Miller's Anesthesia. Blood loss and transfusion principles.",
-  "2.- American Society of Anesthesiologists. Practice Guidelines for Perioperative Blood Management.",
-  "3.- UpToDate. Perioperative blood management: Strategies to minimize transfusions."
-);
-
-$icono_apunte = "<i class='fa-solid fa-droplet pe-3 pt-2'></i>";
-$titulo_apunte = "Pérdida Sanguínea Admisible";
-
+$titulo_pagina = "Pérdida sanguínea admisible";
+$navbar_titulo = "Apuntes";
 $boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
 $boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
 
-require("head.php");
+$titulo_info = "Utilidad clínica";
+$descripcion_info = "Estimación de la pérdida sanguínea admisible antes de alcanzar un hematocrito objetivo. Ayuda a anticipar reposición de volumen, necesidad de controles seriados y eventual transfusión, siempre integrada al contexto clínico.";
+$formula = "PSA = Volemia estimada × (Hto inicial - Hto objetivo) / Hto inicial. La volemia estimada se calcula con peso × mL/kg según grupo clínico. El resultado es orientativo y no reemplaza evaluación de perfusión, velocidad del sangrado ni comorbilidades.";
+$referencias = array(
+  "Miller RD. Miller's Anesthesia. Principles of blood loss and transfusion management.",
+  "American Society of Anesthesiologists Task Force on Perioperative Blood Management. Practice Guidelines for Perioperative Blood Management. Anesthesiology. 2015.",
+  "AABB Clinical Practice Guidelines on Red Blood Cell Transfusion Thresholds and Storage. JAMA. 2016.",
+  "UpToDate. Perioperative blood management: Strategies to minimize transfusions."
+);
+
+include("head.php");
 ?>
+<link rel="stylesheet" href="css/clinical-note-system.css?v=2">
+<script src="js/clinical-note-system.js?v=2"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
     <div class="container-fluid px-0 px-md-2">
-      <div class="psa-shell">
+      <div class="note-shell px-1 px-md-0 py-0">
 
         <style>
-          :root{
-            --brand:#27458f;
-            --brand2:#3559b7;
-            --bg:#f4f7fb;
-            --soft:#f8fafc;
-            --line:#dfe7f2;
-            --text:#1f2a37;
-            --muted:#667085;
-            --good:#edf8f7;
-            --warn:#fff9e8;
-            --danger:#fff5f3;
+          .psa-choice-grid{
+            display:grid;
+            grid-template-columns:repeat(3,minmax(0,1fr));
+            gap:.75rem;
           }
 
-          body{background:var(--bg);}
-          .psa-shell{max-width:980px;margin:0 auto;}
-
-          .psa-topbar{
-            background:linear-gradient(135deg,var(--brand),var(--brand2));
-            color:#fff;
-            border-radius:1.25rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            padding:1.15rem 1.25rem;
-            margin-bottom:1rem;
-            overflow:hidden;
-          }
-          .psa-topbar h1{color:#fff;}
-
-          .section-card{
-            border:0;
-            border-radius:1rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            background:#fff;
-            overflow:hidden;
-            margin-bottom:1rem;
+          .psa-option-input{
+            position:absolute;
+            opacity:0;
+            pointer-events:none;
           }
 
-          .section-title{
-            font-size:.8rem;
-            letter-spacing:.05em;
-            text-transform:uppercase;
-            color:var(--muted);
-          }
-
-          .pill{
-            display:inline-block;
-            padding:.2rem .55rem;
-            border-radius:999px;
-            font-size:.78rem;
-            background:#eef3ff;
-            color:#3559b7;
-            font-weight:600;
-          }
-
-          .subtle{
-            font-size:.94rem;
-            color:#5f6b76;
-          }
-
-          .info-box{
-            background:#fff;
-            border-radius:1rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            margin-bottom:1rem;
-            overflow:hidden;
-          }
-
-          .info-box-header{
+          .psa-option{
             display:flex;
-            justify-content:space-between;
+            flex-direction:column;
             align-items:center;
-            gap:1rem;
-            padding:1rem;
-          }
-
-          .info-box-title{
-            font-size:.8rem;
-            text-transform:uppercase;
-            color:#667085;
-            letter-spacing:.08em;
-          }
-
-          .info-toggle-btn{
-            border-radius:.6rem;
-            font-size:.85rem;
-            padding:.35rem .7rem;
-            white-space:nowrap;
-            background:#6c757d;
-            border:none;
-            color:white;
-            transition:.2s;
-          }
-
-          .info-toggle-btn:hover{
-            background:#5a6268;
-            color:white;
-          }
-
-          .info-box-content{
-            padding:1rem;
-            display:none;
-            animation:fadeIn .2s ease-in-out;
-            border-top:1px solid #e9eef5;
-          }
-
-          @keyframes fadeIn{
-            from{opacity:0; transform:translateY(-5px);}
-            to{opacity:1; transform:translateY(0);}
-          }
-
-          .calc-grid{
-            display:grid;
-            grid-template-columns:repeat(2,1fr);
-            gap:1rem;
-          }
-
-          .card-block{
-            border:1px solid var(--line);
-            border-radius:1rem;
-            background:var(--soft);
-            padding:1rem;
-          }
-
-          .form-label-lite{
-            font-size:.92rem;
-            font-weight:600;
-            color:var(--text);
-            margin-bottom:.35rem;
-          }
-
-          .result-box{
-            border-radius:1rem;
-            border:1px solid var(--line);
-            background:var(--soft);
-            padding:1rem;
-          }
-
-          .result-main{
-            font-size:1.08rem;
-            font-weight:700;
-            color:var(--text);
-          }
-
-          .result-num{
-            font-size:2rem;
-            font-weight:800;
-            line-height:1;
-            color:#3559b7;
-          }
-
-          .conduct-box{
-            padding:1rem;
-            border-radius:1rem;
-            border:1px solid var(--line);
-          }
-          .conduct-ok{background:var(--good);}
-          .conduct-mid{background:var(--warn);}
-          .conduct-no{background:var(--danger);}
-          .conduct-title{
-            font-size:1.08rem;
-            font-weight:800;
-            color:#1f2a37;
-            margin-bottom:.65rem;
-          }
-
-          .teaching-wrap{
-            border:1px solid var(--line);
-            border-radius:1.4rem;
-            background:var(--soft);
-            padding:1.25rem;
-          }
-          .teaching-title{
-            font-size:1rem;
-            letter-spacing:.08em;
-            text-transform:uppercase;
-            color:#64748b;
+            justify-content:center;
             text-align:center;
-            margin-bottom:1rem;
-          }
-          .teaching-main{
-            font-size:1.8rem;
-            font-weight:800;
-            text-align:center;
-            color:#1f2a37;
-            line-height:1.15;
-            margin-bottom:1.2rem;
-          }
-          .teaching-grid{
-            display:grid;
-            grid-template-columns:1fr;
-            gap:1rem;
-          }
-          .teaching-card{
+            min-height:72px;
+            border:2px solid var(--note-line);
             background:#fff;
-            border-radius:1.25rem;
-            padding:1.1rem 1rem;
-            border:1px solid #e6e9ef;
-            text-align:center;
-          }
-          .teaching-label{
-            font-size:.78rem;
-            letter-spacing:.08em;
-            text-transform:uppercase;
-            color:#667085;
-            margin-bottom:.55rem;
-          }
-          .teaching-text{
-            font-size:1rem;
-            line-height:1.45;
-            color:#1f2a37;
-            font-weight:600;
-          }
-          .teaching-soft{
-            font-size:.95rem;
-            line-height:1.5;
-            color:#667085;
-            font-weight:500;
-            margin-top:.35rem;
+            border-radius:1rem;
+            padding:.65rem .75rem;
+            cursor:pointer;
+            transition:.15s ease;
+            box-shadow:0 3px 10px rgba(15,23,42,.04);
+            gap:.18rem;
           }
 
-          .small-note{font-size:.84rem;color:var(--muted);}
-          .footer-note{font-size:.82rem;color:#6c757d;}
+          .psa-option i{
+            color:#3559b7;
+            font-size:1rem;
+          }
+
+          .psa-option-input:checked + .psa-option{
+            box-shadow:0 0 0 3px rgba(47,128,237,.14), 0 8px 18px rgba(15,23,42,.10);
+            border:4px solid var(--note-selected);
+            transform:translateY(-1px);
+          }
+
+          .psa-option-title{
+            font-size:.9rem;
+            font-weight:800;
+            line-height:1.15;
+            color:var(--note-text);
+            margin:0;
+          }
+
+          .psa-option-sub{
+            font-size:.76rem;
+            line-height:1.22;
+            color:var(--note-muted);
+            margin:0;
+            font-weight:600;
+          }
+
+          .psa-action-list{
+            display:grid;
+            gap:.75rem;
+          }
+
+          .psa-action-item{
+            display:flex;
+            align-items:flex-start;
+            gap:.65rem;
+            border:1px solid #d9e2ef;
+            border-radius:1rem;
+            background:#fff;
+            padding:.75rem .85rem;
+          }
+
+          .psa-action-mark{
+            flex:0 0 auto;
+            width:30px;
+            height:30px;
+            border-radius:999px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#fff;
+            margin-top:.08rem;
+          }
+
+          .psa-action-mark.ok{background:#2ea663;}
+          .psa-action-mark.mid{background:#f4c542;}
+          .psa-action-mark.high{background:#d92d20;}
+
+          .psa-action-copy{min-width:0;flex:1;}
+
+          .psa-action-title{
+            font-size:.95rem;
+            font-weight:800;
+            line-height:1.18;
+            color:var(--note-text);
+            margin-bottom:.1rem;
+          }
+
+          .psa-action-note{
+            margin:0;
+            font-size:.82rem;
+            line-height:1.32;
+            color:var(--note-muted);
+          }
+
+          .psa-plan-line{
+            padding:.75rem .85rem;
+            border-radius:.9rem;
+            background:#fff;
+            border:1px solid var(--note-line-strong);
+            margin-bottom:.6rem;
+          }
+
+          .psa-plan-line:last-child{
+            margin-bottom:0;
+          }
+
+          .psa-ok-card{
+            background:#edf8f1 !important;
+            border-color:#b7ddc3 !important;
+          }
+
+          .psa-mid-card{
+            background:#fff9e8 !important;
+            border-color:#ead38a !important;
+          }
+
+          .psa-danger-card{
+            background:#fff1f1 !important;
+            border-color:#efc0bd !important;
+          }
 
           @media (max-width:768px){
-            .calc-grid{grid-template-columns:1fr;}
+            .psa-choice-grid{
+              grid-template-columns:repeat(2,minmax(0,1fr));
+            }
           }
 
-          @media (max-width:576px){
-            .info-box-header{flex-direction:row;}
-            .info-toggle-btn{margin-left:auto;}
-            .result-num{font-size:1.8rem;}
-            .teaching-main{font-size:1.45rem;}
+          @media (max-width:420px){
+            .psa-choice-grid{
+              grid-template-columns:1fr;
+            }
           }
         </style>
 
-        <div class="psa-topbar">
-          <div class="d-flex justify-content-between align-items-start gap-3">
-            <div>
-              <div class="small opacity-75 mb-1">APP clínica • cálculo automático</div>
-              <h1 class="h3 mb-2">Pérdida Sanguínea Admisible</h1>
-              <div class="subtle text-white-50">Cálculo automático de pérdida tolerable antes de alcanzar el hematocrito objetivo.</div>
-            </div>
-            <span class="pill bg-light text-dark">Sangrado</span>
-          </div>
+        <div class="note-hero mb-3">
+          <div class="note-hero-kicker">APP CLÍNICA · HEMORRAGIA · TRANSFUSIÓN</div>
+          <h2>Pérdida sanguínea admisible</h2>
+          <div class="note-hero-subtitle">Estima cuánto sangrado puede tolerarse antes de alcanzar un hematocrito objetivo, con interpretación clínica y límites de seguridad.</div>
         </div>
 
-        <div class="info-box">
+        <div class="info-box mb-3">
           <div class="info-box-header">
             <div class="info-box-title">Información</div>
             <button type="button" onclick="toggleInfo()" class="btn btn-sm info-toggle-btn">Mostrar / ocultar</button>
           </div>
-
           <div id="infoContent" class="info-box-content">
-            <?php echo $descripcion_info; ?>
-
+            <p class="mb-2"><?php echo $descripcion_info; ?></p>
             <?php if(!empty($formula)){ ?>
               <hr>
               <b>Fórmula:</b><br>
               <?php echo $formula; ?>
             <?php } ?>
-
-            <?php if(!empty($referencias)){ ?>
-              <hr>
-              <b>Referencias:</b>
-              <ul class="mt-2 mb-0 small-note">
-                <?php foreach($referencias as $ref){ ?>
-                  <li><?php echo $ref; ?></li>
-                <?php } ?>
-              </ul>
-            <?php } ?>
+            <hr>
+            <b>Referencias:</b>
+            <ul class="mb-0 mt-2">
+              <?php foreach($referencias as $ref){ ?>
+                <li class="mb-2"><?php echo $ref; ?></li>
+              <?php } ?>
+            </ul>
           </div>
         </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">Datos de entrada</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Datos de entrada</div>
 
-            <div class="calc-grid">
-              <div class="card-block">
-                <label class="form-label-lite">Peso</label>
-                <div class="input-group">
-                  <input class="form-control calc-trigger" type="number" id="peso" value="">
-                  <span class="input-group-text">kg</span>
+            <div class="note-grid mb-3">
+              <div class="note-input-group">
+                <label class="note-label">Peso</label>
+                <div class="note-input-inline">
+                  <input id="peso" type="text" inputmode="decimal" class="note-input">
+                  <div class="note-input-unit">kg</div>
                 </div>
               </div>
 
-              <div class="card-block">
-                <label class="form-label-lite">Volemia estimada</label>
-                <select class="form-select calc-trigger" id="volemiaTipo">
-                  <option value="70" selected>Adulto promedio (70 ml/kg)</option>
-                  <option value="65">Adulto mayor / menor volemia relativa (65 ml/kg)</option>
-                  <option value="75">Mujer joven / adulto delgado (75 ml/kg)</option>
-                  <option value="80">Niño mayor (80 ml/kg)</option>
-                  <option value="85">Lactante (85 ml/kg)</option>
-                  <option value="90">Recién nacido (90 ml/kg)</option>
-                </select>
-              </div>
-
-              <div class="card-block">
-                <label class="form-label-lite">Hematocrito inicial</label>
-                <div class="input-group">
-                  <input class="form-control calc-trigger" type="number" id="hto_i" value="">
-                  <span class="input-group-text">%</span>
+              <div class="note-input-group">
+                <label class="note-label">Hematocrito inicial</label>
+                <div class="note-input-inline">
+                  <input id="htoInicial" type="text" inputmode="decimal" class="note-input">
+                  <div class="note-input-unit">%</div>
                 </div>
               </div>
 
-              <div class="card-block">
-                <label class="form-label-lite">Hematocrito objetivo</label>
-                <div class="input-group">
-                  <input class="form-control calc-trigger" type="number" id="hto_f" value="">
-                  <span class="input-group-text">%</span>
+              <div class="note-input-group">
+                <label class="note-label">Hematocrito admisible</label>
+                <div class="note-input-inline">
+                  <input id="htoObjetivo" type="text" inputmode="decimal" class="note-input">
+                  <div class="note-input-unit">%</div>
+                </div>
+              </div>
+
+              <div class="note-input-group">
+                <label class="note-label">Pérdida actual estimada</label>
+                <div class="note-input-inline">
+                  <input id="perdidaActual" type="text" inputmode="decimal" class="note-input">
+                  <div class="note-input-unit">mL</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="note-section-label">Volemia estimada</div>
+            <div class="psa-choice-grid">
+              <label>
+                <input class="psa-option-input" type="radio" name="volemiaTipo" value="70" checked>
+                <div class="psa-option">
+                  <i class="fa-solid fa-person"></i>
+                  <div class="psa-option-title">Adulto promedio</div>
+                  <div class="psa-option-sub">70 mL/kg</div>
+                </div>
+              </label>
+              <label>
+                <input class="psa-option-input" type="radio" name="volemiaTipo" value="65">
+                <div class="psa-option">
+                  <i class="fa-solid fa-person-cane"></i>
+                  <div class="psa-option-title">Adulto Mayor</div>
+                  <div class="psa-option-sub">65 mL/kg</div>
+                </div>
+              </label>
+              <label>
+                <input class="psa-option-input" type="radio" name="volemiaTipo" value="75">
+                <div class="psa-option">
+                  <i class="fa-solid fa-person-running"></i>
+                  <div class="psa-option-title">Adulto joven / delgado</div>
+                  <div class="psa-option-sub">75 mL/kg</div>
+                </div>
+              </label>
+              <label>
+                <input class="psa-option-input" type="radio" name="volemiaTipo" value="80">
+                <div class="psa-option">
+                  <i class="fa-solid fa-child"></i>
+                  <div class="psa-option-title">Niño mayor</div>
+                  <div class="psa-option-sub">80 mL/kg</div>
+                </div>
+              </label>
+              <label>
+                <input class="psa-option-input" type="radio" name="volemiaTipo" value="85">
+                <div class="psa-option">
+                  <i class="fa-solid fa-baby"></i>
+                  <div class="psa-option-title">Lactante</div>
+                  <div class="psa-option-sub">85 mL/kg</div>
+                </div>
+              </label>
+              <label>
+                <input class="psa-option-input" type="radio" name="volemiaTipo" value="90">
+                <div class="psa-option">
+                  <i class="fa-solid fa-baby-carriage"></i>
+                  <div class="psa-option-title">Recién nacido</div>
+                  <div class="psa-option-sub">90 mL/kg</div>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="note-summary-box mb-3">
+          <div class="note-summary-box-title">Resumen</div>
+          <div id="summaryNarrative" class="note-summary-box-text">Ingresa peso, hematocrito inicial y hematocrito objetivo para calcular la pérdida sanguínea admisible.</div>
+          <div class="note-summary-grid-2">
+            <div class="note-summary-item">
+              <div class="note-summary-k">Peso / volemia</div>
+              <div id="summaryWeight" class="note-summary-v">-</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Hematocritos</div>
+              <div id="summaryHct" class="note-summary-v">-</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Volemia total</div>
+              <div id="summaryBloodVolume" class="note-summary-v">-</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Pérdida actual</div>
+              <div id="summaryCurrentLoss" class="note-summary-v">No ingresada</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="note-result-grid-2 mb-3">
+          <div id="psaCard" class="note-result-card">
+            <div class="note-result-card-label">Pérdida admisible</div>
+            <div id="psaResult" class="note-result-card-value">-</div>
+            <div id="psaNote" class="note-result-card-note">Resultado orientativo basado en volemia estimada.</div>
+          </div>
+          <div id="remainingCard" class="note-result-card">
+            <div class="note-result-card-label">Margen restante</div>
+            <div id="remainingResult" class="note-result-card-value">-</div>
+            <div id="remainingNote" class="note-result-card-note">Ingresa pérdida actual si quieres estimar margen restante.</div>
+          </div>
+        </div>
+
+        <div id="algoBox" class="note-interpretation mb-3">
+          <div class="note-interpretation-label">Interpretación clínica</div>
+          <div id="interpMain" class="note-interpretation-main">Pendiente</div>
+          <div id="interpSoft" class="note-interpretation-soft">La PSA orienta planificación, pero la transfusión depende de velocidad de sangrado, perfusión, Hb/Hto real, comorbilidad y contexto quirúrgico.</div>
+
+          <div class="mt-3 text-start">
+            <div class="psa-plan-line"><strong>Fórmula aplicada:</strong> <span id="formulaApplied">-</span></div>
+            <div class="psa-plan-line"><strong>Reposición inicial:</strong> <span id="replacementText">-</span></div>
+            <div class="psa-plan-line"><strong>Cuándo escalar:</strong> <span id="escalationText">-</span></div>
+          </div>
+        </div>
+
+        <div class="note-warning mb-3">
+          <strong>Advertencia clínica:</strong>
+          <div id="warningText" class="mt-2">La pérdida admisible no es un gatillo transfusional automático. En sangrado rápido, shock, cardiopatía, sepsis, anemia severa o mala perfusión, la decisión debe adelantarse al cálculo.</div>
+        </div>
+
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Conducta práctica</div>
+            <div id="actionList" class="psa-action-list">
+              <div class="psa-action-item">
+                <div class="psa-action-mark mid"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="psa-action-copy">
+                  <div class="psa-action-title">Completa los datos esenciales</div>
+                  <p class="psa-action-note">La estimación requiere peso, volemia estimada, hematocrito inicial y hematocrito objetivo menor al inicial.</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">Resultado</div>
-
-            <div class="result-box mb-3">
-              <div class="d-flex justify-content-between align-items-center gap-3">
-                <div>
-                  <div class="small-note">Pérdida sanguínea admisible</div>
-                  <div id="resultadoTexto" class="result-main">Ingresa los datos.</div>
-                </div>
-                <div id="resultadoNum" class="result-num">0</div>
-              </div>
-            </div>
-
-            <div id="conductBox" class="conduct-box conduct-mid">
-              <div id="conductTitle" class="conduct-title">Interpretación clínica</div>
-              <div id="conductText">Completa peso, volemia y hematocritos para estimar la pérdida admisible.</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="teaching-wrap">
-              <div class="teaching-title">Guía práctica en anestesia</div>
-              <div class="teaching-main">La reposición inicial suele comenzar con cristaloides, pero la transfusión depende del contexto clínico, no solo del cálculo</div>
-
-              <div class="teaching-grid">
-                <div class="teaching-card">
-                  <div class="teaching-label">Reposición inicial</div>
-                  <div class="teaching-text">Partir con cristaloides balanceados</div>
-                  <div class="teaching-soft">En la mayoría de los sangrados iniciales la reposición comienza con cristaloides, idealmente balanceados. Evita la sobrecarga innecesaria y la hemodilución excesiva.</div>
-                </div>
-
-                <div class="teaching-card">
-                  <div class="teaching-label">Cuándo pensar en transfusión</div>
-                  <div class="teaching-text">No depende solo de superar la PSA</div>
-                  <div class="teaching-soft">Considera transfusión de hemocomponentes si hay sangrado activo relevante, inestabilidad hemodinámica, mala perfusión, Hb o Hto en rango crítico, cardiopatía, sepsis, cirugía mayor o contexto de baja tolerancia a anemia.</div>
-                </div>
-
-                <div class="teaching-card">
-                  <div class="teaching-label">Hemocomponentes</div>
-                  <div class="teaching-text">Transfusión guiada por contexto y objetivos</div>
-                  <div class="teaching-soft">Si el sangrado se vuelve importante o masivo, no basta con glóbulos rojos aislados. Evalúa necesidad de plasma, plaquetas, fibrinógeno o protocolos tipo transfusión masiva según el escenario.</div>
-                </div>
-
-                <div class="teaching-card">
-                  <div class="teaching-label">Error frecuente</div>
-                  <div class="teaching-text">Usar la PSA como regla rígida</div>
-                  <div class="teaching-soft">La PSA es orientativa. No reemplaza monitorización, perfusión, lactato, tendencia de Hb, evaluación del campo quirúrgico ni velocidad real del sangrado.</div>
-                </div>
-
-                <div class="teaching-card">
-                  <div class="teaching-label">Perla clínica</div>
-                  <div class="teaching-text">Una anemia bien tolerada no es igual a shock hemorrágico</div>
-                  <div class="teaching-soft">El problema no es solo cuánto hematocrito queda, sino si el paciente mantiene entrega adecuada de oxígeno, estabilidad hemodinámica y reserva fisiológica.</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="footer-note">
-          Herramienta docente y de apoyo clínico. La decisión de reposición o transfusión debe integrar magnitud del sangrado, velocidad, contexto quirúrgico, perfusión y comorbilidades.
+        <div class="note-teaching-wrap">
+          <div class="note-teaching-title">Perlas docentes</div>
+          <div class="note-teaching-main">La pérdida admisible ayuda a anticipar; no decide transfusión por sí sola</div>
+          <div class="note-tips"><strong>Qué hacer:</strong> usa la PSA para planificar controles, acceso venoso, fluidos, disponibilidad de sangre y umbral de reevaluación.</div>
+          <div class="note-tips"><strong>Qué evitar:</strong> esperar a “superar la PSA” si el sangrado es rápido, hay hipotensión, mala perfusión o baja reserva fisiológica.</div>
+          <div class="note-tips"><strong>Reposición inicial:</strong> en sangrado inicial estable, partir con cristaloides balanceados y reevaluar. Evita hemodilución excesiva por sobrecarga.</div>
+          <div class="note-tips"><strong>Hemocomponentes:</strong> si el sangrado se vuelve importante, no pienses solo en glóbulos rojos; evalúa plasma, plaquetas, fibrinógeno y protocolo de hemorragia masiva.</div>
+          <div class="note-tips mb-0"><strong>Mensaje final:</strong> una anemia estable no es lo mismo que shock hemorrágico; la entrega de oxígeno y la perfusión mandan.</div>
         </div>
 
       </div>
@@ -413,62 +374,180 @@ require("head.php");
 </div>
 
 <script>
+(function(){
+  const CNS = window.ClinicalNoteSystem || {};
+
+  function parseLocal(value){
+    if(CNS.parseDecimal) return CNS.parseDecimal(value);
+    const n = Number(String(value || '').replace(',', '.'));
+    return Number.isFinite(n) ? n : null;
+  }
+
+  function fmt(value, decimals){
+    if(!Number.isFinite(value)) return '-';
+    if(CNS.formatNumber) return CNS.formatNumber(value, decimals);
+    return Number(value).toLocaleString('es-CL', {maximumFractionDigits: decimals});
+  }
+
+  function setText(id, value){
+    const el = document.getElementById(id);
+    if(CNS.safeSetText) CNS.safeSetText(el, value);
+    else if(el) el.textContent = value;
+  }
+
+  function getSelected(name){
+    const selected = document.querySelector('input[name="' + name + '"]:checked');
+    return selected ? Number(selected.value) : null;
+  }
+
+  function renderActions(level, currentRatio){
+    const box = document.getElementById('actionList');
+    let items = [];
+
+    if(level === 'pending'){
+      items = [
+        ['mid','Completa los datos esenciales','La estimación requiere peso, volemia estimada, hematocrito inicial y hematocrito objetivo menor al inicial.']
+      ];
+    } else if(level === 'wide'){
+      items = [
+        ['ok','Reserva estimada relativamente amplia','Hay margen matemático, pero no descarta transfusión si el sangrado es rápido o hay mala perfusión.'],
+        ['ok','Planificar seguimiento','Monitoriza campo quirúrgico, hemodinamia, diuresis, lactato y Hb/Hto seriado según magnitud del sangrado.']
+      ];
+    } else if(level === 'intermediate'){
+      items = [
+        ['mid','Zona de vigilancia estrecha','Prepara estrategia de reposición y define momento de control de Hb/Hto o gasometría.'],
+        ['mid','Anticipar disponibilidad de sangre','Si el sangrado continúa, conviene tener hemocomponentes disponibles antes de llegar al objetivo.']
+      ];
+    } else {
+      items = [
+        ['high','Baja tolerancia estimada','Pérdidas pequeñas pueden llevar rápido al hematocrito objetivo. Anticipa transfusión si el contexto lo justifica.'],
+        ['high','No esperes al número si hay shock','Inestabilidad, mala perfusión o sangrado rápido obligan a actuar antes de agotar el margen calculado.']
+      ];
+    }
+
+    if(Number.isFinite(currentRatio)){
+      if(currentRatio >= 1){
+        items.unshift(['high','Pérdida actual iguala o supera PSA','Reevaluar perfusión, Hb/Hto, necesidad de transfusión y protocolo de hemorragia si corresponde.']);
+      } else if(currentRatio >= 0.7){
+        items.unshift(['mid','Pérdida actual cercana al umbral','Recontrola laboratorio y anticipa hemocomponentes si el sangrado continúa.']);
+      }
+    }
+
+    box.innerHTML = items.map(function(item){
+      const icon = item[0] === 'ok' ? 'fa-check' : (item[0] === 'mid' ? 'fa-triangle-exclamation' : 'fa-bolt');
+      return '<div class="psa-action-item">' +
+        '<div class="psa-action-mark ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
+        '<div class="psa-action-copy">' +
+          '<div class="psa-action-title">' + item[1] + '</div>' +
+          '<p class="psa-action-note">' + item[2] + '</p>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function updatePSA(){
+    const peso = parseLocal(document.getElementById('peso').value);
+    const htoI = parseLocal(document.getElementById('htoInicial').value);
+    const htoF = parseLocal(document.getElementById('htoObjetivo').value);
+    const perdidaActual = parseLocal(document.getElementById('perdidaActual').value);
+    const volemiaKg = getSelected('volemiaTipo') || 70;
+
+    setText('summaryWeight', peso && peso > 0 ? fmt(peso,1) + ' kg · ' + fmt(volemiaKg,0) + ' mL/kg' : '-');
+    setText('summaryHct', (htoI && htoF) ? fmt(htoI,1) + '% → ' + fmt(htoF,1) + '%' : '-');
+    setText('summaryCurrentLoss', perdidaActual && perdidaActual > 0 ? fmt(perdidaActual,0) + ' mL' : 'No ingresada');
+
+    const invalid = !peso || peso <= 0 || !htoI || htoI <= 0 || !htoF || htoF <= 0 || htoF >= htoI;
+
+    if(invalid){
+      setText('summaryNarrative', htoF && htoI && htoF >= htoI ? 'El hematocrito objetivo debe ser menor que el hematocrito inicial.' : 'Ingresa peso, hematocrito inicial y hematocrito objetivo para calcular la pérdida sanguínea admisible.');
+      setText('summaryBloodVolume', '-');
+      setText('psaResult', '-');
+      setText('psaNote', 'Resultado orientativo basado en volemia estimada.');
+      setText('remainingResult', '-');
+      setText('remainingNote', 'Ingresa pérdida actual si quieres estimar margen restante.');
+      setText('interpMain', 'Pendiente');
+      setText('interpSoft', 'La PSA orienta planificación, pero la transfusión depende de velocidad de sangrado, perfusión, Hb/Hto real, comorbilidad y contexto quirúrgico.');
+      setText('formulaApplied', '-');
+      setText('replacementText', '-');
+      setText('escalationText', '-');
+      document.getElementById('psaCard').className = 'note-result-card';
+      document.getElementById('remainingCard').className = 'note-result-card';
+      renderActions('pending', null);
+      return;
+    }
+
+    const volemia = peso * volemiaKg;
+    const psa = volemia * ((htoI - htoF) / htoI);
+    const remaining = (perdidaActual && perdidaActual > 0) ? psa - perdidaActual : null;
+    const ratio = (perdidaActual && perdidaActual > 0) ? perdidaActual / psa : null;
+
+    setText('summaryBloodVolume', fmt(volemia,0) + ' mL');
+    setText('psaResult', fmt(psa,0) + ' mL');
+    setText('psaNote', 'Volemia estimada: ' + fmt(volemia,0) + ' mL.');
+    setText('formulaApplied', fmt(volemia,0) + ' × (' + fmt(htoI,1) + ' - ' + fmt(htoF,1) + ') / ' + fmt(htoI,1));
+
+    if(remaining === null){
+      setText('remainingResult', '-');
+      setText('remainingNote', 'Ingresa pérdida actual si quieres estimar margen restante.');
+      document.getElementById('remainingCard').className = 'note-result-card';
+    } else {
+      setText('remainingResult', fmt(remaining,0) + ' mL');
+      setText('remainingNote', remaining >= 0 ? 'Margen estimado antes de alcanzar el Hto objetivo.' : 'La pérdida ingresada supera la PSA estimada.');
+      document.getElementById('remainingCard').className = 'note-result-card ' + (remaining < 0 ? 'psa-danger-card' : (ratio >= 0.7 ? 'psa-mid-card' : 'psa-ok-card'));
+    }
+
+    let level = 'intermediate';
+    let main = 'Reserva intermedia';
+    let soft = 'Requiere vigilancia de sangrado, hemodinamia, perfusión y laboratorio seriado.';
+    let cardClass = 'psa-mid-card';
+
+    if(psa >= 1500){
+      level = 'wide';
+      main = 'Reserva estimada amplia';
+      soft = 'Existe mayor margen matemático antes de llegar al Hto objetivo, pero el contexto clínico puede adelantar la indicación de transfusión.';
+      cardClass = 'psa-ok-card';
+    } else if(psa < 700){
+      level = 'low';
+      main = 'Baja tolerancia estimada';
+      soft = 'Pérdidas relativamente pequeñas pueden llevar al Hto objetivo. Conviene anticipar estrategia de reposición y disponibilidad de sangre.';
+      cardClass = 'psa-danger-card';
+    }
+
+    if(ratio !== null && ratio >= 1){
+      main = 'Umbral alcanzado o superado';
+      soft = 'La pérdida actual iguala o supera la PSA estimada. Reevalúa perfusión, Hb/Hto, velocidad del sangrado y necesidad de hemocomponentes.';
+      cardClass = 'psa-danger-card';
+    } else if(ratio !== null && ratio >= 0.7){
+      main = 'Cerca del umbral estimado';
+      soft = 'La pérdida actual se acerca a la PSA. Recontrola laboratorio y anticipa hemocomponentes si el sangrado continúa.';
+      cardClass = 'psa-mid-card';
+    }
+
+    document.getElementById('psaCard').className = 'note-result-card ' + cardClass;
+    setText('interpMain', main);
+    setText('interpSoft', soft);
+    setText('summaryNarrative', 'Peso ' + fmt(peso,1) + ' kg, volemia ' + fmt(volemiaKg,0) + ' mL/kg, Hto ' + fmt(htoI,1) + '% → ' + fmt(htoF,1) + '%. PSA estimada: ' + fmt(psa,0) + ' mL.');
+    setText('replacementText', 'En sangrado inicial estable, comenzar con cristaloides balanceados y reevaluación. Evitar sobrecarga y hemodilución excesiva.');
+    setText('escalationText', 'Escalar si hay sangrado rápido, inestabilidad, mala perfusión, Hb/Hto crítico, cardiopatía, sepsis, cirugía mayor o baja tolerancia a anemia.');
+
+    renderActions(level, ratio);
+  }
+
+  ['peso','htoInicial','htoObjetivo','perdidaActual'].forEach(function(id){
+    document.getElementById(id).addEventListener('input', updatePSA);
+  });
+
+  document.querySelectorAll('input[name="volemiaTipo"]').forEach(function(input){
+    input.addEventListener('change', updatePSA);
+  });
+
+  updatePSA();
+})();
+
 function toggleInfo(){
-  let box = document.getElementById("infoContent");
+  const box = document.getElementById("infoContent");
   box.style.display = (box.style.display === "none" || box.style.display === "") ? "block" : "none";
 }
-
-function doMath(){
-  const peso = parseFloat(document.getElementById('peso').value);
-  const volemiaKg = parseFloat(document.getElementById('volemiaTipo').value);
-  const htoI = parseFloat(document.getElementById('hto_i').value);
-  const htoF = parseFloat(document.getElementById('hto_f').value);
-
-  if([peso, volemiaKg, htoI, htoF].some(v => isNaN(v) || v <= 0) || htoF >= htoI){
-    document.getElementById('resultadoNum').textContent = '0';
-    document.getElementById('resultadoTexto').textContent = 'Ingresa datos válidos. El hematocrito objetivo debe ser menor que el inicial.';
-    document.getElementById('conductBox').className = 'conduct-box conduct-mid';
-    document.getElementById('conductTitle').textContent = 'Interpretación clínica';
-    document.getElementById('conductText').textContent = 'Completa peso, volemia y hematocritos para estimar la pérdida admisible.';
-    return;
-  }
-
-  const volemia = peso * volemiaKg;
-  const psa = volemia * ((htoI - htoF) / htoI);
-
-  document.getElementById('resultadoNum').textContent = psa.toFixed(0) + ' ml';
-  document.getElementById('resultadoTexto').textContent = 'PSA estimada con volemia aproximada de ' + volemia.toFixed(0) + ' ml';
-
-  const box = document.getElementById('conductBox');
-  const title = document.getElementById('conductTitle');
-  const text = document.getElementById('conductText');
-
-  box.classList.remove('conduct-ok','conduct-mid','conduct-no');
-
-  if(psa >= 1500){
-    box.classList.add('conduct-ok');
-    title.textContent = 'Reserva relativamente amplia';
-    text.innerHTML = 'Existe margen mayor antes de alcanzar el hematocrito objetivo, pero eso <strong>no descarta transfusión</strong> si el sangrado es rápido, el paciente es frágil o hay mala perfusión. La reposición inicial suele comenzar con cristaloides.';
-  } else if(psa >= 700){
-    box.classList.add('conduct-mid');
-    title.textContent = 'Reserva intermedia';
-    text.innerHTML = 'Zona de vigilancia estrecha. Reevaluar frecuencia del sangrado, campo quirúrgico, perfusión, Hb seriada y contexto clínico. Puede requerirse transfusión según tolerancia individual y velocidad de pérdida.';
-  } else {
-    box.classList.add('conduct-no');
-    title.textContent = 'Baja tolerancia estimada';
-    text.innerHTML = 'Pequeñas pérdidas pueden llevar rápido al hematocrito objetivo. En este escenario conviene anticipar estrategia de reposición y considerar precozmente hemocomponentes si el contexto lo justifica.';
-  }
-}
-
-document.addEventListener('DOMContentLoaded', function(){
-  document.querySelectorAll('.calc-trigger').forEach(el => {
-    el.addEventListener('input', doMath);
-    el.addEventListener('change', doMath);
-  });
-  doMath();
-});
 </script>
 
-<?php
-require("footer.php");
-?>
+<?php include("footer.php"); ?>

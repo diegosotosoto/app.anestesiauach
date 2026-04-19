@@ -1,485 +1,442 @@
 <?php
-
-$titulo_info = "Utilidad Clínica";
-$descripcion_info = "Resumen práctico para preparación y programación de analgesia epidural obstétrica con modalidad PIEB/PCEA. Incluye receta de preparación, parámetros habituales de programación y perlas docentes sobre outcomes clínicos.";
-$formula = "PIEB habitual: solución de bupivacaína 0,0625% + fentanilo 2 µg/mL. Programación frecuente: 0 - 9/10 - 45/60. PCEA habitual: bolos de 10 mL con lockout de 10 minutos.";
-$referencias = array(
-  "1.- Wong CA. Patient-controlled epidural analgesia for labor. Anesth Analg. 2009; International Anesthesia Research Society.",
-  "2.- Chestnut DH. Obstetric Anesthesia: Principles and Practice.",
-  "3.- Wong CA, McCarthy RJ y cols. Estudios comparativos entre PIEB, PCEA y CIE en analgesia obstétrica.",
-  "4.- Documentos docentes locales de analgesia obstétrica."
-);
-
-$icono_apunte = "<i class='fa-solid fa-syringe pe-3 pt-2'></i>";
-$titulo_apunte = "Preparación y Programación PIEB";
-
+$titulo_pagina = "PIEB / PCEA";
+$navbar_titulo = "Apuntes";
 $boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
 $boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
 
-require("head.php");
+$titulo_info = "Utilidad clínica";
+$descripcion_info = "Apunte interactivo para preparación y programación de analgesia epidural obstétrica en modalidad PIEB/PCEA. Calcula la receta de preparación para una solución de bupivacaína 0,0625% + fentanyl 2 mcg/mL y muestra parámetros habituales de programación.";
+$formula = "Bupivacaína 0,0625% = 0,625 mg/mL. Si se usa bupivacaína 0,5% = 5 mg/mL, se requieren 0,125 mL por cada mL de volumen final. Fentanyl final deseado en mcg/mL requiere volumen final × concentración final deseada. En Chile, la presentación habitual es fentanyl 50 mcg/mL. Volumen a retirar del matraz = volumen de bupivacaína + volumen de fentanyl agregado.";
+$referencias = array(
+  "Wong CA. Patient-controlled epidural analgesia for labor. Anesth Analg. 2009.",
+  "Chestnut DH. Chestnut's Obstetric Anesthesia: Principles and Practice.",
+  "Wong CA, McCarthy RJ, Hewlett B. The effect of manipulation of the programmed intermittent bolus time interval and injection volume on total drug use for labor epidural analgesia. Anesth Analg. 2011.",
+  "George RB, Allen TK, Habib AS. Intermittent epidural bolus compared with continuous epidural infusions for labor analgesia: a systematic review and meta-analysis. Anesth Analg. 2013.",
+  "Documentos docentes locales de analgesia epidural obstétrica."
+);
+
+include("head.php");
 ?>
+<link rel="stylesheet" href="css/clinical-note-system.css?v=2">
+<script src="js/clinical-note-system.js?v=2"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
     <div class="container-fluid px-0 px-md-2">
-      <div class="pieb-shell">
+      <div class="note-shell px-1 px-md-0 py-0">
 
         <style>
-          :root{
-            --brand:#27458f;
-            --brand2:#3559b7;
-            --bg:#f4f7fb;
-            --soft:#f8fafc;
-            --line:#dfe7f2;
-            --text:#1f2a37;
-            --muted:#667085;
-            --good:#edf8f7;
-            --warn:#fff9e8;
-            --danger:#fff5f3;
-            --mint:#e8f8f2;
-            --mint-border:#bfe6d7;
-            --rose:#f8eef4;
-            --rose-border:#e7c8d7;
+          .pieb-choice-grid{
+            display:grid;
+            grid-template-columns:repeat(3,minmax(0,1fr));
+            gap:.75rem;
           }
 
-          body{background:var(--bg);}
-          .pieb-shell{max-width:980px;margin:0 auto;}
-
-          .topbar{
-            background:linear-gradient(135deg,var(--brand),var(--brand2));
-            color:#fff;
-            border-radius:1.25rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            padding:1.15rem 1.25rem;
-            margin-bottom:1rem;
-            overflow:hidden;
+          .pieb-option-input{
+            position:absolute;
+            opacity:0;
+            pointer-events:none;
           }
-          .topbar h1{color:#fff;}
 
-          .section-card{
-            border:0;
-            border-radius:1rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
+          .pieb-option{
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            text-align:center;
+            min-height:72px;
+            border:2px solid var(--note-line);
             background:#fff;
-            overflow:hidden;
-            margin-bottom:1rem;
+            border-radius:1rem;
+            padding:.65rem .75rem;
+            cursor:pointer;
+            transition:.15s ease;
+            box-shadow:0 3px 10px rgba(15,23,42,.04);
+            gap:.18rem;
           }
 
-          .section-title{
-            font-size:.8rem;
-            letter-spacing:.05em;
-            text-transform:uppercase;
-            color:var(--muted);
-          }
-
-          .pill{
-            display:inline-block;
-            padding:.2rem .55rem;
-            border-radius:999px;
-            font-size:.78rem;
-            background:#eef3ff;
+          .pieb-option i{
             color:#3559b7;
+            font-size:1rem;
+          }
+
+          .pieb-option-input:checked + .pieb-option{
+            box-shadow:0 0 0 3px rgba(47,128,237,.14), 0 8px 18px rgba(15,23,42,.10);
+            border:4px solid var(--note-selected);
+            transform:translateY(-1px);
+          }
+
+          .pieb-option-title{
+            font-size:.9rem;
+            font-weight:800;
+            line-height:1.15;
+            color:var(--note-text);
+            margin:0;
+          }
+
+          .pieb-option-sub{
+            font-size:.76rem;
+            line-height:1.22;
+            color:var(--note-muted);
+            margin:0;
             font-weight:600;
           }
 
-          .subtle{font-size:.94rem;color:#5f6b76;}
-          .small-note{font-size:.84rem;color:var(--muted);}
-          .footer-note{font-size:.82rem;color:#6c757d;}
-
-          .info-box{
-            background:#fff;
-            border-radius:1rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            margin-bottom:1rem;
-            overflow:hidden;
+          .pieb-step-list{
+            display:grid;
+            gap:.75rem;
           }
-          .info-box-header{
+
+          .pieb-step{
             display:flex;
-            justify-content:space-between;
+            align-items:flex-start;
+            gap:.7rem;
+            border:1px solid var(--note-line);
+            border-radius:1rem;
+            background:#fff;
+            padding:.78rem .85rem;
+          }
+
+          .pieb-step-num{
+            flex:0 0 auto;
+            width:32px;
+            height:32px;
+            border-radius:999px;
+            display:flex;
             align-items:center;
-            gap:1rem;
-            padding:1rem;
-          }
-          .info-box-title{
-            font-size:.8rem;
-            text-transform:uppercase;
-            color:#667085;
-            letter-spacing:.08em;
-          }
-          .info-toggle-btn{
-            border-radius:.6rem;
-            font-size:.85rem;
-            padding:.35rem .7rem;
-            white-space:nowrap;
-            background:#6c757d;
-            border:none;
-            color:white;
-            transition:.2s;
-          }
-          .info-toggle-btn:hover{background:#5a6268;color:white;}
-          .info-box-content{
-            padding:1rem;
-            display:none;
-            animation:fadeIn .2s ease-in-out;
-            border-top:1px solid #e9eef5;
-          }
-          @keyframes fadeIn{
-            from{opacity:0; transform:translateY(-5px);}
-            to{opacity:1; transform:translateY(0);}
-          }
-
-          .section-box{
-            background:#fff;
-            border:1px solid #e5e9f2;
-            border-radius:18px;
-            padding:16px;
-            box-shadow:0 8px 20px rgba(0,0,0,.05);
-          }
-
-          .section-title-ui{
-            font-weight:700;
-            font-size:1.02rem;
-            color:#27458f;
-            margin-bottom:14px;
-          }
-
-          .prep-steps{
-            display:grid;
-            grid-template-columns:1fr;
-            gap:1rem;
-          }
-
-          .prep-card{
-            background:var(--mint);
-            border:1px solid var(--mint-border);
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .prep-step-label{
-            font-size:.78rem;
-            letter-spacing:.08em;
-            text-transform:uppercase;
-            color:#64748b;
-            margin-bottom:.45rem;
-          }
-
-          .prep-step-main{
-            font-size:1.1rem;
+            justify-content:center;
+            color:#fff;
+            background:#3559b7;
             font-weight:800;
-            color:#1f2a37;
-            line-height:1.3;
+            margin-top:.05rem;
           }
 
-          .program-grid{
-            display:grid;
-            grid-template-columns:repeat(3,1fr);
-            gap:1rem;
-          }
-
-          .program-card{
-            background:var(--soft);
-            border:1px solid var(--line);
-            border-radius:1rem;
-            padding:1rem;
-            text-align:center;
-          }
-
-          .program-label{
-            font-size:.78rem;
-            letter-spacing:.08em;
-            text-transform:uppercase;
-            color:#667085;
-            margin-bottom:.45rem;
-          }
-
-          .program-value{
-            font-size:1.7rem;
+          .pieb-step-title{
+            font-size:.96rem;
             font-weight:800;
-            color:#27458f;
-            line-height:1.1;
+            line-height:1.2;
+            color:var(--note-text);
+            margin-bottom:.12rem;
           }
 
-          .program-sub{
-            font-size:.9rem;
-            color:#667085;
-            margin-top:.35rem;
-            line-height:1.4;
-          }
-
-          .teaching-wrap{
-            border:1px solid var(--line);
-            border-radius:1.4rem;
-            background:var(--soft);
-            padding:1.25rem;
-            overflow:hidden;
-          }
-          .teaching-title{
-            font-size:1rem;
-            letter-spacing:.08em;
-            text-transform:uppercase;
-            color:#64748b;
-            text-align:center;
-            margin-bottom:1rem;
-          }
-          .teaching-main{
-            font-size:1.7rem;
-            font-weight:800;
-            text-align:center;
-            color:#1f2a37;
-            line-height:1.15;
-            margin-bottom:1.2rem;
-          }
-          .teaching-grid{
-            display:grid;
-            grid-template-columns:1fr;
-            gap:1rem;
-          }
-          .teaching-card{
-            background:#fff;
-            border:1px solid #e6e9ef;
-            border-radius:1.25rem;
-            padding:1.1rem 1rem;
-            text-align:left;
-          }
-          .teaching-label{
-            font-size:.78rem;
-            letter-spacing:.08em;
-            text-transform:uppercase;
-            color:#667085;
-            margin-bottom:.55rem;
-          }
-          .teaching-text{
-            font-size:1rem;
-            line-height:1.45;
-            color:#1f2a37;
-            font-weight:700;
-          }
-          .teaching-soft{
-            font-size:.95rem;
-            line-height:1.55;
-            color:#667085;
-            font-weight:500;
-            margin-top:.35rem;
-          }
-
-          .tip-list{
+          .pieb-step-note{
             margin:0;
-            padding-left:1.15rem;
-          }
-          .tip-list li{
-            margin-bottom:.45rem;
+            font-size:.84rem;
+            line-height:1.35;
+            color:var(--note-muted);
           }
 
-          .good-box{
-            background:var(--good);
+          .pieb-program-grid{
+            display:grid;
+            grid-template-columns:repeat(3,minmax(0,1fr));
+            gap:.75rem;
+          }
+
+          .pieb-program-card{
+            background:linear-gradient(180deg, var(--note-brand-soft) 0%, #f7faff 100%);
+            border:1px solid var(--note-brand-soft-border);
+            border-radius:1rem;
+            padding:.9rem 1rem;
+            text-align:center;
+          }
+
+          .pieb-program-label{
+            font-size:.78rem;
+            text-transform:uppercase;
+            letter-spacing:.06em;
+            color:#3559b7;
+            font-weight:700;
+            margin-bottom:.22rem;
+          }
+
+          .pieb-program-value{
+            font-size:1.25rem;
+            line-height:1.15;
+            font-weight:900;
+            color:var(--note-text);
+          }
+
+          .pieb-program-note{
+            margin-top:.28rem;
+            font-size:.84rem;
+            line-height:1.3;
+            color:var(--note-muted);
+          }
+
+          .pieb-action-list{
+            display:grid;
+            gap:.75rem;
+          }
+
+          .pieb-action-item{
+            display:flex;
+            align-items:flex-start;
+            gap:.65rem;
+            border:1px solid #d9e2ef;
+            border-radius:1rem;
+            background:#fff;
+            padding:.75rem .85rem;
+          }
+
+          .pieb-action-mark{
+            flex:0 0 auto;
+            width:30px;
+            height:30px;
+            border-radius:999px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#fff;
+            margin-top:.08rem;
+          }
+
+          .pieb-action-mark.ok{background:#2ea663;}
+          .pieb-action-mark.mid{background:#f4c542;}
+          .pieb-action-mark.high{background:#d92d20;}
+
+          .pieb-action-title{
+            font-size:.95rem;
+            font-weight:800;
+            line-height:1.18;
+            color:var(--note-text);
+            margin-bottom:.1rem;
+          }
+
+          .pieb-action-note{
+            margin:0;
+            font-size:.82rem;
+            line-height:1.32;
+            color:var(--note-muted);
+          }
+
+          .pieb-drug-chip{
+            display:inline-block;
+            padding:.22rem .48rem;
+            border-radius:.6rem;
+            font-weight:800;
+            border:1px solid rgba(31,42,55,.12);
+            line-height:1.1;
+            color:#111827;
+          }
+
+          .pieb-drug-local{background:var(--drug-local);}
+          .pieb-drug-opioid{background:var(--drug-opioid);}
+
+          .pieb-recipe-box{
+            background:#edf8f7;
             border:1px solid #cfe8e6;
             border-radius:1rem;
             padding:1rem;
           }
 
-          .warn-box{
-            background:var(--warn);
-            border:1px solid #ecd798;
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          @media(max-width:768px){
-            .program-grid{
+          @media (max-width:768px){
+            .pieb-choice-grid,
+            .pieb-program-grid{
               grid-template-columns:1fr;
             }
           }
-
-          @media(max-width:576px){
-            .info-box-header{flex-direction:row;}
-            .info-toggle-btn{margin-left:auto;}
-            .teaching-main{font-size:1.35rem;}
-            .program-value{font-size:1.45rem;}
-            .prep-step-main{font-size:1rem;}
-          }
         </style>
 
-        <div class="topbar">
-          <div class="d-flex justify-content-between align-items-start gap-3">
-            <div>
-              <div class="small opacity-75 mb-1">APP clínica • analgesia obstétrica</div>
-              <h1 class="h3 mb-2">Preparación de solución PIEB</h1>
-              <div class="subtle text-white-50">Con programación habitual de PIEB/PCEA y outcomes docentes.</div>
-            </div>
-            <span class="pill bg-light text-dark">PIEB</span>
-          </div>
+        <div class="note-hero mb-3">
+          <div class="note-hero-kicker">APP CLÍNICA · ANALGESIA OBSTÉTRICA · EPIDURAL</div>
+          <h2>Preparación y programación PIEB / PCEA</h2>
+          <div class="note-hero-subtitle">Calcula solución epidural obstétrica y revisa parámetros de programación.</div>
         </div>
 
-        <div class="info-box">
+        <div class="info-box mb-3">
           <div class="info-box-header">
             <div class="info-box-title">Información</div>
-            <button type="button" onclick="toggleInfo()" class="btn btn-sm info-toggle-btn">
-              Mostrar / ocultar
-            </button>
+            <button type="button" onclick="toggleInfo()" class="btn btn-sm info-toggle-btn">Mostrar / ocultar</button>
           </div>
           <div id="infoContent" class="info-box-content">
-            <?php echo $descripcion_info; ?>
+            <p class="mb-2"><?php echo $descripcion_info; ?></p>
             <?php if(!empty($formula)){ ?>
               <hr>
-              <b>Resumen:</b><br>
+              <b>Comentario:</b><br>
               <?php echo $formula; ?>
             <?php } ?>
-            <?php if(!empty($referencias)){ ?>
-              <hr>
-              <b>Referencias:</b>
-              <ul class="mt-2 mb-0">
-                <?php foreach($referencias as $ref){ ?>
-                  <li><?php echo $ref; ?></li>
-                <?php } ?>
-              </ul>
-            <?php } ?>
+            <hr>
+            <b>Referencias:</b>
+            <ul class="mb-0 mt-2">
+              <?php foreach($referencias as $ref){ ?>
+                <li class="mb-2"><?php echo $ref; ?></li>
+              <?php } ?>
+            </ul>
           </div>
         </div>
 
-        <div class="section-box mb-4">
-          <div class="section-title-ui">Preparación de la solución PIEB con Bupivacaína 0,0625% + Fentanyl 2 µg/mL</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Datos de preparación</div>
 
-          <div class="prep-steps">
-            <div class="prep-card">
-              <div class="prep-step-label">Paso 1</div>
-              <div class="prep-step-main">Extraer <strong>16,5 mL</strong> de un matraz de <strong>100 mL</strong>.</div>
+            <div class="note-grid mb-3">
+              <div class="note-input-group">
+                <label class="note-label">Volumen final deseado</label>
+                <div class="note-input-inline">
+                  <input id="finalVolumeInput" type="text" inputmode="decimal" class="note-input">
+                  <div class="note-input-unit">mL</div>
+                </div>
+              </div>
+
+              <div class="note-input-group">
+                <label class="note-label">Fentanyl final deseado</label>
+                <div class="note-input-inline">
+                  <input id="fentanylConcentrationInput" type="text" inputmode="decimal" class="note-input">
+                  <div class="note-input-unit">mcg/mL</div>
+                </div>
+              </div>
             </div>
 
-            <div class="prep-card">
-              <div class="prep-step-label">Paso 2</div>
-              <div class="prep-step-main">Agregar <strong>12,5 mL de bupivacaína</strong> (<strong>62,5 mg</strong>).</div>
-            </div>
+            <div class="note-summary-grid-2 mb-0">
 
-            <div class="prep-card">
-              <div class="prep-step-label">Paso 3</div>
-              <div class="prep-step-main">Agregar <strong>200 µg de fentanyl</strong>.</div>
-            </div>
+                <div class="note-summary-v"><span class="pieb-drug-chip pieb-drug-local py-2">Bupi/Levobupivacaína 0,5%</span></div>
+                <div class="note-summary-v"><span class="pieb-drug-chip pieb-drug-opioid py-3">Fentanyl 50 mcg/mL</span></div>
 
-            <div class="prep-card">
-              <div class="prep-step-label">Paso 4</div>
-              <div class="prep-step-main">No olvidar <strong>rotular</strong> y <strong>registrar</strong> la preparación.</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-box mb-4">
-          <div class="section-title-ui">Programación habitual PIEB</div>
-
-          <div class="program-grid">
-            <div class="program-card">
-              <div class="program-label">Infusión continua</div>
-              <div class="program-value">0 mL/h</div>
-              <div class="program-sub">Sin infusión basal continua.</div>
-            </div>
-
-            <div class="program-card">
-              <div class="program-label">PIEB</div>
-              <div class="program-value">9-10 mL</div>
-              <div class="program-sub">Bolo programado cada <strong>45-60 min</strong>.</div>
-            </div>
-
-            <div class="program-card">
-              <div class="program-label">PCEA</div>
-              <div class="program-value">10 mL</div>
-              <div class="program-sub">Bolo administrado por paciente con <strong>lockout 10 min</strong>.</div>
             </div>
           </div>
         </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="teaching-wrap">
-              <div class="teaching-title">Notas docentes</div>
-              <div class="teaching-main">En analgesia epidural obstétrica, el volumen y la forma de administración importan tanto como la droga</div>
+        <div class="note-summary-box mb-3">
+          <div class="note-summary-box-title">Resumen</div>
+          <div id="summaryNarrative" class="note-summary-box-text">Ingresa volumen final y concentración final deseada de fentanyl.</div>
+          <div class="note-summary-grid-2">
+            <div class="note-summary-item">
+              <div class="note-summary-k">Volumen final</div>
+              <div id="summaryVolume" class="note-summary-v">-</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Bupivacaína final</div>
+              <div id="summaryBupi" class="note-summary-v">0,0625%</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Fentanyl final</div>
+              <div id="summaryFent" class="note-summary-v">-</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Programación</div>
+              <div id="summaryProgram" class="note-summary-v">0 · 9/10 · 45/60</div>
+            </div>
+          </div>
+        </div>
 
-              <div class="teaching-grid">
+        <div class="note-result-grid-2 mb-3">
+          <div class="note-result-card">
+            <div class="note-result-card-label">Bupivacaína a agregar</div>
+            <div id="bupiResult" class="note-result-card-value">-</div>
+            <div id="bupiNote" class="note-result-card-note">Ingresa volumen final.</div>
+          </div>
+          <div class="note-result-card">
+            <div class="note-result-card-label">Fentanyl a agregar</div>
+            <div id="fentResult" class="note-result-card-value">-</div>
+            <div id="fentNote" class="note-result-card-note">Ingresa fentanyl final deseado.</div>
+          </div>
+        </div>
 
-                <div class="teaching-card">
-                  <div class="teaching-label">PCEA</div>
-                  <div class="teaching-text">La infusión continua reduce intervenciones no programadas, pero aumenta consumo total de anestésico local</div>
-                  <div class="teaching-soft">
-                    <ul class="tip-list">
-                      <li>Reduce el número de intervenciones médicas no programadas.</li>
-                      <li>Mejoraría la analgesia respecto a usar solo bolos.</li>
-                      <li>Sin diferencias en satisfacción materna.</li>
-                      <li>Aumentaría el consumo total de AALL, sin reportes de aumento de toxicidad.</li>
-                    </ul>
-                  </div>
+        <div class="note-interpretation mb-3">
+          <div class="note-interpretation-label">Receta de preparación</div>
+          <div id="mainRecipe" class="note-interpretation-main">Pendiente</div>
+          <div id="mainSoft" class="note-interpretation-soft">Luego agregar bupivacaína + fentanyl para mantener el volumen final deseado.</div>
+
+          <div class="pieb-recipe-box mt-3 text-start">
+            <div class="pieb-step-list">
+              <div class="pieb-step">
+                <div class="pieb-step-num">1</div>
+                <div>
+                  <div class="pieb-step-title">Retirar volumen del matraz</div>
+                  <p id="stepRemove" class="pieb-step-note">Dato incompleto.</p>
                 </div>
-
-                <div class="teaching-card">
-                  <div class="teaching-label">Ropivacaína vs Bupivacaína</div>
-                  <div class="teaching-text">La ropivacaína suele dar mejor movilidad; la bupivacaína más bloqueo motor</div>
-                  <div class="teaching-soft">
-                    <ul class="tip-list">
-                      <li>Mayor incidencia de bloqueo motor con bupivacaína.</li>
-                      <li>Mayor score de movilidad con ropivacaína.</li>
-                      <li>Sin diferencias en satisfacción materna ni scores de analgesia.</li>
-                      <li>Más rescates con bupi en primera etapa de TP y más rescates con ropi en segunda.</li>
-                    </ul>
-                  </div>
+              </div>
+              <div class="pieb-step">
+                <div class="pieb-step-num">2</div>
+                <div>
+                  <div class="pieb-step-title">Agregar anestésico local</div>
+                  <p id="stepBupi" class="pieb-step-note">Dato incompleto.</p>
                 </div>
-
-                <div class="teaching-card">
-                  <div class="teaching-label">Volumen y lockout</div>
-                  <div class="teaching-text">Más volumen y lockout corto suelen funcionar mejor</div>
-                  <div class="teaching-soft">
-                    <ul class="tip-list">
-                      <li>Mayor volumen mejora analgesia.</li>
-                      <li>Mayor tasa de éxito con lockout cortos.</li>
-                      <li>Sin diferencias en número de intervenciones no programadas.</li>
-                      <li>Sin reportes de aumento de toxicidad.</li>
-                      <li>No existe un volumen o lockout ideal universal.</li>
-                      <li>Bolos mayores de anestésico diluido mejoran analgesia y satisfacción comparados con bolos pequeños en pacientes sin infusión.</li>
-                    </ul>
-                  </div>
+              </div>
+              <div class="pieb-step">
+                <div class="pieb-step-num">3</div>
+                <div>
+                  <div class="pieb-step-title">Agregar opioide</div>
+                  <p id="stepFent" class="pieb-step-note">Dato incompleto.</p>
                 </div>
-
-                <div class="teaching-card">
-                  <div class="teaching-label">Concentración de drogas</div>
-                  <div class="teaching-text">Más concentración no necesariamente significa mejor analgesia</div>
-                  <div class="teaching-soft">
-                    <ul class="tip-list">
-                      <li>Sin diferencias en eficacia analgésica ni satisfacción materna.</li>
-                      <li>Mayor bloqueo motor con mayor concentración y mayor consumo de drogas.</li>
-                      <li>El prurito asociado a opioides es dosis dependiente.</li>
-                    </ul>
-                  </div>
+              </div>
+              <div class="pieb-step">
+                <div class="pieb-step-num">4</div>
+                <div>
+                  <div class="pieb-step-title">Rotular y registrar</div>
+                  <p class="pieb-step-note">Rotular concentración final, fecha/hora, responsable y vía epidural.</p>
                 </div>
-
-                <div class="teaching-card">
-                  <div class="teaching-label">PIEB vs CIE</div>
-                  <div class="teaching-text">PIEB logra distribución más uniforme con menos consumo total</div>
-                  <div class="teaching-soft">
-                    <ul class="tip-list">
-                      <li>Analgesia similar.</li>
-                      <li>Satisfacción materna equivalente.</li>
-                      <li>Menor cantidad de intervenciones no programadas.</li>
-                      <li>Menor consumo total de bupivacaína.</li>
-                      <li>Mecanismo probable: extensión más uniforme al usar mayores volúmenes intermitentes.</li>
-                    </ul>
-                  </div>
-                </div>
-
               </div>
             </div>
           </div>
         </div>
 
-        <div class="warn-box mb-3">
-          <strong>Perla para residentes:</strong><br>
-          La ventaja práctica del PIEB no es solo “gastar menos droga”, sino lograr una <strong>distribución epidural más homogénea</strong>. Piensa en volumen, cobertura de raíces y menor necesidad de rescates.
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Programación habitual PIEB / PCEA</div>
+            <div class="pieb-program-grid">
+              <div class="pieb-program-card">
+                <div class="pieb-program-label">Infusión basal</div>
+                <div class="pieb-program-value">0 mL/h</div>
+                <div class="pieb-program-note">Sin infusión continua basal cuando se usa PIEB como base.</div>
+              </div>
+              <div class="pieb-program-card">
+                <div class="pieb-program-label">PIEB</div>
+                <div class="pieb-program-value">9–10 mL</div>
+                <div class="pieb-program-note">Bolo programado cada <strong>45–60 min</strong>.</div>
+              </div>
+              <div class="pieb-program-card">
+                <div class="pieb-program-label">PCEA</div>
+                <div class="pieb-program-value">10 mL</div>
+                <div class="pieb-program-note">Bolo a demanda con <strong>lockout 10 min</strong>.</div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="good-box mb-3">
-          <strong>Perla de programación:</strong><br>
-          Un esquema habitual y simple de recordar es <strong>0 - 9/10 - 45/60</strong>: sin basal, bolos programados de 9-10 mL cada 45-60 minutos, y PCEA de 10 mL con lockout de 10 minutos.
+        <div class="note-warning mb-3">
+          <strong>Advertencia clínica:</strong>
+          <div id="warningText" class="mt-2">Verifica siempre concentración final, volumen total, rotulación, vía de administración y protocolo local. La receta es docente y debe ajustarse a presentación disponible y política institucional.</div>
         </div>
 
-        <div class="footer-note">
-          Herramienta docente y de apoyo clínico. No reemplaza protocolos locales, criterio del equipo obstétrico-anestésico ni supervisión de staff.
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Lectura clínica</div>
+            <div class="pieb-action-list">
+              <div class="pieb-action-item">
+                <div class="pieb-action-mark ok"><i class="fa-solid fa-droplet"></i></div>
+                <div>
+                  <div class="pieb-action-title">PIEB distribuye volumen de forma intermitente</div>
+                  <p class="pieb-action-note">El beneficio práctico no es solo usar menos droga: los bolos intermitentes favorecen distribución epidural más homogénea.</p>
+                </div>
+              </div>
+              <div class="pieb-action-item">
+                <div class="pieb-action-mark mid"><i class="fa-solid fa-person-pregnant"></i></div>
+                <div>
+                  <div class="pieb-action-title">Evaluar bloqueo motor y analgesia por etapa del trabajo de parto</div>
+                  <p class="pieb-action-note">Más concentración no siempre mejora analgesia y puede aumentar bloqueo motor; el volumen y el patrón de administración importan.</p>
+                </div>
+              </div>
+              <div class="pieb-action-item">
+                <div class="pieb-action-mark high"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div>
+                  <div class="pieb-action-title">No confundir receta con orden automática</div>
+                  <p class="pieb-action-note">Ajustar a respuesta clínica, altura del bloqueo, dolor irruptivo, lateralización, hipotensión, prurito y protocolo local.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="note-teaching-wrap">
+          <div class="note-teaching-title">Perlas docentes</div>
+          <div class="note-teaching-main">En analgesia epidural obstétrica, volumen y patrón de administración importan tanto como la droga</div>
+          <div class="note-tips"><strong>Qué hacer:</strong> piensa en volumen epidural, cobertura de raíces, lockout, lateralización y necesidad de rescates, no solo en concentración.</div>
+          <div class="note-tips"><strong>Qué evitar:</strong> subir concentración ante todo dolor irruptivo sin evaluar nivel, catéter, lateralización y etapa del trabajo de parto.</div>
+          <div class="note-tips"><strong>PCEA:</strong> los bolos a demanda reducen intervenciones no programadas frente a esquemas sin bolos, pero pueden aumentar consumo total si se combinan con basal continua.</div>
+          <div class="note-tips"><strong>PIEB:</strong> suele asociarse a menor consumo total de anestésico local y distribución más uniforme que infusión continua equivalente.</div>
+          <div class="note-tips mb-0"><strong>Mensaje final:</strong> un esquema fácil de recordar es <strong>0 · 9/10 · 45/60</strong>: sin basal, PIEB 9–10 mL cada 45–60 min, PCEA 10 mL con lockout 10 min.</div>
         </div>
 
       </div>
@@ -488,12 +445,90 @@ require("head.php");
 </div>
 
 <script>
+(function(){
+  const CNS = window.ClinicalNoteSystem || {};
+  const finalVolumeInput = document.getElementById('finalVolumeInput');
+  const fentanylConcentrationInput = document.getElementById('fentanylConcentrationInput');
+
+  function parseLocal(value){
+    if(CNS.parseDecimal) return CNS.parseDecimal(value);
+    const n = Number(String(value || '').replace(',', '.'));
+    return Number.isFinite(n) ? n : null;
+  }
+
+  function fmt(value, decimals){
+    if(!Number.isFinite(value)) return '-';
+    if(CNS.formatNumber) return CNS.formatNumber(value, decimals);
+    return Number(value).toLocaleString('es-CL', {maximumFractionDigits:decimals});
+  }
+
+  function setText(id, value){
+    const el = document.getElementById(id);
+    if(CNS.safeSetText) CNS.safeSetText(el, value);
+    else if(el) el.textContent = value;
+  }
+
+  function updatePIEB(){
+    const finalVolume = parseLocal(finalVolumeInput.value);
+    const fentFinal = parseLocal(fentanylConcentrationInput.value);
+    const fentStock = 50;
+    const bupiStock = 5;
+
+    if(!finalVolume || finalVolume <= 0 || !fentFinal || fentFinal <= 0 || !bupiStock || bupiStock <= 0){
+      setText('summaryNarrative', 'Ingresa volumen final y concentraciones disponibles para calcular la preparación.');
+      setText('summaryVolume', '-');
+      setText('bupiResult', '-');
+      setText('bupiNote', 'Dato incompleto.');
+      setText('fentResult', '-');
+      setText('fentNote', 'Dato incompleto.');
+      setText('mainRecipe', 'Pendiente');
+      setText('mainSoft', 'Completa los datos para calcular volumen a retirar y aditivos.');
+      setText('stepRemove', 'Dato incompleto.');
+      setText('stepBupi', 'Dato incompleto.');
+      setText('stepFent', 'Dato incompleto.');
+      return;
+    }
+
+    const targetBupiMgPerMl = 0.625;
+    const targetFentMcgPerMl = fentFinal;
+
+    const totalBupiMg = finalVolume * targetBupiMgPerMl;
+    const bupiMl = totalBupiMg / bupiStock;
+    const totalFentMcg = finalVolume * targetFentMcgPerMl;
+    const fentMl = totalFentMcg / fentStock;
+    const removeMl = bupiMl + fentMl;
+
+    const bupiPercent = (bupiStock / 10);
+    const finalBagText = finalVolume === 100 ? 'un matraz de 100 mL' : 'un matraz con volumen final ajustado';
+
+    setText('summaryNarrative', 'Solución final ' + fmt(finalVolume,0) + ' mL: bupivacaína 0,0625% + fentanyl 2 mcg/mL. Retirar ' + fmt(removeMl,1) + ' mL y reponer con los aditivos.');
+    setText('summaryVolume', fmt(finalVolume,0) + ' mL');
+    setText('summaryBupi', '0,0625%');
+    setText('summaryFent', '2 mcg/mL');
+    setText('summaryProgram', '0 · 9/10 · 45/60');
+
+    setText('bupiResult', fmt(bupiMl,1) + ' mL');
+    setText('bupiNote', 'Equivale a ' + fmt(totalBupiMg,1) + ' mg de bupivacaína.');
+    setText('fentResult', fmt(fentMl,1) + ' mL');
+    setText('fentNote', 'Equivale a ' + fmt(totalFentMcg,0) + ' mcg de fentanyl.');
+
+    setText('mainRecipe', 'Retirar ' + fmt(removeMl,1) + ' mL del matraz');
+    setText('mainSoft', 'Agregar ' + fmt(bupiMl,1) + ' mL de bupivacaína y ' + fmt(fentMl,1) + ' mL de fentanyl para mantener ' + fmt(finalVolume,0) + ' mL finales.');
+
+    setText('stepRemove', 'Extraer ' + fmt(removeMl,1) + ' mL desde ' + finalBagText + '.');
+    setText('stepBupi', 'Agregar ' + fmt(bupiMl,1) + ' mL de bupivacaína ' + fmt(bupiPercent,3) + '% (' + fmt(totalBupiMg,1) + ' mg).');
+    setText('stepFent', 'Agregar ' + fmt(totalFentMcg,0) + ' mcg de fentanyl (' + fmt(fentMl,1) + ' mL si la ampolla es ' + fmt(fentStock,0) + ' mcg/mL).');
+  }
+
+  finalVolumeInput.addEventListener('input', updatePIEB);
+  fentanylConcentrationInput.addEventListener('input', updatePIEB);
+  updatePIEB();
+})();
+
 function toggleInfo(){
-  let box = document.getElementById("infoContent");
+  const box = document.getElementById("infoContent");
   box.style.display = (box.style.display === "none" || box.style.display === "") ? "block" : "none";
 }
 </script>
 
-<?php
-require("footer.php");
-?>
+<?php include("footer.php"); ?>

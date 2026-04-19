@@ -1,323 +1,187 @@
 <?php
-
-$titulo_info = "Utilidad Clínica";
-$descripcion_info = "Algoritmo docente para elección de tubo de doble lumen (TDL) en anestesiología. Integra selección inicial por lado, recomendación de tamaño por sexo y talla, ajuste opcional por diámetro bronquial y perlas prácticas para posicionamiento y verificación.";
-$formula = "Elección habitual: TDL izquierdo. Tamaño inicial por sexo y talla; ajuste fino por diámetro bronquial cuando hay imagen disponible.";
-$referencias = array(
-  "1.- Campos JH. Current techniques for perioperative lung isolation in adults. Anesthesiology. 2002.",
-  "2.- Slinger P, Campos JH. Anesthesia for Thoracic Surgery. En: Miller's Anesthesia.",
-  "3.- Brodsky JB, Lemmens HJ. Left double-lumen tubes: clinical experience with double-lumen tubes. J Cardiothorac Vasc Anesth.",
-  "4.- Benumof JL. Lung isolation and one-lung ventilation. Anesthesiology Clinics."
-);
-
-$icono_apunte = "<i class='fa-solid fa-lungs pe-3 pt-2'></i>";
-$titulo_apunte = "Elección de Tubo de Doble Lumen";
-
+$titulo_pagina = "Tubo de doble lumen";
+$navbar_titulo = "Apuntes";
 $boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
 $boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
 
-require("head.php");
+$titulo_info = "Utilidad clínica";
+$descripcion_info = "Algoritmo docente para elección inicial de tubo de doble lumen en anestesia torácica. Integra lado, sexo, talla y ajuste opcional por diámetro bronquial izquierdo cuando hay imagen disponible.";
+$formula = "Elección habitual: TDL izquierdo. Tamaño inicial por sexo y talla; ajuste fino por diámetro bronquial cuando hay medición confiable. La posición debe confirmarse con fibrobroncoscopía.";
+$referencias = array(
+  "Campos JH. Current techniques for perioperative lung isolation in adults. Anesthesiology. 2002.",
+  "Slinger P, Campos JH. Anesthesia for Thoracic Surgery. En: Miller's Anesthesia.",
+  "Brodsky JB, Lemmens HJ. Left double-lumen tubes: clinical experience with double-lumen tubes. J Cardiothorac Vasc Anesth.",
+  "Benumof JL. Lung isolation and one-lung ventilation. Anesthesiology Clinics."
+);
+
+include("head.php");
 ?>
+<link rel="stylesheet" href="css/clinical-note-system.css?v=2">
+<script src="js/clinical-note-system.js?v=2"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
     <div class="container-fluid px-0 px-md-2">
-      <div class="tdl-shell">
+      <div class="note-shell px-1 px-md-0 py-0">
 
         <style>
-          :root{
-            --brand:#27458f;
-            --brand2:#3559b7;
-            --bg:#f4f7fb;
-            --soft:#f8fafc;
-            --line:#dfe7f2;
-            --text:#1f2a37;
-            --muted:#667085;
-            --good:#edf8f7;
-            --warn:#fff9e8;
-            --danger:#fff5f3;
-          }
-
-          body{background:var(--bg);}
-          .tdl-shell{max-width:980px;margin:0 auto;}
-
-          .tdl-topbar{
-            background:linear-gradient(135deg,var(--brand),var(--brand2));
-            color:#fff;
-            border-radius:1.25rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            padding:1.15rem 1.25rem;
-            margin-bottom:1rem;
-            overflow:hidden;
-          }
-          .tdl-topbar h1{color:#fff;}
-
-          .section-card{
-            border:0;
-            border-radius:1rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            background:#fff;
-            overflow:hidden;
-            margin-bottom:1rem;
-          }
-
-          .section-title{
-            font-size:.8rem;
-            letter-spacing:.05em;
-            text-transform:uppercase;
-            color:var(--muted);
-          }
-
-          .pill{
-            display:inline-block;
-            padding:.2rem .55rem;
-            border-radius:999px;
-            font-size:.78rem;
-            background:#eef3ff;
-            color:#3559b7;
-            font-weight:600;
-          }
-
-          .subtle{font-size:.94rem;color:#5f6b76;}
-          .small-note{font-size:.84rem;color:var(--muted);}
-          .footer-note{font-size:.82rem;color:#6c757d;}
-
-          .info-box{
-            background:#fff;
-            border-radius:1rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            margin-bottom:1rem;
-            overflow:hidden;
-          }
-          .info-box-header{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            gap:1rem;
-            padding:1rem;
-          }
-          .info-box-title{
-            font-size:.8rem;
-            text-transform:uppercase;
-            color:#667085;
-            letter-spacing:.08em;
-          }
-          .info-toggle-btn{
-            border-radius:.6rem;
-            font-size:.85rem;
-            padding:.35rem .7rem;
-            white-space:nowrap;
-            background:#6c757d;
-            border:none;
-            color:white;
-            transition:.2s;
-          }
-          .info-toggle-btn:hover{background:#5a6268;color:white;}
-          .info-box-content{
-            padding:1rem;
-            display:none;
-            animation:fadeIn .2s ease-in-out;
-            border-top:1px solid #e9eef5;
-          }
-          @keyframes fadeIn{
-            from{opacity:0; transform:translateY(-5px);}
-            to{opacity:1; transform:translateY(0);}
-          }
-
-          .schema-wrap{
-            border:1px solid var(--line);
-            border-radius:1.4rem;
-            background:var(--soft);
-            padding:1rem;
-          }
-          .schema-grid{
+          .tdl-choice-grid{
             display:grid;
-            grid-template-columns:1fr 1fr;
-            gap:1rem;
-          }
-          .schema-card{
-            background:#fff;
-            border:1px solid #e6e9ef;
-            border-radius:1rem;
-            padding:1rem;
-          }
-          .schema-title{
-            text-align:center;
-            font-weight:800;
-            color:#1f2a37;
-            margin-bottom:.8rem;
-          }
-          .svg-wrap{
-            background:#fbfcfe;
-            border:1px solid #eef2f6;
-            border-radius:1rem;
-            padding:.5rem;
-          }
-
-          .calc-grid{
-            display:grid;
-            grid-template-columns:repeat(2,1fr);
-            gap:1rem;
-          }
-          .card-block{
-            border:1px solid var(--line);
-            border-radius:1rem;
-            background:var(--soft);
-            padding:1rem;
-          }
-          .form-label-lite{
-            font-size:.92rem;
-            font-weight:600;
-            color:var(--text);
-            margin-bottom:.5rem;
-          }
-
-          .choice-grid{
-            display:grid;
-            grid-template-columns:repeat(2,1fr);
+            grid-template-columns:repeat(2,minmax(0,1fr));
             gap:.75rem;
           }
 
-          .choice-check{
-            display:none;
+          .tdl-choice-grid.tdl-grid-3{
+            grid-template-columns:repeat(3,minmax(0,1fr));
           }
 
-          .choice-card{
+          .tdl-option-input{
+            position:absolute;
+            opacity:0;
+            pointer-events:none;
+          }
+
+          .tdl-option{
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            text-align:center;
+            min-height:72px;
+            border:2px solid var(--note-line);
+            background:#fff;
+            border-radius:1rem;
+            padding:.65rem .75rem;
+            cursor:pointer;
+            transition:.15s ease;
+            box-shadow:0 3px 10px rgba(15,23,42,.04);
+            gap:.18rem;
+          }
+
+          .tdl-option i{
+            color:#3559b7;
+            font-size:1rem;
+          }
+
+          .tdl-option-input:checked + .tdl-option{
+            box-shadow:0 0 0 3px rgba(47,128,237,.14), 0 8px 18px rgba(15,23,42,.10);
+            border:4px solid var(--note-selected);
+            transform:translateY(-1px);
+          }
+
+          .tdl-option-title{
+            font-size:.9rem;
+            font-weight:800;
+            line-height:1.15;
+            color:var(--note-text);
+            margin:0;
+          }
+
+          .tdl-option-sub{
+            font-size:.76rem;
+            line-height:1.22;
+            color:var(--note-muted);
+            margin:0;
+            font-weight:600;
+          }
+
+          .tdl-ok-card{
+            background:#edf8f1 !important;
+            border-color:#b7ddc3 !important;
+          }
+
+          .tdl-mid-card{
+            background:#fff9e8 !important;
+            border-color:#ead38a !important;
+          }
+
+          .tdl-danger-card{
+            background:#fff1f1 !important;
+            border-color:#efc0bd !important;
+          }
+
+          .tdl-action-list{
+            display:grid;
+            gap:.75rem;
+          }
+
+          .tdl-action-item{
+            display:flex;
+            align-items:flex-start;
+            gap:.65rem;
+            border:1px solid #d9e2ef;
+            border-radius:1rem;
+            background:#fff;
+            padding:.75rem .85rem;
+          }
+
+          .tdl-action-mark{
+            flex:0 0 auto;
+            width:30px;
+            height:30px;
+            border-radius:999px;
             display:flex;
             align-items:center;
             justify-content:center;
-            min-height:72px;
-            text-align:center;
-            padding:1rem;
-            border:1px solid var(--line);
+            color:#fff;
+            margin-top:.08rem;
+          }
+
+          .tdl-action-mark.ok{background:#2ea663;}
+          .tdl-action-mark.mid{background:#f4c542;}
+          .tdl-action-mark.high{background:#d92d20;}
+
+          .tdl-action-copy{min-width:0;flex:1;}
+
+          .tdl-action-title{
+            font-size:.95rem;
+            font-weight:800;
+            line-height:1.18;
+            color:var(--note-text);
+            margin-bottom:.1rem;
+          }
+
+          .tdl-action-note{
+            margin:0;
+            font-size:.82rem;
+            line-height:1.32;
+            color:var(--note-muted);
+          }
+
+          .tdl-plan-line{
+            padding:.75rem .85rem;
+            border-radius:.9rem;
+            background:#fff;
+            border:1px solid var(--note-line-strong);
+            margin-bottom:.6rem;
+          }
+
+          .tdl-plan-line:last-child{
+            margin-bottom:0;
+          }
+
+          .tdl-schema-grid{
+            display:grid;
+            grid-template-columns:repeat(2,minmax(0,1fr));
+            gap:.75rem;
+          }
+
+          .tdl-schema-card{
+            border:1px solid var(--note-line);
             border-radius:1rem;
             background:#fff;
-            cursor:pointer;
-            transition:.15s ease;
-            font-weight:700;
-            color:#1f2a37;
+            padding:.85rem;
           }
 
-          .choice-card:hover{
-            background:#f8fbff;
-            border-color:#bfd2ff;
-          }
-
-          .choice-check:checked + .choice-card{
-            background:#edf4ff;
-            border-color:#3559b7;
-            color:#27458f;
-            box-shadow:0 0 0 2px rgba(53,89,183,.08) inset;
-          }
-
-          @media (max-width:576px){
-            .choice-grid{
-              grid-template-columns:1fr;
-            }
-          }
-
-          .result-box{
-            border-radius:1rem;
-            border:1px solid var(--line);
-            background:var(--soft);
-            padding:1rem;
-          }
-          .result-main{
-            font-size:1.08rem;
-            font-weight:700;
-            color:var(--text);
-          }
-          .result-num{
-            font-size:2rem;
+          .tdl-schema-title{
+            font-size:.95rem;
             font-weight:800;
-            line-height:1;
-            color:#3559b7;
-          }
-
-          .conduct-box{
-            padding:1rem;
-            border-radius:1rem;
-            border:1px solid var(--line);
-          }
-          .conduct-ok{background:var(--good);}
-          .conduct-mid{background:var(--warn);}
-          .conduct-no{background:var(--danger);}
-          .conduct-title{
-            font-size:1.08rem;
-            font-weight:800;
-            color:#1f2a37;
+            color:var(--note-text);
+            text-align:center;
             margin-bottom:.65rem;
           }
 
-          .algo-wrap{
-            border:1px solid var(--line);
-            border-radius:1.4rem;
-            background:var(--soft);
-            padding:1.25rem;
-          }
-          .algo-title{
-            font-size:1rem;
-            letter-spacing:.08em;
-            text-transform:uppercase;
-            color:#64748b;
-            text-align:center;
-            margin-bottom:1rem;
-          }
-          .algo-main{
-            font-size:1.8rem;
-            font-weight:800;
-            text-align:center;
-            color:#1f2a37;
-            line-height:1.15;
-            margin-bottom:1.2rem;
-          }
-          .algo-grid{
-            display:grid;
-            grid-template-columns:1fr;
-            gap:1rem;
-          }
-          .algo-card{
-            background:#fff;
-            border-radius:1.25rem;
-            padding:1.1rem 1rem;
-            border:1px solid #e6e9ef;
-            text-align:center;
-          }
-          .algo-label{
-            font-size:.78rem;
-            letter-spacing:.08em;
-            text-transform:uppercase;
-            color:#667085;
-            margin-bottom:.55rem;
-          }
-          .algo-text{
-            font-size:1rem;
-            line-height:1.45;
-            color:#1f2a37;
-            font-weight:600;
-          }
-          .algo-soft{
-            font-size:.95rem;
-            line-height:1.5;
-            color:#667085;
-            font-weight:500;
-            margin-top:.35rem;
-          }
-
-          .table thead th{white-space:nowrap;}
-          .table td,.table th{vertical-align:middle;}
-
-          @media (max-width:768px){
-            .schema-grid{grid-template-columns:1fr;}
-            .calc-grid{grid-template-columns:1fr;}
-          }
-          @media (max-width:576px){
-            .info-box-header{flex-direction:row;}
-            .info-toggle-btn{margin-left:auto;}
-            .result-num{font-size:1.8rem;}
-            .algo-main{font-size:1.45rem;}
-          }
           .tdl-diagram{
             width:100%;
             max-width:420px;
@@ -325,314 +189,294 @@ require("head.php");
             border-radius:1rem;
             display:block;
             margin:0 auto;
+            border:1px solid #e6e9ef;
+          }
+
+          .tdl-table-wrap{
+            overflow-x:auto;
+            -webkit-overflow-scrolling:touch;
+          }
+
+          .tdl-table{
+            width:100%;
+            border-collapse:separate;
+            border-spacing:0;
+            background:#fff;
+            border:1px solid var(--note-line);
+            border-radius:1rem;
+            overflow:hidden;
+          }
+
+          .tdl-table th,
+          .tdl-table td{
+            padding:.62rem .7rem;
+            border-bottom:1px solid #eef2f6;
+            border-right:1px solid #eef2f6;
+            vertical-align:top;
+            text-align:left;
+            font-size:.88rem;
+            line-height:1.28;
+          }
+
+          .tdl-table th{
+            background:#3559b7;
+            color:#fff;
+            font-size:.76rem;
+            font-weight:800;
+            line-height:1.2;
+          }
+
+          .tdl-table th:last-child,
+          .tdl-table td:last-child{
+            border-right:none;
+          }
+
+          .tdl-table tr:last-child td{
+            border-bottom:none;
+          }
+
+          .tdl-table td:first-child{
+            font-weight:800;
+          }
+
+          @media (max-width:768px){
+            .tdl-choice-grid,
+            .tdl-choice-grid.tdl-grid-3,
+            .tdl-schema-grid{
+              grid-template-columns:1fr;
+            }
           }
         </style>
 
-        <div class="tdl-topbar">
-          <div class="d-flex justify-content-between align-items-start gap-3">
-            <div>
-              <div class="small opacity-75 mb-1">APP clínica • algoritmo interactivo</div>
-              <h1 class="h3 mb-2">Elección de Tubo de Doble Lumen</h1>
-              <div class="subtle text-white-50">Selección inicial por lado, recomendación de tamaño por talla y ajuste opcional por diámetro bronquial.</div>
-            </div>
-            <span class="pill bg-light text-dark">Tórax</span>
-          </div>
+        <div class="note-hero mb-3">
+          <div class="note-hero-kicker">APP CLÍNICA · TÓRAX · AISLAMIENTO PULMONAR</div>
+          <h2>Elección de tubo de doble lumen</h2>
+          <div class="note-hero-subtitle">Selecciona lado y estima tamaño inicial por sexo/talla, con ajuste opcional por diámetro bronquial izquierdo.</div>
         </div>
 
-        <div class="info-box">
+        <div class="info-box mb-3">
           <div class="info-box-header">
             <div class="info-box-title">Información</div>
             <button type="button" onclick="toggleInfo()" class="btn btn-sm info-toggle-btn">Mostrar / ocultar</button>
           </div>
-
-
-
-
           <div id="infoContent" class="info-box-content">
-
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">Esquema general</div>
-
-            <div class="schema-wrap">
-              <div class="schema-grid">
-                <div class="schema-card">
-                  <div class="schema-title">TDL izquierdo</div>
-                  <div class="svg-wrap text-center">
-                    <img src="IMG_5527.jpg" alt="Esquema TDL izquierdo" class="tdl-diagram">
-                  </div>
-                  <div class="small text-center text-muted mt-2">Elección habitual por mayor margen anatómico antes de la primera emergencia lobar.</div>
-                </div>
-
-                <div class="schema-card">
-                  <div class="schema-title">TDL derecho</div>
-                    <div class="svg-wrap text-center">
-                      <img src="IMG_5528.jpg" alt="Esquema TDL derecho" class="tdl-diagram">
-                    </div>
-                  <div class="small text-center text-muted mt-2">Reservado para indicaciones anatómicas o quirúrgicas específicas.</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">Tamaño inicial por sexo y talla</div>
-            <div class="table-responsive">
-              <table class="table table-sm table-bordered align-middle mb-0">
-                <thead class="table-light">
-                  <tr>
-                    <th>Sexo</th>
-                    <th>Altura (cm)</th>
-                    <th>Tamaño TDL (Fr)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td rowspan="3"><strong>Hombre</strong></td>
-                    <td>&gt; 170</td>
-                    <td>41</td>
-                  </tr>
-                  <tr>
-                    <td>160 - 170</td>
-                    <td>39</td>
-                  </tr>
-                  <tr>
-                    <td>&lt; 160</td>
-                    <td>37 o 39</td>
-                  </tr>
-                  <tr>
-                    <td rowspan="3"><strong>Mujer</strong></td>
-                    <td>&gt; 160</td>
-                    <td>37</td>
-                  </tr>
-                  <tr>
-                    <td>150 - 160</td>
-                    <td>35</td>
-                  </tr>
-                  <tr>
-                    <td>&lt; 150</td>
-                    <td>32 o 35</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">Ajuste opcional por diámetro bronquial izquierdo</div>
-            <div class="table-responsive">
-              <table class="table table-sm table-bordered align-middle mb-0">
-                <thead class="table-light">
-                  <tr>
-                    <th>Diámetro bronquial (mm)</th>
-                    <th>Tamaño TDL (Fr)</th>
-                    <th>Mallinckrodt (mm)</th>
-                    <th>Rusch (mm)</th>
-                    <th>Sheridan (mm)</th>
-                    <th>Portex (mm)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>&ge; 12</td>
-                    <td>41</td>
-                    <td>10.6</td>
-                    <td>11.5</td>
-                    <td>10.7</td>
-                    <td>12.0</td>
-                  </tr>
-                  <tr>
-                    <td>12</td>
-                    <td>39</td>
-                    <td>10.1</td>
-                    <td>10.8</td>
-                    <td>9.9</td>
-                    <td>11.2</td>
-                  </tr>
-                  <tr>
-                    <td>11</td>
-                    <td>37</td>
-                    <td>10.0</td>
-                    <td>10.1</td>
-                    <td>9.9</td>
-                    <td>10.2</td>
-                  </tr>
-                  <tr>
-                    <td>10</td>
-                    <td>35</td>
-                    <td>9.5</td>
-                    <td>9.4</td>
-                    <td>9.3</td>
-                    <td>9.7</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-            
-            <?php echo $descripcion_info; ?>
+            <p class="mb-2"><?php echo $descripcion_info; ?></p>
             <?php if(!empty($formula)){ ?>
               <hr>
-              <b>Resumen:</b><br>
+              <b>Comentario:</b><br>
               <?php echo $formula; ?>
             <?php } ?>
-            <?php if(!empty($referencias)){ ?>
-              <hr>
-              <b>Referencias:</b>
-              <ul class="mt-2 mb-0">
-                <?php foreach($referencias as $ref){ ?>
-                  <li><?php echo $ref; ?></li>
-                <?php } ?>
-              </ul>
-            <?php } ?>
 
-
-
-
-
-          </div>
-
-
-
-
-        </div>
-
-
-
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">Datos de entrada</div>
-
-
-
-            <div class="calc-grid">
-
-            <div class="card-block">
-              <label class="form-label-lite">Sexo</label>
-              <div class="choice-grid">
-                  <input type="radio" class="choice-check calc-trigger" name="sexo" id="sexo_hombre" value="hombre" autocomplete="off" checked>       
-                  <label class="choice-card" for="sexo_hombre">Hombre</label>
-
-                <input type="radio" class="choice-check calc-trigger" name="sexo" id="sexo_mujer" value="mujer" autocomplete="off">
-                <label class="choice-card" for="sexo_mujer">Mujer</label>
+            <hr>
+            <b>Esquema anatómico:</b>
+            <div class="tdl-schema-grid mt-3">
+              <div class="tdl-schema-card">
+                <div class="tdl-schema-title">TDL izquierdo</div>
+                <img src="IMG_5527.jpg" alt="Esquema TDL izquierdo" class="tdl-diagram">
+                <div class="note-muted mt-2 text-center">Elección habitual por mayor margen anatómico antes de la primera emergencia lobar.</div>
+              </div>
+              <div class="tdl-schema-card">
+                <div class="tdl-schema-title">TDL derecho</div>
+                <img src="IMG_5528.jpg" alt="Esquema TDL derecho" class="tdl-diagram">
+                <div class="note-muted mt-2 text-center">Reservado para indicaciones anatómicas o quirúrgicas específicas.</div>
               </div>
             </div>
 
-
-            <div class="card-block">
-              <label class="form-label-lite">Lado sugerido</label>
-              <div class="choice-grid">
-                <input type="radio" class="choice-check calc-trigger" name="lado" id="lado_izquierdo" value="izquierdo" autocomplete="off" checked>
-                <label class="choice-card" for="lado_izquierdo">Izquierdo</label>
-
-                <input type="radio" class="choice-check calc-trigger" name="lado" id="lado_derecho" value="derecho" autocomplete="off">
-                <label class="choice-card" for="lado_derecho">Derecho</label>
-              </div>
-              <div class="small text-muted mt-2">El izquierdo es la elección habitual; el derecho se reserva para situaciones anatómicas o quirúrgicas específicas.</div>
+            <hr>
+            <b>Tabla rápida por sexo y talla:</b>
+            <div class="tdl-table-wrap mt-3">
+              <table class="tdl-table">
+                <thead>
+                  <tr>
+                    <th>Sexo</th>
+                    <th>Altura</th>
+                    <th>Tamaño inicial</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Hombre</td><td>&gt;170 cm</td><td>41 Fr</td></tr>
+                  <tr><td>Hombre</td><td>160–170 cm</td><td>39 Fr</td></tr>
+                  <tr><td>Hombre</td><td>&lt;160 cm</td><td>37–39 Fr</td></tr>
+                  <tr><td>Mujer</td><td>&gt;160 cm</td><td>37 Fr</td></tr>
+                  <tr><td>Mujer</td><td>150–160 cm</td><td>35 Fr</td></tr>
+                  <tr><td>Mujer</td><td>&lt;150 cm</td><td>32–35 Fr</td></tr>
+                </tbody>
+              </table>
             </div>
 
-              <div class="card-block">
-                <label class="form-label-lite">Altura</label>
-                <div class="input-group">
-                  <input type="number" id="altura" class="form-control calc-trigger" value="">
-                  <span class="input-group-text">cm</span>
-                </div>
-              </div>
-
-              <div class="card-block">
-                <label class="form-label-lite">Diámetro bronquial izquierdo (opcional)</label>
-                <div class="input-group">
-                  <input type="number" step="0.1" id="diametro" class="form-control calc-trigger" value="">
-                  <span class="input-group-text">mm</span>
-                </div>
-                <div class="small text-muted mt-2">Si cuentas con TC o medición confiable, úsala para ajustar la elección inicial por talla.</div>
-              </div>
+            <hr>
+            <b>Ajuste opcional por diámetro bronquial izquierdo:</b>
+            <div class="tdl-table-wrap mt-3">
+              <table class="tdl-table">
+                <thead>
+                  <tr>
+                    <th>Diámetro bronquial</th>
+                    <th>Tamaño sugerido</th>
+                    <th>Comentario</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>≥12 mm</td><td>41 Fr</td><td>Compatibilizar con talla y marca disponible.</td></tr>
+                  <tr><td>11,5–11,9 mm</td><td>39 Fr</td><td>Comparar con recomendación por talla.</td></tr>
+                  <tr><td>10,5–11,4 mm</td><td>37 Fr</td><td>Evitar sobredimensionar.</td></tr>
+                  <tr><td>10–10,4 mm</td><td>35 Fr</td><td>Usar con criterio anatómico.</td></tr>
+                  <tr><td>&lt;10 mm</td><td>35 Fr o menor</td><td>Reconsiderar anatomía, dispositivo y estrategia.</td></tr>
+                </tbody>
+              </table>
             </div>
+
+            <hr>
+            <b>Referencias:</b>
+            <ul class="mb-0 mt-2">
+              <?php foreach($referencias as $ref){ ?>
+                <li class="mb-2"><?php echo $ref; ?></li>
+              <?php } ?>
+            </ul>
           </div>
         </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">Resultado</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Datos de entrada</div>
 
-            <div class="result-box mb-3">
-              <div class="d-flex justify-content-between align-items-center gap-3">
-                <div>
-                  <div class="small-note">Tamaño recomendado</div>
-                  <div id="resultadoTexto" class="result-main">Ingresa sexo y altura.</div>
+            <div class="note-grid mb-3">
+              <div class="note-input-group">
+                <label class="note-label">Altura</label>
+                <div class="note-input-inline">
+                  <input id="altura" type="text" inputmode="decimal" class="note-input">
+                  <div class="note-input-unit">cm</div>
                 </div>
-                <div id="resultadoNum" class="result-num">-</div>
+              </div>
+
+              <div class="note-input-group">
+                <label class="note-label">Diámetro bronquial izquierdo</label>
+                <div class="note-input-inline">
+                  <input id="diametro" type="text" inputmode="decimal" class="note-input">
+                  <div class="note-input-unit">mm</div>
+                </div>
+                <div class="note-result-secondary">Opcional. Usar solo si proviene de TC o medición confiable.</div>
               </div>
             </div>
 
-            <div id="conductBox" class="conduct-box conduct-mid">
-              <div id="conductTitle" class="conduct-title">Interpretación</div>
-              <div id="conductText">Completa sexo y altura. Si además conoces el diámetro bronquial izquierdo, podrás ajustar mejor el tamaño del TDL.</div>
+            <div class="note-section-label">Sexo</div>
+            <div class="tdl-choice-grid mb-3">
+              <label>
+                <input class="tdl-option-input" type="radio" name="sexo" value="hombre" checked>
+                <div class="tdl-option">
+                  <i class="fa-solid fa-person"></i>
+                  <div class="tdl-option-title">Hombre</div>
+                  <div class="tdl-option-sub">tabla por talla</div>
+                </div>
+              </label>
+              <label>
+                <input class="tdl-option-input" type="radio" name="sexo" value="mujer">
+                <div class="tdl-option">
+                  <i class="fa-solid fa-person-dress"></i>
+                  <div class="tdl-option-title">Mujer</div>
+                  <div class="tdl-option-sub">tabla por talla</div>
+                </div>
+              </label>
             </div>
-          </div>
-        </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="algo-wrap">
-              <div class="algo-title">Guía práctica en anestesia</div>
-              <div class="algo-main">El TDL izquierdo es la elección habitual y la posición debe confirmarse siempre con fibrobroncoscopio</div>
-
-              <div class="algo-grid">
-                <div class="algo-card">
-                  <div class="algo-label">Elección del lado</div>
-                  <div class="algo-text">El TDL izquierdo es el estándar</div>
-                  <div class="algo-soft">Se prefiere porque el bronquio fuente izquierdo tiene trayecto más largo hasta la primera emergencia lobar, lo que entrega mayor margen de seguridad para el lumen bronquial.</div>
+            <div class="note-section-label">Lado del TDL</div>
+            <div class="tdl-choice-grid">
+              <label>
+                <input class="tdl-option-input" type="radio" name="lado" value="izquierdo" checked>
+                <div class="tdl-option">
+                  <i class="fa-solid fa-lungs"></i>
+                  <div class="tdl-option-title">Izquierdo</div>
+                  <div class="tdl-option-sub">elección habitual</div>
                 </div>
-
-                <div class="algo-card">
-                  <div class="algo-label">TDL derecho</div>
-                  <div class="algo-text">Reservarlo para casos seleccionados</div>
-                  <div class="algo-soft">Considerarlo si existe cirugía sobre bronquio izquierdo, distorsión anatómica izquierda, compresión, tumor o razones quirúrgicas específicas. El bronquio derecho ofrece menos margen y es más fácil ocluir el lóbulo superior.</div>
+              </label>
+              <label>
+                <input class="tdl-option-input" type="radio" name="lado" value="derecho">
+                <div class="tdl-option">
+                  <i class="fa-solid fa-triangle-exclamation"></i>
+                  <div class="tdl-option-title">Derecho</div>
+                  <div class="tdl-option-sub">indicación específica</div>
                 </div>
-
-                <div class="algo-card">
-                  <div class="algo-label">Confirmación</div>
-                  <div class="algo-text">La fibrobroncoscopía no es opcional</div>
-                  <div class="algo-soft">La auscultación sola no basta. Verifica posición del lumen traqueal y bronquial, y confirma que no ocluyes bronquios lobares.</div>
-                </div>
-
-                <div class="algo-card">
-                  <div class="algo-label">Cuff bronquial</div>
-                  <div class="algo-text">Inflar solo lo necesario</div>
-                  <div class="algo-soft">El cuff bronquial debe insuflarse con el volumen mínimo que logre sellado adecuado. Si puedes, controla presión de inflado para evitar lesión mucosa o sobreinflado.</div>
-                </div>
-
-                <div class="algo-card">
-                  <div class="algo-label">Cambio de posición</div>
-                  <div class="algo-text">Revisar siempre después de mover al paciente</div>
-                  <div class="algo-soft">Después del decúbito lateral o de reposicionamiento quirúrgico, la posición del TDL puede cambiar. Reconfirmar con fibrobroncoscopio es una conducta obligada.</div>
-                </div>
-
-                <div class="algo-card">
-                  <div class="algo-label">Si ventila mal</div>
-                  <div class="algo-text">Primero piensa en malposición</div>
-                  <div class="algo-soft">Ante hipoventilación, fuga, mala exclusión pulmonar o dificultad de insuflar un pulmón, la causa más probable es desplazamiento o posición incorrecta del TDL hasta demostrar lo contrario.</div>
-                </div>
-
-                <div class="algo-card">
-                  <div class="algo-label">Perla docente</div>
-                  <div class="algo-text">El mayor TDL que el paciente tolere suele funcionar mejor</div>
-                  <div class="algo-soft">Un tubo demasiado pequeño ventila peor, dificulta broncoscopía y puede aislar mal. Pero un tubo excesivamente grande aumenta riesgo de trauma. Por eso la talla y, si existe, el diámetro bronquial son útiles juntos.</div>
-                </div>
-              </div>
+              </label>
             </div>
           </div>
         </div>
 
-        <div class="footer-note">
-          Herramienta docente y de apoyo clínico. La elección definitiva del TDL debe integrar anatomía, cirugía, imágenes, experiencia del operador y disponibilidad de fibrobroncoscopio.
+        <div class="note-summary-box mb-3">
+          <div class="note-summary-box-title">Resumen</div>
+          <div id="summaryNarrative" class="note-summary-box-text">Ingresa altura para estimar tamaño inicial del TDL.</div>
+          <div class="note-summary-grid-2">
+            <div class="note-summary-item">
+              <div class="note-summary-k">Sexo / altura</div>
+              <div id="sumPatient" class="note-summary-v">Hombre · -</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Lado</div>
+              <div id="sumSide" class="note-summary-v">Izquierdo</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Por talla</div>
+              <div id="sumSizeHeight" class="note-summary-v">-</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Por bronquio</div>
+              <div id="sumSizeBronchus" class="note-summary-v">No ingresado</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="note-result-grid-2 mb-3">
+          <div id="sizeCard" class="note-result-card">
+            <div class="note-result-card-label">Tamaño recomendado</div>
+            <div id="resultadoNum" class="note-result-card-value">-</div>
+            <div id="resultadoTexto" class="note-result-card-note">Ingresa altura para calcular.</div>
+          </div>
+          <div id="sideCard" class="note-result-card tdl-ok-card">
+            <div class="note-result-card-label">Lado seleccionado</div>
+            <div id="sideMain" class="note-result-card-value">Izquierdo</div>
+            <div id="sideText" class="note-result-card-note">Elección habitual por mayor margen anatómico.</div>
+          </div>
+        </div>
+
+        <div id="algoBox" class="note-interpretation mb-3">
+          <div class="note-interpretation-label">Lectura clínica</div>
+          <div id="conductTitle" class="note-interpretation-main">Pendiente</div>
+          <div id="conductText" class="note-interpretation-soft">Completa sexo y altura. Si además conoces el diámetro bronquial izquierdo, podrás ajustar mejor el tamaño del TDL.</div>
+
+          <div class="mt-3 text-start">
+            <div class="tdl-plan-line"><strong>Elección del lado:</strong> <span id="planSide">TDL izquierdo como elección habitual.</span></div>
+            <div class="tdl-plan-line"><strong>Confirmación:</strong> <span>Fibrobroncoscopía antes y después del cambio de posición.</span></div>
+            <div class="tdl-plan-line"><strong>Cuff bronquial:</strong> <span>Inflar solo con el volumen mínimo que logre sellado adecuado.</span></div>
+          </div>
+        </div>
+
+        <div class="note-warning mb-3">
+          <strong>Advertencia clínica:</strong>
+          <div id="warningText" class="mt-2">La auscultación sola no basta. Todo TDL debe verificarse con fibrobroncoscopio, especialmente tras decúbito lateral, mala ventilación, fuga, mala exclusión pulmonar o cambios de posición.</div>
+        </div>
+
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Conducta práctica</div>
+            <div id="actionList" class="tdl-action-list">
+              <div class="tdl-action-item">
+                <div class="tdl-action-mark mid"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="tdl-action-copy">
+                  <div class="tdl-action-title">Completa talla</div>
+                  <p class="tdl-action-note">La recomendación inicial se basa en sexo y altura; el diámetro bronquial puede refinar la decisión si es confiable.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="note-teaching-wrap">
+          <div class="note-teaching-title">Perlas docentes</div>
+          <div class="note-teaching-main">El TDL izquierdo es la elección habitual; el derecho se gana con una indicación</div>
+          <div class="note-tips"><strong>Qué hacer:</strong> elegir tamaño por talla, ajustar con imagen si existe y confirmar siempre con fibrobroncoscopio.</div>
+          <div class="note-tips"><strong>Qué evitar:</strong> usar TDL derecho por rutina o confiar solo en auscultación.</div>
+          <div class="note-tips"><strong>TDL derecho:</strong> exige más precisión por la emergencia precoz del bronquio lobar superior derecho.</div>
+          <div class="note-tips"><strong>Mal aislamiento:</strong> ante ventilación difícil, fuga o mala exclusión, primero piensa en malposición hasta demostrar lo contrario.</div>
+          <div class="note-tips"><strong>Tamaño:</strong> un TDL demasiado pequeño ventila peor, dificulta broncoscopía y puede aislar mal; uno excesivo aumenta trauma.</div>
+          <div class="note-tips mb-0"><strong>Mensaje final:</strong> después de posicionar al paciente en lateral, vuelve a mirar con fibrobroncoscopio.</div>
         </div>
 
       </div>
@@ -641,88 +485,168 @@ require("head.php");
 </div>
 
 <script>
+(function(){
+  const CNS = window.ClinicalNoteSystem || {};
+
+  function parseLocal(value){
+    if(CNS.parseDecimal) return CNS.parseDecimal(value);
+    const n = Number(String(value || '').replace(',', '.'));
+    return Number.isFinite(n) ? n : null;
+  }
+
+  function fmt(value, decimals){
+    if(!Number.isFinite(value)) return '-';
+    if(CNS.formatNumber) return CNS.formatNumber(value, decimals);
+    return Number(value).toLocaleString('es-CL', {maximumFractionDigits:decimals});
+  }
+
+  function setText(id, value){
+    const el = document.getElementById(id);
+    if(CNS.safeSetText) CNS.safeSetText(el, value);
+    else if(el) el.textContent = value;
+  }
+
+  function getSelected(name){
+    const selected = document.querySelector('input[name="' + name + '"]:checked');
+    return selected ? selected.value : null;
+  }
+
+  function recomendarPorTalla(sexo, altura){
+    if(!altura || altura <= 0) return null;
+    if(sexo === 'hombre'){
+      if(altura > 170) return '41 Fr';
+      if(altura >= 160) return '39 Fr';
+      return '37–39 Fr';
+    }
+    if(sexo === 'mujer'){
+      if(altura > 160) return '37 Fr';
+      if(altura >= 150) return '35 Fr';
+      return '32–35 Fr';
+    }
+    return null;
+  }
+
+  function recomendarPorDiametro(d){
+    if(!d || d <= 0) return null;
+    if(d >= 12) return '41 Fr';
+    if(d >= 11.5) return '39 Fr';
+    if(d >= 10.5) return '37 Fr';
+    if(d >= 10) return '35 Fr';
+    return '35 Fr o menor';
+  }
+
+  function renderActions(hasHeight, lado, diametro, mismatch){
+    let items = [];
+
+    if(!hasHeight){
+      items = [
+        ['mid','Completa talla','La recomendación inicial se basa en sexo y altura; el diámetro bronquial puede refinar la decisión si es confiable.']
+      ];
+    } else {
+      items.push(['ok','Confirmar con fibrobroncoscopio','Verifica lumen traqueal y bronquial antes y después de posicionar en lateral.']);
+
+      if(diametro && diametro > 0){
+        items.push(['mid','Comparar talla versus bronquio','Si la recomendación por diámetro no coincide con talla, prioriza anatomía medida e integra marca disponible.']);
+      }
+
+      if(mismatch){
+        items.unshift(['mid','Recomendaciones discordantes','La talla y el diámetro bronquial sugieren tamaños distintos. Revisa imagen, marca del TDL y tolerancia anatómica.']);
+      }
+
+      if(lado === 'derecho'){
+        items.unshift(['high','TDL derecho requiere indicación','Evita ocluir bronquio lobar superior derecho. Usa fibrobroncoscopía estricta y revisa profundidad.']);
+      } else {
+        items.push(['ok','TDL izquierdo como estándar','Mayor margen anatómico hasta la primera emergencia lobar.']);
+      }
+    }
+
+    document.getElementById('actionList').innerHTML = items.map(function(item){
+      const icon = item[0] === 'ok' ? 'fa-check' : (item[0] === 'mid' ? 'fa-triangle-exclamation' : 'fa-bolt');
+      return '<div class="tdl-action-item">' +
+        '<div class="tdl-action-mark ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
+        '<div class="tdl-action-copy">' +
+          '<div class="tdl-action-title">' + item[1] + '</div>' +
+          '<p class="tdl-action-note">' + item[2] + '</p>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function updateTDL(){
+    const sexo = getSelected('sexo') || 'hombre';
+    const lado = getSelected('lado') || 'izquierdo';
+    const altura = parseLocal(document.getElementById('altura').value);
+    const diametro = parseLocal(document.getElementById('diametro').value);
+
+    const tallaSug = recomendarPorTalla(sexo, altura);
+    const diamSug = recomendarPorDiametro(diametro);
+    const finalSug = diamSug || tallaSug;
+    const mismatch = Boolean(tallaSug && diamSug && tallaSug !== diamSug);
+
+    setText('sumPatient', (sexo === 'hombre' ? 'Hombre' : 'Mujer') + ' · ' + (altura && altura > 0 ? fmt(altura,1) + ' cm' : '-'));
+    setText('sumSide', lado === 'izquierdo' ? 'Izquierdo' : 'Derecho');
+    setText('sumSizeHeight', tallaSug || '-');
+    setText('sumSizeBronchus', diamSug || 'No ingresado');
+
+    setText('sideMain', lado === 'izquierdo' ? 'Izquierdo' : 'Derecho');
+    const sideCard = document.getElementById('sideCard');
+
+    if(lado === 'izquierdo'){
+      sideCard.className = 'note-result-card tdl-ok-card';
+      setText('sideText', 'Elección habitual por mayor margen anatómico.');
+      setText('planSide', 'TDL izquierdo como elección habitual.');
+    } else {
+      sideCard.className = 'note-result-card tdl-danger-card';
+      setText('sideText', 'Usar solo con indicación anatómica o quirúrgica específica.');
+      setText('planSide', 'TDL derecho solo si hay indicación; vigilar emergencia del lóbulo superior derecho.');
+    }
+
+    if(!tallaSug){
+      setText('summaryNarrative', 'Ingresa altura para estimar tamaño inicial del TDL.');
+      setText('resultadoNum', '-');
+      setText('resultadoTexto', 'Ingresa altura para calcular.');
+      setText('conductTitle', 'Pendiente');
+      setText('conductText', 'Completa sexo y altura. Si además conoces el diámetro bronquial izquierdo, podrás ajustar mejor el tamaño del TDL.');
+      document.getElementById('sizeCard').className = 'note-result-card';
+      renderActions(false, lado, diametro, false);
+      return;
+    }
+
+    setText('resultadoNum', finalSug);
+    setText('resultadoTexto', diamSug ? 'Ajuste por diámetro bronquial. Por talla: ' + tallaSug + '.' : 'Recomendación inicial por sexo y talla.');
+    setText('summaryNarrative', 'TDL ' + (lado === 'izquierdo' ? 'izquierdo' : 'derecho') + ', ' + (sexo === 'hombre' ? 'hombre' : 'mujer') + ', ' + fmt(altura,1) + ' cm. Tamaño sugerido: ' + finalSug + (diamSug ? ' por diámetro bronquial.' : ' por talla.'));
+
+    const sizeCard = document.getElementById('sizeCard');
+    if(mismatch){
+      sizeCard.className = 'note-result-card tdl-mid-card';
+      setText('conductTitle', 'Recomendación discordante');
+      setText('conductText', 'El diámetro bronquial sugiere ' + diamSug + ', mientras la talla sugiere ' + tallaSug + '. Revisa medición, marca del TDL y anatomía antes de decidir.');
+    } else if(lado === 'derecho'){
+      sizeCard.className = 'note-result-card tdl-danger-card';
+      setText('conductTitle', 'TDL derecho: usar con indicación');
+      setText('conductText', 'El tamaño sugerido es ' + finalSug + ', pero el lado derecho exige indicación específica y confirmación broncoscópica estricta por riesgo de obstruir el bronquio lobar superior derecho.');
+    } else {
+      sizeCard.className = 'note-result-card tdl-ok-card';
+      setText('conductTitle', 'Elección habitual');
+      setText('conductText', 'TDL izquierdo ' + finalSug + ' como elección inicial razonable. Confirmar posición con fibrobroncoscopio y reevaluar tras lateralizar.');
+    }
+
+    renderActions(true, lado, diametro, mismatch);
+  }
+
+  document.getElementById('altura').addEventListener('input', updateTDL);
+  document.getElementById('diametro').addEventListener('input', updateTDL);
+  document.querySelectorAll('input[name="sexo"], input[name="lado"]').forEach(function(input){
+    input.addEventListener('change', updateTDL);
+  });
+
+  updateTDL();
+})();
+
 function toggleInfo(){
-  let box = document.getElementById("infoContent");
+  const box = document.getElementById("infoContent");
   box.style.display = (box.style.display === "none" || box.style.display === "") ? "block" : "none";
 }
-
-function getCheckedValue(name){
-  const el = document.querySelector('input[name="' + name + '"]:checked');
-  return el ? el.value : '';
-}
-
-function recomendarPorTalla(sexo, altura){
-  if(sexo === 'hombre'){
-    if(altura > 170) return '41 Fr';
-    if(altura >= 160) return '39 Fr';
-    return '37-39 Fr';
-  }
-  if(sexo === 'mujer'){
-    if(altura > 160) return '37 Fr';
-    if(altura >= 150) return '35 Fr';
-    return '32-35 Fr';
-  }
-  return '-';
-}
-
-function recomendarPorDiametro(d){
-  if(isNaN(d) || d <= 0) return null;
-  if(d >= 12) return '41 Fr';
-  if(d >= 11.5) return '39 Fr';
-  if(d >= 10.5) return '37 Fr';
-  if(d >= 10) return '35 Fr';
-  return '35 Fr o menor / reconsiderar anatomía';
-}
-
-function doMath(){
-  const sexo = getCheckedValue('sexo');
-  const altura = parseFloat(document.getElementById('altura').value);
-  const diametro = parseFloat(document.getElementById('diametro').value);
-  const lado = getCheckedValue('lado') || 'izquierdo';
-
-  const resultadoNum = document.getElementById('resultadoNum');
-  const resultadoTexto = document.getElementById('resultadoTexto');
-  const box = document.getElementById('conductBox');
-  const title = document.getElementById('conductTitle');
-  const text = document.getElementById('conductText');
-
-  if(!sexo || isNaN(altura) || altura <= 0){
-    resultadoNum.textContent = '-';
-    resultadoTexto.textContent = 'Ingresa sexo y altura.';
-    box.className = 'conduct-box conduct-mid';
-    title.textContent = 'Interpretación';
-    text.textContent = 'Completa sexo y altura. Si además conoces el diámetro bronquial izquierdo, podrás ajustar mejor el tamaño del TDL.';
-    return;
-  }
-
-  const tallaSug = recomendarPorTalla(sexo, altura);
-  const diamSug = recomendarPorDiametro(diametro);
-
-  resultadoNum.textContent = diamSug ? diamSug : tallaSug;
-  resultadoTexto.textContent = diamSug
-    ? 'El diámetro bronquial sugiere ' + diamSug + '; compáralo con la recomendación por talla (' + tallaSug + ').'
-    : 'Recomendación inicial por sexo y talla: ' + tallaSug;
-
-  if(lado === 'izquierdo'){
-    box.className = 'conduct-box conduct-ok';
-    title.textContent = 'Elección habitual';
-    text.innerHTML = 'El <strong>TDL izquierdo</strong> es la opción habitual. Confirma posición con fibrobroncoscopio, insufla el cuff bronquial con el volumen mínimo necesario y vuelve a revisar la posición tras movilizar al paciente.';
-  } else {
-    box.className = 'conduct-box conduct-no';
-    title.textContent = 'Lado derecho: usar con indicación';
-    text.innerHTML = 'El <strong>TDL derecho</strong> debe reservarse para situaciones anatómicas o quirúrgicas justificadas. Requiere especial cuidado por la relación con la emergencia del lóbulo superior derecho y una verificación broncoscópica aún más estricta.';
-  }
-}
-
-document.addEventListener('DOMContentLoaded', function(){
-  document.querySelectorAll('.calc-trigger').forEach(el => {
-    el.addEventListener('input', doMath);
-    el.addEventListener('change', doMath);
-  });
-  doMath();
-});
 </script>
 
-<?php
-require("footer.php");
-?>
+<?php include("footer.php"); ?>

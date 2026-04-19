@@ -1,416 +1,663 @@
 <?php
-
-$titulo_info = "Utilidad Clínica";
-$descripcion_info = "La clasificación ASA permite estimar el estado físico preoperatorio del paciente. Es una herramienta simple pero poderosa para estratificar riesgo anestésico, facilitar comunicación clínica y orientar planificación perioperatoria.";
-$formula = "ASA I–VI según estado sistémico del paciente. Sufijo 'E' para cirugía de urgencia.";
-$referencias = array(
-  "1.- American Society of Anesthesiologists. ASA Physical Status Classification System.",
-  "2.- Sankar A, et al. Comparison of the ASA Physical Status Classification System and other risk classification systems. Br J Anaesth. 2014.",
-  "3.- Hackett NJ, et al. ASA class is a reliable independent predictor of medical complications. Anesthesiology. 2015.","4.- Yevenes, S., Epulef, V., Rocco, C., Geisse, F., & Vial, M. (2022). Clasificación American Society of Anesthesiologists Physical Status: Revisión de ejemplos locales - Chile. Revista Chilena de Anestesia, 51(3), 251-260."
-);
-
-$icono_apunte = "<i class='fa-solid fa-notes-medical pe-3 pt-2'></i>";
-$titulo_apunte = "Clasificación ASA";
-
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm' style='width:80px;height:40px;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$titulo_pagina = "Clasificación ASA";
+$navbar_titulo = "Apuntes";
+$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px;height:40px;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+
+$titulo_info = "Utilidad clínica";
+$descripcion_info = "La clasificación ASA Physical Status permite describir el estado físico preoperatorio del paciente, estandarizar la comunicación clínica y apoyar la estimación global de riesgo perioperatorio. No reemplaza la valoración individual ni el riesgo propio del procedimiento.";
+$formula = "ASA I–VI según gravedad de la enfermedad sistémica. Agregar sufijo E cuando la cirugía es de urgencia / emergencia. ASA describe al paciente; no clasifica la cirugía ni la técnica anestésica.";
+$referencias = array(
+  "American Society of Anesthesiologists. ASA Physical Status Classification System.",
+  "Sankar A, et al. Comparison of the ASA Physical Status Classification System and other risk classification systems. Br J Anaesth. 2014.",
+  "Hackett NJ, et al. ASA class is a reliable independent predictor of medical complications. Anesthesiology. 2015.",
+  "Yevenes S, Epulef V, Rocco C, Geisse F, Vial M. Clasificación American Society of Anesthesiologists Physical Status: Revisión de ejemplos locales - Chile. Rev Chil Anest. 2022;51(3):251-260."
+);
 
 require("head.php");
 ?>
+<link rel="stylesheet" href="css/clinical-note-system.css?v=2">
+<script src="js/clinical-note-system.js?v=2"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
-<div class="apunte-surface">
-<div class="container-fluid px-0 px-md-2">
-<div class="asa-shell">
+  <div class="apunte-surface">
+    <div class="container-fluid px-0 px-md-2">
+      <div class="note-shell px-1 px-md-0 py-0">
 
-<style>
-:root{
-  --asa1:#e8f7f2;
-  --asa2:#fff9e8;
-  --asa3:#fff2e0;
-  --asa4:#ffe5e5;
-  --asa5:#ffd6d6;
-  --asa6:#f5f5f5;
-}
-.asa-shell{max-width:980px;margin:0 auto;}
+        <style>
+          .asa-choice-grid{
+            display:grid;
+            grid-template-columns:repeat(2,minmax(0,1fr));
+            gap:.75rem;
+          }
 
-.asa-card{
-  border-radius:1rem;
-  padding:1rem;
-  border:1px solid #e5e7eb;
-}
+          .asa-input{
+            position:absolute;
+            opacity:0;
+            pointer-events:none;
+          }
 
-.asa-title{
-  font-weight:800;
-  font-size:1.1rem;
-}
+          .asa-option{
+            display:flex;
+            align-items:flex-start;
+            gap:.7rem;
+            min-height:86px;
+            border:2px solid var(--note-line);
+            background:#fff;
+            border-radius:1rem;
+            padding:.75rem .85rem;
+            cursor:pointer;
+            transition:.15s ease;
+            box-shadow:0 3px 10px rgba(15,23,42,.04);
+            color:var(--note-text);
+          }
 
-.asa-sub{
-  font-weight:600;
-  color:#1f2a37;
-}
+          .asa-input:checked + .asa-option{
+            box-shadow:0 0 0 3px rgba(47,128,237,.14), 0 8px 18px rgba(15,23,42,.10);
+            border:4px solid var(--note-selected);
+            transform:translateY(-1px);
+          }
 
-.asa-ex{
-  font-size:.9rem;
-  color:#667085;
-}
+          .asa-checkmark{
+            flex:0 0 auto;
+            width:28px;
+            height:28px;
+            border-radius:999px;
+            border:2px solid #c9d3df;
+            background:#fff;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#fff;
+            margin-top:.05rem;
+            transition:.15s ease;
+          }
 
-.asa-badge{
-  font-weight:800;
-  font-size:1rem;
-  padding:.4rem .7rem;
-  border-radius:.6rem;
-}
+          .asa-input:checked + .asa-option .asa-checkmark{
+            background:#2ea663;
+            border-color:#2ea663;
+            color:#fff;
+          }
 
-.topbar{
-  background:linear-gradient(135deg,#27458f,#3559b7);
-  color:#fff;
-  border-radius:1.25rem;
-  padding:1.2rem;
-  margin-bottom:1rem;
-}
+          .asa-option-copy{
+            min-width:0;
+            flex:1;
+          }
 
-.section-card{
-  border-radius:1rem;
-  box-shadow:0 8px 24px rgba(0,0,0,.06);
-  background:#fff;
-  margin-bottom:1rem;
-}
+          .asa-option-top{
+            display:flex;
+            align-items:center;
+            gap:.45rem;
+            flex-wrap:wrap;
+            margin-bottom:.15rem;
+          }
 
-.section-title{
-  font-size:.8rem;
-  text-transform:uppercase;
-  color:#667085;
-}
+          .asa-pill{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            min-width:58px;
+            padding:.18rem .48rem;
+            border-radius:.65rem;
+            font-weight:900;
+            font-size:.82rem;
+            line-height:1.1;
+          }
 
-.img-box{
-  border-radius:1rem;
-  overflow:hidden;
-  border:1px solid #e5e7eb;
-}
+          .asa-pill-1{background:#198754;color:#fff;}
+          .asa-pill-2{background:#f4d35e;color:#3d2d00;}
+          .asa-pill-3{background:#6b5e3c;color:#fff;}
+          .asa-pill-4{background:#dc3545;color:#fff;}
+          .asa-pill-5{background:#8b3a3a;color:#fff;}
+          .asa-pill-6{background:#6c757d;color:#fff;}
 
-.info-box{
-  background:#fff;
-  border-radius:1rem;
-  box-shadow:0 8px 24px rgba(0,0,0,.06);
-  margin-bottom:1rem;
-}
+          .asa-option-title{
+            font-size:.96rem;
+            font-weight:850;
+            line-height:1.16;
+            color:var(--note-text);
+            margin:0;
+          }
 
-.info-box-header{
-  display:flex;
-  justify-content:space-between;
-  padding:1rem;
-}
+          .asa-option-sub{
+            font-size:.82rem;
+            line-height:1.3;
+            color:var(--note-muted);
+            margin:0;
+          }
 
-.info-box-content{
-  display:none;
-  padding:1rem;
-  border-top:1px solid #e5e7eb;
-}
+          .asa-bg-1{background:#e8f7f2;}
+          .asa-bg-2{background:#fff9e8;}
+          .asa-bg-3{background:#fff2e0;}
+          .asa-bg-4{background:#ffecec;}
+          .asa-bg-5{background:#ffdede;}
+          .asa-bg-6{background:#f5f5f5;}
 
-.level-card{
-  border:1px solid #e5e7eb;
-  border-radius:1rem;
-  padding:1rem;
-  background:#f8fafc;
-}
+          .asa-emergency-grid{
+            display:grid;
+            grid-template-columns:repeat(2,minmax(0,1fr));
+            gap:.75rem;
+          }
 
-.teaching-wrap{
-  border-radius:1.3rem;
-  background:#f4f7fb;
-  padding:1.2rem;
-}
+          .asa-emergency-option{
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            text-align:center;
+            min-height:68px;
+            border:2px solid var(--note-line);
+            background:#fff;
+            border-radius:1rem;
+            padding:.5rem .65rem;
+            cursor:pointer;
+            transition:.15s ease;
+            box-shadow:0 3px 10px rgba(15,23,42,.04);
+            gap:.12rem;
+          }
 
-.teaching-title{
-  text-align:center;
-  font-size:.9rem;
-  text-transform:uppercase;
-  color:#64748b;
-}
+          .asa-emergency-option i{
+            color:#3559b7;
+            font-size:.95rem;
+          }
 
-.teaching-main{
-  text-align:center;
-  font-size:1.8rem;
-  font-weight:800;
-  margin-bottom:1rem;
-}
+          .asa-input:checked + .asa-emergency-option{
+            box-shadow:0 0 0 3px rgba(47,128,237,.14), 0 8px 18px rgba(15,23,42,.10);
+            border:4px solid var(--note-selected);
+            transform:translateY(-1px);
+          }
 
-.teaching-card{
-  background:#fff;
-  border-radius:1rem;
-  padding:1rem;
-  border:1px solid #e5e7eb;
-  margin-bottom:.8rem;
-}
-.level-card{
-  border:1px solid #e5e7eb;
-  border-radius:1rem;
-  padding:1rem;
-  background:#f8fafc;
-}
+          .asa-emergency-title{
+            font-size:.92rem;
+            font-weight:850;
+            line-height:1.12;
+            color:var(--note-text);
+          }
 
-.level-green{
-  background:#e9f8ef;
-  border-color:#b7e4c7;
-}
+          .asa-emergency-sub{
+            font-size:.75rem;
+            line-height:1.18;
+            color:var(--note-muted);
+            font-weight:650;
+          }
 
-.level-yellow{
-  background:#fff8db;
-  border-color:#f4d35e;
-}
+          .asa-result-low{
+            background:#edf8f1 !important;
+            border-color:#b7ddc3 !important;
+          }
 
-.level-orange{
-  background:#fff0e1;
-  border-color:#f7b267;
-}
+          .asa-result-mid{
+            background:#fff9e8 !important;
+            border-color:#ead38a !important;
+          }
 
-.level-red{
-  background:#fdebec;
-  border-color:#f2a7b1;
-}
-.asa3-badge{
-  background:#6b5e3c; /* marrón oscuro cálido */
-  color:#fff;
-}
-.asa5-badge{
-  background:#8b3a3a; /* rojo oscuro desaturado */
-  color:#fff;
-}
-.asa-sub{
-  font-size:.85rem;
-  color:#6b7280;
-  line-height:1.4;
-  margin-top:6px;
-}
+          .asa-result-high{
+            background:#fff1f1 !important;
+            border-color:#efc0bd !important;
+          }
 
-.asa-mini{
-  font-weight:700;
-  color:#374151;
-  display:block;
-}
-</style>
+          .asa-result-critical{
+            background:#ffe6e6 !important;
+            border-color:#ef9a9a !important;
+          }
 
-<!-- TOPBAR -->
-<div class="topbar">  
-  <div class="small opacity-75">APP clínica • evaluación preoperatoria</div>
-  <h1 class="h3 mb-1">Clasificación ASA</h1>
-  <div class="subtle text-white-50">Estado físico preoperatorio</div>
-</div>
+          .asa-action-list{
+            display:grid;
+            gap:.75rem;
+          }
 
+          .asa-action-item{
+            display:flex;
+            align-items:flex-start;
+            gap:.65rem;
+            border:1px solid #d9e2ef;
+            border-radius:1rem;
+            background:#fff;
+            padding:.75rem .85rem;
+          }
 
-<!-- INFO -->
-<div class="info-box">
-  <div class="info-box-header">
-    <div>Información</div>
-    <button onclick="toggleInfo()" class="btn btn-sm btn-secondary">Mostrar / ocultar</button>
-  </div>
+          .asa-action-mark{
+            flex:0 0 auto;
+            width:30px;
+            height:30px;
+            border-radius:999px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#fff;
+            margin-top:.08rem;
+          }
 
-  <div id="infoContent" class="info-box-content">
-    <?php echo $descripcion_info; ?>
+          .asa-action-mark.ok{background:#2ea663;}
+          .asa-action-mark.mid{background:#f4c542;}
+          .asa-action-mark.high{background:#d92d20;}
 
-    <hr>
-    <b>Concepto:</b><br>
-    <?php echo $formula; ?>
+          .asa-action-copy{min-width:0;flex:1;}
 
-    <hr>
-    <b>Referencias:</b>
-    <ul class="small-note">
-      <?php foreach($referencias as $ref){ ?>
-        <li><?php echo $ref; ?></li>
-      <?php } ?>
-    </ul>
-  </div>
-</div>
+          .asa-action-title{
+            font-size:.95rem;
+            font-weight:800;
+            line-height:1.18;
+            color:var(--note-text);
+            margin-bottom:.1rem;
+          }
 
-<!-- ASA CARDS -->
-<div class="section-card">
-<div class="p-3">
+          .asa-action-note{
+            margin:0;
+            font-size:.82rem;
+            line-height:1.32;
+            color:var(--note-muted);
+          }
 
-<div class="section-title mb-3">Clasificación</div>
+          .asa-plan-line{
+            padding:.75rem .85rem;
+            border-radius:.9rem;
+            background:#fff;
+            border:1px solid var(--note-line-strong);
+            margin-bottom:.6rem;
+          }
 
-<div class="d-grid gap-3">
+          .asa-plan-line:last-child{
+            margin-bottom:0;
+          }
 
-<!-- ASA I -->
-<div class="asa-card" style="background:var(--asa1);">
-  <div class="d-flex justify-content-between">
-    <span class="asa-badge bg-success text-white">ASA I</span>
-    <span class="asa-title">Paciente sano</span>
-  </div>
-  <div class="asa-ex mt-2">
-    Sin comorbilidades.
+          @media (max-width:768px){
+            .asa-choice-grid{
+              grid-template-columns:1fr;
+            }
 
-    <div class="asa-sub">
-      <span class="asa-mini">Adulto:</span> sano, no fumador, sin consumo relevante de alcohol
-      <span class="asa-mini">Pediátrico:</span> sano, sin enfermedad aguda o crónica
+            .asa-emergency-grid{
+              grid-template-columns:repeat(2,minmax(0,1fr));
+            }
+          }
+
+          @media (max-width:420px){
+            .asa-emergency-grid{
+              grid-template-columns:1fr;
+            }
+          }
+        </style>
+
+        <div class="note-hero mb-3">
+          <div class="note-hero-kicker">APP CLÍNICA · EVALUACIÓN PREOPERATORIA</div>
+          <h2>Clasificación ASA</h2>
+          <div class="note-hero-subtitle">Selecciona el estado físico preoperatorio y agrega sufijo E si la cirugía es urgente o emergente.</div>
+        </div>
+
+        <div class="info-box mb-3">
+          <div class="info-box-header">
+            <div class="info-box-title">Información</div>
+            <button type="button" onclick="toggleInfo()" class="btn btn-sm info-toggle-btn">Mostrar / ocultar</button>
+          </div>
+          <div id="infoContent" class="info-box-content">
+            <p class="mb-2"><?php echo $descripcion_info; ?></p>
+            <hr>
+            <b>Concepto:</b><br>
+            <?php echo $formula; ?>
+            <hr>
+            <b>Referencias:</b>
+            <ul class="mb-0 mt-2">
+              <?php foreach($referencias as $ref){ ?>
+                <li class="mb-2"><?php echo $ref; ?></li>
+              <?php } ?>
+            </ul>
+          </div>
+        </div>
+
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Selecciona la clase ASA</div>
+
+            <div class="asa-choice-grid">
+              <label>
+                <input class="asa-input asa-trigger" type="radio" name="asaClass" value="1" checked>
+                <div class="asa-option asa-bg-1">
+                  <div class="asa-checkmark"><i class="fa-solid fa-check"></i></div>
+                  <div class="asa-option-copy">
+                    <div class="asa-option-top">
+                      <span class="asa-pill asa-pill-1">ASA I</span>
+                      <div class="asa-option-title">Paciente sano</div>
+                    </div>
+                    <p class="asa-option-sub">Sin enfermedad sistémica clínicamente relevante.</p>
+                  </div>
+                </div>
+              </label>
+
+              <label>
+                <input class="asa-input asa-trigger" type="radio" name="asaClass" value="2">
+                <div class="asa-option asa-bg-2">
+                  <div class="asa-checkmark"><i class="fa-solid fa-check"></i></div>
+                  <div class="asa-option-copy">
+                    <div class="asa-option-top">
+                      <span class="asa-pill asa-pill-2">ASA II</span>
+                      <div class="asa-option-title">Enfermedad sistémica leve</div>
+                    </div>
+                    <p class="asa-option-sub">Comorbilidad leve, sin limitación funcional importante.</p>
+                  </div>
+                </div>
+              </label>
+
+              <label>
+                <input class="asa-input asa-trigger" type="radio" name="asaClass" value="3">
+                <div class="asa-option asa-bg-3">
+                  <div class="asa-checkmark"><i class="fa-solid fa-check"></i></div>
+                  <div class="asa-option-copy">
+                    <div class="asa-option-top">
+                      <span class="asa-pill asa-pill-3">ASA III</span>
+                      <div class="asa-option-title">Enfermedad sistémica severa</div>
+                    </div>
+                    <p class="asa-option-sub">Limitación funcional significativa o compromiso sistémico mayor.</p>
+                  </div>
+                </div>
+              </label>
+
+              <label>
+                <input class="asa-input asa-trigger" type="radio" name="asaClass" value="4">
+                <div class="asa-option asa-bg-4">
+                  <div class="asa-checkmark"><i class="fa-solid fa-check"></i></div>
+                  <div class="asa-option-copy">
+                    <div class="asa-option-top">
+                      <span class="asa-pill asa-pill-4">ASA IV</span>
+                      <div class="asa-option-title">Amenaza constante para la vida</div>
+                    </div>
+                    <p class="asa-option-sub">Enfermedad crítica activa con alto compromiso fisiológico.</p>
+                  </div>
+                </div>
+              </label>
+
+              <label>
+                <input class="asa-input asa-trigger" type="radio" name="asaClass" value="5">
+                <div class="asa-option asa-bg-5">
+                  <div class="asa-checkmark"><i class="fa-solid fa-check"></i></div>
+                  <div class="asa-option-copy">
+                    <div class="asa-option-top">
+                      <span class="asa-pill asa-pill-5">ASA V</span>
+                      <div class="asa-option-title">Paciente moribundo</div>
+                    </div>
+                    <p class="asa-option-sub">No sobrevivirá sin intervención quirúrgica inmediata.</p>
+                  </div>
+                </div>
+              </label>
+
+              <label>
+                <input class="asa-input asa-trigger" type="radio" name="asaClass" value="6">
+                <div class="asa-option asa-bg-6">
+                  <div class="asa-checkmark"><i class="fa-solid fa-check"></i></div>
+                  <div class="asa-option-copy">
+                    <div class="asa-option-top">
+                      <span class="asa-pill asa-pill-6">ASA VI</span>
+                      <div class="asa-option-title">Muerte cerebral</div>
+                    </div>
+                    <p class="asa-option-sub">Donante de órganos con soporte vital.</p>
+                  </div>
+                </div>
+              </label>
+            </div>
+
+            <div class="note-section-label mt-4">Urgencia / emergencia</div>
+            <div class="asa-emergency-grid">
+              <label>
+                <input class="asa-input asa-trigger" type="radio" name="emergency" value="no" checked>
+                <div class="asa-emergency-option">
+                  <i class="fa-solid fa-calendar-check"></i>
+                  <div class="asa-emergency-title">Electiva / programada</div>
+                  <div class="asa-emergency-sub">sin sufijo E</div>
+                </div>
+              </label>
+
+              <label>
+                <input class="asa-input asa-trigger" type="radio" name="emergency" value="yes">
+                <div class="asa-emergency-option">
+                  <i class="fa-solid fa-triangle-exclamation"></i>
+                  <div class="asa-emergency-title">Urgencia / emergencia</div>
+                  <div class="asa-emergency-sub">agregar E</div>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="note-summary-box mb-3">
+          <div class="note-summary-box-title">Resumen</div>
+          <div id="summaryNarrative" class="note-summary-box-text">ASA I: paciente sano. Procedimiento electivo/programado.</div>
+          <div class="note-summary-grid-2">
+            <div class="note-summary-item">
+              <div class="note-summary-k">Clasificación</div>
+              <div id="summaryClass" class="note-summary-v">ASA I</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Urgencia</div>
+              <div id="summaryEmergency" class="note-summary-v">No</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Qué describe</div>
+              <div class="note-summary-v">Estado físico</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Qué no describe</div>
+              <div class="note-summary-v">Riesgo quirúrgico total</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="note-result-grid-2 mb-3">
+          <div id="asaResultCard" class="note-result-card asa-result-low">
+            <div class="note-result-card-label">Resultado ASA</div>
+            <div id="asaResult" class="note-result-card-value">ASA I</div>
+            <div id="asaResultNote" class="note-result-card-note">Paciente sano.</div>
+          </div>
+          <div id="riskCard" class="note-result-card asa-result-low">
+            <div class="note-result-card-label">Lectura clínica</div>
+            <div id="riskLevel" class="note-result-card-value">Bajo riesgo basal</div>
+            <div id="riskNote" class="note-result-card-note">La clase ASA debe integrarse con el procedimiento y la reserva funcional.</div>
+          </div>
+        </div>
+
+        <div id="algoBox" class="note-interpretation mb-3">
+          <div class="note-interpretation-label">Interpretación</div>
+          <div id="interpMain" class="note-interpretation-main">ASA describe al paciente; no mide la cirugía.</div>
+          <div id="interpSoft" class="note-interpretation-soft">A mayor ASA, mayor probabilidad de complicaciones perioperatorias, pero el riesgo final depende del procedimiento, urgencia, reserva funcional y contexto clínico.</div>
+
+          <div class="mt-3 text-start">
+            <div class="asa-plan-line"><strong>Definición:</strong> <span id="definitionText">Paciente sano, sin enfermedad sistémica clínicamente relevante.</span></div>
+            <div class="asa-plan-line"><strong>Ejemplos adulto:</strong> <span id="adultExamples">Sano, no fumador, sin consumo relevante de alcohol.</span></div>
+            <div class="asa-plan-line"><strong>Ejemplos pediátricos:</strong> <span id="pedsExamples">Sano, sin enfermedad aguda o crónica.</span></div>
+          </div>
+        </div>
+
+        <div class="note-warning mb-3">
+          <strong>Advertencia clínica:</strong>
+          <div id="warningText" class="mt-2">No confundas ASA con riesgo quirúrgico total. Una cirugía menor no baja una clase ASA alta, y una cirugía urgente no modifica la clase: agrega el sufijo <strong>E</strong>.</div>
+        </div>
+
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Conducta práctica</div>
+            <div id="actionList" class="asa-action-list">
+              <div class="asa-action-item">
+                <div class="asa-action-mark ok"><i class="fa-solid fa-check"></i></div>
+                <div class="asa-action-copy">
+                  <div class="asa-action-title">Clasificación basal</div>
+                  <p class="asa-action-note">Registrar ASA I si el paciente realmente no tiene enfermedad sistémica clínicamente relevante.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="note-teaching-wrap">
+          <div class="note-teaching-title">Perlas docentes</div>
+          <div class="note-teaching-main">Clasifica según la condición sistémica más relevante actual</div>
+          <div class="note-tips"><strong>Qué hacer:</strong> define la clase por el estado físico del paciente, luego integra cirugía, urgencia, capacidad funcional y reserva fisiológica.</div>
+          <div class="note-tips"><strong>Qué evitar:</strong> bajar el ASA porque el procedimiento es pequeño o subirlo solo porque la cirugía es compleja.</div>
+          <div class="note-tips"><strong>Error frecuente:</strong> confundir urgencia con severidad fisiológica. La urgencia agrega <strong>E</strong>, no cambia el número.</div>
+          <div class="note-tips"><strong>Duda entre dos categorías:</strong> busca limitación funcional, descompensación, amenaza fisiológica sostenida o necesidad de soporte.</div>
+          <div class="note-tips mb-0"><strong>Mensaje final:</strong> documenta el ASA como comunicación clínica, no como sustituto de evaluación preoperatoria completa.</div>
+        </div>
+
+        <div class="note-footer mt-3">
+          Herramienta docente y de apoyo clínico. Confirmar clasificación con evaluación anestésica completa, comorbilidades activas, reserva funcional, urgencia y riesgo propio del procedimiento.
+        </div>
+
+      </div>
     </div>
   </div>
-</div>
-
-<!-- ASA II -->
-<div class="asa-card" style="background:var(--asa2);">
-  <div class="d-flex justify-content-between">
-    <span class="asa-badge bg-warning text-dark">ASA II</span>
-    <span class="asa-title">Enfermedad sistémica leve</span>
-  </div>
-  <div class="asa-ex mt-2">
-    HTA o DM2 controlada.
-
-    <div class="asa-sub">
-      <span class="asa-mini">Adulto:</span> fumador, IMC 30–40, embarazo, DM/HTA controlada
-      <span class="asa-mini">Pediátrico:</span> asma controlada, epilepsia controlada, cardiopatía congénita leve
-    </div>
-  </div>
-</div>
-
-<!-- ASA III -->
-<div class="asa-card" style="background:var(--asa3);">
-  <div class="d-flex justify-content-between">
-    <span class="asa-badge asa3-badge">ASA III</span>
-    <span class="asa-title">Enfermedad sistémica severa</span>
-  </div>
-  <div class="asa-ex mt-2">
-    Limitación funcional significativa.
-
-    <div class="asa-sub">
-      <span class="asa-mini">Adulto:</span> EPOC, obesidad mórbida, cirrosis compensada, ERC en diálisis
-      <span class="asa-mini">Pediátrico:</span> DM insulinodependiente, OSA severa, desnutrición, cardiopatía relevante
-    </div>
-  </div>
-</div>
-
-<!-- ASA IV -->
-<div class="asa-card" style="background:var(--asa4);">
-  <div class="d-flex justify-content-between">
-    <span class="asa-badge bg-danger text-white">ASA IV</span>
-    <span class="asa-title">Amenaza constante para la vida</span>
-  </div>
-  <div class="asa-ex mt-2">
-    Enfermedad crítica activa.
-
-    <div class="asa-sub">
-      <span class="asa-mini">Adulto:</span> IAM reciente, sepsis, shock, insuficiencia cardíaca avanzada
-      <span class="asa-mini">Pediátrico:</span> sepsis, encefalopatía hipóxica, falla respiratoria, cardiopatía sintomática
-    </div>
-  </div>
-</div>
-
-<!-- ASA V -->
-<div class="asa-card" style="background:var(--asa5);">
-  <div class="d-flex justify-content-between">
-    <span class="asa-badge asa5-badge">ASA V</span>
-    <span class="asa-title">Paciente moribundo</span>
-  </div>
-  <div class="asa-ex mt-2">
-    No sobrevivirá sin cirugía.
-
-    <div class="asa-sub">
-      <span class="asa-mini">Adulto:</span> hemorragia intracraneal, aneurisma roto, isquemia intestinal
-      <span class="asa-mini">Pediátrico:</span> trauma masivo, falla multiorgánica, paro cardiorrespiratorio
-    </div>
-  </div>
-</div>
-
-<!-- ASA VI -->
-<div class="asa-card" style="background:var(--asa6);">
-  <div class="d-flex justify-content-between">
-    <span class="asa-badge bg-secondary text-white">ASA VI</span>
-    <span class="asa-title">Muerte cerebral</span>
-  </div>
-  <div class="asa-ex mt-2">
-    Donante de órganos.
-
-    <div class="asa-sub">
-      <span class="asa-mini">Adulto / Pediátrico:</span> paciente en muerte cerebral con soporte vital
-    </div>
-  </div>
-</div>
-
-</div>
-</div>
-</div>
-
-<!-- PERLAS -->
-<div class="section-card">
-<div class="p-3">
-
-<div class="teaching-wrap">
-
-<div class="teaching-title">Perlas docentes</div>
-
-<div class="teaching-main">
-ASA NO mide riesgo quirúrgico… mide al paciente
-</div>
-
-<div class="teaching-grid">
-
-<div class="teaching-card">
-<div class="teaching-label">Concepto clave</div>
-<div class="teaching-text">No depende de la cirugía</div>
-<div class="teaching-soft">
-Un paciente ASA IV puede someterse a cirugía menor y sigue siendo ASA IV.
-</div>
-</div>
-
-<div class="teaching-card">
-<div class="teaching-label">Error frecuente</div>
-<div class="teaching-text">Confundir gravedad con urgencia</div>
-<div class="teaching-soft">
-El sufijo “E” (emergencia) es independiente del ASA.
-</div>
-</div>
-
-<div class="teaching-card">
-  <div class="teaching-label">Usa el puntaje MÁS ALTO</div>
-  <div class="teaching-text">Clasifica según la condición de mayor gravedad</div>
-  <div class="teaching-soft">
-    El ASA PS se define por la condición más severa del paciente en ese momento. 
-    Si coexisten múltiples patologías, se debe asignar el puntaje correspondiente a la de mayor impacto sistémico.
-    <br><br>
-    Ejemplo: una paciente con absceso mamario podría ser ASA II, pero si evoluciona a sepsis, corresponde ASA IV. 
-    En este caso, la clasificación correcta es ASA IV.
-  </div>
-</div>
-
-
-<div class="teaching-card">
-<div class="teaching-label">Uso clínico</div>
-<div class="teaching-text">Predice complicaciones</div>
-<div class="teaching-soft">
-A mayor ASA, mayor riesgo de mortalidad y eventos perioperatorios.
-</div>
-</div>
-
-<div class="teaching-card">
-<div class="teaching-label">Perla de residente</div>
-<div class="teaching-text">Duda → sube ASA</div>
-<div class="teaching-soft">
-Es más seguro sobreestimar gravedad que subestimarla.
-</div>
-</div>
-
-<div class="teaching-card">
-<div class="teaching-label">Evaluación real</div>
-<div class="teaching-text">Integra funcionalidad</div>
-<div class="teaching-soft">
-No solo diagnóstico: importa cuánto limita al paciente.
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-</div>
 </div>
 
 <script>
+(function(){
+  const ASA_DATA = {
+    1:{
+      label:'ASA I',
+      title:'Paciente sano',
+      risk:'Bajo riesgo basal',
+      definition:'Paciente sano, sin enfermedad sistémica clínicamente relevante.',
+      adult:'Sano, no fumador, sin consumo relevante de alcohol.',
+      peds:'Sano, sin enfermedad aguda o crónica.',
+      css:'asa-result-low',
+      action:'Registrar ASA I si el paciente realmente no tiene enfermedad sistémica clínicamente relevante.',
+      level:'ok'
+    },
+    2:{
+      label:'ASA II',
+      title:'Enfermedad sistémica leve',
+      risk:'Riesgo basal levemente aumentado',
+      definition:'Enfermedad sistémica leve, controlada y sin limitación funcional importante.',
+      adult:'Fumador, embarazo, IMC 30–40, DM o HTA controlada.',
+      peds:'Asma controlada, epilepsia controlada, cardiopatía congénita leve.',
+      css:'asa-result-low',
+      action:'Confirmar que la comorbilidad esté controlada y que no exista limitación funcional relevante.',
+      level:'ok'
+    },
+    3:{
+      label:'ASA III',
+      title:'Enfermedad sistémica severa',
+      risk:'Riesgo aumentado',
+      definition:'Enfermedad sistémica severa con limitación funcional significativa o compromiso sistémico mayor.',
+      adult:'EPOC, obesidad mórbida, cirrosis compensada, ERC en diálisis, DM mal controlada.',
+      peds:'DM insulinodependiente, OSA severa, desnutrición, cardiopatía relevante.',
+      css:'asa-result-mid',
+      action:'Planificar optimización, monitorización y destino postoperatorio según comorbilidad y cirugía.',
+      level:'mid'
+    },
+    4:{
+      label:'ASA IV',
+      title:'Amenaza constante para la vida',
+      risk:'Alto riesgo basal',
+      definition:'Enfermedad crítica activa con amenaza constante para la vida.',
+      adult:'IAM reciente, sepsis, shock, insuficiencia cardíaca avanzada o falla respiratoria significativa.',
+      peds:'Sepsis, encefalopatía hipóxica, falla respiratoria, cardiopatía sintomática.',
+      css:'asa-result-high',
+      action:'Requiere planificación anestésica explícita, optimización posible, monitorización avanzada y comunicación del riesgo.',
+      level:'high'
+    },
+    5:{
+      label:'ASA V',
+      title:'Paciente moribundo',
+      risk:'Riesgo crítico',
+      definition:'Paciente moribundo que no sobrevivirá sin intervención quirúrgica inmediata.',
+      adult:'Hemorragia intracraneal, aneurisma roto, isquemia intestinal o trauma exanguinante.',
+      peds:'Trauma masivo, falla multiorgánica, paro cardiorrespiratorio recuperado.',
+      css:'asa-result-critical',
+      action:'Enfocar en control de daño, comunicación clara, reanimación y objetivos terapéuticos realistas.',
+      level:'high'
+    },
+    6:{
+      label:'ASA VI',
+      title:'Muerte cerebral',
+      risk:'Donante de órganos',
+      definition:'Paciente en muerte cerebral mantenido con soporte vital para procuramiento de órganos.',
+      adult:'Donante de órganos con diagnóstico de muerte cerebral.',
+      peds:'Donante pediátrico en muerte cerebral con soporte vital.',
+      css:'asa-result-mid',
+      action:'Manejo orientado a preservación de órganos, coordinación con equipo de procuramiento y protocolo local.',
+      level:'mid'
+    }
+  };
+
+  const CNS = window.ClinicalNoteSystem || {};
+
+  function setText(id, value){
+    const el = document.getElementById(id);
+    if(CNS.safeSetText) CNS.safeSetText(el, value);
+    else if(el) el.textContent = value;
+  }
+
+  function getSelected(name){
+    const el = document.querySelector('input[name="' + name + '"]:checked');
+    return el ? el.value : null;
+  }
+
+  function renderActions(data, emergency){
+    let items = [];
+
+    if(data.level === 'ok'){
+      items.push(['ok','Clasificación basal',data.action]);
+      items.push(['ok','Integrar contexto','ASA bajo no significa riesgo cero: considerar procedimiento, vía aérea, sangrado, comorbilidades ocultas y capacidad funcional.']);
+    } else if(data.level === 'mid'){
+      items.push(['mid','Riesgo aumentado o contexto especial',data.action]);
+      items.push(['mid','Planificar más allá del número','Revisar optimización, necesidad de monitorización, analgesia, fluidos y destino postoperatorio.']);
+    } else {
+      items.push(['high','Alto compromiso fisiológico',data.action]);
+      items.push(['high','Comunicación del riesgo','Alinear plan anestésico, quirúrgico, reanimación, UCI y objetivos de cuidado.']);
+    }
+
+    if(emergency){
+      items.unshift(['high','Sufijo E agregado','La urgencia aumenta riesgo y limita optimización, pero no cambia el número ASA: se documenta como ' + data.label + 'E.']);
+    }
+
+    document.getElementById('actionList').innerHTML = items.map(function(item){
+      const icon = item[0] === 'ok' ? 'fa-check' : (item[0] === 'mid' ? 'fa-triangle-exclamation' : 'fa-bolt');
+      return '<div class="asa-action-item">' +
+        '<div class="asa-action-mark ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
+        '<div class="asa-action-copy">' +
+          '<div class="asa-action-title">' + item[1] + '</div>' +
+          '<p class="asa-action-note">' + item[2] + '</p>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function updateASA(){
+    const selected = Number(getSelected('asaClass') || 1);
+    const emergency = getSelected('emergency') === 'yes';
+    const data = ASA_DATA[selected] || ASA_DATA[1];
+    const label = data.label + (emergency ? 'E' : '');
+
+    setText('summaryClass', label);
+    setText('summaryEmergency', emergency ? 'Sí · sufijo E' : 'No');
+    setText('summaryNarrative', label + ': ' + data.title.toLowerCase() + '. ' + (emergency ? 'Cirugía urgente/emergente: agregar sufijo E.' : 'Procedimiento electivo/programado.'));
+    setText('asaResult', label);
+    setText('asaResultNote', data.title + '.');
+    setText('riskLevel', data.risk);
+    setText('riskNote', emergency ? 'La urgencia aumenta riesgo y reduce tiempo de optimización.' : 'La clase ASA debe integrarse con el procedimiento y la reserva funcional.');
+    setText('definitionText', data.definition);
+    setText('adultExamples', data.adult);
+    setText('pedsExamples', data.peds);
+
+    document.getElementById('asaResultCard').className = 'note-result-card ' + data.css;
+    document.getElementById('riskCard').className = 'note-result-card ' + (emergency && selected >= 3 ? 'asa-result-high' : data.css);
+
+    setText('interpMain', emergency ? label + ': estado físico + urgencia' : label + ': ' + data.title);
+    setText('interpSoft', emergency
+      ? 'El sufijo E comunica que el procedimiento es urgente o emergente. No modifica la clase base, pero sí el riesgo operativo y la posibilidad de optimización.'
+      : 'ASA describe el estado físico basal del paciente. No reemplaza evaluación de cirugía, vía aérea, sangrado, fragilidad, reserva funcional ni contexto anestésico.'
+    );
+
+    renderActions(data, emergency);
+  }
+
+  document.querySelectorAll('.asa-trigger').forEach(function(input){
+    input.addEventListener('change', updateASA);
+  });
+
+  updateASA();
+})();
+
 function toggleInfo(){
-  let box = document.getElementById("infoContent");
-  box.style.display = (box.style.display === "block") ? "none" : "block";
+  const box = document.getElementById("infoContent");
+  box.style.display = (box.style.display === "none" || box.style.display === "") ? "block" : "none";
 }
 </script>
 

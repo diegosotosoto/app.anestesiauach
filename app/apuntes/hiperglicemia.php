@@ -1,1285 +1,767 @@
 <?php
-
-$titulo_info = "Utilidad Clínica";
-$descripcion_info = "Resumen práctico para manejo perioperatorio de la hiperglicemia, orientado a decisiones en pabellón. Incluye metas glicémicas, evaluación inicial de necesidad de insulina EV, cálculo de corrección subcutánea, conducta en usuarios de GLP-1 RA y perlas para residentes.";
-$formula = "Corrección SC: (Glicemia medida - 100) / factor de sensibilidad. Factor de sensibilidad = 1800 / TDD. Si no se conoce la TDD, puede usarse 40 como referencia. En procedimientos con alta variabilidad metabólica o duración prolongada debe preferirse infusión EV.";
-$referencias = array(
-  "1.- Perioperative Hyperglycemia Management: An Update. Anesthesiology. March 2017.",
-  "2.- Recomendaciones docentes personales de manejo perioperatorio de glicemia intraoperatoria.",
-  "3.- Algoritmos de ayuno y conducta perioperatoria en usuarios de agonistas GLP-1."
-);
-
-$icono_apunte = "<i class='fa-solid fa-droplet pe-3 pt-2'></i>";
-$titulo_apunte = "Glicemia intraoperatoria e insulina EV";
-
+$titulo_pagina = "Hiperglicemia perioperatoria";
+$navbar_titulo = "Apuntes";
 $boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
 $boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
 
-require("head.php");
+$titulo_info = "Utilidad clínica";
+$descripcion_info = "Resumen interactivo para manejo perioperatorio de hiperglicemia en pabellón. Integra metas glicémicas, decisión entre corrección subcutánea e infusión EV, conducta en usuarios de GLP-1 RA, ajuste de insulina y orientación postoperatoria.";
+$formula = "Corrección SC = (glicemia medida - 100) / factor de sensibilidad. Factor de sensibilidad = 1800 / TDD. Si no se conoce TDD, puede usarse 40 UI/día como referencia docente. En procedimientos prolongados, inestabilidad o alta variabilidad metabólica debe preferirse infusión EV.";
+$referencias = array(
+  "Perioperative Hyperglycemia Management: An Update. Anesthesiology. 2017.",
+  "American Diabetes Association. Standards of Care in Diabetes. Hospital care and perioperative glycemic targets.",
+  "Kindel TL, et al. Multi-society clinical practice guidance for the safe use of GLP-1 receptor agonists in the perioperative period. 2024.",
+  "Recomendaciones docentes locales de manejo perioperatorio de glicemia intraoperatoria."
+);
+
+include("head.php");
 ?>
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?php echo time(); ?>">
+<script src="js/clinical-note-system.js?v=1"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
     <div class="container-fluid px-0 px-md-2">
-      <div class="gly-shell">
+      <div class="note-shell px-1 px-md-0 py-0">
 
         <style>
-          :root{
-            --brand:#27458f;
-            --brand2:#3559b7;
-            --bg:#f4f7fb;
-            --soft:#f8fafc;
-            --line:#dfe7f2;
-            --text:#1f2a37;
-            --muted:#667085;
-            --good:#edf8f7;
-            --warn:#fff9e8;
-            --danger:#fff5f3;
-            --mint:#eef7ff;
-            --mint-border:#cfe1ff;
+          .gly-choice-grid{
+            display:grid;
+            grid-template-columns:repeat(2,minmax(0,1fr));
+            gap:.75rem;
           }
-
-          body{background:var(--bg);}
-          .gly-shell{max-width:980px;margin:0 auto;}
-
-          .topbar{
-            background:linear-gradient(135deg,var(--brand),var(--brand2));
-            color:#fff;
-            border-radius:1.25rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            padding:1.15rem 1.25rem;
-            margin-bottom:1rem;
-            overflow:hidden;
+          .gly-choice-grid.gly-grid-3{
+            grid-template-columns:repeat(3,minmax(0,1fr));
           }
-          .topbar h1{color:#fff;}
-
-          .section-card{
-            border:0;
-            border-radius:1rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
+          .gly-choice-grid.gly-grid-4{
+            grid-template-columns:repeat(4,minmax(0,1fr));
+          }
+          .gly-option-input{
+            position:absolute;
+            opacity:0;
+            pointer-events:none;
+          }
+          .gly-option{
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            text-align:center;
+            min-height:76px;
+            border:2px solid var(--note-line);
             background:#fff;
-            overflow:hidden;
-            margin-bottom:1rem;
+            border-radius:1rem;
+            padding:.7rem .75rem;
+            cursor:pointer;
+            transition:.15s ease;
+            box-shadow:0 3px 10px rgba(15,23,42,.04);
+            gap:.18rem;
           }
-
-          .section-title{
-            font-size:.8rem;
-            letter-spacing:.05em;
-            text-transform:uppercase;
-            color:var(--muted);
-          }
-
-          .pill{
-            display:inline-block;
-            padding:.2rem .55rem;
-            border-radius:999px;
-            font-size:.78rem;
-            background:#eef3ff;
+          .gly-option i{
             color:#3559b7;
+            font-size:1rem;
+          }
+          .gly-option-input:checked + .gly-option{
+            box-shadow:0 0 0 3px rgba(47,128,237,.14), 0 8px 18px rgba(15,23,42,.10);
+            border:4px solid var(--note-selected);
+            transform:translateY(-1px);
+          }
+
+          .note-input{
+            min-height:46px;
+            padding:.55rem .75rem;
+            font-size:1rem;
+          }
+          .note-input-unit{
+            min-height:46px;
+            padding:.55rem .75rem;
+            font-size:.95rem;
+          }
+          .gly-option-title{
+            font-size:.9rem;
+            font-weight:800;
+            line-height:1.15;
+            color:var(--note-text);
+            margin:0;
+          }
+          .gly-option-sub{
+            font-size:.76rem;
+            line-height:1.22;
+            color:var(--note-muted);
+            margin:0;
             font-weight:600;
           }
 
-          .subtle{font-size:.94rem;color:#5f6b76;}
-          .small-note{font-size:.84rem;color:var(--muted);}
-          .footer-note{font-size:.82rem;color:#6c757d;}
-
-          .info-box{
+          .gly-plan-line{
+            padding:.75rem .85rem;
+            border-radius:.9rem;
             background:#fff;
-            border-radius:1rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            margin-bottom:1rem;
-            overflow:hidden;
+            border:1px solid var(--note-line-strong);
+            margin-bottom:.6rem;
           }
-          .info-box-header{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            gap:1rem;
-            padding:1rem;
-          }
-          .info-box-title{
-            font-size:.8rem;
-            text-transform:uppercase;
-            color:#667085;
-            letter-spacing:.08em;
-          }
-          .info-toggle-btn{
-            border-radius:.6rem;
-            font-size:.85rem;
-            padding:.35rem .7rem;
-            white-space:nowrap;
-            background:#6c757d;
-            border:none;
-            color:white;
-            transition:.2s;
-          }
-          .info-toggle-btn:hover{background:#5a6268;color:white;}
-          .info-box-content{
-            padding:1rem;
-            display:none;
-            animation:fadeIn .2s ease-in-out;
-            border-top:1px solid #e9eef5;
-          }
+          .gly-plan-line:last-child{margin-bottom:0;}
 
-          @keyframes fadeIn{
-            from{opacity:0; transform:translateY(-5px);}
-            to{opacity:1; transform:translateY(0);}
-          }
-
-          .section-box{
-            background:#fff;
-            border:1px solid #e5e9f2;
-            border-radius:18px;
-            padding:16px;
-            box-shadow:0 8px 20px rgba(0,0,0,.05);
-            margin-bottom:1rem;
-          }
-
-          .section-title-ui{
-            font-weight:700;
-            font-size:1.02rem;
-            color:#27458f;
-            margin-bottom:14px;
-          }
-
-          .badges-row{
-            display:flex;
-            flex-wrap:wrap;
-            gap:.5rem;
-          }
-
-          .info-pill{
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            padding:.45rem .8rem;
-            border-radius:999px;
-            font-size:.82rem;
-            font-weight:700;
-            background:#eef3ff;
-            color:#27458f;
-            border:1px solid #dbe6ff;
-          }
-
-          .choice-grid{
+          .gly-safety-list{
             display:grid;
-            grid-template-columns:repeat(2,1fr);
-            gap:.7rem;
-          }
-
-          .choice-check{display:none;}
-
-          .choice-btn{
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            text-align:center;
-            min-height:58px;
-            border:1px solid #dfe7f2;
-            background:#fff;
-            border-radius:14px;
-            padding:.75rem .8rem;
-            font-weight:700;
-            color:#1f2a37;
-            cursor:pointer;
-            transition:.15s ease;
-            line-height:1.2;
-          }
-
-          .choice-check:checked + .choice-btn{
-            background:#eef3ff;
-            border-color:#9fb9f8;
-            color:#27458f;
-            box-shadow:0 0 0 2px rgba(39,69,143,.05) inset;
-          }
-
-          .calc-grid{
-            display:grid;
-            grid-template-columns:1fr 1fr;
-            gap:1rem;
-          }
-
-          .result-box{
-            border-radius:1rem;
-            border:1px solid var(--line);
-            background:var(--soft);
-            padding:1rem;
-          }
-
-          .result-main{
-            font-size:1.02rem;
-            font-weight:700;
-            color:var(--text);
-          }
-
-          .result-num{
-            font-size:1.8rem;
-            font-weight:800;
-            line-height:1;
-            color:#3559b7;
-          }
-
-          .meta-grid{
-            display:grid;
-            grid-template-columns:1fr 1fr;
             gap:.75rem;
           }
-
-          .meta-card{
-            background:#fff;
-            border:1px solid #e6e9ef;
-            border-radius:1rem;
-            padding:.9rem;
-          }
-
-          .meta-label{
-            font-size:.76rem;
-            text-transform:uppercase;
-            letter-spacing:.06em;
-            color:#667085;
-            margin-bottom:.25rem;
-          }
-
-          .meta-value{
-            font-size:1rem;
-            font-weight:700;
-            color:#1f2a37;
-            line-height:1.35;
-          }
-
-          .conduct-box{
-            padding:1rem;
-            border-radius:1rem;
-            border:1px solid var(--line);
-          }
-          .conduct-ok{background:var(--good);}
-          .conduct-mid{background:var(--warn);}
-          .conduct-no{background:var(--danger);}
-          .conduct-title{
-            font-size:1.05rem;
-            font-weight:800;
-            color:#1f2a37;
-            margin-bottom:.55rem;
-          }
-
-          .teaching-wrap{
-            border:1px solid var(--line);
-            border-radius:1.4rem;
-            background:var(--soft);
-            padding:1.25rem;
-            overflow:hidden;
-          }
-          .teaching-title{
-            font-size:1rem;
-            letter-spacing:.08em;
-            text-transform:uppercase;
-            color:#64748b;
-            text-align:center;
-            margin-bottom:1rem;
-          }
-          .teaching-main{
-            font-size:1.65rem;
-            font-weight:800;
-            text-align:center;
-            color:#1f2a37;
-            line-height:1.15;
-            margin-bottom:1.2rem;
-          }
-          .teaching-grid{
-            display:grid;
-            grid-template-columns:1fr;
-            gap:1rem;
-          }
-          .teaching-card{
-            background:#fff;
-            border:1px solid #e6e9ef;
-            border-radius:1.25rem;
-            padding:1.1rem 1rem;
-            text-align:left;
-          }
-          .teaching-label{
-            font-size:.78rem;
-            letter-spacing:.08em;
-            text-transform:uppercase;
-            color:#667085;
-            margin-bottom:.55rem;
-          }
-          .teaching-text{
-            font-size:1rem;
-            line-height:1.45;
-            color:#1f2a37;
-            font-weight:700;
-          }
-          .teaching-soft{
-            font-size:.95rem;
-            line-height:1.55;
-            color:#667085;
-            font-weight:500;
-            margin-top:.35rem;
-          }
-
-          .mint-box{
-            background:var(--mint);
-            border:1px solid var(--mint-border);
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .warn-box{
-            background:var(--warn);
-            border:1px solid #ecd798;
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .good-box{
-            background:var(--good);
-            border:1px solid #cfe8e6;
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .danger-box{
-            background:var(--danger);
-            border:1px solid #efc4be;
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .tip-list{
-            margin:0;
-            padding-left:1.15rem;
-          }
-          .tip-list li{
-            margin-bottom:.55rem;
-          }
-
-          .img-card{
-            background:#fff;
-            border:1px solid #e6e9ef;
-            border-radius:1rem;
-            padding:.8rem;
-          }
-
-          .img-card img{
-            width:100%;
-            height:auto;
-            display:block;
-            border-radius:.7rem;
-          }
-
-          @media(max-width:576px){
-            .info-box-header{flex-direction:row;}
-            .info-toggle-btn{margin-left:auto;}
-            .teaching-main{font-size:1.3rem;}
-            .calc-grid{grid-template-columns:1fr;}
-            .meta-grid{grid-template-columns:1fr;}
-            .choice-grid{grid-template-columns:1fr 1fr;}
-          }
-          .check-item{
+          .gly-safety-item{
             display:flex;
-            align-items:center;
-            gap:.6rem;
-            background:#ffffff;
-            border:1px solid #dbe4f0;
-            border-radius:.6rem;
-            padding:.5rem .7rem;
-            font-size:.92rem;
-          }
-
-          .check-item i{
-            color:#22c55e; /* verde check */
-            font-size:.85rem;
-          }
-          .info-box-blue{
-            background:#eef4ff;
-            border:1px solid #cfe1ff;
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .check-item-blue{
-            display:flex;
-            align-items:center;
-            gap:.6rem;
-            background:#ffffff;
-            border:1px solid #d6e4ff;
-            border-radius:.6rem;
-            padding:.5rem .7rem;
-            font-size:.92rem;
-          }
-
-          .check-item-blue i{
-            color:#3b82f6; /* azul */
-            font-size:.9rem;
-          }
-
-          .section-collapsible{
-            border-radius:18px;
-            overflow:hidden;
-            box-shadow:0 8px 20px rgba(0,0,0,.05);
-            background:#fff;
-            border:1px solid #e5e9f2;
-          }
-
-          .section-header{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            padding:14px 16px;
-            cursor:pointer;
-            background:#f8fafc;
-          }
-
-          .section-header:hover{
-            background:#eef2f8;
-          }
-
-          .section-arrow{
-            transition:transform .25s ease;
-            color:#667085;
-          }
-
-          .section-content{
-            display:none;
-            padding:16px;
-            border-top:1px solid #e5e9f2;
-          }
-
-          .section-open .section-content{
-            display:block;
-          }
-
-          .section-open .section-arrow{
-            transform:rotate(180deg);
-          }
-          .subsection-card{
-            background:#fbfcfe;
-            border:1px solid #e3eaf4;
-            border-radius:1rem;
-            padding:1rem;
-            margin-bottom:1rem;
-          }
-
-          .subsection-head{
-            display:flex;
-            align-items:center;
+            align-items:flex-start;
             gap:.65rem;
-            margin-bottom:.9rem;
-            padding-bottom:.65rem;
-            border-bottom:1px solid #e7edf5;
+            border:1px solid #d9e2ef;
+            border-radius:1rem;
+            background:#fff;
+            padding:.72rem .85rem;
           }
-
-          .subsection-icon{
-            width:38px;
-            height:38px;
-            border-radius:.8rem;
+          .gly-safety-mark{
+            flex:0 0 auto;
+            width:30px;
+            height:30px;
+            border-radius:999px;
             display:flex;
             align-items:center;
             justify-content:center;
-            background:#eef4ff;
-            color:#27458f;
-            font-size:1rem;
-            flex:0 0 auto;
+            color:#fff;
+            margin-top:.08rem;
+          }
+          .gly-safety-mark.ok{background:#2ea663;}
+          .gly-safety-mark.mid{background:#f4c542;}
+          .gly-safety-mark.high{background:#d92d20;}
+          .gly-safety-copy{min-width:0;flex:1;}
+          .gly-safety-title{
+            font-size:.95rem;
+            font-weight:800;
+            line-height:1.18;
+            color:var(--note-text);
+            margin-bottom:.1rem;
+          }
+          .gly-safety-note{
+            margin:0;
+            font-size:.82rem;
+            line-height:1.32;
+            color:var(--note-muted);
           }
 
-          .subsection-title{
-            font-size:1.02rem;
+          .gly-table-wrap{overflow-x:auto;}
+          .gly-table{
+            width:100%;
+            border-collapse:separate;
+            border-spacing:0;
+            min-width:0;
+            table-layout:auto;
+            background:#fff;
+            border:1px solid var(--note-line);
+            border-radius:1rem;
+            overflow:hidden;
+          }
+          .gly-table th,
+          .gly-table td{
+            padding:.58rem .62rem;
+            border-bottom:1px solid #eef2f6;
+            border-right:1px solid #eef2f6;
+            vertical-align:top;
+            text-align:left;
+            word-break:normal;
+            overflow-wrap:normal;
+            hyphens:none;
+          }
+          .gly-table th{
+            background:#3559b7;
+            color:#fff;
+            font-size:.76rem;
             font-weight:800;
-            color:#1f2a37;
+            line-height:1.2;
+            white-space:normal;
+          }
+          .gly-table td{
+            font-size:.88rem;
+            line-height:1.28;
+          }
+          .gly-table th:last-child,
+          .gly-table td:last-child{border-right:none;}
+          .gly-table tr:last-child td{border-bottom:none;}
+          .gly-table td:first-child{font-weight:800;color:var(--note-text);width:27%;}
+          .gly-table th:nth-child(2),.gly-table td:nth-child(2){width:18%;}
+          .gly-table th:nth-child(3),.gly-table td:nth-child(3){width:24%;}
+          .gly-table th:nth-child(4),.gly-table td:nth-child(4){width:31%;}
+          .gly-small{font-size:.86rem;color:var(--note-muted);line-height:1.35;}
+
+          .gly-drug-badge{
+            display:inline-block;
+            padding:.22rem .48rem;
+            border-radius:.6rem;
+            font-weight:800;
+            border:1px solid rgba(31,42,55,.12);
+            line-height:1.1;
+            color:#111827;
+            background:#fff;
+          }
+          .gly-drug-other{background:#fff;color:#111827;}
+          .gly-drug-insulin{background:#fff;color:#111827;}
+          .gly-drug-warning{background:#fff9e8;color:#111827;}
+
+          .gly-section-card{
+            background:#fff;
+            border:1px solid var(--note-line);
+            border-radius:1rem;
+            padding:1rem;
+            margin-bottom:1rem;
+          }
+
+          .gly-section-head{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:.75rem;
+            cursor:pointer;
+          }
+          .gly-section-title{
+            margin:0;
+            color:var(--note-text);
+            font-size:1.02rem;
+            font-weight:900;
             line-height:1.2;
           }
-
-          .subsection-subtitle{
-            font-size:.82rem;
-            color:#667085;
-            margin-top:.1rem;
-            line-height:1.3;
+          .gly-section-sub{
+            color:var(--note-muted);
+            font-size:.9rem;
+            line-height:1.35;
+            margin-top:.2rem;
           }
-          .section-header.flash-highlight{
-            background:#eaf2ff !important;
-            box-shadow:0 0 0 2px rgba(53, 89, 183, .18) inset, 0 0 18px rgba(53, 89, 183, .10);
-            transition:background .2s ease, box-shadow .2s ease;
+          .gly-section-arrow{
+            color:#667085;
+            transition:.2s ease;
+          }
+          .gly-section-content{
+            display:none;
+            margin-top:1rem;
+            padding-top:1rem;
+            border-top:1px solid #e7edf5;
+          }
+          .gly-section-card.is-open .gly-section-content{display:block;}
+          .gly-section-card.is-open .gly-section-arrow{transform:rotate(180deg);}
+
+          @media (max-width:992px){
+            .gly-choice-grid.gly-grid-4{grid-template-columns:repeat(2,minmax(0,1fr));}
+          }
+          @media (max-width:768px){
+            .gly-choice-grid,
+            .gly-choice-grid.gly-grid-3,
+            .gly-choice-grid.gly-grid-4{grid-template-columns:repeat(2,minmax(0,1fr));}
+          }
+          @media (max-width:420px){
+            .gly-choice-grid,
+            .gly-choice-grid.gly-grid-3,
+            .gly-choice-grid.gly-grid-4{grid-template-columns:1fr;}
           }
         </style>
 
-        <div class="topbar">
-          <div class="d-flex justify-content-between align-items-start gap-3">
-            <div>
-              <div class="small opacity-75 mb-1">APP clínica • hiperglicemia perioperatoria</div>
-              <h1 class="h3 ms-2 mb-2">Manejo de Glicemia e Insulina Perioperatoria</h1>
-              <div class="subtle text-white-50">Manejo farmacológico preoperatorio, conducta intra y postoperatoria</div>
-            </div>
-            <span class="pill bg-light text-dark">Metabolismo</span>
-          </div>
+        <div class="note-hero mb-3">
+          <div class="note-hero-kicker">APP CLÍNICA · METABOLISMO · DIABETES</div>
+          <h2>Manejo perioperatorio de hiperglicemia</h2>
+          <div class="note-hero-subtitle">Decide entre observación, corrección subcutánea o insulina EV según glicemia, contexto quirúrgico y riesgo metabólico.</div>
         </div>
 
-        <div class="info-box">
+        <div class="info-box mb-3">
           <div class="info-box-header">
             <div class="info-box-title">Información</div>
-            <button type="button" onclick="toggleInfo()" class="btn btn-sm info-toggle-btn">
-              Mostrar / ocultar
-            </button>
+            <button type="button" onclick="toggleInfo()" class="btn btn-sm info-toggle-btn">Mostrar / ocultar</button>
           </div>
           <div id="infoContent" class="info-box-content">
-            <?php echo $descripcion_info; ?>
-
+            <p class="mb-2"><?php echo $descripcion_info; ?></p>
             <?php if(!empty($formula)){ ?>
               <hr>
               <b>Fórmula:</b><br>
               <?php echo $formula; ?>
             <?php } ?>
-
-              <hr>
-
-            <?php if(!empty($referencias)){ ?>
-              <hr>
-              <b>Referencias:</b>
-              <ul class="mt-2 mb-0">
-                <?php foreach($referencias as $ref){ ?>
-                  <li><?php echo $ref; ?></li>
-                <?php } ?>
-              </ul>
-            <?php } ?>
-
-
-
-
-
-
-
+            <hr>
+            <b>Referencias:</b>
+            <ul class="mb-0 mt-2">
+              <?php foreach($referencias as $ref){ ?>
+                <li class="mb-2"><?php echo $ref; ?></li>
+              <?php } ?>
+            </ul>
           </div>
         </div>
 
-        <div class="section-box">
-<div class="info-box-blue mb-3">
-  <strong>Puntos clave</strong>
-
-  <div class="mt-2 d-flex flex-column gap-2">
-
-    <div class="check-item-blue">
-      <i class="fa-solid fa-circle-info"></i>
-      <span>Ayuno normal: 70-100 mg/dL</span>
-    </div>
-
-    <div class="check-item-blue">
-      <i class="fa-solid fa-circle-info"></i>
-      <span>Target perioperatorio: 140-180 mg/dL</span>
-    </div>
-
-    <div class="check-item-blue">
-      <i class="fa-solid fa-circle-info"></i>
-      <span>Control Insulina SC: mínimo cada 2 h</span>
-    </div>
-
-    <div class="check-item-blue">
-      <i class="fa-solid fa-circle-info"></i>
-      <span>Control Insulina en infusión EV: horario</span>
-    </div>
-
-  </div>
-</div>
-
-          <div class="mint-box mb-3">
-            <strong>Impacto clínico:</strong><br>
-            La hiperglicemia perioperatoria se asocia a complicaciones de herida, infecciones, eventos renales, pulmonares y mayor mortalidad. Puede persistir varios días después de la cirugía.
-          </div>
-
-          <div class="warn-box">
-            <strong>Ojo:</strong><br>
-            Usuarios de inhibidores SGLT2 o gliflozinas pueden presentar cetoacidosis en el postoperatorio, incluso sin glicemias extremadamente altas.
-          </div>
-        </div>
-
-
-
-
-
-
-
-<div class="section-collapsible mb-3">
-
-  <div class="section-header" onclick="toggleSection(this)">
-    <div class="section-title-ui mb-0">Preoperatorio</div>
-    <i class="fa-solid fa-chevron-down section-arrow"></i>
-  </div>
-
-  <div class="section-content">
-
-
-
-  <div class="section-title-ui">Manejo preoperatorio</div>
-
-  <div class="mint-box mb-3">
-    <strong>Idea clave:</strong><br>
-    La conducta depende del riesgo quirúrgico, la ingesta oral esperada y el tipo de fármaco.
-    En cirugías mayores o con cambios hemodinámicos → conducta más conservadora.
-  </div>
-
-
-<div class="subsection-card">
-  <div class="subsection-head">
-    <div class="subsection-icon">
-      <i class="fa-solid fa-pills"></i>
-    </div>
-    <div>
-      <div class="subsection-title">Antidiabéticos orales</div>
-      <div class="subsection-subtitle">Suspensión o continuación según tipo de fármaco y magnitud quirúrgica</div>
-    </div>
-  </div>
-
-  <div class="table-responsive mb-2">
-    <table class="table table-bordered dose-table mb-0">
-      <thead>
-        <tr>
-          <th>Fármaco</th>
-          <th>Día previo</th>
-          <th>Día cirugía<br><span class="small-note">Cirugía menor</span></th>
-          <th>Día cirugía<br><span class="small-note">Cirugía mayor / ↓ VO</span></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>
-            <strong>Secretagogos</strong><br>
-            <span class="small-note">Ej: sulfonilureas, meglitinidas</span>
-          </td>
-          <td>Tomar</td>
-          <td>Suspender</td>
-          <td>Suspender</td>
-        </tr>
-        <tr>
-          <td>
-            <strong>SGLT-2</strong><br>
-            <span class="small-note">Ej: gliflozinas</span>
-          </td>
-          <td>Suspender</td>
-          <td>Suspender</td>
-          <td>Suspender</td>
-        </tr>
-        <tr>
-          <td>
-            <strong>Tiazolidinedionas</strong><br>
-            <span class="small-note">Ej: pioglitazona</span>
-          </td>
-          <td>Tomar</td>
-          <td>Tomar</td>
-          <td>Suspender</td>
-        </tr>
-        <tr>
-          <td>
-            <strong>Metformina</strong><br>
-            <span class="small-note">Biguanida</span>
-          </td>
-          <td>Tomar*</td>
-          <td>Tomar*</td>
-          <td>Suspender</td>
-        </tr>
-        <tr>
-          <td>
-            <strong>iDPP-4</strong><br>
-            <span class="small-note">Ej: sitagliptina, linagliptina</span>
-          </td>
-          <td>Tomar</td>
-          <td>Tomar</td>
-          <td>Tomar</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="small-note">
-    * Suspender metformina si se utilizará contraste EV o TFG &lt;45 ml/min.
-  </div>
-</div>
-
-
-
-
-<div class="subsection-card">
-  <div class="subsection-head">
-    <div class="subsection-icon">
-      <i class="fa-solid fa-utensils"></i>
-    </div>
-    <div>
-      <div class="subsection-title">Usuarios de GLP-1 RA</div>
-      <div class="subsection-subtitle">La conducta depende de síntomas digestivos y del tipo de ingesta previa</div>
-    </div>
-  </div>
-
-  <div class="choice-grid mb-3">
-    <div>
-      <input class="choice-check" type="radio" name="glp1symptoms" id="glp1_no" value="no" checked>
-      <label class="choice-btn" for="glp1_no">Sin síntomas significativos</label>
-    </div>
-    <div>
-      <input class="choice-check" type="radio" name="glp1symptoms" id="glp1_yes" value="yes">
-      <label class="choice-btn" for="glp1_yes">Con síntomas significativos</label>
-    </div>
-  </div>
-
-  <div id="glp1IntakeBlock" class="mb-3">
-    <label class="form-label fw-semibold">Tipo de ingesta previa</label>
-    <div class="choice-grid">
-      <div>
-        <input class="choice-check" type="radio" name="glp1intake" id="glp1_solids" value="solids">
-        <label class="choice-btn" for="glp1_solids">Sólidos</label>
-      </div>
-      <div>
-        <input class="choice-check" type="radio" name="glp1intake" id="glp1_highcarb" value="highcarb">
-        <label class="choice-btn" for="glp1_highcarb">Líquidos claros altos en H. de C.</label>
-      </div>
-      <div>
-        <input class="choice-check" type="radio" name="glp1intake" id="glp1_lowcarb" value="lowcarb" checked>
-        <label class="choice-btn" for="glp1_lowcarb">Líquidos claros sin / bajos en H. de C.</label>
-      </div>
-    </div>
-  </div>
-
-  <div id="glp1Conduct" class="conduct-box conduct-ok mb-3">
-    <div id="glp1ConductTitle" class="conduct-title">Conducta</div>
-    <div id="glp1ConductText">
-      Si no hay síntomas significativos, puede continuarse el GLP-1 RA sin interrupción.
-    </div>
-  </div>
-
-  <div class="meta-grid mb-3">
-    <div class="meta-card">
-      <div class="meta-label">Ayuno recomendado</div>
-      <div id="glp1Fasting" class="meta-value">4 h</div>
-    </div>
-    <div class="meta-card">
-      <div class="meta-label">Resumen</div>
-      <div id="glp1Summary" class="meta-value">Líquidos claros con bajo o nulo contenido de glucosa.</div>
-    </div>
-  </div>
-
-  <div class="small-note">
-    Síntomas significativos: náuseas severas, vómitos o incapacidad para tolerar ingesta oral.
-  </div>
-</div>
-
-
-
-<div class="subsection-card">
-  <div class="subsection-head">
-    <div class="subsection-icon">
-      <i class="fa-solid fa-syringe"></i>
-    </div>
-    <div>
-      <div class="subsection-title">Usuarios de insulina</div>
-      <div class="subsection-subtitle">La basal se ajusta; la prandial se suspende al iniciar ayuno</div>
-    </div>
-  </div>
-
-  <div class="mint-box mb-3">
-    <strong>Idea clave:</strong><br>
-    La insulina basal generalmente <strong>no se suspende completamente</strong>.
-    En DM1 siempre debe mantenerse aporte basal. La insulina prandial se suspende al iniciar ayuno.
-  </div>
-
-  <div class="table-responsive mb-3">
-    <table class="table table-bordered dose-table mb-0">
-      <thead>
-        <tr>
-          <th>Situación</th>
-          <th>Glargina / Detemir</th>
-          <th>NPH o 70/30</th>
-          <th>Rápidas / regular</th>
-          <th>No insulínicos inyectables</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>
-            <strong>Día previo</strong><br>
-            <span class="small-note">Dieta normal hasta medianoche</span>
-          </td>
-          <td>AM: dosis habitual<br>PM: 80% de la dosis habitual</td>
-          <td>AM: 80% de la dosis habitual<br>PM: 80% de la dosis habitual</td>
-          <td>Dosis habitual</td>
-          <td>Dosis habitual</td>
-        </tr>
-        <tr>
-          <td>
-            <strong>Día previo</strong><br>
-            <span class="small-note">Preparación intestinal / líquidos claros 12–24 h</span>
-          </td>
-          <td>AM: dosis habitual<br>PM: 80% de la dosis habitual</td>
-          <td>AM: 80% de la dosis habitual<br>PM: 80% de la dosis habitual</td>
-          <td>Dosis habitual</td>
-          <td>Suspender al iniciar dieta líquida / bowel prep</td>
-        </tr>
-        <tr>
-          <td>
-            <strong>Día de cirugía</strong><br>
-            <span class="small-note">Conducta general</span>
-          </td>
-          <td>80% de la dosis habitual si usa basal matinal o 2 veces al día</td>
-          <td>50% de la dosis habitual si glicemia ≥120 mg/dL<br>Suspender si glicemia &lt;120 mg/dL</td>
-          <td>Suspender</td>
-          <td>Suspender</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="calc-grid mb-3">
-    <div class="good-box">
-      <strong>DM2</strong><br><br>
-      <ul class="tip-list mb-0">
-        <li>Glargina: disminuir 25% la noche previa o la dosis del día.</li>
-        <li>NPH: usar 50% el día de la cirugía.</li>
-        <li>No colocar NPH si glicemia &lt;120 mg/dL.</li>
-      </ul>
-    </div>
-
-    <div class="warn-box">
-      <strong>DM1</strong><br><br>
-      <ul class="tip-list mb-0">
-        <li>Usar 80% de la dosis basal la noche anterior y en la mañana.</li>
-        <li>Suspender insulina prandial al comenzar ayuno.</li>
-        <li>Si glicemia perioperatoria ≥180 mg/dL, requieren corrección SC.</li>
-        <li>Alto riesgo de complicaciones si se suspende completamente la basal.</li>
-        <li>Control cada 2 horas.</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="small-note">
-    NPH = neutral protamine Hagedorn. La conducta final debe ajustarse a tipo de diabetes, horario habitual de insulina, ayuno real y riesgo quirúrgico.
-  </div>
-</div>
-
-
-
-
-
-</div>
-</div>
-
-
-
-
-
-
-
-
-<div class="section-collapsible mb-3">
-
-  <div class="section-header" onclick="toggleSection(this)">
-    <div class="section-title-ui mb-0">Intraoperatorio</div>
-    <i class="fa-solid fa-chevron-down section-arrow"></i>
-  </div>
-
-  <div class="section-content">
-        <div class="section-title mb-3">INTRAOPERATORIO</div>
-          <div class="section-title-ui">Paso 1: ¿Cumple criterios de insulina EV?</div>
-
-            <div class="good-box mb-3">
-              <strong>Indicación de infusión EV:</strong>
-
-              <div class="mt-2 d-flex flex-column gap-2">
-
-                <div class="check-item">
-                  <i class="fa-solid fa-check"></i>
-                  <span>Cirugías prolongadas (&gt;4 h)</span>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Puntos clave</div>
+            <div class="gly-safety-list">
+              <div class="gly-safety-item">
+                <div class="gly-safety-mark ok"><i class="fa-solid fa-bullseye"></i></div>
+                <div class="gly-safety-copy">
+                  <div class="gly-safety-title">Target perioperatorio razonable</div>
+                  <p class="gly-safety-note">Usualmente 140–180 mg/dL. Evita perseguir normalidad estricta si aumenta riesgo de hipoglicemia.</p>
                 </div>
-
-                <div class="check-item">
-                  <i class="fa-solid fa-check"></i>
-                  <span>Cambios hemodinámicos importantes</span>
-                </div>
-
-                <div class="check-item">
-                  <i class="fa-solid fa-check"></i>
-                  <span>Recambio significativo de volumen</span>
-                </div>
-
-                <div class="check-item">
-                  <i class="fa-solid fa-check"></i>
-                  <span>Cambios de temperatura</span>
-                </div>
-
-                <div class="check-item">
-                  <i class="fa-solid fa-check"></i>
-                  <span>Uso de inotrópicos</span>
-                </div>
-
               </div>
-            </div>
-
-          <div class="choice-grid mb-3">
-            <div>
-              <input class="choice-check" type="radio" name="ivcriteria" id="iv_no" value="no" checked>
-              <label class="choice-btn" for="iv_no">No cumple criterios</label>
-            </div>
-            <div>
-              <input class="choice-check" type="radio" name="ivcriteria" id="iv_yes" value="yes">
-              <label class="choice-btn" for="iv_yes">Sí cumple criterios</label>
-            </div>
-          </div>
-
-          <div id="ivConduct" class="conduct-box conduct-mid mb-3">
-            <div id="ivConductTitle" class="conduct-title">Conducta inicial</div>
-            <div id="ivConductText">
-              Si no hay criterios de alta variabilidad metabólica, puedes considerar corrección SC cuando la glicemia sea mayor a 180 mg/dL.
-            </div>
-          </div>
-
-
-
-
-  <div class="section-title-ui">Paso 2: Estrategia interactiva según decisión inicial</div>
-
-  <!-- BLOQUE EV -->
-  <div id="step2EV" style="display:none;">
-    <div class="good-box mb-3">
-      <strong>Esquema de infusión EV</strong><br>
-      Si la glicemia es <strong>&gt;180 mg/dL</strong>, iniciar infusión EV.<br>
-      Considerar bolo: <strong>BG / 40</strong><br>
-      Tasa inicial: <strong>BG / 100 = U/h</strong>
-    </div>
-
-    <div class="calc-grid">
-      <div>
-        <label class="form-label fw-semibold">Glicemia actual</label>
-        <div class="input-group mb-3">
-          <input type="number" step="1" min="0" id="evCurrentBg" class="form-control">
-          <span class="input-group-text">mg/dL</span>
-        </div>
-
-        <label class="form-label fw-semibold">Glicemia previa</label>
-        <div class="input-group mb-3">
-          <input type="number" step="1" min="0" id="evPrevBg" class="form-control">
-          <span class="input-group-text">mg/dL</span>
-        </div>
-
-        <label class="form-label fw-semibold">Tasa previa de infusión</label>
-        <div class="input-group mb-3">
-          <input type="number" step="0.1" min="0" id="evPrevRate" class="form-control">
-          <span class="input-group-text">U/h</span>
-        </div>
-      </div>
-
-      <div>
-        <div class="result-box mb-3">
-          <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap">
-            <div>
-              <div class="small-note">Conducta sugerida</div>
-              <div id="evResultText" class="result-main">Ingresa glicemia actual, previa y tasa previa.</div>
-            </div>
-            <div id="evResultNum" class="result-num">-</div>
-          </div>
-        </div>
-
-        <div class="meta-grid">
-          <div class="meta-card">
-            <div class="meta-label">Bolo sugerido (x 1 vez al iniciar infusión)</div>
-            <div id="evBolus" class="meta-value">-</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-label">Tasa inicial teórica</div>
-            <div id="evInitialRate" class="meta-value">-</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-label">Cambio respecto previo</div>
-            <div id="evDeltaText" class="meta-value">-</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-label">Control</div>
-            <div class="meta-value">Horario</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="evDynamicConduct" class="conduct-box conduct-mid mt-3">
-      <div id="evDynamicConductTitle" class="conduct-title">Interpretación</div>
-      <div id="evDynamicConductText">
-        La infusión EV se ajusta según glicemia actual y su cambio respecto de la medición previa.
-      </div>
-    </div>
-
-  </div>
-
-  <!-- BLOQUE SC -->
-  <div id="step2SC">
-    <div class="warn-box mb-3">
-      <strong>Corrección subcutánea</strong><br>
-      Usar cuando el caso <strong>no cumple criterios de infusión EV</strong> y la glicemia supera <strong>180 mg/dL</strong>.
-    </div>
-
-    <div class="calc-grid">
-      <div>
-        <label class="form-label fw-semibold">Glicemia actual</label>
-        <div class="input-group mb-3">
-          <input type="number" step="1" min="0" id="glyValue" class="form-control">
-          <span class="input-group-text">mg/dL</span>
-        </div>
-
-        <label class="form-label fw-semibold">Tipo de referencia para TDD</label>
-        <div class="choice-grid mb-3">
-          <div>
-            <input class="choice-check" type="radio" name="tddmode" id="tdd_unknown" value="unknown" checked>
-            <label class="choice-btn" for="tdd_unknown">TDD desconocida</label>
-          </div>
-          <div>
-            <input class="choice-check" type="radio" name="tddmode" id="tdd_known" value="known">
-            <label class="choice-btn" for="tdd_known">TDD conocida</label>
-          </div>
-        </div>
-
-        <label class="form-label fw-semibold">Dosis total diaria (TDD)</label>
-        <div class="input-group">
-          <input type="number" step="1" min="0" id="tddValue" class="form-control">
-          <span class="input-group-text">UI/día</span>
-        </div>
-        <div class="small-note mt-2">Si no se conoce la TDD, se usa 40 como valor de referencia.</div>
-      </div>
-
-      <div>
-        <div class="result-box mb-3">
-          <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap">
-            <div>
-              <div class="small-note">Dosis de corrección SC</div>
-              <div id="corrText" class="result-main">Ingresa la glicemia actual.</div>
-            </div>
-            <div id="corrNum" class="result-num">-</div>
-          </div>
-        </div>
-
-        <div class="meta-grid">
-          <div class="meta-card">
-            <div class="meta-label">TDD usada</div>
-            <div id="metaTdd" class="meta-value">-</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-label">Factor de sensibilidad</div>
-            <div id="metaFs" class="meta-value">-</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-label">Fórmula aplicada</div>
-            <div id="metaFormula" class="meta-value">-</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-label">Control</div>
-            <div id="metaControl" class="meta-value">Cada 2 h mínimo</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="corrConduct" class="conduct-box conduct-mid mt-3">
-      <div id="corrConductTitle" class="conduct-title">Interpretación</div>
-      <div id="corrConductText">No repetir insulina rápida antes de 2 horas por riesgo de acumulación. No dar más de 2 dosis SC en 4 horas.</div>
-    </div>
-  </div>
-
-</div>
-</div>
-
-
-
-
-
-<div class="section-collapsible mb-3">
-
-  <div class="section-header" onclick="toggleSection(this)">
-    <div class="section-title-ui mb-0">Postoperatorio</div>
-    <i class="fa-solid fa-chevron-down section-arrow"></i>
-  </div>
-
-  <div class="section-content">
-
-    <div class="section-title-ui">Manejo postoperatorio</div>
-
-    <div class="mint-box mb-3">
-      <strong>Idea clave:</strong><br>
-      En el postoperatorio, la estrategia depende de la <strong>tolerancia oral</strong> y de la <strong>sensibilidad a la insulina</strong>.
-      Si BG &gt;180 mg/dL, sigue indicada corrección con insulina rápida.
-    </div>
-
-    <div class="calc-grid mb-3">
-      <div>
-        <label class="form-label fw-semibold">Peso</label>
-        <div class="input-group mb-3">
-          <input type="number" step="0.1" min="0" id="postopPeso" class="form-control">
-          <span class="input-group-text">kg</span>
-        </div>
-
-        <label class="form-label fw-semibold">Tolerancia oral</label>
-        <div class="choice-grid mb-3">
-          <div>
-            <input class="choice-check" type="radio" name="postop_oral" id="postop_npo" value="npo" checked>
-            <label class="choice-btn" for="postop_npo">NPO / mala tolerancia</label>
-          </div>
-          <div>
-            <input class="choice-check" type="radio" name="postop_oral" id="postop_vo" value="vo">
-            <label class="choice-btn" for="postop_vo">VO normal</label>
-          </div>
-        </div>
-
-        <label class="form-label fw-semibold">Perfil de sensibilidad a insulina</label>
-        <div class="choice-grid">
-          <div>
-            <input class="choice-check" type="radio" name="postop_sens" id="postop_sensitive" value="sensitive">
-            <label class="choice-btn" for="postop_sensitive">Sensible</label>
-          </div>
-          <div>
-            <input class="choice-check" type="radio" name="postop_sens" id="postop_usual" value="usual" checked>
-            <label class="choice-btn" for="postop_usual">Usual</label>
-          </div>
-          <div>
-            <input class="choice-check" type="radio" name="postop_sens" id="postop_resistant" value="resistant">
-            <label class="choice-btn" for="postop_resistant">Resistente</label>
-          </div>
-        </div>
-
-        <div class="small-note mt-2">
-          Sensible: edad &gt;70 años o TFG &lt;45 ml/min. <br>
-          Resistente: BMI &gt;35 o prednisona ≥20 mg/día.
-        </div>
-      </div>
-
-      <div>
-        <div class="result-box mb-3">
-          <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap">
-            <div>
-              <div class="small-note">Esquema sugerido</div>
-              <div id="postopSchemeText" class="result-main">Ingresa peso y selecciona tolerancia oral.</div>
-            </div>
-            <div id="postopSchemeNum" class="result-num">-</div>
-          </div>
-        </div>
-
-        <div class="meta-grid">
-          <div class="meta-card">
-            <div class="meta-label">Dosis total diaria</div>
-            <div id="postopTDD" class="meta-value">-</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-label">Factor usado</div>
-            <div id="postopFactor" class="meta-value">-</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-label">Basal sugerida</div>
-            <div id="postopBasal" class="meta-value">-</div>
-          </div>
-          <div class="meta-card">
-            <div class="meta-label">Prandial / corrección</div>
-            <div id="postopPrandial" class="meta-value">-</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="postopConduct" class="conduct-box conduct-mid mb-4">
-      <div id="postopConductTitle" class="conduct-title">Interpretación</div>
-      <div id="postopConductText">
-        Selecciona el contexto clínico para estimar un esquema postoperatorio.
-      </div>
-    </div>
-
-    <div class="table-block-title">Usuarios de bomba de insulina</div>
-
-    <div class="calc-grid mb-3">
-      <div class="good-box">
-        <strong>Conducta general</strong><br><br>
-        <ul class="tip-list mb-0">
-          <li>Continuar infusión intraoperatoria en basal, o cambiar a infusión EV.</li>
-          <li>Suspender si glicemia &lt;110 mg/dL.</li>
-          <li>Reiniciar si glicemia &gt;180 mg/dL.</li>
-          <li>Continuar con bomba en el postoperatorio, si el contexto clínico lo permite.</li>
-        </ul>
-      </div>
-
-      <div class="warn-box">
-        <strong>Perla práctica</strong><br><br>
-        <ul class="tip-list mb-0">
-          <li>Si el paciente usa bomba, no asumir que “se arregla sola”.</li>
-          <li>Siempre verificar tasa basal, sitio de inserción, glicemias y posibilidad de continuar manejo seguro en recuperación o sala.</li>
-        </ul>
-      </div>
-    </div>
-
-
-    <div class="calc-grid mb-3">
-      <div class="mint-box">
-        <strong>Control</strong><br><br>
-        <ul class="tip-list mb-0">
-          <li>Privilegiar control por laboratorio central cuando sea posible.</li>
-          <li>Interpretar en el contexto clínico y hemodinámico.</li>
-          <li>Si el valor capilar no cuadra con el cuadro clínico, confirmar.</li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="small-note mt-2">
-      Si el paciente cae en más de una categoría, usa la <strong>dosis más baja</strong> para disminuir riesgo de hipoglicemia.
-    </div>
-  </div>
-</div>
-
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="teaching-wrap">
-              <div class="teaching-title">Tips para residentes</div>
-              <div class="teaching-main">La primera decisión no es “¿cuánta insulina SC doy?”, sino “¿este caso necesita vía EV?”</div>
-
-              <div class="teaching-grid">
-                <div class="teaching-card">
-                  <div class="teaching-label">Meta</div>
-                  <div class="teaching-text">No persigas normalidad estricta</div>
-                  <div class="teaching-soft">
-                    El target razonable es 140-180 mg/dL. Buscar glicemias “perfectas” puede aumentar riesgo de hipoglicemia.
-                  </div>
+              <div class="gly-safety-item">
+                <div class="gly-safety-mark mid"><i class="fa-solid fa-clock"></i></div>
+                <div class="gly-safety-copy">
+                  <div class="gly-safety-title">Frecuencia de control</div>
+                  <p class="gly-safety-note">SC: mínimo cada 2 h. EV: horario. Hipoglicemia: controles más frecuentes.</p>
                 </div>
-
-                <div class="teaching-card">
-                  <div class="teaching-label">Corrección SC</div>
-                  <div class="teaching-text">No acumules insulina SC</div>
-                  <div class="teaching-soft">
-                    No repetir antes de 2 horas. No más de 2 dosis SC en 4 horas. Si el contexto es muy dinámico, cambia de estrategia en vez de insistir con bolos.
-                  </div>
-                </div>
-
-                <div class="teaching-card">
-                  <div class="teaching-label">Infusión EV</div>
-                  <div class="teaching-text">Úsala cuando la fisiología es inestable</div>
-                  <div class="teaching-soft">
-                    Si hay cambios hemodinámicos, gran recambio de fluidos, inotrópicos, cambios de temperatura o cirugía larga, la infusión EV es más controlable que múltiples rescates SC.
-                  </div>
-                </div>
-
-                <div class="teaching-card">
-                  <div class="teaching-label">DM1</div>
-                  <div class="teaching-text">Nunca dejes al DM1 sin basal</div>
-                  <div class="teaching-soft">
-                    El riesgo no es solo la hiperglicemia, también la cetosis y descompensación metabólica.
-                  </div>
-                </div>
-
-                <div class="teaching-card">
-                  <div class="teaching-label">GLP-1 RA</div>
-                  <div class="teaching-text">Los síntomas cambian la conducta</div>
-                  <div class="teaching-soft">
-                    Náuseas severas, vómitos o mala tolerancia oral obligan a diferir cirugía y reevaluar prescripción, dieta y medicamentos.
-                  </div>
+              </div>
+              <div class="gly-safety-item">
+                <div class="gly-safety-mark high"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="gly-safety-copy">
+                  <div class="gly-safety-title">SGLT2 / gliflozinas</div>
+                  <p class="gly-safety-note">Riesgo de cetoacidosis euglicémica. No descartes cetosis solo porque la glicemia no es extrema.</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="warn-box">
-          <strong>Perla clínica:</strong> antes de corregir una glicemia intraoperatoria, piensa en el contexto completo:
-          tipo de diabetes, duración quirúrgica, ayuno, uso previo de insulina, estabilidad hemodinámica y posibilidad de una evolución muy dinámica que haga preferible infusión EV.
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Evaluación intraoperatoria</div>
+
+            <div class="note-grid mb-3">
+              <div class="note-input-group">
+                <label class="note-label">Glicemia actual</label>
+                <div class="note-input-inline">
+                  <input id="glyValue" type="text" inputmode="decimal" class="note-input">
+                  <div class="note-input-unit">mg/dL</div>
+                </div>
+              </div>
+
+              <div class="note-input-group">
+                <label class="note-label">TDD si se conoce</label>
+                <div class="note-input-inline">
+                  <input id="tddValue" type="text" inputmode="decimal" class="note-input">
+                  <div class="note-input-unit">UI/día</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="note-section-label">Contexto quirúrgico</div>
+            <div class="gly-choice-grid gly-grid-3 mb-3">
+              <label>
+                <input class="gly-option-input" type="radio" name="ivcriteria" value="no" checked>
+                <div class="gly-option">
+                  <i class="fa-solid fa-user-check"></i>
+                  <div class="gly-option-title">Caso estable</div>
+                  <div class="gly-option-sub">Corrección SC posible</div>
+                </div>
+              </label>
+              <label>
+                <input class="gly-option-input" type="radio" name="ivcriteria" value="yes">
+                <div class="gly-option">
+                  <i class="fa-solid fa-syringe"></i>
+                  <div class="gly-option-title">Criterios EV</div>
+                  <div class="gly-option-sub">Preferir infusión</div>
+                </div>
+              </label>
+              <label>
+                <input class="gly-option-input" type="radio" name="ivcriteria" value="uncertain">
+                <div class="gly-option">
+                  <i class="fa-solid fa-circle-question"></i>
+                  <div class="gly-option-title">Dudoso</div>
+                  <div class="gly-option-sub">Ser conservador</div>
+                </div>
+              </label>
+            </div>
+
+            <div class="note-section-label">Referencia para TDD</div>
+            <div class="gly-choice-grid mb-0">
+              <label>
+                <input class="gly-option-input" type="radio" name="tddmode" value="unknown" checked>
+                <div class="gly-option">
+                  <div class="gly-option-title">TDD desconocida</div>
+                  <div class="gly-option-sub">Usar 40 UI/día</div>
+                </div>
+              </label>
+              <label>
+                <input class="gly-option-input" type="radio" name="tddmode" value="known">
+                <div class="gly-option">
+                  <div class="gly-option-title">TDD conocida</div>
+                  <div class="gly-option-sub">Usar valor ingresado</div>
+                </div>
+              </label>
+            </div>
+          </div>
         </div>
 
-        <div class="footer-note mt-3">
-          Herramienta docente y de apoyo clínico. Verificar siempre protocolos institucionales y situación clínica individual.
+        <div class="note-summary-box mb-3">
+          <div class="note-summary-box-title">Resumen</div>
+          <div id="summaryNarrative" class="note-summary-box-text">Ingresa glicemia actual y contexto quirúrgico para orientar la estrategia intraoperatoria.</div>
+          <div class="note-summary-grid-2">
+            <div class="note-summary-item">
+              <div class="note-summary-k">Glicemia</div>
+              <div id="summaryGly" class="note-summary-v">-</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Contexto</div>
+              <div id="summaryContext" class="note-summary-v">Caso estable</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">TDD usada</div>
+              <div id="summaryTdd" class="note-summary-v">40 UI/día</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Estrategia</div>
+              <div id="summaryStrategy" class="note-summary-v">Pendiente</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="note-result-grid-2 mb-3">
+          <div class="note-result-card">
+            <div class="note-result-card-label">Corrección SC orientativa</div>
+            <div id="corrNum" class="note-result-card-value">-</div>
+            <div id="corrText" class="note-result-card-note">Ingresa la glicemia actual.</div>
+          </div>
+          <div class="note-result-card">
+            <div class="note-result-card-label">Insulina EV</div>
+            <div id="evInitialRate" class="note-result-card-value">-</div>
+            <div id="evText" class="note-result-card-note">Decide según contexto y glicemia.</div>
+          </div>
+        </div>
+
+        <div id="algoBox" class="note-interpretation mb-3">
+          <div class="note-interpretation-label">Conducta intraoperatoria sugerida</div>
+          <div id="algoMain" class="note-interpretation-main">Pendiente</div>
+          <div id="algoSoft" class="note-interpretation-soft">Completa glicemia actual para orientar corrección SC o infusión EV.</div>
+
+          <div id="drugPlan" class="mt-3 text-start">
+            <div class="gly-plan-line"><strong>Factor de sensibilidad:</strong> <span id="metaFs">-</span></div>
+            <div class="gly-plan-line"><strong>Fórmula SC:</strong> <span id="metaFormula">-</span></div>
+            <div class="gly-plan-line"><strong>Control recomendado:</strong> <span id="metaControl">Según estrategia</span></div>
+          </div>
+        </div>
+
+        <div class="note-warning mb-3">
+          <strong>Advertencia clínica:</strong>
+          <div id="warningText" class="mt-2">No acumules insulina rápida SC: no repetir antes de 2 horas y no dar más de 2 dosis SC en 4 horas. Si el caso es dinámico, cambia de estrategia en vez de insistir con bolos.</div>
+        </div>
+
+        <div class="gly-section-card is-open">
+          <div class="gly-section-head" onclick="toggleGlySection(this)">
+            <div>
+              <div class="gly-section-title">Preoperatorio</div>
+              <div class="gly-section-sub">Antidiabéticos, GLP-1 RA e insulina basal</div>
+            </div>
+            <i class="fa-solid fa-chevron-down gly-section-arrow"></i>
+          </div>
+
+          <div class="gly-section-content">
+            <div class="note-section-label">Antidiabéticos orales</div>
+            <div class="gly-table-wrap mb-3">
+              <table class="gly-table">
+                <thead>
+                  <tr>
+                    <th>Fármaco</th>
+                    <th>Día previo</th>
+                    <th>Cirugía menor</th>
+                    <th>Mayor / ↓ VO</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="gly-drug-badge gly-drug-other">Secretagogos</span><br><span class="gly-small">Sulfonilureas / meglitinidas</span></td>
+                    <td>Tomar</td>
+                    <td>Suspender</td>
+                    <td>Suspender</td>
+                  </tr>
+                  <tr>
+                    <td><span class="gly-drug-badge gly-drug-warning">SGLT2</span><br><span class="gly-small">Gliflozinas</span></td>
+                    <td>Suspender</td>
+                    <td>Suspender</td>
+                    <td>Suspender</td>
+                  </tr>
+                  <tr>
+                    <td><span class="gly-drug-badge gly-drug-other">Tiazolidinedionas</span><br><span class="gly-small">Pioglitazona</span></td>
+                    <td>Tomar</td>
+                    <td>Tomar</td>
+                    <td>Suspender</td>
+                  </tr>
+                  <tr>
+                    <td><span class="gly-drug-badge gly-drug-other">Metformina</span></td>
+                    <td>Tomar*</td>
+                    <td>Tomar*</td>
+                    <td>Suspender</td>
+                  </tr>
+                  <tr>
+                    <td><span class="gly-drug-badge gly-drug-other">iDPP-4</span><br><span class="gly-small">Sitagliptina / linagliptina</span></td>
+                    <td>Tomar</td>
+                    <td>Tomar</td>
+                    <td>Tomar</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="gly-small mb-3">* Suspender metformina si se utilizará contraste EV o TFG &lt;45 mL/min.</div>
+
+            <div class="note-section-label">Usuarios de GLP-1 RA</div>
+            <div class="gly-choice-grid mb-3">
+              <label>
+                <input class="gly-option-input" type="radio" name="glp1symptoms" value="no" checked>
+                <div class="gly-option">
+                  <div class="gly-option-title">Sin síntomas</div>
+                  <div class="gly-option-sub">Continuar en la mayoría</div>
+                </div>
+              </label>
+              <label>
+                <input class="gly-option-input" type="radio" name="glp1symptoms" value="yes">
+                <div class="gly-option">
+                  <div class="gly-option-title">Con síntomas GI</div>
+                  <div class="gly-option-sub">Riesgo aumentado</div>
+                </div>
+              </label>
+            </div>
+
+            <div id="glp1IntakeBlock">
+              <div class="note-section-label">Tipo de ingesta previa</div>
+              <div class="gly-choice-grid gly-grid-3 mb-3">
+                <label>
+                  <input class="gly-option-input" type="radio" name="glp1intake" value="solids">
+                  <div class="gly-option">
+                    <div class="gly-option-title">Sólidos</div>
+                    <div class="gly-option-sub">Riesgo mayor</div>
+                  </div>
+                </label>
+                <label>
+                  <input class="gly-option-input" type="radio" name="glp1intake" value="highcarb">
+                  <div class="gly-option">
+                    <div class="gly-option-title">Líquidos altos HC</div>
+                    <div class="gly-option-sub">≥10% glucosa</div>
+                  </div>
+                </label>
+                <label>
+                  <input class="gly-option-input" type="radio" name="glp1intake" value="lowcarb" checked>
+                  <div class="gly-option">
+                    <div class="gly-option-title">Líquidos bajos HC</div>
+                    <div class="gly-option-sub">&lt;10% glucosa</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div id="glp1Conduct" class="gly-safety-item mb-3">
+              <div id="glp1Mark" class="gly-safety-mark ok"><i class="fa-solid fa-check"></i></div>
+              <div class="gly-safety-copy">
+                <div id="glp1ConductTitle" class="gly-safety-title">Conducta GLP-1 RA</div>
+                <p id="glp1ConductText" class="gly-safety-note">Si no hay síntomas significativos, puede continuarse GLP-1 RA en la mayoría de los pacientes. Individualizar si hay alto riesgo gastrointestinal.</p>
+              </div>
+            </div>
+
+            <div class="note-summary-grid-2 mb-3">
+              <div class="note-summary-item">
+                <div class="note-summary-k">Ayuno orientativo</div>
+                <div id="glp1Fasting" class="note-summary-v">4 h</div>
+              </div>
+              <div class="note-summary-item">
+                <div class="note-summary-k">Resumen</div>
+                <div id="glp1Summary" class="note-summary-v">Líquidos claros bajos en HC</div>
+              </div>
+            </div>
+
+            <div class="note-section-label">Usuarios de insulina</div>
+            <div class="gly-safety-list">
+              <div class="gly-safety-item">
+                <div class="gly-safety-mark mid"><i class="fa-solid fa-syringe"></i></div>
+                <div class="gly-safety-copy">
+                  <div class="gly-safety-title">Insulina basal</div>
+                  <p class="gly-safety-note">Generalmente no se suspende completamente. En DM1 siempre debe mantenerse aporte basal.</p>
+                </div>
+              </div>
+              <div class="gly-safety-item">
+                <div class="gly-safety-mark ok"><i class="fa-solid fa-utensils"></i></div>
+                <div class="gly-safety-copy">
+                  <div class="gly-safety-title">Insulina prandial</div>
+                  <p class="gly-safety-note">Suspender al iniciar ayuno. Corregir según glicemia y contexto.</p>
+                </div>
+              </div>
+              <div class="gly-safety-item">
+                <div class="gly-safety-mark high"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="gly-safety-copy">
+                  <div class="gly-safety-title">DM1</div>
+                  <p class="gly-safety-note">Nunca dejes al paciente sin basal. El riesgo no es solo hiperglicemia, también cetosis y descompensación metabólica.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="gly-section-card">
+          <div class="gly-section-head" onclick="toggleGlySection(this)">
+            <div>
+              <div class="gly-section-title">Infusión EV: ajuste dinámico</div>
+              <div class="gly-section-sub">Usar si cumple criterios de alta variabilidad metabólica</div>
+            </div>
+            <i class="fa-solid fa-chevron-down gly-section-arrow"></i>
+          </div>
+
+          <div class="gly-section-content">
+            <div class="note-grid mb-3">
+              <div class="note-input-group">
+                <label class="note-label">Glicemia actual</label>
+                <div class="note-input-inline">
+                  <input id="evCurrentBg" type="text" inputmode="decimal" class="note-input">
+                  <div class="note-input-unit">mg/dL</div>
+                </div>
+              </div>
+              <div class="note-input-group">
+                <label class="note-label">Glicemia previa</label>
+                <div class="note-input-inline">
+                  <input id="evPrevBg" type="text" inputmode="decimal" class="note-input">
+                  <div class="note-input-unit">mg/dL</div>
+                </div>
+              </div>
+              <div class="note-input-group">
+                <label class="note-label">Tasa previa</label>
+                <div class="note-input-inline">
+                  <input id="evPrevRate" type="text" inputmode="decimal" class="note-input">
+                  <div class="note-input-unit">U/h</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="note-result-grid-2 mb-3">
+              <div class="note-result-card">
+                <div class="note-result-card-label">Ajuste sugerido</div>
+                <div id="evResultNum" class="note-result-card-value">-</div>
+                <div id="evResultText" class="note-result-card-note">Ingresa glicemia actual.</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Bolo inicial</div>
+                <div id="evBolus" class="note-result-card-value">-</div>
+                <div id="evDeltaText" class="note-result-card-note">Sin dato previo.</div>
+              </div>
+            </div>
+
+            <div id="evDynamicConduct" class="gly-safety-item">
+              <div id="evDynamicMark" class="gly-safety-mark mid"><i class="fa-solid fa-clock"></i></div>
+              <div class="gly-safety-copy">
+                <div id="evDynamicConductTitle" class="gly-safety-title">Interpretación</div>
+                <p id="evDynamicConductText" class="gly-safety-note">La infusión EV se ajusta según glicemia actual y cambio respecto a medición previa.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="gly-section-card">
+          <div class="gly-section-head" onclick="toggleGlySection(this)">
+            <div>
+              <div class="gly-section-title">Postoperatorio</div>
+              <div class="gly-section-sub">Basal-plus si NPO; basal-bolus si tolera vía oral</div>
+            </div>
+            <i class="fa-solid fa-chevron-down gly-section-arrow"></i>
+          </div>
+
+          <div class="gly-section-content">
+            <div class="note-input-group mb-3">
+              <label class="note-label">Peso</label>
+              <div class="note-input-inline">
+                <input id="postopPeso" type="text" inputmode="decimal" class="note-input">
+                <div class="note-input-unit">kg</div>
+              </div>
+            </div>
+
+            <div class="note-section-label">Tolerancia oral</div>
+            <div class="gly-choice-grid mb-3">
+              <label>
+                <input class="gly-option-input" type="radio" name="postop_oral" value="npo" checked>
+                <div class="gly-option">
+                  <div class="gly-option-title">NPO / mala VO</div>
+                  <div class="gly-option-sub">Basal-plus</div>
+                </div>
+              </label>
+              <label>
+                <input class="gly-option-input" type="radio" name="postop_oral" value="vo">
+                <div class="gly-option">
+                  <div class="gly-option-title">VO normal</div>
+                  <div class="gly-option-sub">Basal-bolus</div>
+                </div>
+              </label>
+            </div>
+
+            <div class="note-section-label">Sensibilidad a insulina</div>
+            <div class="gly-choice-grid gly-grid-3 mb-3">
+              <label>
+                <input class="gly-option-input" type="radio" name="postop_sens" value="sensitive">
+                <div class="gly-option">
+                  <div class="gly-option-title">Sensible</div>
+                  <div class="gly-option-sub">Anciano / TFG baja</div>
+                </div>
+              </label>
+              <label>
+                <input class="gly-option-input" type="radio" name="postop_sens" value="usual" checked>
+                <div class="gly-option">
+                  <div class="gly-option-title">Usual</div>
+                  <div class="gly-option-sub">0,2–0,25 U/kg/d</div>
+                </div>
+              </label>
+              <label>
+                <input class="gly-option-input" type="radio" name="postop_sens" value="resistant">
+                <div class="gly-option">
+                  <div class="gly-option-title">Resistente</div>
+                  <div class="gly-option-sub">BMI &gt;35 / corticoides</div>
+                </div>
+              </label>
+            </div>
+
+            <div class="note-result-grid-2 mb-3">
+              <div class="note-result-card">
+                <div class="note-result-card-label">Esquema sugerido</div>
+                <div id="postopSchemeNum" class="note-result-card-value">-</div>
+                <div id="postopSchemeText" class="note-result-card-note">Ingresa peso.</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">TDD estimada</div>
+                <div id="postopTDD" class="note-result-card-value">-</div>
+                <div id="postopFactor" class="note-result-card-note">Factor usado.</div>
+              </div>
+            </div>
+
+            <div class="note-summary-grid-2 mb-3">
+              <div class="note-summary-item">
+                <div class="note-summary-k">Basal sugerida</div>
+                <div id="postopBasal" class="note-summary-v">-</div>
+              </div>
+              <div class="note-summary-item">
+                <div class="note-summary-k">Prandial / corrección</div>
+                <div id="postopPrandial" class="note-summary-v">-</div>
+              </div>
+            </div>
+
+            <div id="postopConduct" class="gly-safety-item mb-3">
+              <div id="postopMark" class="gly-safety-mark mid"><i class="fa-solid fa-triangle-exclamation"></i></div>
+              <div class="gly-safety-copy">
+                <div id="postopConductTitle" class="gly-safety-title">Interpretación</div>
+                <p id="postopConductText" class="gly-safety-note">Selecciona contexto clínico para estimar esquema postoperatorio.</p>
+              </div>
+            </div>
+
+            <div class="gly-safety-list">
+              <div class="gly-safety-item">
+                <div class="gly-safety-mark mid"><i class="fa-solid fa-mobile-screen"></i></div>
+                <div class="gly-safety-copy">
+                  <div class="gly-safety-title">Usuarios de bomba</div>
+                  <p class="gly-safety-note">Verificar tasa basal, sitio de inserción, glicemias y posibilidad real de continuar manejo seguro en recuperación o sala.</p>
+                </div>
+              </div>
+              <div class="gly-safety-item">
+                <div class="gly-safety-mark ok"><i class="fa-solid fa-vial"></i></div>
+                <div class="gly-safety-copy">
+                  <div class="gly-safety-title">Control</div>
+                  <p class="gly-safety-note">Privilegiar laboratorio central si el valor capilar no cuadra con el cuadro clínico o con la hemodinamia.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="note-teaching-wrap">
+          <div class="note-teaching-title">Perlas docentes</div>
+          <div class="note-teaching-main">La primera decisión no es “cuánta insulina SC doy”, sino “¿este caso necesita vía EV?”</div>
+          <div class="note-tips"><strong>Qué hacer:</strong> define estabilidad metabólica, duración quirúrgica, recambio de volumen, inotrópicos, temperatura y tipo de diabetes antes de elegir estrategia.</div>
+          <div class="note-tips"><strong>Qué evitar:</strong> perseguir glicemias normales, acumular insulina rápida SC o suspender completamente basal en DM1.</div>
+          <div class="note-tips"><strong>Perla:</strong> si el contexto es dinámico, una infusión EV con control horario suele ser más segura que múltiples bolos SC.</div>
+          <div class="note-tips mb-0"><strong>Mensaje final:</strong> hiperglicemia, hipoglicemia y cetosis son problemas distintos; no los trates como si fueran solo “un número alto”.</div>
         </div>
 
       </div>
@@ -1288,452 +770,337 @@ require("head.php");
 </div>
 
 <script>
-function toggleInfo(){
-  let box = document.getElementById("infoContent");
-  box.style.display = (box.style.display === "none" || box.style.display === "") ? "block" : "none";
-}
+(function(){
+  const CNS = window.ClinicalNoteSystem;
 
-function getSelected(name){
-  const el = document.querySelector('input[name="' + name + '"]:checked');
-  return el ? el.value : null;
-}
-
-function round1(num){
-  return Math.round(num * 10) / 10;
-}
-
-function updateIVDecision(){
-  const mode = getSelected('ivcriteria');
-
-  const box = document.getElementById('ivConduct');
-  const title = document.getElementById('ivConductTitle');
-  const text = document.getElementById('ivConductText');
-
-  const step2EV = document.getElementById('step2EV');
-  const step2SC = document.getElementById('step2SC');
-
-  if(mode === 'yes'){
-    box.className = 'conduct-box conduct-ok mb-3';
-    title.textContent = 'Conducta inicial';
-    text.innerHTML = 'Este caso <strong>sí cumple criterios de infusión EV</strong>. Usa control horario y ajusta la tasa según la tabla.';
-    step2EV.style.display = 'block';
-    step2SC.style.display = 'none';
-  } else {
-    box.className = 'conduct-box conduct-mid mb-3';
-    title.textContent = 'Conducta inicial';
-    text.innerHTML = 'Si no hay criterios de alta variabilidad metabólica, puedes considerar <strong>corrección SC</strong> cuando la glicemia sea mayor a 180 mg/dL.';
-    step2EV.style.display = 'none';
-    step2SC.style.display = 'block';
+  function parseLocal(value){
+    if(CNS && typeof CNS.parseDecimal === 'function') return CNS.parseDecimal(value);
+    const n = Number(String(value || '').replace(',', '.'));
+    return Number.isFinite(n) ? n : null;
   }
-}
 
-function updateIVCalculator(){
-  const currentBg = parseFloat(document.getElementById('evCurrentBg').value);
-  const prevBg = parseFloat(document.getElementById('evPrevBg').value);
-  const prevRate = parseFloat(document.getElementById('evPrevRate').value);
+  function fmt(value, decimals){
+    if(!Number.isFinite(value)) return '-';
+    if(CNS && typeof CNS.formatNumber === 'function') return CNS.formatNumber(value, decimals);
+    return Number(value).toLocaleString('es-CL', {maximumFractionDigits: decimals});
+  }
 
-  const evResultNum = document.getElementById('evResultNum');
-  const evResultText = document.getElementById('evResultText');
-  const evBolus = document.getElementById('evBolus');
-  const evInitialRate = document.getElementById('evInitialRate');
-  const evDeltaText = document.getElementById('evDeltaText');
-  const box = document.getElementById('evDynamicConduct');
-  const title = document.getElementById('evDynamicConductTitle');
-  const text = document.getElementById('evDynamicConductText');
+  function round1(num){
+    return Math.round(num * 10) / 10;
+  }
 
-  if(isNaN(currentBg) || currentBg <= 0){
-    evResultNum.textContent = '-';
-    evResultText.textContent = 'Ingresa glicemia actual, previa y tasa previa.';
-    evBolus.textContent = '-';
-    evInitialRate.textContent = '-';
-    evDeltaText.textContent = '-';
-    box.className = 'conduct-box conduct-mid mt-3';
+  function getSelected(name){
+    const el = document.querySelector('input[name="' + name + '"]:checked');
+    return el ? el.value : null;
+  }
+
+  function setSafetyBox(prefix, level, icon, title, text){
+    const mark = document.getElementById(prefix + 'Mark');
+    const titleEl = document.getElementById(prefix + 'Title') || document.getElementById(prefix + 'ConductTitle');
+    const textEl = document.getElementById(prefix + 'Text') || document.getElementById(prefix + 'ConductText');
+    if(mark){
+      mark.className = 'gly-safety-mark ' + level;
+      mark.innerHTML = '<i class="fa-solid ' + icon + '"></i>';
+    }
+    if(titleEl) titleEl.textContent = title;
+    if(textEl) textEl.innerHTML = text;
+  }
+
+  function contextLabel(mode){
+    if(mode === 'yes') return 'Criterios EV';
+    if(mode === 'uncertain') return 'Dudoso';
+    return 'Caso estable';
+  }
+
+  function updateMainCalc(){
+    const gly = parseLocal(document.getElementById('glyValue').value);
+    const mode = getSelected('ivcriteria') || 'no';
+    const tddMode = getSelected('tddmode') || 'unknown';
+    let tdd = parseLocal(document.getElementById('tddValue').value);
+
+    if(tddMode === 'unknown' || !tdd || tdd <= 0) tdd = 40;
+
+    const fs = 1800 / tdd;
+    const summaryStrategy = document.getElementById('summaryStrategy');
+
+    document.getElementById('summaryGly').textContent = gly && gly > 0 ? fmt(gly,0) + ' mg/dL' : '-';
+    document.getElementById('summaryContext').textContent = contextLabel(mode);
+    document.getElementById('summaryTdd').textContent = fmt(tdd,1) + ' UI/día';
+    document.getElementById('metaFs').textContent = fmt(fs,1);
+    document.getElementById('metaControl').textContent = mode === 'yes' ? 'Horario si infusión EV' : 'Cada 2 h mínimo si SC';
+
+    if(!gly || gly <= 0){
+      document.getElementById('corrNum').textContent = '-';
+      document.getElementById('corrText').textContent = 'Ingresa la glicemia actual.';
+      document.getElementById('evInitialRate').textContent = '-';
+      document.getElementById('evText').textContent = 'Decide según contexto y glicemia.';
+      document.getElementById('metaFormula').textContent = '-';
+      document.getElementById('algoMain').textContent = 'Pendiente';
+      document.getElementById('algoSoft').textContent = 'Completa glicemia actual para orientar corrección SC o infusión EV.';
+      document.getElementById('summaryNarrative').textContent = 'Ingresa glicemia actual y contexto quirúrgico para orientar la estrategia intraoperatoria.';
+      summaryStrategy.textContent = 'Pendiente';
+      return;
+    }
+
+    let scDose = (gly - 100) / fs;
+    if(scDose < 0) scDose = 0;
+    const scDoseRounded = round1(scDose);
+    document.getElementById('metaFormula').textContent = '(' + fmt(gly,0) + ' - 100) / ' + fmt(fs,1);
+
+    if(gly < 70){
+      document.getElementById('corrNum').textContent = '0 UI';
+      document.getElementById('corrText').textContent = 'Hipoglicemia: no corregir con insulina.';
+      document.getElementById('evInitialRate').textContent = 'Suspender';
+      document.getElementById('evText').textContent = 'Manejo de hipoglicemia.';
+      document.getElementById('algoMain').textContent = 'Hipoglicemia';
+      document.getElementById('algoSoft').textContent = 'No administrar insulina. Confirmar valor y tratar según protocolo.';
+      summaryStrategy.textContent = 'Tratar hipoglicemia';
+    } else if(gly < 140){
+      document.getElementById('corrNum').textContent = '0 UI';
+      document.getElementById('corrText').textContent = 'Sin corrección.';
+      document.getElementById('evInitialRate').textContent = 'No';
+      document.getElementById('evText').textContent = 'No iniciar infusión por glicemia.';
+      document.getElementById('algoMain').textContent = 'Observación';
+      document.getElementById('algoSoft').textContent = 'Bajo o dentro de rango. Vigilar y recontrolar según contexto.';
+      summaryStrategy.textContent = 'Observación';
+    } else if(gly < 180){
+      document.getElementById('corrNum').textContent = '0 UI';
+      document.getElementById('corrText').textContent = 'Sobre meta baja, sin umbral habitual de corrección.';
+      document.getElementById('evInitialRate').textContent = 'No';
+      document.getElementById('evText').textContent = 'Recontrolar.';
+      document.getElementById('algoMain').textContent = 'Recontrol sin corrección';
+      document.getElementById('algoSoft').textContent = 'Target perioperatorio habitual 140–180 mg/dL. Reevalúa tendencia y contexto.';
+      summaryStrategy.textContent = 'Recontrol';
+    } else {
+      document.getElementById('corrNum').textContent = fmt(scDoseRounded,1) + ' UI';
+      document.getElementById('corrText').textContent = 'Insulina rápida SC orientativa.';
+      document.getElementById('evInitialRate').textContent = fmt(round1(gly / 100),1) + ' U/h';
+      document.getElementById('evText').textContent = 'Si se decide infusión EV; bolo inicial orientativo BG/40.';
+
+      if(mode === 'yes'){
+        document.getElementById('algoMain').textContent = 'Preferir insulina EV';
+        document.getElementById('algoSoft').textContent = 'Cumple criterios de alta variabilidad metabólica. Usar control horario y ajustar según tendencia.';
+        summaryStrategy.textContent = 'Insulina EV';
+      } else if(mode === 'uncertain' || gly >= 250){
+        document.getElementById('algoMain').textContent = 'Considerar EV antes de acumular SC';
+        document.getElementById('algoSoft').textContent = 'La glicemia es alta o el contexto es dudoso. Si hay cirugía prolongada o fisiología dinámica, preferir infusión EV.';
+        summaryStrategy.textContent = 'SC vs EV según contexto';
+      } else {
+        document.getElementById('algoMain').textContent = 'Corrección SC razonable';
+        document.getElementById('algoSoft').textContent = 'Caso estable sin criterios EV. Control mínimo cada 2 h y evitar acumulación de insulina rápida.';
+        summaryStrategy.textContent = 'Corrección SC';
+      }
+    }
+
+    document.getElementById('summaryNarrative').textContent =
+      'Glicemia ' + fmt(gly,0) + ' mg/dL, ' + contextLabel(mode).toLowerCase() + ', TDD usada ' + fmt(tdd,1) + ' UI/día. Estrategia: ' + summaryStrategy.textContent + '.';
+  }
+
+  function updateIVCalculator(){
+    const currentBg = parseLocal(document.getElementById('evCurrentBg').value);
+    const prevBg = parseLocal(document.getElementById('evPrevBg').value);
+    const prevRate = parseLocal(document.getElementById('evPrevRate').value);
+
+    const evResultNum = document.getElementById('evResultNum');
+    const evResultText = document.getElementById('evResultText');
+    const evBolus = document.getElementById('evBolus');
+    const evDeltaText = document.getElementById('evDeltaText');
+    const title = document.getElementById('evDynamicConductTitle');
+    const text = document.getElementById('evDynamicConductText');
+    const mark = document.getElementById('evDynamicMark');
+
+    if(!currentBg || currentBg <= 0){
+      evResultNum.textContent = '-';
+      evResultText.textContent = 'Ingresa glicemia actual.';
+      evBolus.textContent = '-';
+      evDeltaText.textContent = 'Sin dato previo.';
+      mark.className = 'gly-safety-mark mid';
+      mark.innerHTML = '<i class="fa-solid fa-clock"></i>';
+      title.textContent = 'Interpretación';
+      text.textContent = 'La infusión EV se ajusta según glicemia actual y cambio respecto a medición previa.';
+      return;
+    }
+
+    evBolus.textContent = currentBg > 180 ? fmt(round1(currentBg / 40),1) + ' UI' : 'No necesario';
+
+    if(!prevBg || prevBg <= 0 || prevRate === null || prevRate < 0){
+      evResultNum.textContent = currentBg > 180 ? fmt(round1(currentBg / 100),1) + ' U/h' : 'No iniciar';
+      evResultText.textContent = currentBg > 180 ? 'Tasa inicial teórica' : 'No iniciar infusión';
+      evDeltaText.textContent = 'Sin dato previo';
+      mark.className = currentBg > 180 ? 'gly-safety-mark ok' : 'gly-safety-mark mid';
+      mark.innerHTML = currentBg > 180 ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-clock"></i>';
+      title.textContent = 'Interpretación';
+      text.innerHTML = currentBg > 180
+        ? 'Si BG es <strong>&gt;180 mg/dL</strong>, considerar infusión EV. Tasa inicial aproximada: <strong>BG/100 U/h</strong>.'
+        : 'Con esta glicemia no hay indicación automática de iniciar infusión EV.';
+      return;
+    }
+
+    const delta = currentBg - prevBg;
+    evDeltaText.textContent = delta > 0 ? 'Aumentó ' + fmt(round1(delta),1) + ' mg/dL' : 'Disminuyó ' + fmt(round1(Math.abs(delta)),1) + ' mg/dL';
+
+    let action = '';
+    let newRate = prevRate;
+    let level = 'ok';
+    let icon = 'fa-check';
+    let msg = '';
+
+    if(currentBg > 241){
+      if(delta > 0 || Math.abs(delta) < 30){ newRate = prevRate + 3; action = 'Subir +3 U/h'; } else { action = 'Sin cambio'; }
+    } else if(currentBg >= 211){
+      if(delta > 0 || Math.abs(delta) < 30){ newRate = prevRate + 2; action = 'Subir +2 U/h'; } else { action = 'Sin cambio'; }
+    } else if(currentBg >= 181){
+      if(delta > 0 || Math.abs(delta) < 30){ newRate = prevRate + 1; action = 'Subir +1 U/h'; } else { action = 'Sin cambio'; }
+    } else if(currentBg >= 141){
+      action = 'Sin cambio';
+    } else if(currentBg >= 110){
+      if(delta > 0){ action = 'Sin cambio'; }
+      else if(Math.abs(delta) < 30){ newRate = Math.max(0, prevRate - 0.5); action = 'Bajar -0,5 U/h'; }
+      else { newRate = 0; action = 'Suspender infusión'; }
+    } else if(currentBg >= 100){
+      newRate = 0; action = 'Suspender infusión'; level = 'mid'; icon = 'fa-triangle-exclamation';
+      msg = 'Suspender infusión, controlar glicemia cada hora y reiniciar a mitad de tasa previa si BG >180 mg/dL.';
+    } else if(currentBg >= 71){
+      newRate = 0; action = 'Suspender infusión'; level = 'high'; icon = 'fa-triangle-exclamation';
+      msg = 'Suspender infusión. Control cada 30 min hasta BG >100 mg/dL. Reiniciar a mitad de tasa previa si BG >180 mg/dL.';
+    } else {
+      newRate = 0; action = 'Hipoglicemia'; level = 'high'; icon = 'fa-bolt';
+      msg = currentBg >= 50
+        ? 'BG 50–70 mg/dL: administrar 25 mL de D50 y controlar cada 30 min hasta BG >100 mg/dL.'
+        : 'BG <50 mg/dL: administrar 50 mL de D50, controlar cada 15 min hasta >70 mg/dL y luego cada 30 min hasta >100 mg/dL.';
+    }
+
+    evResultNum.textContent = action === 'Hipoglicemia' ? 'D50' : fmt(round1(newRate),1) + ' U/h';
+    evResultText.textContent = action;
+
+    if(!msg){
+      if(action.indexOf('Subir') !== -1) msg = 'Ajuste sugerido según glicemia actual y tendencia respecto de la medición previa.';
+      else if(action === 'Sin cambio') msg = 'Mantener tasa actual y continuar control horario.';
+      else msg = 'Suspender infusión y vigilar estrechamente la evolución de la glicemia.';
+    }
+
+    mark.className = 'gly-safety-mark ' + level;
+    mark.innerHTML = '<i class="fa-solid ' + icon + '"></i>';
     title.textContent = 'Interpretación';
-    text.textContent = 'La infusión EV se ajusta según glicemia actual y su cambio respecto de la medición previa.';
-    return;
+    text.innerHTML = msg;
   }
 
-  const theoreticalBolus = currentBg > 180 ? round1(currentBg / 40) + ' UI' : 'No necesario';
-  const theoreticalRate = currentBg > 180 ? round1(currentBg / 100) + ' U/h' : 'No necesario';
+  function updateGLP1Decision(){
+    const symptoms = getSelected('glp1symptoms');
+    const intake = getSelected('glp1intake');
+    const intakeBlock = document.getElementById('glp1IntakeBlock');
+    const mark = document.getElementById('glp1Mark');
 
-  evBolus.textContent = theoreticalBolus;
-  evInitialRate.textContent = theoreticalRate;
+    if(symptoms === 'yes'){
+      intakeBlock.style.display = 'none';
+      mark.className = 'gly-safety-mark high';
+      mark.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+      document.getElementById('glp1ConductTitle').textContent = 'Riesgo aumentado';
+      document.getElementById('glp1ConductText').innerHTML = 'Con náuseas severas, vómitos, distensión o mala tolerancia oral, considerar diferir cirugía electiva o manejar como estómago lleno según urgencia.';
+      document.getElementById('glp1Fasting').textContent = 'No aplicar tabla';
+      document.getElementById('glp1Summary').textContent = 'Primero resolver síntomas y reevaluar.';
+      return;
+    }
 
-  if(isNaN(prevBg) || prevBg <= 0 || isNaN(prevRate) || prevRate < 0){
-    evResultNum.textContent = theoreticalRate;
-    evResultText.textContent = currentBg > 180 ? 'Tasa inicial sugerida' : 'No iniciar infusión';
-    evDeltaText.textContent = 'Sin dato previo';
-    box.className = currentBg > 180 ? 'conduct-box conduct-ok mt-3' : 'conduct-box conduct-mid mt-3';
-    title.textContent = 'Interpretación';
-    text.innerHTML = currentBg > 180
-      ? 'Si BG es <strong>>180 mg/dL</strong>, considera iniciar infusión EV. La tasa inicial aproximada es <strong>BG/100 U/h</strong>.'
-      : 'Con esta glicemia no existe indicación automática de iniciar infusión EV según este esquema.';
-    return;
-  }
+    intakeBlock.style.display = 'block';
+    mark.className = 'gly-safety-mark ok';
+    mark.innerHTML = '<i class="fa-solid fa-check"></i>';
+    document.getElementById('glp1ConductTitle').textContent = 'Conducta GLP-1 RA';
+    document.getElementById('glp1ConductText').innerHTML = 'Si no hay síntomas significativos, puede continuarse GLP-1 RA en la mayoría de los pacientes. Individualizar si hay fase de escalamiento de dosis o alto riesgo GI.';
 
-  const delta = currentBg - prevBg;
-  evDeltaText.textContent = delta > 0 ? 'Aumentó ' + round1(delta) + ' mg/dL' : 'Disminuyó ' + round1(Math.abs(delta)) + ' mg/dL';
-
-  let action = '';
-  let newRate = prevRate;
-  let conductClass = 'conduct-ok';
-  let conductMsg = '';
-
-  if(currentBg > 241){
-    if(delta > 0){
-      newRate = prevRate + 3;
-      action = 'Subir +3 U/h';
-    } else if(Math.abs(delta) < 30){
-      newRate = prevRate + 3;
-      action = 'Subir +3 U/h';
+    if(intake === 'solids'){
+      document.getElementById('glp1Fasting').textContent = '24 h';
+      document.getElementById('glp1Summary').textContent = 'Evitar sólidos 24 h; considerar dieta líquida.';
+    } else if(intake === 'highcarb'){
+      document.getElementById('glp1Fasting').textContent = '8 h';
+      document.getElementById('glp1Summary').textContent = 'Líquidos claros altos en carbohidratos.';
     } else {
-      newRate = prevRate;
-      action = 'Sin cambio';
+      document.getElementById('glp1Fasting').textContent = '4 h';
+      document.getElementById('glp1Summary').textContent = 'Líquidos claros bajos o sin carbohidratos.';
     }
-  } else if(currentBg >= 211 && currentBg <= 240){
-    if(delta > 0){
-      newRate = prevRate + 2;
-      action = 'Subir +2 U/h';
-    } else if(Math.abs(delta) < 30){
-      newRate = prevRate + 2;
-      action = 'Subir +2 U/h';
+  }
+
+  function updatePostopCalc(){
+    const peso = parseLocal(document.getElementById('postopPeso').value);
+    const oral = getSelected('postop_oral') || 'npo';
+    const sens = getSelected('postop_sens') || 'usual';
+
+    if(!peso || peso <= 0){
+      document.getElementById('postopSchemeNum').textContent = '-';
+      document.getElementById('postopSchemeText').textContent = 'Ingresa peso.';
+      document.getElementById('postopTDD').textContent = '-';
+      document.getElementById('postopFactor').textContent = 'Factor usado.';
+      document.getElementById('postopBasal').textContent = '-';
+      document.getElementById('postopPrandial').textContent = '-';
+      document.getElementById('postopMark').className = 'gly-safety-mark mid';
+      document.getElementById('postopMark').innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+      document.getElementById('postopConductTitle').textContent = 'Interpretación';
+      document.getElementById('postopConductText').textContent = 'Selecciona contexto clínico para estimar esquema postoperatorio.';
+      return;
+    }
+
+    let factor = 0.2;
+    let factorLabel = '0,2–0,25 U/kg/día';
+    if(sens === 'sensitive'){ factor = 0.125; factorLabel = '0,1–0,15 U/kg/día'; }
+    else if(sens === 'resistant'){ factor = 0.3; factorLabel = '0,3 U/kg/día'; }
+
+    const tdd = peso * factor;
+    document.getElementById('postopTDD').textContent = fmt(round1(tdd),1) + ' U/día';
+    document.getElementById('postopFactor').textContent = factorLabel;
+    document.getElementById('postopMark').className = 'gly-safety-mark ok';
+    document.getElementById('postopMark').innerHTML = '<i class="fa-solid fa-check"></i>';
+    document.getElementById('postopConductTitle').textContent = 'Conducta sugerida';
+
+    if(oral === 'npo'){
+      document.getElementById('postopSchemeNum').textContent = 'Basal-plus';
+      document.getElementById('postopSchemeText').textContent = 'NPO o mala tolerancia oral.';
+      document.getElementById('postopBasal').textContent = fmt(round1(tdd),1) + ' U/día basal';
+      document.getElementById('postopPrandial').textContent = 'Corrección rápida si BG >180 mg/dL';
+      document.getElementById('postopConductText').innerHTML = 'Usar <strong>basal-plus</strong>: basal diaria y corrección con insulina rápida si BG &gt;180 mg/dL.';
     } else {
-      newRate = prevRate;
-      action = 'Sin cambio';
-    }
-  } else if(currentBg >= 181 && currentBg <= 210){
-    if(delta > 0){
-      newRate = prevRate + 1;
-      action = 'Subir +1 U/h';
-    } else if(Math.abs(delta) < 30){
-      newRate = prevRate + 1;
-      action = 'Subir +1 U/h';
-    } else {
-      newRate = prevRate;
-      action = 'Sin cambio';
-    }
-  } else if(currentBg >= 141 && currentBg <= 180){
-    newRate = prevRate;
-    action = 'Sin cambio';
-  } else if(currentBg >= 110 && currentBg <= 140){
-    if(delta > 0){
-      newRate = prevRate;
-      action = 'Sin cambio';
-    } else if(Math.abs(delta) < 30){
-      newRate = Math.max(0, prevRate - 0.5);
-      action = 'Bajar -0,5 U/h';
-    } else {
-      newRate = 0;
-      action = 'Suspender infusión';
-    }
-  } else if(currentBg >= 100 && currentBg <= 109){
-    newRate = 0;
-    action = 'Suspender infusión';
-    conductClass = 'conduct-mid';
-    conductMsg = 'Suspender infusión, controlar glicemia cada hora y reiniciar a la mitad de la tasa previa si BG >180 mg/dL.';
-  } else if(currentBg >= 71 && currentBg <= 99){
-    newRate = 0;
-    action = 'Suspender infusión';
-    conductClass = 'conduct-no';
-    conductMsg = 'Suspender infusión. Control cada 30 min hasta BG >100 mg/dL. Luego retomar controles horarios. Reiniciar a la mitad de la tasa previa si BG >180 mg/dL.';
-  } else if(currentBg <= 70){
-    newRate = 0;
-    action = 'Hipoglicemia';
-    conductClass = 'conduct-no';
-
-    if(currentBg >= 50){
-      conductMsg = 'BG 50-70 mg/dL: administrar 25 mL de D50 y controlar cada 30 min hasta BG >100 mg/dL.';
-    } else {
-      conductMsg = 'BG <50 mg/dL: administrar 50 mL de D50, controlar cada 15 min hasta >70 mg/dL, luego cada 30 min hasta >100 mg/dL. Considerar repetir D50 e iniciar D10 si recurre.';
+      const basal = tdd * 0.5;
+      const prandial = tdd * 0.5;
+      const mealDose = prandial / 3;
+      document.getElementById('postopSchemeNum').textContent = 'Basal-bolus';
+      document.getElementById('postopSchemeText').textContent = 'Paciente con vía oral normal.';
+      document.getElementById('postopBasal').textContent = fmt(round1(basal),1) + ' U/día basal';
+      document.getElementById('postopPrandial').textContent = fmt(round1(prandial),1) + ' U/día prandial (~' + fmt(round1(mealDose),1) + ' U/comida)';
+      document.getElementById('postopConductText').innerHTML = 'Usar <strong>basal-bolus</strong>: 50% basal y 50% prandial, más corrección si BG &gt;180 mg/dL.';
     }
   }
 
-  evResultNum.textContent = action === 'Hipoglicemia' ? 'D50' : round1(newRate) + ' U/h';
-  evResultText.textContent = action;
-
-  if(!conductMsg){
-    if(action.includes('Subir')){
-      conductMsg = 'Ajuste sugerido según glicemia actual y tendencia respecto de la medición previa.';
-    } else if(action === 'Sin cambio'){
-      conductMsg = 'Mantener tasa actual y continuar control horario.';
-    } else if(action === 'Suspender infusión'){
-      conductMsg = 'Suspender infusión y vigilar estrechamente la evolución de la glicemia.';
-    }
-  }
-
-  box.className = 'conduct-box ' + conductClass + ' mt-3';
-  title.textContent = 'Interpretación';
-  text.innerHTML = conductMsg;
-}
-
-function updateGLP1Decision(){
-  const symptoms = getSelected('glp1symptoms');
-  const intake = getSelected('glp1intake');
-
-  const box = document.getElementById('glp1Conduct');
-  const title = document.getElementById('glp1ConductTitle');
-  const text = document.getElementById('glp1ConductText');
-  const fasting = document.getElementById('glp1Fasting');
-  const summary = document.getElementById('glp1Summary');
-  const intakeBlock = document.getElementById('glp1IntakeBlock');
-
-  if(symptoms === 'yes'){
-    box.className = 'conduct-box conduct-no mb-3';
-    title.textContent = 'Conducta';
-    text.innerHTML = 'Si hay <strong>síntomas significativos</strong>, diferir cirugía y derivar al médico tratante para modificación de dieta y tratamiento.';
-    fasting.textContent = 'No aplicar tabla';
-    summary.textContent = 'Primero resolver síntomas y reevaluar.';
-    intakeBlock.style.display = 'none';
-    return;
-  }
-
-  intakeBlock.style.display = 'block';
-  box.className = 'conduct-box conduct-ok mb-3';
-  title.textContent = 'Conducta';
-  text.innerHTML = 'Si no hay síntomas significativos, puede continuarse el <strong>GLP-1 RA</strong> sin interrupción y ajustar el ayuno según el tipo de ingesta.';
-
-  if(intake === 'solids'){
-    fasting.textContent = '24 h';
-    summary.textContent = 'Ayuno de sólidos por 24 h. Solo se permiten líquidos claros.';
-  } else if(intake === 'highcarb'){
-    fasting.textContent = '8 h';
-    summary.textContent = 'Líquidos claros con alto contenido de carbohidratos (≥10% glucosa): ayuno 8 h.';
-  } else {
-    fasting.textContent = '4 h';
-    summary.textContent = 'Líquidos claros sin o con bajo contenido de carbohidratos (<10% glucosa): ayuno 4 h.';
-  }
-}
-
-function updateCorrectionCalc(){
-  const gly = parseFloat(document.getElementById('glyValue').value);
-  const tddMode = getSelected('tddmode');
-  let tdd = parseFloat(document.getElementById('tddValue').value);
-
-  const corrNum = document.getElementById('corrNum');
-  const corrText = document.getElementById('corrText');
-  const metaTdd = document.getElementById('metaTdd');
-  const metaFs = document.getElementById('metaFs');
-  const metaFormula = document.getElementById('metaFormula');
-  const box = document.getElementById('corrConduct');
-  const title = document.getElementById('corrConductTitle');
-  const text = document.getElementById('corrConductText');
-
-  if(tddMode === 'unknown' || isNaN(tdd) || tdd <= 0){
-    tdd = 40;
-  }
-
-  if(isNaN(gly) || gly <= 0){
-    corrNum.textContent = '-';
-    corrText.textContent = 'Ingresa la glicemia actual.';
-    metaTdd.textContent = tdd + ' UI/día';
-    metaFs.textContent = '-';
-    metaFormula.textContent = '-';
-    box.className = 'conduct-box conduct-mid mt-3';
-    title.textContent = 'Interpretación';
-    text.textContent = 'No repetir insulina rápida antes de 2 horas por riesgo de acumulación. No dar más de 2 dosis SC en 4 horas.';
-    return;
-  }
-
-  const fs = 1800 / tdd;
-  let dose = (gly - 100) / fs;
-
-  metaTdd.textContent = round1(tdd) + ' UI/día';
-  metaFs.textContent = round1(fs);
-  metaFormula.textContent = '(' + round1(gly) + ' - 100) / ' + round1(fs);
-
-  if(gly < 70){
-    corrNum.textContent = '0';
-    corrText.textContent = 'Hipoglicemia.';
-    box.className = 'conduct-box conduct-no mt-3';
-    title.textContent = 'No corregir con insulina';
-    text.innerHTML = 'La glicemia es <strong>&lt;70 mg/dL</strong>. Maneja como hipoglicemia y confirma según contexto.';
-    return;
-  }
-
-  if(gly < 140){
-    corrNum.textContent = '0';
-    corrText.textContent = 'Sin corrección.';
-    box.className = 'conduct-box conduct-ok mt-3';
-    title.textContent = 'Dentro o cerca de meta';
-    text.innerHTML = 'No requiere corrección. Mantén vigilancia y recontrol según contexto.';
-    return;
-  }
-
-  if(gly < 180){
-    corrNum.textContent = '0';
-    corrText.textContent = 'Observación y control.';
-    box.className = 'conduct-box conduct-ok mt-3';
-    title.textContent = 'Sobre meta, pero sin umbral de corrección';
-    text.innerHTML = 'Target perioperatorio habitual: <strong>140-180 mg/dL</strong>. Reevalúa y controla.';
-    return;
-  }
-
-  if(dose < 0) dose = 0;
-  const finalDose = round1(dose);
-
-  corrNum.textContent = finalDose;
-  corrText.textContent = 'UI de insulina rápida SC';
-
-  if(gly >= 250){
-    box.className = 'conduct-box conduct-mid mt-3';
-    title.textContent = 'Considera si basta la vía subcutánea';
-    text.innerHTML = 'Si el procedimiento es largo, hay cambios hemodinámicos, recambio de volumen, temperatura o inotrópicos, considera <strong>infusión EV</strong> más que seguir acumulando bolos SC.';
-  } else {
-    box.className = 'conduct-box conduct-ok mt-3';
-    title.textContent = 'Corrección SC razonable';
-    text.innerHTML = 'Controlar al menos cada <strong>2 horas</strong>. No repetir antes de 2 horas y no dar más de 2 dosis SC en 4 horas.';
-  }
-}
-
-function updatePostopCalc(){
-  const peso = parseFloat(document.getElementById('postopPeso').value);
-  const oral = getSelected('postop_oral');
-  const sens = getSelected('postop_sens');
-
-  const schemeNum = document.getElementById('postopSchemeNum');
-  const schemeText = document.getElementById('postopSchemeText');
-  const tddBox = document.getElementById('postopTDD');
-  const factorBox = document.getElementById('postopFactor');
-  const basalBox = document.getElementById('postopBasal');
-  const prandialBox = document.getElementById('postopPrandial');
-  const conductBox = document.getElementById('postopConduct');
-  const conductTitle = document.getElementById('postopConductTitle');
-  const conductText = document.getElementById('postopConductText');
-
-  if(isNaN(peso) || peso <= 0){
-    schemeNum.textContent = '-';
-    schemeText.textContent = 'Ingresa peso y selecciona tolerancia oral.';
-    tddBox.textContent = '-';
-    factorBox.textContent = '-';
-    basalBox.textContent = '-';
-    prandialBox.textContent = '-';
-    conductBox.className = 'conduct-box conduct-mid mb-4';
-    conductTitle.textContent = 'Interpretación';
-    conductText.textContent = 'Selecciona el contexto clínico para estimar un esquema postoperatorio.';
-    return;
-  }
-
-  let factor = 0.2;
-  let factorLabel = '0.2–0.25 U/kg/día';
-
-  if(sens === 'sensitive'){
-    factor = 0.125;
-    factorLabel = '0.1–0.15 U/kg/día';
-  } else if(sens === 'resistant'){
-    factor = 0.3;
-    factorLabel = '0.3 U/kg/día';
-  }
-
-  const tdd = peso * factor;
-
-  if(oral === 'npo'){
-    const basal = tdd;
-    schemeNum.textContent = 'Basal +';
-    schemeText.textContent = 'Esquema basal plus';
-    tddBox.textContent = tdd.toFixed(1).replace('.', ',') + ' U/día';
-    factorBox.textContent = factorLabel;
-    basalBox.textContent = basal.toFixed(1).replace('.', ',') + ' U/día basal';
-    prandialBox.textContent = 'Corrección rápida si BG >180 mg/dL';
-
-    conductBox.className = 'conduct-box conduct-ok mb-4';
-    conductTitle.textContent = 'Conducta sugerida';
-    conductText.innerHTML = 'Como el paciente está <strong>NPO o con mala tolerancia oral</strong>, usar <strong>basal plus</strong>: basal (glargina/detemir) más corrección con rápida si BG &gt;180 mg/dL.';
-  } else {
-    const basal = tdd * 0.5;
-    const prandial = tdd * 0.5;
-    const mealDose = prandial / 3;
-
-    schemeNum.textContent = 'Basal-bolus';
-    schemeText.textContent = 'Esquema basal bolus';
-    tddBox.textContent = tdd.toFixed(1).replace('.', ',') + ' U/día';
-    factorBox.textContent = factorLabel;
-    basalBox.textContent = basal.toFixed(1).replace('.', ',') + ' U/día basal';
-    prandialBox.textContent = prandial.toFixed(1).replace('.', ',') + ' U/día prandial (~' + mealDose.toFixed(1).replace('.', ',') + ' U por comida)';
-
-    conductBox.className = 'conduct-box conduct-ok mb-4';
-    conductTitle.textContent = 'Conducta sugerida';
-    conductText.innerHTML = 'Como el paciente tiene <strong>ingesta oral normal</strong>, usar <strong>basal bolus</strong>: 50% basal y 50% prandial, más corrección si BG &gt;180 mg/dL.';
-  }
-}
-
-
-
-document.addEventListener('DOMContentLoaded', function(){
-  document.getElementById('glyValue').addEventListener('input', updateCorrectionCalc);
-  document.getElementById('tddValue').addEventListener('input', updateCorrectionCalc);
+  document.getElementById('glyValue').addEventListener('input', updateMainCalc);
+  document.getElementById('tddValue').addEventListener('input', updateMainCalc);
   document.getElementById('evCurrentBg').addEventListener('input', updateIVCalculator);
   document.getElementById('evPrevBg').addEventListener('input', updateIVCalculator);
   document.getElementById('evPrevRate').addEventListener('input', updateIVCalculator);
-document.getElementById('postopPeso').addEventListener('input', updatePostopCalc);
+  document.getElementById('postopPeso').addEventListener('input', updatePostopCalc);
 
-document.querySelectorAll('input[name="postop_oral"]').forEach(el => {
-  el.addEventListener('change', updatePostopCalc);
-});
-
-document.querySelectorAll('input[name="postop_sens"]').forEach(el => {
-  el.addEventListener('change', updatePostopCalc);
-});
-
-    document.querySelectorAll('input[name="glp1intake"]').forEach(el => {
+  document.querySelectorAll('input[name="ivcriteria"], input[name="tddmode"]').forEach(function(el){
+    el.addEventListener('change', updateMainCalc);
+  });
+  document.querySelectorAll('input[name="glp1symptoms"], input[name="glp1intake"]').forEach(function(el){
     el.addEventListener('change', updateGLP1Decision);
   });
-
-  document.querySelectorAll('input[name="tddmode"]').forEach(el => {
-    el.addEventListener('change', updateCorrectionCalc);
+  document.querySelectorAll('input[name="postop_oral"], input[name="postop_sens"]').forEach(function(el){
+    el.addEventListener('change', updatePostopCalc);
   });
 
-  document.querySelectorAll('input[name="ivcriteria"]').forEach(el => {
-    el.addEventListener('change', updateIVDecision);
-  });
-
-  document.querySelectorAll('input[name="glp1symptoms"]').forEach(el => {
-    el.addEventListener('change', updateGLP1Decision);
-  });
-
-  updateCorrectionCalc();
-  updateIVDecision();
-  updateGLP1Decision();
-  updateCorrectionCalc();
-  updateIVDecision();
-  updateGLP1Decision();
+  updateMainCalc();
   updateIVCalculator();
+  updateGLP1Decision();
   updatePostopCalc();
-});
+})();
 
+function toggleInfo(){
+  const box = document.getElementById("infoContent");
+  box.style.display = (box.style.display === "none" || box.style.display === "") ? "block" : "none";
+}
 
-
-function toggleSection(el){
-  const parent = el.closest(".section-collapsible");
-  const isOpen = parent.classList.contains("section-open");
-
-  document.querySelectorAll(".section-collapsible").forEach(sec => {
-    sec.classList.remove("section-open");
-  });
-
-  if(!isOpen){
-    parent.classList.add("section-open");
-  }
-
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      const top = el.getBoundingClientRect().top + window.scrollY - 10;
-
-      window.scrollTo({
-        top: top
-      });
-
-      el.classList.remove("flash-highlight");
-      void el.offsetWidth; // reinicia animación
-      el.classList.add("flash-highlight");
-
-      setTimeout(() => {
-        el.classList.remove("flash-highlight");
-      }, 900);
-    });
-  });
+function toggleGlySection(head){
+  const section = head.closest('.gly-section-card');
+  section.classList.toggle('is-open');
 }
 </script>
 
-<?php
-require("footer.php");
-?>
+<?php include("footer.php"); ?>

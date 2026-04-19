@@ -1,662 +1,499 @@
 <?php
-
-$titulo_info = "Utilidad Clínica";
-$descripcion_info = "Apunte interactivo de anestesia regional pediátrica. Prioriza la relación entre volumen, masa total de anestésico local, concentración utilizada, edad/fisiología del paciente y sitio anatómico del bloqueo.";
-$formula = "La seguridad real depende más de la masa total administrada (mg) que del volumen aislado. En técnicas ecoguiadas, el objetivo es buena distribución perineural o interfascial; no perseguir ciegamente un volumen máximo por tabla.";
-$referencias = array(
-  "1.- NYSORA. Peripheral Nerve Blocks for Children.",
-  "2.- Tabla docente pediátrica del usuario, depurada para práctica frecuente.",
-  "3.- En menores de 6 meses existe mayor vulnerabilidad fisiológica a LAST."
-);
-
-$icono_apunte = "<i class='fa-solid fa-syringe pe-3 pt-2'></i>";
-$titulo_apunte = "Regional Pediátrica / Volumen y Dosis";
-
+$titulo_pagina = "Regional pediátrica";
+$navbar_titulo = "Apuntes";
 $boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
 $boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
 
-require("head.php");
+$titulo_info = "Utilidad clínica";
+$descripcion_info = "Apunte interactivo para estimar volumen orientativo y carga total de anestésico local en bloqueos regionales pediátricos. Prioriza masa total, concentración, edad/fisiología, sitio anatómico, lateralidad y margen respecto al máximo teórico.";
+$formula = "Volumen orientativo = peso × rango mL/kg del bloqueo × número de lados. Masa total = volumen × concentración en mg/mL. Máximo teórico: bupivacaína/levobupivacaína 2,5 mg/kg; ropivacaína 3 mg/kg. En pediatría la masa total y la fisiología pesan más que la tabla de volumen.";
+$referencias = array(
+  "Lönnqvist PA, Ecoffey C, Bosenberg A, et al. The European society of regional anaesthesia and pain therapy and the American society of regional anesthesia and pain medicine joint committee practice advisory on controversial topics in pediatric regional anesthesia.",
+  "NYSORA. Pediatric Regional Anesthesia.",
+  "Bosenberg A. Pediatric regional anesthesia update. Paediatr Anaesth.",
+  "Suresh S, Ecoffey C, Bosenberg A, et al. The European Society of Regional Anaesthesia and Pain Therapy / American Society of Regional Anesthesia practice advisory on pediatric regional anesthesia.",
+  "Documentos docentes locales de anestesia regional pediátrica."
+);
+
+include("head.php");
 ?>
+<link rel="stylesheet" href="css/clinical-note-system.css?v=2">
+<script src="js/clinical-note-system.js?v=2"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
     <div class="container-fluid px-0 px-md-2">
-      <div class="regional-shell">
+      <div class="note-shell px-1 px-md-0 py-0">
 
         <style>
-          :root{
-            --brand:#27458f;
-            --brand2:#3559b7;
-            --bg:#f4f7fb;
-            --soft:#f8fafc;
-            --line:#dfe7f2;
-            --text:#1f2a37;
-            --muted:#667085;
-            --good:#edf8f7;
-            --warn:#fff9e8;
-            --danger:#fff5f3;
-            --mint:#eef7ff;
-            --mint-border:#cfe1ff;
-          }
-
-          body{background:var(--bg);}
-          .regional-shell{max-width:1060px;margin:0 auto;}
-
-          .regional-topbar{
-            background:linear-gradient(135deg,var(--brand),var(--brand2));
-            color:#fff;
-            border-radius:1.25rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            padding:1.15rem 1.25rem;
-            margin-bottom:1rem;
-            overflow:hidden;
-          }
-
-          .regional-topbar h1{color:#fff;}
-
-          .section-card{
-            border:0;
-            border-radius:1rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            background:#fff;
-            overflow:hidden;
-            margin-bottom:1rem;
-          }
-
-          .section-title{
-            font-size:.8rem;
-            letter-spacing:.05em;
-            text-transform:uppercase;
-            color:var(--muted);
-          }
-
-          .pill{
-            display:inline-block;
-            padding:.2rem .55rem;
-            border-radius:999px;
-            font-size:.78rem;
-            background:#eef3ff;
-            color:#3559b7;
-            font-weight:600;
-          }
-
-          .subtle{font-size:.94rem;color:#5f6b76;}
-          .small-note{font-size:.82rem;color:#667085;line-height:1.45;}
-          .footer-note{font-size:.82rem;color:#6c757d;}
-
-          .info-box{
-            background:#fff;
-            border-radius:1rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            margin-bottom:1rem;
-            overflow:hidden;
-          }
-
-          .info-box-header{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            gap:1rem;
-            padding:1rem;
-          }
-
-          .info-box-title{
-            font-size:.8rem;
-            text-transform:uppercase;
-            color:#667085;
-            letter-spacing:.08em;
-          }
-
-          .info-toggle-btn{
-            border-radius:.6rem;
-            font-size:.85rem;
-            padding:.35rem .7rem;
-            white-space:nowrap;
-            background:#6c757d;
-            border:none;
-            color:white;
-            transition:.2s;
-          }
-
-          .info-toggle-btn:hover{background:#5a6268;color:white;}
-
-          .info-box-content{
-            padding:1rem;
-            display:none;
-            animation:fadeIn .2s ease-in-out;
-            border-top:1px solid #e9eef5;
-          }
-
-          @keyframes fadeIn{
-            from{opacity:0; transform:translateY(-5px);}
-            to{opacity:1; transform:translateY(0);}
-          }
-
-          .calc-grid{
+          .reg-choice-grid{
             display:grid;
-            grid-template-columns:repeat(2,1fr);
-            gap:1rem;
-          }
-
-          .card-block{
-            border:1px solid var(--line);
-            border-radius:1rem;
-            background:var(--soft);
-            padding:1rem;
-          }
-
-          .choice-check,.choice-radio{display:none;}
-
-          .choice-grid-2{
-            display:grid;
-            grid-template-columns:repeat(2,1fr);
-            gap:.55rem;
-          }
-
-          .choice-grid-3{
-            display:grid;
-            grid-template-columns:repeat(3,1fr);
-            gap:.55rem;
-          }
-
-          .choice-grid-4{
-            display:grid;
-            grid-template-columns:repeat(4,1fr);
-            gap:.55rem;
-          }
-
-          .choice-btn{
-            display:flex;
-            flex-direction:column;
-            align-items:flex-start;
-            justify-content:center;
-            text-align:left;
-            min-height:68px;
-            border:1px solid #dfe7f2;
-            background:#fff;
-            border-radius:.85rem;
-            padding:.6rem .7rem;
-            font-weight:700;
-            color:#1f2a37;
-            cursor:pointer;
-            transition:.15s ease;
-            line-height:1.12;
-            box-shadow:0 4px 14px rgba(0,0,0,.04);
-            font-size:.92rem;
-          }
-
-          .choice-btn small{
-            font-weight:500;
-            color:#667085;
-            margin-top:.14rem;
-            line-height:1.15;
-            font-size:.72rem;
-          }
-
-          .choice-check:checked + .choice-btn,
-          .choice-radio:checked + .choice-btn{
-            background:#eef3ff;
-            border-color:#9fb9f8;
-            color:#27458f;
-            box-shadow:0 0 0 2px rgba(39,69,143,.05) inset, 0 8px 18px rgba(0,0,0,.06);
-            transform:translateY(-1px);
-          }
-
-          .form-label-lite{
-            font-size:.92rem;
-            font-weight:600;
-            color:var(--text);
-            margin-bottom:.35rem;
-          }
-
-          .summary-grid{
-            display:grid;
-            grid-template-columns:repeat(4,1fr);
+            grid-template-columns:repeat(3,minmax(0,1fr));
             gap:.75rem;
           }
 
-          .summary-card{
-            background:#fff;
-            border:1px solid #e6e9ef;
-            border-radius:1rem;
-            padding:.9rem;
+          .reg-choice-grid.reg-grid-2{
+            grid-template-columns:repeat(2,minmax(0,1fr));
           }
 
-          .summary-label{
-            font-size:.76rem;
-            text-transform:uppercase;
-            letter-spacing:.06em;
-            color:#667085;
-            margin-bottom:.25rem;
+          .reg-choice-grid.reg-grid-4{
+            grid-template-columns:repeat(4,minmax(0,1fr));
           }
 
-          .summary-value{
-            font-size:1rem;
-            font-weight:700;
-            color:#1f2a37;
-            line-height:1.35;
+          .reg-option-input{
+            position:absolute;
+            opacity:0;
+            pointer-events:none;
           }
 
-          .result-main-card{
-            background:#eef4ff;
-            border:3px solid #9fb9f8;
-            border-radius:1.2rem;
-            padding:1.15rem 1.2rem;
+          .reg-option{
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
             text-align:center;
-            box-shadow:0 8px 20px rgba(39,69,143,.08);
+            min-height:72px;
+            border:2px solid var(--note-line);
+            background:#fff;
+            border-radius:1rem;
+            padding:.65rem .75rem;
+            cursor:pointer;
+            transition:.15s ease;
+            box-shadow:0 3px 10px rgba(15,23,42,.04);
+            gap:.18rem;
           }
 
-          .result-main-label{
-            font-size:.85rem;
-            text-transform:uppercase;
-            letter-spacing:.06em;
-            color:#5d6b85;
-            font-weight:700;
-            margin-bottom:.25rem;
+          .reg-option i{
+            color:#3559b7;
+            font-size:1rem;
           }
 
-          .result-main-note{
+
+          .reg-cat-head{background:#f2efff;}
+          .reg-cat-braquial{background:#e8f7f2;}
+          .reg-cat-abdomen{background:#fff8db;}
+          .reg-cat-miembro{background:#e6f4ff;}
+
+          .reg-block-option{
+            border-color:rgba(31,42,55,.10);
+          }
+
+          .reg-block-option .reg-option-title,
+          .reg-block-option .reg-option-sub{
+            color:#1f2a37;
+          }
+
+          .reg-option-input:checked + .reg-option{
+            box-shadow:0 0 0 3px rgba(47,128,237,.14), 0 8px 18px rgba(15,23,42,.10);
+            border:4px solid var(--note-selected);
+            transform:translateY(-1px);
+          }
+
+          .reg-option-input:disabled + .reg-option{
+            opacity:.45;
+            pointer-events:none;
+          }
+
+          .reg-option-title{
             font-size:.9rem;
-            color:#667085;
-            margin-bottom:.55rem;
-          }
-
-          .result-main-value{
-            font-size:2rem;
             font-weight:800;
-            line-height:1.05;
-            color:#27458f;
+            line-height:1.15;
+            color:var(--note-text);
+            margin:0;
           }
 
-          .result-row{
+          .reg-option-sub{
+            font-size:.76rem;
+            line-height:1.22;
+            color:var(--note-muted);
+            margin:0;
+            font-weight:600;
+          }
+
+          .reg-drug-chip{
+            display:inline-block;
+            padding:.22rem .48rem;
+            border-radius:.6rem;
+            font-weight:800;
+            border:1px solid rgba(31,42,55,.12);
+            line-height:1.1;
+            color:#111827;
+            background:var(--drug-local);
+          }
+
+          .reg-block-grid{
+            display:grid;
+            grid-template-columns:repeat(3,minmax(0,1fr));
+            gap:.75rem;
+          }
+
+          .reg-action-list{
+            display:grid;
+            gap:.75rem;
+          }
+
+          .reg-action-item{
             display:flex;
             align-items:flex-start;
-            justify-content:space-between;
-            gap:1rem;
-            padding:.9rem 1rem;
-            border:1px solid #e6e9ef;
+            gap:.65rem;
+            border:1px solid #d9e2ef;
+            border-radius:1rem;
+            background:#fff;
+            padding:.75rem .85rem;
+          }
+
+          .reg-action-mark{
+            flex:0 0 auto;
+            width:30px;
+            height:30px;
+            border-radius:999px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#fff;
+            margin-top:.08rem;
+          }
+
+          .reg-action-mark.ok{background:#2ea663;}
+          .reg-action-mark.mid{background:#f4c542;}
+          .reg-action-mark.high{background:#d92d20;}
+
+          .reg-action-copy{min-width:0;flex:1;}
+
+          .reg-action-title{
+            font-size:.95rem;
+            font-weight:800;
+            line-height:1.18;
+            color:var(--note-text);
+            margin-bottom:.1rem;
+          }
+
+          .reg-action-note{
+            margin:0;
+            font-size:.82rem;
+            line-height:1.32;
+            color:var(--note-muted);
+          }
+
+          .reg-plan-line{
+            padding:.75rem .85rem;
             border-radius:.9rem;
             background:#fff;
-            margin-bottom:.65rem;
+            border:1px solid var(--note-line-strong);
+            margin-bottom:.6rem;
           }
 
-          .result-row:last-child{margin-bottom:0;}
+          .reg-plan-line:last-child{margin-bottom:0;}
 
-          .result-name{
-            font-weight:700;
-            color:#1f2a37;
-            line-height:1.2;
+          .reg-ok-card{
+            background:#edf8f1 !important;
+            border-color:#b7ddc3 !important;
           }
 
-          .result-note{
-            font-size:.82rem;
-            color:#667085;
-            margin-top:.2rem;
-            line-height:1.4;
+          .reg-mid-card{
+            background:#fff9e8 !important;
+            border-color:#ead38a !important;
           }
 
-          .result-value{
-            min-width:145px;
-            text-align:right;
-            font-weight:800;
-            color:#27458f;
-            line-height:1.25;
+          .reg-danger-card{
+            background:#fff1f1 !important;
+            border-color:#efc0bd !important;
           }
 
-          .good-box{
-            background:var(--good);
-            border:1px solid #cfe8e6;
-            border-radius:1rem;
-            padding:1rem;
+          @media (max-width:992px){
+            .reg-choice-grid.reg-grid-4,
+            .reg-block-grid{
+              grid-template-columns:repeat(2,minmax(0,1fr));
+            }
           }
 
-          .warn-box{
-            background:var(--warn);
-            border:1px solid #ecd798;
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .danger-box{
-            background:var(--danger);
-            border:1px solid #efc4be;
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .mint-box{
-            background:var(--mint);
-            border:1px solid var(--mint-border);
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .tip-list{
-            margin:0;
-            padding-left:1.1rem;
-          }
-
-          .tip-list li{margin-bottom:.45rem;}
-
-          @media (max-width:900px){
-            .choice-grid-4{grid-template-columns:repeat(2,1fr);}
-            .choice-grid-3{grid-template-columns:repeat(2,1fr);}
-            .summary-grid{grid-template-columns:repeat(2,1fr);}
-          }
-
-          @media (max-width:768px){
-            .calc-grid{grid-template-columns:1fr;}
-            .result-row{flex-direction:column;align-items:flex-start;}
-            .result-value{text-align:left;min-width:0;}
-          }
-
-          @media (max-width:576px){
-            .choice-grid-4,.choice-grid-3,.choice-grid-2{grid-template-columns:repeat(2,1fr);}
-            .summary-grid{grid-template-columns:1fr;}
-            .info-box-header{flex-direction:row;}
-            .info-toggle-btn{margin-left:auto;}
-          }
-          .choice-btn i{
-            font-size:1rem;
-            margin-bottom:.28rem;
-            color:#3559b7;
+          @media (max-width:420px){
+            .reg-choice-grid,
+            .reg-choice-grid.reg-grid-2,
+            .reg-choice-grid.reg-grid-4,
+            .reg-block-grid{
+              grid-template-columns:1fr;
+            }
           }
         </style>
 
-        <div class="regional-topbar">
-          <div class="d-flex justify-content-between align-items-start gap-3">
-            <div>
-              <div class="small opacity-75 mb-1">APP clínica • volumen y seguridad</div>
-              <h1 class="h3 mb-2">Regional Pediátrica</h1>
-              <div class="subtle text-white-50">Volumen, masa total, concentración, fisiología y sitio anatómico del bloqueo.</div>
-            </div>
-            <span class="pill bg-light text-dark">Pediatría</span>
-          </div>
+        <div class="note-hero mb-3">
+          <div class="note-hero-kicker">APP CLÍNICA · ANESTESIA REGIONAL · PEDIATRÍA</div>
+          <h2>Regional pediátrica</h2>
+          <div class="note-hero-subtitle">Calcula volumen orientativo y masa total de anestésico local según bloqueo, concentración, lateralidad y fisiología pediátrica.</div>
         </div>
 
-        <div class="info-box">
+        <div class="info-box mb-3">
           <div class="info-box-header">
             <div class="info-box-title">Información</div>
             <button type="button" onclick="toggleInfo()" class="btn btn-sm info-toggle-btn">Mostrar / ocultar</button>
           </div>
-
           <div id="infoContent" class="info-box-content">
-            <?php echo $descripcion_info; ?>
-
+            <p class="mb-2"><?php echo $descripcion_info; ?></p>
             <?php if(!empty($formula)){ ?>
               <hr>
               <b>Comentario:</b><br>
               <?php echo $formula; ?>
             <?php } ?>
-
-            <?php if(!empty($referencias)){ ?>
-              <hr>
-              <b>Referencias:</b>
-              <ul class="mt-2 mb-0">
-                <?php foreach($referencias as $ref){ ?>
-                  <li><?php echo $ref; ?></li>
-                <?php } ?>
-              </ul>
-            <?php } ?>
+            <hr>
+            <b>Referencias:</b>
+            <ul class="mb-0 mt-2">
+              <?php foreach($referencias as $ref){ ?>
+                <li class="mb-2"><?php echo $ref; ?></li>
+              <?php } ?>
+            </ul>
           </div>
         </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">A. Datos de entrada</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Datos del paciente y anestésico local</div>
 
-            <div class="calc-grid">
-              <div class="card-block">
-                <label class="form-label-lite">Peso</label>
-                <div class="input-group mb-3">
-                  <input class="form-control calc-trigger" type="number" step="0.1" id="peso" value="">
-                  <span class="input-group-text">kg</span>
-                </div>
-
-                <label class="form-label-lite">Edad / fisiología</label>
-                <div class="choice-grid-4">
-                  <div>
-                    <input class="choice-radio calc-trigger-radio" type="radio" name="edadgrp" id="edad_rn" value="rn">
-                    <label class="choice-btn" for="edad_rn">RN<small>más inmaduro</small></label>
-                  </div>
-                  <div>
-                    <input class="choice-radio calc-trigger-radio" type="radio" name="edadgrp" id="edad_lt6m" value="lt6m" checked>
-                    <label class="choice-btn" for="edad_lt6m">&lt;6 m<small>alto riesgo LAST</small></label>
-                  </div>
-                  <div>
-                    <input class="choice-radio calc-trigger-radio" type="radio" name="edadgrp" id="edad_6m_1a" value="6m1a">
-                    <label class="choice-btn" for="edad_6m_1a">6–12 m<small>intermedio</small></label>
-                  </div>
-                  <div>
-                    <input class="choice-radio calc-trigger-radio" type="radio" name="edadgrp" id="edad_gt1a" value="gt1a">
-                    <label class="choice-btn" for="edad_gt1a">&gt;1 año<small>más estable</small></label>
-                  </div>
-                </div>
-
-                <div class="mint-box mt-3">
-                  <strong>Idea central</strong><br>
-                  <div class="small-note mt-2">
-                    Primero decide <b>cuántos mg</b> quieres administrar con seguridad. Luego juzga si el volumen y la concentración elegidos son razonables para ese bloqueo.
-                  </div>
+            <div class="note-grid mb-3">
+              <div class="note-input-group">
+                <label class="note-label">Peso</label>
+                <div class="note-input-inline">
+                  <input id="peso" type="text" inputmode="decimal" class="note-input">
+                  <div class="note-input-unit">kg</div>
                 </div>
               </div>
 
-              <div class="card-block">
-                <label class="form-label-lite">Anestésico local</label>
-                <div class="choice-grid-3 mb-3">
-                  <div>
-                    <input class="choice-radio calc-trigger-radio" type="radio" name="droga" id="droga_bupi" value="bupi" checked>
-                    <label class="choice-btn" for="droga_bupi">Bupivacaína<small>máx 2.5 mg/kg</small></label>
-                  </div>
-                  <div>
-                    <input class="choice-radio calc-trigger-radio" type="radio" name="droga" id="droga_levo" value="levo">
-                    <label class="choice-btn" for="droga_levo">Levobupi<small>máx 2.5 mg/kg</small></label>
-                  </div>
-                  <div>
-                    <input class="choice-radio calc-trigger-radio" type="radio" name="droga" id="droga_ropi" value="ropi">
-                    <label class="choice-btn" for="droga_ropi">Ropivacaína<small>máx 3 mg/kg</small></label>
-                  </div>
-                </div>
-
-                <label class="form-label-lite">Concentración</label>
-                <div class="choice-grid-3">
-                  <div>
-                    <input class="choice-radio calc-trigger-radio" type="radio" name="conc" id="conc_0125" value="1.25">
-                    <label class="choice-btn" for="conc_0125">0,125%<small>1.25 mg/mL</small></label>
-                  </div>
-                  <div>
-                    <input class="choice-radio calc-trigger-radio" type="radio" name="conc" id="conc_02" value="2">
-                    <label class="choice-btn" for="conc_02">0,2%<small>2 mg/mL</small></label>
-                  </div>
-                  <div>
-                    <input class="choice-radio calc-trigger-radio" type="radio" name="conc" id="conc_025" value="2.5" checked>
-                    <label class="choice-btn" for="conc_025">0,25%<small>2.5 mg/mL</small></label>
-                  </div>
+              <div class="note-input-group">
+                <label class="note-label">Idea central</label>
+                <div class="note-result-secondary">
+                  Primero decide <strong>masa total segura</strong>. Luego juzga volumen y concentración para el bloqueo elegido.
                 </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">B. Selección del bloqueo</div>
-
-            <div class="calc-grid">
-              <div class="card-block">
-                <label class="form-label-lite">Grupo anatómico</label>
-<div class="choice-grid-4 mb-3">
-  <div>
-    <input class="choice-radio calc-trigger-radio" type="radio" name="grupo" id="grupo_cabeza" value="cabeza" checked>
-    <label class="choice-btn" for="grupo_cabeza">
-      <i class="fa-solid fa-head-side-mask"></i>
-      Cabeza / cuello
-      <small>superficiales</small>
-    </label>
-  </div>
-  <div>
-    <input class="choice-radio calc-trigger-radio" type="radio" name="grupo" id="grupo_braquial" value="braquial">
-    <label class="choice-btn" for="grupo_braquial">
-      <i class="fa-solid fa-hand"></i>
-      Plexo braquial
-      <small>miembro superior</small>
-    </label>
-  </div>
-  <div>
-    <input class="choice-radio calc-trigger-radio" type="radio" name="grupo" id="grupo_abdomen" value="abdomen">
-    <label class="choice-btn" for="grupo_abdomen">
-      <i class="fa-solid fa-bandage"></i>
-      Abdomen / ingle
-      <small>planos fasciales</small>
-    </label>
-  </div>
-  <div>
-    <input class="choice-radio calc-trigger-radio" type="radio" name="grupo" id="grupo_miembro" value="miembro">
-    <label class="choice-btn" for="grupo_miembro">
-      <i class="fa-solid fa-shoe-prints"></i>
-      Miembro inferior
-      <small>periféricos</small>
-    </label>
-  </div>
-</div>
-
-                <label class="form-label-lite">Bloqueo específico</label>
-                <div id="bloqueoWrap" class="choice-grid-3"></div>
-              </div>
-
-              <div class="card-block">
-                <label class="form-label-lite">Lado</label>
-                
-<div class="choice-grid-2 mb-3">
-  <div>
-    <input class="choice-radio calc-trigger-radio" type="radio" name="lado" id="lado_uni" value="1" checked>
-    <label class="choice-btn" for="lado_uni">Unilateral<small>1 lado</small></label>
-  </div>
-  <div>
-    <input class="choice-radio calc-trigger-radio" type="radio" name="lado" id="lado_bi" value="2">
-    <label class="choice-btn" for="lado_bi">Bilateral<small>2 lados</small></label>
-  </div>
-</div>
-
-                <div class="warn-box">
-                  <strong>Recordatorio práctico</strong><br>
-                  <div class="small-note mt-2">
-                    En bloqueos ecoguiados perineurales, si la distribución es excelente, no necesitas perseguir el extremo alto del rango. En planos fasciales, el volumen sigue siendo más importante.
-                  </div>
+            <div class="note-section-label">Edad / fisiología</div>
+            <div class="reg-choice-grid reg-grid-4 mb-3">
+              <label>
+                <input class="reg-option-input" type="radio" name="edadgrp" value="rn">
+                <div class="reg-option">
+                  <i class="fa-solid fa-baby"></i>
+                  <div class="reg-option-title">RN</div>
+                  <div class="reg-option-sub">más inmaduro</div>
                 </div>
-              </div>
+              </label>
+              <label>
+                <input class="reg-option-input" type="radio" name="edadgrp" value="lt6m" checked>
+                <div class="reg-option">
+                  <i class="fa-solid fa-baby"></i>
+                  <div class="reg-option-title">&lt;6 meses</div>
+                  <div class="reg-option-sub">alto riesgo LAST</div>
+                </div>
+              </label>
+              <label>
+                <input class="reg-option-input" type="radio" name="edadgrp" value="6m1a">
+                <div class="reg-option">
+                  <i class="fa-solid fa-baby-carriage"></i>
+                  <div class="reg-option-title">6–12 meses</div>
+                  <div class="reg-option-sub">intermedio</div>
+                </div>
+              </label>
+              <label>
+                <input class="reg-option-input" type="radio" name="edadgrp" value="gt1a">
+                <div class="reg-option">
+                  <i class="fa-solid fa-child"></i>
+                  <div class="reg-option-title">&gt;1 año</div>
+                  <div class="reg-option-sub">más estable</div>
+                </div>
+              </label>
+            </div>
+
+            <div class="note-section-label">Anestésico local</div>
+            <div class="reg-choice-grid mb-3">
+              <label>
+                <input class="reg-option-input" type="radio" name="droga" value="bupi" checked>
+                <div class="reg-option drug-local">
+                  <div class="reg-option-title">Bupivacaína</div>
+                  <div class="reg-option-sub">máx 2,5 mg/kg</div>
+                </div>
+              </label>
+              <label>
+                <input class="reg-option-input" type="radio" name="droga" value="levo">
+                <div class="reg-option drug-local">
+                  <div class="reg-option-title">Levobupivacaína</div>
+                  <div class="reg-option-sub">máx 2,5 mg/kg</div>
+                </div>
+              </label>
+              <label>
+                <input class="reg-option-input" type="radio" name="droga" value="ropi">
+                <div class="reg-option drug-local">
+                  <div class="reg-option-title">Ropivacaína</div>
+                  <div class="reg-option-sub">máx 3 mg/kg</div>
+                </div>
+              </label>
+            </div>
+
+            <div class="note-section-label">Concentración</div>
+            <div class="reg-choice-grid">
+              <label>
+                <input class="reg-option-input" type="radio" name="conc" value="1.25">
+                <div class="reg-option drug-local">
+                  <div class="reg-option-title">0,125%</div>
+                  <div class="reg-option-sub">1,25 mg/mL</div>
+                </div>
+              </label>
+              <label>
+                <input class="reg-option-input" type="radio" name="conc" value="2">
+                <div class="reg-option drug-local">
+                  <div class="reg-option-title">0,2%</div>
+                  <div class="reg-option-sub">2 mg/mL</div>
+                </div>
+              </label>
+              <label>
+                <input class="reg-option-input" type="radio" name="conc" value="2.5" checked>
+                <div class="reg-option drug-local">
+                  <div class="reg-option-title">0,25%</div>
+                  <div class="reg-option-sub">2,5 mg/mL</div>
+                </div>
+              </label>
             </div>
           </div>
         </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">C. Tarjeta resumen</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Selección del bloqueo</div>
 
-            <div class="summary-grid">
-              <div class="summary-card">
-                <div class="summary-label">Peso</div>
-                <div id="sumPeso" class="summary-value">-</div>
-              </div>
-              <div class="summary-card">
-                <div class="summary-label">Edad / fisiología</div>
-                <div id="sumEdad" class="summary-value">-</div>
-              </div>
-              <div class="summary-card">
-                <div class="summary-label">Droga / concentración</div>
-                <div id="sumDroga" class="summary-value">-</div>
-              </div>
-              <div class="summary-card">
-                <div class="summary-label">Bloqueo</div>
-                <div id="sumBloqueo" class="summary-value">-</div>
+            <div class="reg-choice-grid reg-grid-4 mb-3">
+              <label>
+                <input class="reg-option-input" type="radio" name="grupo" value="cabeza" checked>
+                <div class="reg-option reg-cat-head">
+                  <i class="fa-solid fa-head-side-mask"></i>
+                  <div class="reg-option-title">Cabeza / cuello</div>
+                  <div class="reg-option-sub">superficiales</div>
+                </div>
+              </label>
+              <label>
+                <input class="reg-option-input" type="radio" name="grupo" value="braquial">
+                <div class="reg-option reg-cat-braquial">
+                  <i class="fa-solid fa-hand"></i>
+                  <div class="reg-option-title">Plexo braquial</div>
+                  <div class="reg-option-sub">miembro superior</div>
+                </div>
+              </label>
+              <label>
+                <input class="reg-option-input" type="radio" name="grupo" value="abdomen">
+                <div class="reg-option reg-cat-abdomen">
+                  <i class="fa-solid fa-bandage"></i>
+                  <div class="reg-option-title">Abdomen / ingle</div>
+                  <div class="reg-option-sub">planos fasciales</div>
+                </div>
+              </label>
+              <label>
+                <input class="reg-option-input" type="radio" name="grupo" value="miembro">
+                <div class="reg-option reg-cat-miembro">
+                  <i class="fa-solid fa-shoe-prints"></i>
+                  <div class="reg-option-title">Miembro inferior</div>
+                  <div class="reg-option-sub">periféricos</div>
+                </div>
+              </label>
+            </div>
+
+            <div class="note-section-label">Bloqueo específico</div>
+            <div id="bloqueoWrap" class="reg-block-grid mb-3"></div>
+
+            <div class="note-section-label">Lateralidad</div>
+            <div class="reg-choice-grid reg-grid-2">
+              <label>
+                <input class="reg-option-input" type="radio" name="lado" id="lado_uni" value="1" checked>
+                <div class="reg-option">
+                  <div class="reg-option-title">Unilateral</div>
+                  <div class="reg-option-sub">1 lado</div>
+                </div>
+              </label>
+              <label>
+                <input class="reg-option-input" type="radio" name="lado" id="lado_bi" value="2">
+                <div class="reg-option">
+                  <div class="reg-option-title">Bilateral</div>
+                  <div class="reg-option-sub">2 lados</div>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="note-summary-box mb-3">
+          <div class="note-summary-box-title">Resumen</div>
+          <div id="summaryNarrative" class="note-summary-box-text">Ingresa peso y selecciona bloqueo para estimar volumen y masa total.</div>
+          <div class="note-summary-grid-2">
+            <div class="note-summary-item">
+              <div class="note-summary-k">Peso / edad</div>
+              <div id="sumPatient" class="note-summary-v">-</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Droga / concentración</div>
+              <div id="sumDrug" class="note-summary-v">Bupivacaína 0,25%</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Bloqueo</div>
+              <div id="sumBlock" class="note-summary-v">-</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Lateralidad</div>
+              <div id="sumSide" class="note-summary-v">Unilateral</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="note-result-grid-2 mb-3">
+          <div id="volumeCard" class="note-result-card">
+            <div class="note-result-card-label">Volumen orientativo</div>
+            <div id="mainVolume" class="note-result-card-value">-</div>
+            <div id="volumeNote" class="note-result-card-note">Según bloqueo, peso y lateralidad.</div>
+          </div>
+          <div id="massCard" class="note-result-card">
+            <div class="note-result-card-label">Masa total administrada</div>
+            <div id="mainMass" class="note-result-card-value">-</div>
+            <div id="massNote" class="note-result-card-note">Este es el dato de seguridad más importante.</div>
+          </div>
+        </div>
+
+        <div id="algoBox" class="note-interpretation mb-3">
+          <div class="note-interpretation-label">Lectura clínica</div>
+          <div id="riskTitle" class="note-interpretation-main">Pendiente</div>
+          <div id="riskText" class="note-interpretation-soft">Completa peso, droga, concentración y bloqueo para estimar carga total y margen de seguridad.</div>
+
+          <div class="mt-3 text-start">
+            <div class="reg-plan-line"><strong>Límite máximo teórico:</strong> <span id="outMax">-</span></div>
+            <div class="reg-plan-line"><strong>Relación con el máximo:</strong> <span id="outPct">-</span></div>
+            <div class="reg-plan-line"><strong>Comentario del bloqueo:</strong> <span id="blockInfoText">-</span></div>
+          </div>
+        </div>
+
+        <div class="note-warning mb-3">
+          <strong>Advertencia clínica:</strong>
+          <div id="warningText" class="mt-2">La tabla de volumen no manda sola. El límite de seguridad real depende de masa total, concentración, edad, sitio de inyección, aspiración, fraccionamiento, suma de infiltraciones y fisiología del paciente.</div>
+        </div>
+
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Conducta práctica</div>
+            <div id="actionList" class="reg-action-list">
+              <div class="reg-action-item">
+                <div class="reg-action-mark mid"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="reg-action-copy">
+                  <div class="reg-action-title">Completa datos de entrada</div>
+                  <p class="reg-action-note">El cálculo solo es útil si revisas masa total y contexto fisiológico, no solo volumen.</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">D. Resultado principal</div>
-
-            <div id="resultCard" class="result-main-card">
-              <div class="result-main-label">Volumen orientativo</div>
-              <div class="result-main-note">Interpretado según peso, concentración, masa total y fisiología</div>
-              <div id="mainVolume" class="result-main-value">-</div>
-            </div>
-
-            <div class="mt-3">
-              <div class="result-row">
-                <div>
-                  <div class="result-name">Rango de volumen</div>
-                  <div class="result-note">Calculado desde la referencia del bloqueo seleccionado.</div>
-                </div>
-                <div id="outVol" class="result-value">-</div>
-              </div>
-
-              <div class="result-row">
-                <div>
-                  <div class="result-name">Masa total administrada</div>
-                  <div class="result-note">mg = mL × mg/mL. Este es el dato más importante.</div>
-                </div>
-                <div id="outMg" class="result-value">-</div>
-              </div>
-
-              <div class="result-row">
-                <div>
-                  <div class="result-name">Límite máximo teórico</div>
-                  <div class="result-note">Basado en droga seleccionada y peso.</div>
-                </div>
-                <div id="outMax" class="result-value">-</div>
-              </div>
-
-              <div class="result-row">
-                <div>
-                  <div class="result-name">Relación con el máximo</div>
-                  <div class="result-note">Útil para juzgar margen de seguridad real.</div>
-                </div>
-                <div id="outPct" class="result-value">-</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">E. Lectura clínica</div>
-
-            <div id="riskBox" class="good-box">
-              <strong id="riskTitle">Riesgo basal</strong><br>
-              <div id="riskText" class="small-note mt-2">
-                Completa peso, droga, concentración y bloqueo para estimar carga total y margen de seguridad.
-              </div>
-            </div>
-
-            <div id="blockInfo" class="mint-box mt-3">
-              <strong>Comentario del bloqueo</strong><br>
-              <div id="blockInfoText" class="small-note mt-2">-</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">F. Tips docentes</div>
-
-            <div class="warn-box">
-              <ul class="tip-list">
-                <li>La tabla de volumen no manda sola. El verdadero límite de seguridad es la masa total administrada.</li>
-                <li>En pediatría, cambiar concentración puede ser más peligroso que discutir una pequeña diferencia de volumen.</li>
-                <li>En menores de 6 meses conviene ser más conservador incluso si el cálculo “cabe” dentro del máximo teórico.</li>
-                <li>Si haces más de un bloqueo, o agregas infiltración quirúrgica, siempre suma toda la masa total administrada.</li>
-                <li>En planos fasciales, el volumen importa más. En bloqueos perineurales bien ecoguiados, una buena distribución puede permitir usar menos volumen.</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="footer-note">
-          Herramienta docente y de apoyo clínico. Verificar siempre dosis máxima institucional, concentración preparada, suma total de droga y contexto fisiológico del paciente.
+        <div class="note-teaching-wrap">
+          <div class="note-teaching-title">Perlas docentes</div>
+          <div class="note-teaching-main">En pediatría, el volumen orienta la cobertura; la masa total define el margen de seguridad</div>
+          <div class="note-tips"><strong>Qué hacer:</strong> calcula mL, pero decide mirando mg totales, mg/kg, concentración, edad y suma de todos los anestésicos locales.</div>
+          <div class="note-tips"><strong>Qué evitar:</strong> perseguir el extremo alto del rango solo porque la tabla lo permite, especialmente en RN y lactantes.</div>
+          <div class="note-tips"><strong>Menores de 6 meses:</strong> sé más conservador aunque el cálculo “quepa” dentro del máximo teórico.</div>
+          <div class="note-tips"><strong>Planos fasciales:</strong> el volumen importa para cobertura; aun así, no puede separarse de la masa total administrada.</div>
+          <div class="note-tips"><strong>Plexo braquial proximal:</strong> interescalénico y supraclavicular no deben plantearse bilateralmente por riesgo respiratorio.</div>
+          <div class="note-tips mb-0"><strong>Mensaje final:</strong> si haces más de un bloqueo o el cirujano infiltra, suma toda la droga antes de celebrar que cada técnica “por separado” estaba dentro de rango.</div>
         </div>
 
       </div>
@@ -665,240 +502,273 @@ require("head.php");
 </div>
 
 <script>
-function toggleInfo(){
-  let box = document.getElementById("infoContent");
-  box.style.display = (box.style.display === "none" || box.style.display === "") ? "block" : "none";
-}
+(function(){
+  const CNS = window.ClinicalNoteSystem || {};
 
-function getSelected(name){
-  const el = document.querySelector('input[name="' + name + '"]:checked');
-  return el ? el.value : null;
-}
+  const BLOCKS = {
+    cabeza: [
+      {id:'supra', name:'Supraorbitario / Supratroclear', volMin:1.0, volMax:2.0, unit:'mL/kg', info:'Bloqueo superficial para cuero cabelludo frontal. La masa total sigue siendo más importante que perseguir el extremo alto del rango.'},
+      {id:'infra', name:'Infraorbitario', volMin:0.5, volMax:1.0, volMaxChild:2.0, unit:'mL/kg', info:'En lactantes suele requerir menos volumen que en niños mayores. Vigilar lesiones labiales o mordedura al despertar.'},
+      {id:'cervical', name:'Plexo cervical superficial', volMin:1.0, volMax:3.0, unit:'mL/kg', info:'Mantener técnica superficial. Evitar profundizar innecesariamente.'}
+    ],
+    braquial: [
+      {id:'inter', name:'Interescalénico', volMin:0.3, volMax:0.5, unit:'mL/kg', info:'Bloqueo proximal del plexo braquial. Alto riesgo de bloqueo frénico ipsilateral; no plantear bilateral.'},
+      {id:'supra', name:'Supraclavicular', volMin:0.3, volMax:0.5, unit:'mL/kg', info:'Útil para extremidad superior, pero puede comprometer el hemidiafragma. No plantear bilateral.'},
+      {id:'infra', name:'Infraclavicular', volMin:0.3, volMax:0.5, unit:'mL/kg', info:'Más distal y más phrenic-sparing que interescalénico/supraclavicular, aunque existen reportes aislados de compromiso frénico.'},
+      {id:'axilar', name:'Axilar', volMin:0.3, volMax:0.5, unit:'mL/kg', info:'Adecuado para cirugía distal de miembro superior. Sin impacto clínico esperado sobre diafragma.'}
+    ],
+    abdomen: [
+      {id:'tap', name:'TAP', volMin:0.3, volMax:0.5, unit:'mL/kg por lado', fascial:true, info:'Plano fascial clásico. El volumen pesa más que en un perineural puro, pero la masa total sigue limitando.'},
+      {id:'subtap', name:'Subcostal TAP', volMin:0.3, volMax:0.5, unit:'mL/kg por lado', fascial:true, info:'Útil para abdomen superior. Buena cobertura requiere volumen, sin olvidar la masa total.'},
+      {id:'rectus', name:'Rectus sheath', volMin:0.2, volMax:0.3, unit:'mL/kg por lado', fascial:true, info:'Frecuentemente bilateral. No cubre dolor visceral.'},
+      {id:'ilio', name:'Ilioinguinal / Iliohipogástrico', volMin:0.2, volMax:0.3, unit:'mL/kg', info:'Muy frecuente en cirugía inguinal. Cuenta en la carga total si se combina con infiltración quirúrgica.'},
+      {id:'pene', name:'Bloqueo peneano', volMin:0.1, volMax:0.1, unit:'mL/kg por lado', info:'Frecuente y útil. Aun con poco volumen, la concentración importa si se suma a otras infiltraciones.'},
+      {id:'esp', name:'ESP', volMin:0.3, volMax:0.5, unit:'mL/kg por lado', fascial:true, info:'Bloqueo interfascial moderno. Aquí el volumen vuelve a ser especialmente relevante.'}
+    ],
+    miembro: [
+      {id:'fem', name:'Femoral', volMin:0.2, volMax:0.4, unit:'mL/kg', info:'Útil en fractura femoral. Valorar si se necesita complemento analgésico adicional.'},
+      {id:'sciprox', name:'Ciático proximal', volMin:0.3, volMax:0.5, unit:'mL/kg', info:'Bloqueo de volumen moderado; sumar masa si se combina con femoral o safeno.'},
+      {id:'scipop', name:'Ciático poplíteo', volMin:0.3, volMax:0.5, unit:'mL/kg', info:'Frecuente en cirugía distal de EEII. El volumen no debe ocultar la masa total.'}
+    ]
+  };
 
-const BLOCKS = {
-  cabeza: [
-    {id:'supra', name:'Supraorbitario / Supratroclear', volMin:1.0, volMax:2.0, unit:'mL/kg', info:'Bloqueo superficial para cuero cabelludo frontal. La masa total sigue siendo más importante que perseguir el extremo alto del rango.'},
-    {id:'infra', name:'Infraorbitario', volMin:0.5, volMax:1.0, volMaxChild:2.0, unit:'mL/kg', info:'En lactantes suele requerir menos volumen que en niños mayores. Vigilar lesiones labiales o mordedura al despertar.'},
-    {id:'cervical', name:'Plexo cervical superficial', volMin:1.0, volMax:3.0, unit:'mL/kg', info:'Mantener técnica superficial. Evitar profundizar innecesariamente.'}
-  ],
-  braquial: [
-    {id:'inter', name:'Interescalénico', volMin:0.3, volMax:0.5, unit:'mL/kg', info:'Bloqueo proximal del plexo braquial. Alto riesgo de compromiso frénico ipsilateral; no debe plantearse bilateral.'},
-    {id:'supra', name:'Supraclavicular', volMin:0.3, volMax:0.5, unit:'mL/kg', info:'Muy útil para extremidad superior, pero puede asociarse a hemiparesia diafragmática. Evitar bilateral.'},
-    {id:'infra', name:'Infraclavicular', volMin:0.3, volMax:0.5, unit:'mL/kg', info:'Alternativa más distal y mucho más “phrenic-sparing”, aunque hay reportes aislados de compromiso frénico.'},
-    {id:'axilar', name:'Axilar', volMin:0.3, volMax:0.5, unit:'mL/kg', info:'Adecuado para cirugía distal de MS. Sin impacto clínico esperado sobre el diafragma.'}
-  ],
-  abdomen: [
-    {id:'tap', name:'TAP', volMin:0.3, volMax:0.5, unit:'mL/kg por lado', info:'Plano fascial clásico. En este tipo de técnica, el volumen pesa más que en un perineural puro.'},
-    {id:'subtap', name:'Subcostal TAP', volMin:0.3, volMax:0.5, unit:'mL/kg por lado', info:'Útil para abdomen superior. Buena cobertura requiere volumen, pero no olvidar la masa total.'},
-    {id:'rectus', name:'Rectus sheath', volMin:0.2, volMax:0.3, unit:'mL/kg por lado', info:'Siempre bilateral en la referencia clásica. No cubre dolor visceral.'},
-    {id:'ilio', name:'Ilioinguinal / Iliohipogástrico', volMin:0.2, volMax:0.3, unit:'mL/kg', info:'Muy frecuente en cirugía inguinal. Aunque el volumen sea moderado, cuenta en la carga total.'},
-    {id:'pene', name:'Bloqueo peneano', volMin:0.1, volMax:0.1, unit:'mL/kg por lado', info:'Frecuente y útil. Aun con poco volumen, la concentración importa si se suma a otras infiltraciones.'},
-    {id:'esp', name:'ESP', volMin:0.3, volMax:0.5, unit:'mL/kg por lado', info:'Bloqueo interfascial moderno. Aquí el volumen vuelve a ser especialmente relevante.'}
-  ],
-  miembro: [
-    {id:'fem', name:'Femoral', volMin:0.2, volMax:0.4, unit:'mL/kg', info:'Útil en fractura femoral. Valorar si se necesita complemento analgésico adicional.'},
-    {id:'sciprox', name:'Ciático proximal', volMin:0.3, volMax:0.5, unit:'mL/kg', info:'Bloqueo de volumen moderado; recuerda sumar masa si lo combinas con femoral o safeno.'},
-    {id:'scipop', name:'Ciático poplíteo', volMin:0.3, volMax:0.5, unit:'mL/kg', info:'Frecuente en cirugía distal de EEII. El volumen no debe ocultar la masa total administrada.'}
-  ]
-};
-
-function updateBlockButtons(){
-  const grupo = getSelected('grupo') || 'cabeza';
-  const wrap = document.getElementById('bloqueoWrap');
-  const current = getSelected('bloqueo');
-  wrap.innerHTML = '';
-
-  BLOCKS[grupo].forEach((b, idx) => {
-    const id = 'bloq_' + grupo + '_' + b.id;
-    const checked = ((!current && idx === 0) || current === b.id) ? 'checked' : '';
-
-    wrap.innerHTML += `
-      <div>
-        <input class="choice-radio calc-trigger-radio bloqueo-radio" type="radio" name="bloqueo" id="${id}" value="${b.id}" ${checked}>
-        <label class="choice-btn" for="${id}">
-          ${b.name}
-          <small>${b.unit}</small>
-        </label>
-      </div>
-    `;
-  });
-
-  document.querySelectorAll('.bloqueo-radio').forEach(el => {
-    el.addEventListener('change', updateRegionalPed);
-  });
-}
-
-function getDrugData(){
-  const droga = getSelected('droga') || 'bupi';
-  if(droga === 'ropi') return {name:'Ropivacaína', maxMgKg:3.0};
-  if(droga === 'levo') return {name:'Levobupivacaína', maxMgKg:2.5};
-  return {name:'Bupivacaína', maxMgKg:2.5};
-}
-
-function getAgeText(age){
-  if(age === 'rn') return 'RN';
-  if(age === 'lt6m') return '<6 meses';
-  if(age === '6m1a') return '6–12 meses';
-  return '>1 año';
-}
-
-function getSelectedBlock(){
-  const grupo = getSelected('grupo') || 'cabeza';
-  const bloqueId = getSelected('bloqueo');
-  return BLOCKS[grupo].find(b => b.id === bloqueId) || BLOCKS[grupo][0];
-}
-
-function round1(num){
-  return Math.round(num * 10) / 10;
-}
-
-function enforceSideRestrictions(block){
-  const ladoUni = document.getElementById('lado_uni');
-  const ladoBi = document.getElementById('lado_bi');
-  const labelBi = document.querySelector('label[for="lado_bi"]');
-
-  if(!ladoUni || !ladoBi || !labelBi || !block) return;
-
-  // Reset visual/functional state
-  ladoBi.disabled = false;
-  labelBi.style.opacity = '1';
-  labelBi.style.pointerEvents = 'auto';
-
-  // Interescalénico y supraclavicular: no permitir bilateral
-  if(block.id === 'inter' || block.id === 'supra'){
-    ladoBi.checked = false;
-    ladoUni.checked = true;
-    ladoBi.disabled = true;
-    labelBi.style.opacity = '.45';
-    labelBi.style.pointerEvents = 'none';
-  }
-}
-
-function updateRegionalPed(){
-  updateBlockButtons();
-
-  const peso = parseFloat(document.getElementById('peso').value);
-  const edad = getSelected('edadgrp') || 'lt6m';
-  const conc = parseFloat(getSelected('conc') || '2.5');
-  const drug = getDrugData();
-  const block = getSelectedBlock();
-
-  enforceSideRestrictions(block);
-
-  const lado = parseInt(getSelected('lado') || '1', 10);
-
-  document.getElementById('sumPeso').textContent = (!isNaN(peso) && peso > 0) ? peso.toFixed(1) + ' kg' : '-';
-  document.getElementById('sumEdad').textContent = getAgeText(edad);
-  document.getElementById('sumDroga').textContent = drug.name + ' ' + (conc / 10).toString().replace('.', ',') + '%';
-  document.getElementById('sumBloqueo').textContent = block ? block.name : '-';
-
-  if(!block || isNaN(peso) || peso <= 0){
-    document.getElementById('mainVolume').textContent = '-';
-    document.getElementById('outVol').textContent = '-';
-    document.getElementById('outMg').textContent = '-';
-    document.getElementById('outMax').textContent = '-';
-    document.getElementById('outPct').textContent = '-';
-    document.getElementById('blockInfoText').textContent = block ? block.info : '-';
-    document.getElementById('riskTitle').textContent = 'Riesgo basal';
-    document.getElementById('riskText').textContent = 'Completa peso, droga, concentración y bloqueo para estimar la carga total de anestésico local.';
-    document.getElementById('riskBox').className = 'good-box';
-    return;
+  function parseLocal(value){
+    if(CNS.parseDecimal) return CNS.parseDecimal(value);
+    const n = Number(String(value || '').replace(',', '.'));
+    return Number.isFinite(n) ? n : null;
   }
 
-  let vMin = peso * block.volMin;
-  let vMax = peso * (block.volMaxChild && edad === 'gt1a' ? block.volMaxChild : block.volMax);
-
-  vMin *= lado;
-  vMax *= lado;
-
-  const mgMin = vMin * conc;
-  const mgMax = vMax * conc;
-  const maxAllowed = peso * drug.maxMgKg;
-  const pctMin = (mgMin / maxAllowed) * 100;
-  const pctMax = (mgMax / maxAllowed) * 100;
-
-  document.getElementById('mainVolume').textContent =
-    round1(vMin).toString().replace('.', ',') + '–' + round1(vMax).toString().replace('.', ',') + ' mL';
-
-  document.getElementById('outVol').textContent =
-    round1(vMin).toString().replace('.', ',') + '–' + round1(vMax).toString().replace('.', ',') + ' mL';
-
-  document.getElementById('outMg').textContent =
-    round1(mgMin).toString().replace('.', ',') + '–' + round1(mgMax).toString().replace('.', ',') + ' mg';
-
-  document.getElementById('outMax').textContent =
-    round1(maxAllowed).toString().replace('.', ',') + ' mg';
-
-  document.getElementById('outPct').textContent =
-    round1(pctMin).toString().replace('.', ',') + '–' + round1(pctMax).toString().replace('.', ',') + ' %';
-
-  document.getElementById('blockInfoText').textContent = block.info;
-
-  const riskBox = document.getElementById('riskBox');
-  let title = 'Margen cómodo';
-  let text = 'La masa calculada parece alejada del máximo teórico. Aun así, la seguridad real depende de técnica, aspiración, fraccionamiento, suma de infiltraciones y fisiología del paciente.';
-  riskBox.className = 'good-box';
-
-  if(edad === 'rn' || edad === 'lt6m'){
-    title = 'Paciente fisiológicamente más vulnerable';
-    text = 'Aunque el cálculo no supere el máximo teórico, en lactantes pequeños el margen fisiológico es menor. Conviene ser más conservador.';
-    riskBox.className = 'warn-box';
+  function fmt(value, decimals){
+    if(!Number.isFinite(value)) return '-';
+    if(CNS.formatNumber) return CNS.formatNumber(value, decimals);
+    return Number(value).toLocaleString('es-CL', {maximumFractionDigits:decimals});
   }
 
-  if(pctMax >= 80){
-    title = 'Carga alta de anestésico local';
-    text = 'El rango superior se acerca mucho al máximo teórico. Considera bajar concentración, bajar volumen o replantear la estrategia.';
-    riskBox.className = 'danger-box';
-  } else if(pctMax >= 60){
-    title = 'Carga intermedia / prudencia';
-    text = 'La masa total ya ocupa una fracción importante del máximo. Revisa si realmente necesitas el extremo alto del rango.';
-    riskBox.className = 'warn-box';
+  function setText(id, value){
+    const el = document.getElementById(id);
+    if(CNS.safeSetText) CNS.safeSetText(el, value);
+    else if(el) el.textContent = value;
   }
 
-  // Restricción respiratoria importante
-  if(block.id === 'inter'){
-    title = 'Interescalénico: evitar bilateral';
-    text = 'El interescalénico se asocia frecuentemente a bloqueo frénico y hemiparesia diafragmática. En este apunte se fuerza unilateral por riesgo respiratorio.';
-    riskBox.className = 'danger-box';
+  function getSelected(name){
+    const selected = document.querySelector('input[name="' + name + '"]:checked');
+    return selected ? selected.value : null;
   }
 
-  if(block.id === 'supra'){
-    title = 'Supraclavicular: evitar bilateral';
-    text = 'El supraclavicular también puede comprometer el hemidiafragma. En este apunte se bloquea la opción bilateral por seguridad respiratoria.';
-    riskBox.className = 'danger-box';
+  function drugData(){
+    const drug = getSelected('droga') || 'bupi';
+    if(drug === 'ropi') return {name:'Ropivacaína', maxMgKg:3.0};
+    if(drug === 'levo') return {name:'Levobupivacaína', maxMgKg:2.5};
+    return {name:'Bupivacaína', maxMgKg:2.5};
   }
 
-  if(block.id === 'infra' && riskBox.className !== 'danger-box'){
-    title = 'Infraclavicular: cautela respiratoria, pero más distal';
-    text = 'El infraclavicular suele ser mucho más “phrenic-sparing” que el interescalénico y el supraclavicular, aunque existen reportes aislados de compromiso frénico. No se bloquea automático, pero requiere criterio clínico.';
-    riskBox.className = 'mint-box';
+  function ageText(age){
+    if(age === 'rn') return 'RN';
+    if(age === 'lt6m') return '<6 meses';
+    if(age === '6m1a') return '6–12 meses';
+    return '>1 año';
   }
 
-  if(block.id === 'tap' || block.id === 'subtap' || block.id === 'rectus' || block.id === 'esp'){
-    if(block.id !== 'inter' && block.id !== 'supra'){
-      if(pctMax < 60){
-        title = 'Plano fascial: vigilar relación volumen-masa';
-        text = 'En este tipo de bloqueo el volumen importa para cobertura, pero la masa total sigue siendo el verdadero límite de seguridad.';
-        riskBox.className = 'mint-box';
-      }
+  function getCurrentBlock(){
+    const grupo = getSelected('grupo') || 'cabeza';
+    const selected = getSelected('bloqueo');
+    return (BLOCKS[grupo] || BLOCKS.cabeza).find(function(b){ return b.id === selected; }) || (BLOCKS[grupo] || BLOCKS.cabeza)[0];
+  }
+
+  function renderBlockButtons(){
+    const grupo = getSelected('grupo') || 'cabeza';
+    const wrap = document.getElementById('bloqueoWrap');
+    const blocks = BLOCKS[grupo] || BLOCKS.cabeza;
+    const groupClass = {
+      cabeza:'reg-cat-head',
+      braquial:'reg-cat-braquial',
+      abdomen:'reg-cat-abdomen',
+      miembro:'reg-cat-miembro'
+    }[grupo] || 'reg-cat-head';
+
+    wrap.innerHTML = blocks.map(function(b, idx){
+      const id = 'bloq_' + grupo + '_' + b.id;
+      return '<label>' +
+        '<input class="reg-option-input bloqueo-radio" type="radio" name="bloqueo" id="' + id + '" value="' + b.id + '"' + (idx === 0 ? ' checked' : '') + '>' +
+        '<div class="reg-option reg-block-option ' + groupClass + '">' +
+          '<div class="reg-option-title">' + b.name + '</div>' +
+          '<div class="reg-option-sub">' + b.unit + '</div>' +
+        '</div>' +
+      '</label>';
+    }).join('');
+
+    document.querySelectorAll('.bloqueo-radio').forEach(function(input){
+      input.addEventListener('change', updateRegionalPed);
+    });
+  }
+
+  function enforceSideRestrictions(block){
+    const ladoUni = document.getElementById('lado_uni');
+    const ladoBi = document.getElementById('lado_bi');
+
+    ladoBi.disabled = false;
+
+    if(block && (block.id === 'inter' || block.id === 'supra') && getSelected('grupo') === 'braquial'){
+      ladoBi.checked = false;
+      ladoUni.checked = true;
+      ladoBi.disabled = true;
     }
   }
 
-  document.getElementById('riskTitle').textContent = title;
-  document.getElementById('riskText').textContent = text;
-}
+  function renderActions(level, block, pctMax, age){
+    const items = [];
 
-document.addEventListener('DOMContentLoaded', function(){
-  updateBlockButtons();
+    if(level === 'pending'){
+      items.push(['mid','Completa datos de entrada','El cálculo solo es útil si revisas masa total y contexto fisiológico, no solo volumen.']);
+    } else {
+      if(age === 'rn' || age === 'lt6m'){
+        items.push(['high','Fisiología vulnerable','En RN y <6 meses, usa margen más conservador aunque el cálculo no supere el máximo teórico.']);
+      }
+
+      if(pctMax >= 80){
+        items.push(['high','Carga cercana al máximo','Considera bajar volumen, bajar concentración, elegir ropivacaína si aplica o replantear la estrategia.']);
+      } else if(pctMax >= 60){
+        items.push(['mid','Carga intermedia','Revisa si realmente necesitas el extremo alto del rango; suma cualquier infiltración quirúrgica.']);
+      } else {
+        items.push(['ok','Margen matemático cómodo','Aun así, aspirar, fraccionar, observar distribución ecográfica y sumar todas las dosis.']);
+      }
+
+      if(block && block.fascial){
+        items.push(['mid','Plano fascial','El volumen importa para cobertura, pero no debe llevarte a exceder masa total segura.']);
+      }
+
+      if(block && getSelected('grupo') === 'braquial' && (block.id === 'inter' || block.id === 'supra')){
+        items.unshift(['high','No bilateral','Bloqueo proximal con riesgo respiratorio por compromiso frénico. En esta nota se fuerza unilateral.']);
+      }
+
+      if(block && getSelected('grupo') === 'braquial' && block.id === 'infra'){
+        items.push(['mid','Infraclavicular más distal','Más phrenic-sparing que interescalénico/supraclavicular, pero no implica riesgo cero.']);
+      }
+    }
+
+    document.getElementById('actionList').innerHTML = items.map(function(item){
+      const icon = item[0] === 'ok' ? 'fa-check' : (item[0] === 'mid' ? 'fa-triangle-exclamation' : 'fa-bolt');
+      return '<div class="reg-action-item">' +
+        '<div class="reg-action-mark ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
+        '<div class="reg-action-copy">' +
+          '<div class="reg-action-title">' + item[1] + '</div>' +
+          '<p class="reg-action-note">' + item[2] + '</p>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function updateRegionalPed(){
+    const peso = parseLocal(document.getElementById('peso').value);
+    const age = getSelected('edadgrp') || 'lt6m';
+    const conc = parseLocal(getSelected('conc') || '2.5');
+    const drug = drugData();
+    const block = getCurrentBlock();
+
+    enforceSideRestrictions(block);
+
+    const lado = parseLocal(getSelected('lado') || '1') || 1;
+    const concPct = conc / 10;
+
+    setText('sumPatient', peso && peso > 0 ? fmt(peso,1) + ' kg · ' + ageText(age) : ageText(age));
+    setText('sumDrug', drug.name + ' ' + fmt(concPct,3) + '%');
+    setText('sumBlock', block ? block.name : '-');
+    setText('sumSide', lado === 2 ? 'Bilateral' : 'Unilateral');
+
+    if(!peso || peso <= 0 || !block){
+      setText('summaryNarrative', 'Ingresa peso y selecciona bloqueo para estimar volumen y masa total.');
+      setText('mainVolume', '-');
+      setText('mainMass', '-');
+      setText('outMax', '-');
+      setText('outPct', '-');
+      setText('blockInfoText', block ? block.info : '-');
+      setText('riskTitle', 'Pendiente');
+      setText('riskText', 'Completa peso, droga, concentración y bloqueo para estimar carga total y margen de seguridad.');
+      document.getElementById('volumeCard').className = 'note-result-card';
+      document.getElementById('massCard').className = 'note-result-card';
+      renderActions('pending', block, null, age);
+      return;
+    }
+
+    let vMin = peso * block.volMin * lado;
+    let vMax = peso * ((block.volMaxChild && age === 'gt1a') ? block.volMaxChild : block.volMax) * lado;
+
+    const mgMin = vMin * conc;
+    const mgMax = vMax * conc;
+    const maxAllowed = peso * drug.maxMgKg;
+    const pctMin = (mgMin / maxAllowed) * 100;
+    const pctMax = (mgMax / maxAllowed) * 100;
+
+    setText('summaryNarrative', ageText(age) + ', ' + fmt(peso,1) + ' kg, ' + drug.name + ' ' + fmt(concPct,3) + '%, ' + block.name + ' ' + (lado === 2 ? 'bilateral' : 'unilateral') + '. Volumen ' + fmt(vMin,1) + '–' + fmt(vMax,1) + ' mL; masa ' + fmt(mgMin,1) + '–' + fmt(mgMax,1) + ' mg.');
+    setText('mainVolume', fmt(vMin,1) + '–' + fmt(vMax,1) + ' mL');
+    setText('volumeNote', block.unit + ' · ' + (lado === 2 ? 'bilateral' : 'unilateral'));
+    setText('mainMass', fmt(mgMin,1) + '–' + fmt(mgMax,1) + ' mg');
+    setText('massNote', fmt(pctMin,0) + '–' + fmt(pctMax,0) + '% del máximo teórico.');
+    setText('outMax', fmt(maxAllowed,1) + ' mg (' + fmt(drug.maxMgKg,1) + ' mg/kg)');
+    setText('outPct', fmt(pctMin,0) + '–' + fmt(pctMax,0) + '%');
+    setText('blockInfoText', block.info);
+
+    let riskTitle = 'Margen cómodo';
+    let riskText = 'La masa calculada parece alejada del máximo teórico. La seguridad real depende de técnica, aspiración, fraccionamiento, suma de infiltraciones y fisiología.';
+    let riskClass = 'note-result-card reg-ok-card';
+
+    if(age === 'rn' || age === 'lt6m'){
+      riskTitle = 'Paciente fisiológicamente vulnerable';
+      riskText = 'Aunque no supere el máximo teórico, el margen fisiológico es menor. Conviene usar el extremo bajo del rango si la distribución ecográfica es adecuada.';
+      riskClass = 'note-result-card reg-mid-card';
+    }
+
+    if(pctMax >= 80){
+      riskTitle = 'Carga alta de anestésico local';
+      riskText = 'El extremo superior se acerca al máximo teórico. Replantea volumen, concentración, lateralidad o técnica.';
+      riskClass = 'note-result-card reg-danger-card';
+    } else if(pctMax >= 60){
+      riskTitle = 'Carga intermedia / prudencia';
+      riskText = 'La masa total ocupa una fracción importante del máximo. Revisa si necesitas el extremo alto del rango.';
+      riskClass = 'note-result-card reg-mid-card';
+    }
+
+    if(getSelected('grupo') === 'braquial' && block.id === 'inter'){
+      riskTitle = 'Interescalénico: evitar bilateral';
+      riskText = 'Riesgo frecuente de bloqueo frénico y hemiparesia diafragmática. Se fuerza unilateral por seguridad respiratoria.';
+      riskClass = 'note-result-card reg-danger-card';
+    }
+
+    if(getSelected('grupo') === 'braquial' && block.id === 'supra'){
+      riskTitle = 'Supraclavicular: evitar bilateral';
+      riskText = 'Puede comprometer hemidiafragma. Se fuerza unilateral por seguridad respiratoria.';
+      riskClass = 'note-result-card reg-danger-card';
+    }
+
+    setText('riskTitle', riskTitle);
+    setText('riskText', riskText);
+    document.getElementById('massCard').className = riskClass;
+    document.getElementById('volumeCard').className = 'note-result-card';
+
+    renderActions('ok', block, pctMax, age);
+  }
+
+  document.querySelectorAll('input[name="grupo"]').forEach(function(input){
+    input.addEventListener('change', function(){
+      renderBlockButtons();
+      updateRegionalPed();
+    });
+  });
+
+  document.querySelectorAll('input[name="edadgrp"], input[name="droga"], input[name="conc"], input[name="lado"]').forEach(function(input){
+    input.addEventListener('change', updateRegionalPed);
+  });
 
   document.getElementById('peso').addEventListener('input', updateRegionalPed);
 
-  document.querySelectorAll('.calc-trigger-radio').forEach(el => {
-    el.addEventListener('change', updateRegionalPed);
-  });
-
+  renderBlockButtons();
   updateRegionalPed();
-});
+})();
+
+function toggleInfo(){
+  const box = document.getElementById("infoContent");
+  box.style.display = (box.style.display === "none" || box.style.display === "") ? "block" : "none";
+}
 </script>
 
-<?php require("footer.php"); ?>
+<?php include("footer.php"); ?>

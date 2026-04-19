@@ -1,651 +1,472 @@
 <?php
-
-$titulo_info = "Utilidad Clínica";
-$descripcion_info = "Calculadora docente para analgesia epidural pediátrica. Integra carga inicial según nivel lumbar o torácico, top-up estándar y top-up conservador en lactantes pequeños, además de parámetros de PCA epidural según edad y peso.";
-$formula = "La PCA se calcula a partir de la dosis máxima por hora en mg. De esa dosis, 2/3 se administran como infusión continua y 1/3 como bolo. Si la infusión calculada supera 5 mL/h, se limita a 5 mL/h. Lockout habitual: 30 min.";
-$referencias = array(
-  "1.- Suresh S, Ecoffey C, Bosenberg A, et al. ESRA/ASRA Recommendations on Local Anesthetics and Adjuvants Dosage in Pediatric Regional Anesthesia. Reg Anesth Pain Med. 2018.",
-  "2.- Miller's Anesthesia. Pediatric Regional Anesthesia. Concepto de Tmax y top-up conservador con bupivacaína/levobupivacaína/ropivacaína.",
-  "3.- Esquema docente UC de PCA epidural pediátrica: dosis máxima por hora en mg, con reparto 2/3 infusión y 1/3 bolo."
-);
-
-$icono_apunte = "<i class='fa-solid fa-baby pe-3 pt-2'></i>";
-$titulo_apunte = "Peridural Pediátrica / PCA";
-
+$titulo_pagina = "Peridural pediátrica / PCA";
+$navbar_titulo = "Apuntes";
 $boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
 $boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
 
-require("head.php");
+$titulo_info = "Utilidad clínica";
+$descripcion_info = "Apunte interactivo para cálculo docente de carga inicial, top-up y PCA epidural postoperatoria en pediatría. Integra peso, rango etáreo y nivel epidural para ajustar dosis, volumen y advertencias de seguridad.";
+$formula = "Carga inicial con levobupivacaína 0,25%: lumbar 0,5 mL/kg; torácica 0,3 mL/kg. Top-up estándar: 0,2 mL/kg. PCA con bupivacaína/levobupivacaína 0,1%: 1 mg/mL. Dosis máxima por hora según edad; 2/3 como infusión continua y 1/3 como bolo, con límite de infusión de 5 mL/h.";
+$referencias = array(
+  "Bosenberg A. Pediatric regional anesthesia update. Paediatr Anaesth.",
+  "NYSORA. Pediatric Epidural and Spinal Anesthesia.",
+  "ESRA/ASRA educational reviews on pediatric neuraxial analgesia and local anesthetic dosing.",
+  "Lönnqvist PA, Ecoffey C, Bosenberg A, et al. The European society of regional anaesthesia and pain therapy and the American society of regional anesthesia and pain medicine joint committee practice advisory on controversial topics in pediatric regional anesthesia.",
+  "Protocolos docentes locales de analgesia epidural pediátrica."
+);
+
+include("head.php");
 ?>
+<link rel="stylesheet" href="css/clinical-note-system.css?v=2">
+<script src="js/clinical-note-system.js?v=2"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
     <div class="container-fluid px-0 px-md-2">
-      <div class="peri-shell">
+      <div class="note-shell px-1 px-md-0 py-0">
 
         <style>
-          :root{
-            --brand:#27458f;
-            --brand2:#3559b7;
-            --bg:#f4f7fb;
-            --soft:#f8fafc;
-            --line:#dfe7f2;
-            --text:#1f2a37;
-            --muted:#667085;
-            --good:#edf8f7;
-            --warn:#fff9e8;
-            --danger:#fff5f3;
-            --mint:#eef7ff;
-            --mint-border:#cfe1ff;
-          }
-
-          body{background:var(--bg);}
-          .peri-shell{max-width:980px;margin:0 auto;}
-
-          .peri-topbar{
-            background:linear-gradient(135deg,var(--brand),var(--brand2));
-            color:#fff;
-            border-radius:1.25rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            padding:1.15rem 1.25rem;
-            margin-bottom:1rem;
-            overflow:hidden;
-          }
-
-          .peri-topbar h1{color:#fff;}
-
-          .section-card{
-            border:0;
-            border-radius:1rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            background:#fff;
-            overflow:hidden;
-            margin-bottom:1rem;
-          }
-
-          .section-title{
-            font-size:.8rem;
-            letter-spacing:.05em;
-            text-transform:uppercase;
-            color:var(--muted);
-          }
-
-          .pill{
-            display:inline-block;
-            padding:.2rem .55rem;
-            border-radius:999px;
-            font-size:.78rem;
-            background:#eef3ff;
-            color:#3559b7;
-            font-weight:600;
-          }
-
-          .subtle{
-            font-size:.94rem;
-            color:#5f6b76;
-          }
-
-          .small-note{
-            font-size:.82rem;
-            color:#667085;
-            line-height:1.45;
-          }
-
-          .footer-note{
-            font-size:.82rem;
-            color:#6c757d;
-          }
-
-          .info-box{
-            background:#fff;
-            border-radius:1rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            margin-bottom:1rem;
-            overflow:hidden;
-          }
-
-          .info-box-header{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            gap:1rem;
-            padding:1rem;
-          }
-
-          .info-box-title{
-            font-size:.8rem;
-            text-transform:uppercase;
-            color:#667085;
-            letter-spacing:.08em;
-          }
-
-          .info-toggle-btn{
-            border-radius:.6rem;
-            font-size:.85rem;
-            padding:.35rem .7rem;
-            white-space:nowrap;
-            background:#6c757d;
-            border:none;
-            color:white;
-            transition:.2s;
-          }
-
-          .info-toggle-btn:hover{
-            background:#5a6268;
-            color:white;
-          }
-
-          .info-box-content{
-            padding:1rem;
-            display:none;
-            animation:fadeIn .2s ease-in-out;
-            border-top:1px solid #e9eef5;
-          }
-
-          @keyframes fadeIn{
-            from{opacity:0; transform:translateY(-5px);}
-            to{opacity:1; transform:translateY(0);}
-          }
-
-          .choice-grid{
+          .peri-choice-grid{
             display:grid;
-            grid-template-columns:repeat(5,1fr);
-            gap:.65rem;
+            grid-template-columns:repeat(2,minmax(0,1fr));
+            gap:.75rem;
           }
 
-          .choice-grid-2{
-            display:grid;
-            grid-template-columns:repeat(2,1fr);
-            gap:.65rem;
+          .peri-choice-grid.peri-grid-5{
+            grid-template-columns:repeat(5,minmax(0,1fr));
           }
 
-          .choice-check{display:none;}
+          .peri-option-input{
+            position:absolute;
+            opacity:0;
+            pointer-events:none;
+          }
 
-          .choice-btn{
+          .peri-option{
             display:flex;
             flex-direction:column;
             align-items:center;
             justify-content:center;
             text-align:center;
-            min-height:78px;
-            border:1px solid #dfe7f2;
+            min-height:72px;
+            border:2px solid var(--note-line);
             background:#fff;
             border-radius:1rem;
-            padding:.8rem;
-            font-weight:700;
-            color:#1f2a37;
+            padding:.65rem .75rem;
             cursor:pointer;
             transition:.15s ease;
-            line-height:1.15;
-            box-shadow:0 4px 14px rgba(0,0,0,.04);
+            box-shadow:0 3px 10px rgba(15,23,42,.04);
+            gap:.18rem;
           }
 
-          .choice-btn i{
-            font-size:1.1rem;
-            margin-bottom:.35rem;
+          .peri-option i{
             color:#3559b7;
+            font-size:1rem;
           }
 
-          .choice-check:checked + .choice-btn{
-            background:#eef3ff;
-            border-color:#9fb9f8;
-            color:#27458f;
-            box-shadow:0 0 0 2px rgba(39,69,143,.05) inset, 0 8px 18px rgba(0,0,0,.06);
+          .peri-option-input:checked + .peri-option{
+            box-shadow:0 0 0 3px rgba(47,128,237,.14), 0 8px 18px rgba(15,23,42,.10);
+            border:4px solid var(--note-selected);
             transform:translateY(-1px);
           }
 
-          .calc-grid{
-            display:grid;
-            grid-template-columns:repeat(2,1fr);
-            gap:1rem;
+          .peri-option-title{
+            font-size:.9rem;
+            font-weight:800;
+            line-height:1.15;
+            color:var(--note-text);
+            margin:0;
           }
 
-          .card-block{
-            border:1px solid var(--line);
-            border-radius:1rem;
-            background:var(--soft);
-            padding:1rem;
-          }
-
-          .form-label-lite{
-            font-size:.92rem;
+          .peri-option-sub{
+            font-size:.76rem;
+            line-height:1.22;
+            color:var(--note-muted);
+            margin:0;
             font-weight:600;
-            color:var(--text);
-            margin-bottom:.35rem;
           }
 
-          .result-box{
-            border-radius:1rem;
-            border:1px solid var(--line);
-            background:var(--soft);
-            padding:1rem;
-          }
-
-          .result-main{
-            font-size:1.02rem;
-            font-weight:700;
-            color:var(--text);
-          }
-
-          .result-num{
-            font-size:1.7rem;
+          .peri-drug-chip{
+            display:inline-block;
+            padding:.22rem .48rem;
+            border-radius:.6rem;
             font-weight:800;
-            line-height:1;
-            color:#3559b7;
+            border:1px solid rgba(31,42,55,.12);
+            line-height:1.1;
+            color:#111827;
+            background:var(--drug-local);
           }
 
-          .result-row{
-            display:flex;
-            align-items:flex-start;
-            justify-content:space-between;
-            gap:1rem;
-            padding:.9rem 1rem;
-            border:1px solid #e6e9ef;
-            border-radius:.9rem;
-            background:#fff;
-            margin-bottom:.65rem;
-          }
-
-          .result-row:last-child{margin-bottom:0;}
-
-          .result-name{
-            font-weight:700;
-            color:#1f2a37;
-            line-height:1.2;
-          }
-
-          .result-note{
-            font-size:.82rem;
-            color:#667085;
-            margin-top:.2rem;
-            line-height:1.4;
-          }
-
-          .result-value{
-            min-width:140px;
-            text-align:right;
-            font-weight:800;
-            color:#27458f;
-            line-height:1.25;
-          }
-
-          .meta-grid{
+          .peri-action-list{
             display:grid;
-            grid-template-columns:1fr 1fr;
             gap:.75rem;
           }
 
-          .meta-card{
-            background:#fff;
-            border:1px solid #e6e9ef;
+          .peri-action-item{
+            display:flex;
+            align-items:flex-start;
+            gap:.65rem;
+            border:1px solid #d9e2ef;
             border-radius:1rem;
-            padding:.9rem;
+            background:#fff;
+            padding:.75rem .85rem;
           }
 
-          .meta-label{
+          .peri-action-mark{
+            flex:0 0 auto;
+            width:30px;
+            height:30px;
+            border-radius:999px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#fff;
+            margin-top:.08rem;
+          }
+
+          .peri-action-mark.ok{background:#2ea663;}
+          .peri-action-mark.mid{background:#f4c542;}
+          .peri-action-mark.high{background:#d92d20;}
+
+          .peri-action-copy{min-width:0;flex:1;}
+
+          .peri-action-title{
+            font-size:.95rem;
+            font-weight:800;
+            line-height:1.18;
+            color:var(--note-text);
+            margin-bottom:.1rem;
+          }
+
+          .peri-action-note{
+            margin:0;
+            font-size:.82rem;
+            line-height:1.32;
+            color:var(--note-muted);
+          }
+
+          .peri-plan-line{
+            padding:.75rem .85rem;
+            border-radius:.9rem;
+            background:#fff;
+            border:1px solid var(--note-line-strong);
+            margin-bottom:.6rem;
+          }
+
+          .peri-plan-line:last-child{
+            margin-bottom:0;
+          }
+
+          .peri-program-grid{
+            display:grid;
+            grid-template-columns:repeat(4,minmax(0,1fr));
+            gap:.75rem;
+          }
+
+          .peri-program-card{
+            background:linear-gradient(180deg, var(--note-brand-soft) 0%, #f7faff 100%);
+            border:1px solid var(--note-brand-soft-border);
+            border-radius:1rem;
+            padding:.9rem 1rem;
+            text-align:center;
+          }
+
+          .peri-program-label{
             font-size:.76rem;
             text-transform:uppercase;
             letter-spacing:.06em;
-            color:#667085;
-            margin-bottom:.25rem;
-          }
-
-          .meta-value{
-            font-size:1rem;
+            color:#3559b7;
             font-weight:700;
-            color:#1f2a37;
-            line-height:1.35;
+            margin-bottom:.22rem;
           }
 
-          .good-box{
-            background:var(--good);
-            border:1px solid #cfe8e6;
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .warn-box{
-            background:var(--warn);
-            border:1px solid #ecd798;
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .danger-box{
-            background:var(--danger);
-            border:1px solid #efc4be;
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .mint-box{
-            background:var(--mint);
-            border:1px solid var(--mint-border);
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .teaching-wrap{
-            border-radius:1.3rem;
-            background:#f4f7fb;
-            padding:1.2rem;
-          }
-
-          .teaching-title{
-            text-align:center;
-            font-size:.9rem;
-            text-transform:uppercase;
-            color:#64748b;
-            letter-spacing:.05em;
-          }
-
-          .teaching-main{
-            text-align:center;
-            font-size:1.6rem;
-            font-weight:800;
-            margin-bottom:1rem;
+          .peri-program-value{
+            font-size:1.08rem;
             line-height:1.15;
+            font-weight:900;
+            color:var(--note-text);
           }
 
-          .teaching-card{
-            background:#fff;
+          .peri-program-note{
+            margin-top:.28rem;
+            font-size:.82rem;
+            line-height:1.3;
+            color:var(--note-muted);
+          }
+
+          .peri-topup-card{
             border-radius:1rem;
+            border:1px solid var(--note-warning-border);
+            background:var(--note-warning-bg);
             padding:1rem;
-            border:1px solid #e5e7eb;
-            margin-bottom:.8rem;
           }
 
-          .tip-list{
-            margin:0;
-            padding-left:1.1rem;
+          .peri-topup-card.is-general{
+            border-color:var(--note-success-border);
+            background:var(--note-success-bg);
           }
 
-          .tip-list li{margin-bottom:.4rem;}
-
-          @media (max-width:900px){
-            .choice-grid{grid-template-columns:repeat(3,1fr);}
+          @media (max-width:992px){
+            .peri-choice-grid.peri-grid-5,
+            .peri-program-grid{
+              grid-template-columns:repeat(2,minmax(0,1fr));
+            }
           }
 
-          @media (max-width:768px){
-            .calc-grid{grid-template-columns:1fr;}
-            .meta-grid{grid-template-columns:1fr;}
-            .result-row{flex-direction:column;align-items:flex-start;}
-            .result-value{text-align:left;min-width:0;}
-          }
-
-          @media (max-width:576px){
-            .choice-grid{grid-template-columns:repeat(2,1fr);}
-            .choice-grid-2{grid-template-columns:1fr;}
-            .info-box-header{flex-direction:row;}
-            .info-toggle-btn{margin-left:auto;}
-            .teaching-main{font-size:1.25rem;}
+          @media (max-width:420px){
+            .peri-choice-grid,
+            .peri-choice-grid.peri-grid-5,
+            .peri-program-grid{
+              grid-template-columns:1fr;
+            }
           }
         </style>
 
-        <div class="peri-topbar">
-          <div class="d-flex justify-content-between align-items-start gap-3">
-            <div>
-              <div class="small opacity-75 mb-1">APP clínica • cálculo automático</div>
-              <h1 class="h3 mb-2">Peridural Pediátrica / PCA</h1>
-              <div class="subtle text-white-50">Carga inicial, top-up y parámetros de PCA según peso, nivel y rango etáreo.</div>
-            </div>
-            <span class="pill bg-light text-dark">Pediatría</span>
-          </div>
+        <div class="note-hero mb-3">
+          <div class="note-hero-kicker">APP CLÍNICA · ANESTESIA REGIONAL · PEDIATRÍA</div>
+          <h2>Peridural pediátrica / PCA</h2>
+          <div class="note-hero-subtitle">Calcula carga inicial, top-up y programación PCA epidural.</div>
         </div>
 
-        <div class="info-box">
+        <div class="info-box mb-3">
           <div class="info-box-header">
             <div class="info-box-title">Información</div>
             <button type="button" onclick="toggleInfo()" class="btn btn-sm info-toggle-btn">Mostrar / ocultar</button>
           </div>
-
           <div id="infoContent" class="info-box-content">
-            <?php echo $descripcion_info; ?>
-
+            <p class="mb-2"><?php echo $descripcion_info; ?></p>
             <?php if(!empty($formula)){ ?>
               <hr>
               <b>Comentario:</b><br>
               <?php echo $formula; ?>
             <?php } ?>
-
-            <?php if(!empty($referencias)){ ?>
-              <hr>
-              <b>Referencias:</b>
-              <ul class="mt-2 mb-0">
-                <?php foreach($referencias as $ref){ ?>
-                  <li><?php echo $ref; ?></li>
-                <?php } ?>
-              </ul>
-            <?php } ?>
+            <hr>
+            <b>Referencias:</b>
+            <ul class="mb-0 mt-2">
+              <?php foreach($referencias as $ref){ ?>
+                <li class="mb-2"><?php echo $ref; ?></li>
+              <?php } ?>
+            </ul>
           </div>
         </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">Datos de entrada</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Datos de entrada</div>
 
-            <div class="calc-grid">
-              <div class="card-block">
-                <label class="form-label-lite">Peso</label>
-                <div class="input-group mb-3">
-                  <input class="form-control calc-trigger" type="number" step="0.1" id="peso" value="">
-                  <span class="input-group-text">kg</span>
-                </div>
-
-                <label class="form-label-lite">Nivel epidural</label>
-                <div class="choice-grid-2">
-                  <div>
-                    <input class="choice-check" type="radio" name="nivel" id="nivel_lumbar" value="lumbar" checked>
-                    <label class="choice-btn" for="nivel_lumbar">
-                      <i class="fa-solid fa-arrow-down-wide-short"></i>
-                      Lumbar
-                    </label>
-                  </div>
-                  <div>
-                    <input class="choice-check" type="radio" name="nivel" id="nivel_toracica" value="toracica">
-                    <label class="choice-btn" for="nivel_toracica">
-                      <i class="fa-solid fa-arrow-up-wide-short"></i>
-                      Torácica
-                    </label>
-                  </div>
+            <div class="note-grid mb-3">
+              <div class="note-input-group">
+                <label class="note-label">Peso</label>
+                <div class="note-input-inline">
+                  <input id="peso" type="text" inputmode="decimal" class="note-input">
+                  <div class="note-input-unit">kg</div>
                 </div>
               </div>
 
-              <div class="card-block">
-                <label class="form-label-lite">Rango etáreo</label>
-                <div class="choice-grid">
-                  <div>
-                    <input class="choice-check" type="radio" name="edadgrp" id="edad_rn" value="rn" checked>
-                    <label class="choice-btn" for="edad_rn">
-                      <i class="fa-solid fa-baby"></i>
-                      RN
-                    </label>
-                  </div>
-                  <div>
-                    <input class="choice-check" type="radio" name="edadgrp" id="edad_1_4m" value="1_4m">
-                    <label class="choice-btn" for="edad_1_4m">
-                      <i class="fa-solid fa-baby"></i>
-                      1–4 m
-                    </label>
-                  </div>
-                  <div>
-                    <input class="choice-check" type="radio" name="edadgrp" id="edad_5_8m" value="5_8m">
-                    <label class="choice-btn" for="edad_5_8m">
-                      <i class="fa-solid fa-baby-carriage"></i>
-                      5–8 m
-                    </label>
-                  </div>
-                  <div>
-                    <input class="choice-check" type="radio" name="edadgrp" id="edad_9_12m" value="9_12m">
-                    <label class="choice-btn" for="edad_9_12m">
-                      <i class="fa-solid fa-child-reaching"></i>
-                      9–12 m
-                    </label>
-                  </div>
-                  <div>
-                    <input class="choice-check" type="radio" name="edadgrp" id="edad_gt1a" value="gt1a">
-                    <label class="choice-btn" for="edad_gt1a">
-                      <i class="fa-solid fa-child"></i>
-                      &gt;1 año
-                    </label>
-                  </div>
-                </div>
-                <div class="small-note mt-2">
-                  Los rangos etáreos ajustan la estrategia de PCA y modifican el comportamiento del top-up en lactantes pequeños.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- CARGA Y TOP UP -->
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">Carga inicial y top-up</div>
-
-            <div class="result-box mb-3">
-              <div class="result-row">
-                <div>
-                  <div class="result-name">Carga inicial intraoperatoria</div>
-                  <div id="cargaNota" class="result-note">Levobupivacaína / Chiro 0,25% según nivel epidural.</div>
-                </div>
-                <div id="cargaValor" class="result-value">-</div>
-              </div>
-
-              <div class="result-row">
-                <div>
-                  <div class="result-name">Top-up estándar</div>
-                  <div id="topupStdNota" class="result-note">Chiro 0,25% 0,2 mL/kg.</div>
-                </div>
-                <div id="topupStdValor" class="result-value">-</div>
+              <div class="note-input-group">
+                <label class="note-label">Solución para carga / top-up</label>
+                <div class="note-summary-v"><span class="peri-drug-chip p-3">Levobupivacaína 0,25%</span></div>
+                <div class="note-result-secondary">2,5 mg/mL</div>
               </div>
             </div>
 
-            <div id="topupConservadorBox" class="warn-box mb-3" style="display:none;">
-              <strong>Top-up conservador en &le;4 meses</strong><br>
-              <div class="small-note mt-2 mb-2">
-                En bupivacaína / levobupivacaína / ropivacaína, el Tmax es más tardío en lactantes pequeños. Para minimizar acumulación:
-              </div>
-
-              <div class="result-row">
-                <div>
-                  <div class="result-name">Opción A</div>
-                  <div class="result-note">Usar 1/3 de la dosis inicial y no reinyectar antes de 45 min.</div>
+            <div class="note-section-label">Nivel epidural</div>
+            <div class="peri-choice-grid mb-3">
+              <label>
+                <input class="peri-option-input" type="radio" name="nivel" value="lumbar" checked>
+                <div class="peri-option">
+                  <i class="fa-solid fa-arrow-down-wide-short"></i>
+                  <div class="peri-option-title">Lumbar</div>
+                  <div class="peri-option-sub">0,5 mL/kg</div>
                 </div>
-                <div id="topupAValor" class="result-value">-</div>
-              </div>
-
-              <div class="result-row">
-                <div>
-                  <div class="result-name">Opción B</div>
-                  <div class="result-note">Usar 1/2 de la dosis inicial y no reinyectar antes de 90 min.</div>
+              </label>
+              <label>
+                <input class="peri-option-input" type="radio" name="nivel" value="toracica">
+                <div class="peri-option">
+                  <i class="fa-solid fa-arrow-up-wide-short"></i>
+                  <div class="peri-option-title">Torácica</div>
+                  <div class="peri-option-sub">0,3 mL/kg</div>
                 </div>
-                <div id="topupBValor" class="result-value">-</div>
-              </div>
-
-              <div class="result-row">
-                <div>
-                  <div class="result-name">Si requiere un nuevo top-up</div>
-                  <div class="result-note">Reducir el top-up usado previamente a la mitad, respetando la misma demora.</div>
-                </div>
-                <div id="topupRepeticionValor" class="result-value">-</div>
-              </div>
+              </label>
             </div>
 
-            <div id="topupGeneralBox" class="good-box" style="display:block;">
-              <strong>Top-up habitual</strong><br>
-              <div class="small-note mt-2">
-                En niños mayores, puede usarse el top-up estándar según peso y contexto. Aun así, evita redosificar precozmente con bupivacaína / levobupivacaína / ropivacaína sin reevaluar efecto clínico y tiempo transcurrido.
-              </div>
+            <div class="note-section-label">Rango etáreo</div>
+            <div class="peri-choice-grid peri-grid-5">
+              <label>
+                <input class="peri-option-input" type="radio" name="edadgrp" value="rn" checked>
+                <div class="peri-option">
+                  <i class="fa-solid fa-baby"></i>
+                  <div class="peri-option-title">RN</div>
+                  <div class="peri-option-sub">0,25 mg/kg/h</div>
+                </div>
+              </label>
+              <label>
+                <input class="peri-option-input" type="radio" name="edadgrp" value="1_4m">
+                <div class="peri-option">
+                  <i class="fa-solid fa-baby"></i>
+                  <div class="peri-option-title">1–4 m</div>
+                  <div class="peri-option-sub">0,30 mg/kg/h</div>
+                </div>
+              </label>
+              <label>
+                <input class="peri-option-input" type="radio" name="edadgrp" value="5_8m">
+                <div class="peri-option">
+                  <i class="fa-solid fa-baby-carriage"></i>
+                  <div class="peri-option-title">5–8 m</div>
+                  <div class="peri-option-sub">0,35–0,40</div>
+                </div>
+              </label>
+              <label>
+                <input class="peri-option-input" type="radio" name="edadgrp" value="9_12m">
+                <div class="peri-option">
+                  <i class="fa-solid fa-child-reaching"></i>
+                  <div class="peri-option-title">9–12 m</div>
+                  <div class="peri-option-sub">0,40 mg/kg/h</div>
+                </div>
+              </label>
+              <label>
+                <input class="peri-option-input" type="radio" name="edadgrp" value="gt1a">
+                <div class="peri-option">
+                  <i class="fa-solid fa-child"></i>
+                  <div class="peri-option-title">&gt;1 año</div>
+                  <div class="peri-option-sub">0,50 mg/kg/h</div>
+                </div>
+              </label>
             </div>
           </div>
         </div>
 
-        <!-- PCA -->
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">PCA epidural postoperatoria</div>
+        <div class="note-summary-box mb-3">
+          <div class="note-summary-box-title">Resumen</div>
+          <div id="summaryNarrative" class="note-summary-box-text">Ingresa peso para calcular carga inicial, top-up y programación PCA epidural.</div>
+          <div class="note-summary-grid-2">
+            <div class="note-summary-item">
+              <div class="note-summary-k">Peso</div>
+              <div id="summaryWeight" class="note-summary-v">-</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Nivel epidural</div>
+              <div id="summaryLevel" class="note-summary-v">Lumbar</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Rango etáreo</div>
+              <div id="summaryAge" class="note-summary-v">RN</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Anestésico local</div>
+              <div id="summaryDrug" class="note-summary-v">Levo 0,25% / 0,1%</div>
+            </div>
+          </div>
+        </div>
 
-            <div class="mint-box mb-3">
-              <strong>Esquema docente:</strong><br>
-              La dosis máxima por hora se expresa en <strong>mg/h</strong>. De esa dosis: <strong>2/3</strong> se usan como infusión continua y <strong>1/3</strong> como bolo. Si la infusión calculada supera <strong>5 mL/h</strong>, debe ajustarse a 5 mL/h. Lockout habitual: <strong>30 min</strong>.
+        <div class="note-result-grid-2 mb-3">
+          <div class="note-result-card">
+            <div class="note-result-card-label">Carga inicial</div>
+            <div id="loadResult" class="note-result-card-value">-</div>
+            <div id="loadNote" class="note-result-card-note">Levobupivacaína 0,25% según nivel epidural.</div>
+          </div>
+          <div class="note-result-card">
+            <div class="note-result-card-label">Top-up estándar</div>
+            <div id="topupResult" class="note-result-card-value">-</div>
+            <div id="topupNote" class="note-result-card-note">Levobupivacaína 0,25% 0,2 mL/kg.</div>
+          </div>
+        </div>
+
+        <div id="topupBox" class="peri-topup-card mb-3">
+          <div class="note-card-title" id="topupTitle">Top-up conservador en RN / 1–4 meses</div>
+          <div id="topupText" class="note-muted mb-3">En lactantes pequeños, el Tmax de bupivacaína / levobupivacaína / ropivacaína es más tardío. Evita redosificación precoz.</div>
+          <div class="note-summary-grid-2">
+            <div class="note-summary-item">
+              <div class="note-summary-k">Opción A</div>
+              <div id="topupA" class="note-summary-v">-</div>
+              <div class="note-result-secondary">1/3 de carga inicial; no antes de 45 min</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Opción B</div>
+              <div id="topupB" class="note-summary-v">-</div>
+              <div class="note-result-secondary">1/2 de carga inicial; no antes de 90 min</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">PCA epidural postoperatoria</div>
+
+            <div class="note-warning mb-3">
+              <strong>Esquema docente:</strong>
+              <div class="mt-2">
+                PCA calculada con <span class="peri-drug-chip">bupivacaína / levobupivacaína 0,1%</span> = 1 mg/mL. De la dosis máxima por hora: 2/3 como infusión continua y 1/3 como bolo. Límite de infusión: 5 mL/h. Lockout habitual: 30 min.
+              </div>
             </div>
 
-            <div class="meta-grid mb-3">
-              <div class="meta-card">
-                <div class="meta-label">Rango seleccionado</div>
-                <div id="edadPcaTexto" class="meta-value">RN</div>
+            <div class="peri-program-grid">
+              <div class="peri-program-card">
+                <div class="peri-program-label">Dosis máxima</div>
+                <div id="pcaMaxHour" class="peri-program-value">-</div>
+                <div class="peri-program-note">mg/h</div>
               </div>
-              <div class="meta-card">
-                <div class="meta-label">Dosis máxima por hora</div>
-                <div id="maxHoraTexto" class="meta-value">-</div>
+              <div class="peri-program-card">
+                <div class="peri-program-label">Infusión</div>
+                <div id="pcaInfusion" class="peri-program-value">-</div>
+                <div class="peri-program-note">2/3 de dosis máxima</div>
               </div>
-              <div class="meta-card">
-                <div class="meta-label">Infusión continua</div>
-                <div id="infusionTexto" class="meta-value">-</div>
+              <div class="peri-program-card">
+                <div class="peri-program-label">Bolo PCA</div>
+                <div id="pcaBolus" class="peri-program-value">-</div>
+                <div class="peri-program-note">1/3 de dosis máxima</div>
               </div>
-              <div class="meta-card">
-                <div class="meta-label">Bolo PCA</div>
-                <div id="boloTexto" class="meta-value">-</div>
-              </div>
-            </div>
-
-            <div id="pcaWarn" class="warn-box">
-              <strong>Advertencia etaria</strong><br>
-              <div id="pcaWarnText" class="small-note mt-2">
-                En los más pequeños debe extremarse la vigilancia clínica y el seguimiento de signos de toxicidad.
+              <div class="peri-program-card">
+                <div class="peri-program-label">Lockout</div>
+                <div class="peri-program-value">30 min</div>
+                <div class="peri-program-note">habitual</div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- DOCENCIA -->
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="teaching-wrap">
+        <div id="algoBox" class="note-interpretation mb-3">
+          <div class="note-interpretation-label">Interpretación clínica</div>
+          <div id="interpMain" class="note-interpretation-main">Pendiente</div>
+          <div id="interpSoft" class="note-interpretation-soft">Ingresa peso para generar una estrategia orientativa. Vigilar edad, signos de toxicidad, bloqueo motor y sedación.</div>
 
-              <div class="teaching-title">Tips para residentes</div>
-              <div class="teaching-main">
-                En epidural pediátrica, el error no suele ser “quedarse corto”, sino redosificar demasiado rápido o no respetar la edad
+          <div class="mt-3 text-start">
+            <div class="peri-plan-line"><strong>Edad seleccionada:</strong> <span id="ageDetail">RN</span></div>
+            <div class="peri-plan-line"><strong>Advertencia etaria:</strong> <span id="ageWarning">En los más pequeños debe extremarse vigilancia clínica y seguimiento de toxicidad.</span></div>
+            <div class="peri-plan-line"><strong>Límite práctico:</strong> <span id="practicalLimit">Infusión continua máxima 5 mL/h.</span></div>
+          </div>
+        </div>
+
+        <div class="note-warning mb-3">
+          <strong>Advertencia clínica:</strong>
+          <div id="warningText" class="mt-2">Herramienta docente. Verifica concentración real, edad exacta, función hepática/renal, estado hemodinámico, bloqueo motor, sedación, protocolo institucional y disponibilidad de rescate para toxicidad por anestésico local.</div>
+        </div>
+
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Conducta práctica</div>
+            <div id="actionList" class="peri-action-list">
+              <div class="peri-action-item">
+                <div class="peri-action-mark mid"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="peri-action-copy">
+                  <div class="peri-action-title">Ingresa peso para calcular</div>
+                  <p class="peri-action-note">La programación se expresa en mL, pero el límite de seguridad se entiende en mg/kg/h y edad.</p>
+                </div>
               </div>
-
-              <div class="teaching-card">
-                <b>La edad cambia la farmacocinética</b><br>
-                En menores de 4 meses debes ser más conservador con top-up y con infusiones continuas. Si puedes, prefiere levobupivacaína o ropivacaína sobre bupivacaína racémica.
-              </div>
-
-              <div class="teaching-card">
-                <b>Carga inicial no es lo mismo que top-up</b><br>
-                La carga depende del nivel epidural. El top-up no debe copiar mecánicamente la carga inicial, especialmente en lactantes pequeños.
-              </div>
-
-              <div class="teaching-card">
-                <b>Top-up precoz = riesgo de acumulación</b><br>
-                Con bupivacaína / levobupivacaína / ropivacaína, respeta tiempos. Si debes redosificar en lactantes pequeños, usa fracciones de la dosis inicial y no olvides que una segunda redosis debe volver a reducirse.
-              </div>
-
-              <div class="teaching-card">
-                <b>La PCA se calcula en mg, pero se programa en mL</b><br>
-                Si trabajas con bupivacaína / levobupivacaína 0,1%, 1 mL equivale a 1 mg. Eso simplifica mucho la programación.
-              </div>
-
-              <div class="teaching-card">
-                <b>No ignores el límite de 5 mL/h</b><br>
-                Si la infusión calculada supera 5 mL/h, ajústala. No sirve calcular bonito si luego programas una bomba poco realista para el tamaño del paciente.
-              </div>
-
-              <div class="teaching-card">
-                <b>Perlas prácticas</b><br>
-                Línea de Tuffier más baja hasta el año de vida, la posición lateral suele favorecer el espacio epidural en niños, y el catéter idealmente no debería dejarse a más de 3 cm.
-              </div>
-
             </div>
           </div>
         </div>
 
-        <div class="footer-note">
-          Herramienta docente y de apoyo clínico. Verificar siempre concentración real del anestésico local, edad exacta, condición hemodinámica y protocolos institucionales.
+        <div class="note-teaching-wrap">
+          <div class="note-teaching-title">Perlas docentes</div>
+          <div class="note-teaching-main">En epidural pediátrica, el error peligroso suele ser redosificar demasiado rápido</div>
+          <div class="note-tips"><strong>Qué hacer:</strong> calcula en mg, programa en mL y reevalúa bloqueo, dolor, sedación, hemodinamia y signos de toxicidad.</div>
+          <div class="note-tips"><strong>Qué evitar:</strong> repetir top-up en lactantes pequeños antes de que el primer bolo alcance efecto máximo.</div>
+          <div class="note-tips"><strong>Menores de 9 meses:</strong> usa estrategia conservadora para top-up por Tmax más tardío y riesgo de acumulación; en 9–12 meses y mayores no aplica esa regla específica.</div>
+          <div class="note-tips"><strong>PCA:</strong> con bupivacaína/levobupivacaína 0,1%, 1 mL equivale a 1 mg, lo que facilita programación y revisión mental.</div>
+          <div class="note-tips"><strong>Perla técnica:</strong> en menores de 1 año la línea de Tuffier puede quedar más baja; la posición lateral suele favorecer el espacio epidural y el catéter idealmente no debería avanzarse más de 3 cm.</div>
+          <div class="note-tips mb-0"><strong>Mensaje final:</strong> si la infusión calculada supera 5 mL/h, ajusta a 5 mL/h y no “compenses” aumentando bolos sin reevaluar.</div>
         </div>
 
       </div>
@@ -654,170 +475,211 @@ require("head.php");
 </div>
 
 <script>
-function toggleInfo(){
-  let box = document.getElementById("infoContent");
-  box.style.display = (box.style.display === "none" || box.style.display === "") ? "block" : "none";
-}
+(function(){
+  const CNS = window.ClinicalNoteSystem || {};
 
-function getSelected(name){
-  const el = document.querySelector('input[name="' + name + '"]:checked');
-  return el ? el.value : null;
-}
-
-function round1(num){
-  return Math.round(num * 10) / 10;
-}
-
-function formatOneOrRange(minVal, maxVal, unit=''){
-  if(minVal === maxVal){
-    return round1(minVal).toString().replace('.', ',') + unit;
-  }
-  return round1(minVal).toString().replace('.', ',') + ' – ' + round1(maxVal).toString().replace('.', ',') + unit;
-}
-
-function updatePeriPed(){
-  const peso = parseFloat(document.getElementById('peso').value);
-  const nivel = getSelected('nivel') || 'lumbar';
-  const edad = getSelected('edadgrp') || 'rn';
-
-  const cargaValor = document.getElementById('cargaValor');
-  const cargaNota = document.getElementById('cargaNota');
-  const topupStdValor = document.getElementById('topupStdValor');
-  const topupStdNota = document.getElementById('topupStdNota');
-
-  const topupConservadorBox = document.getElementById('topupConservadorBox');
-  const topupGeneralBox = document.getElementById('topupGeneralBox');
-  const topupAValor = document.getElementById('topupAValor');
-  const topupBValor = document.getElementById('topupBValor');
-  const topupRepeticionValor = document.getElementById('topupRepeticionValor');
-
-  const edadPcaTexto = document.getElementById('edadPcaTexto');
-  const maxHoraTexto = document.getElementById('maxHoraTexto');
-  const infusionTexto = document.getElementById('infusionTexto');
-  const boloTexto = document.getElementById('boloTexto');
-  const pcaWarnText = document.getElementById('pcaWarnText');
-
-  if(isNaN(peso) || peso <= 0){
-    cargaValor.textContent = '-';
-    topupStdValor.textContent = '-';
-    topupAValor.textContent = '-';
-    topupBValor.textContent = '-';
-    topupRepeticionValor.textContent = '-';
-    edadPcaTexto.textContent = '-';
-    maxHoraTexto.textContent = '-';
-    infusionTexto.textContent = '-';
-    boloTexto.textContent = '-';
-    pcaWarnText.textContent = 'Ingresa un peso para calcular.';
-    return;
+  function parseLocal(value){
+    if(CNS.parseDecimal) return CNS.parseDecimal(value);
+    const n = Number(String(value || '').replace(',', '.'));
+    return Number.isFinite(n) ? n : null;
   }
 
-  // Carga inicial
-  let cargaMlKg = (nivel === 'lumbar') ? 0.5 : 0.3;
-  let cargaMl = peso * cargaMlKg;
-  let cargaMg = cargaMl * 2.5; // 0,25% = 2,5 mg/mL
+  function fmt(value, decimals){
+    if(!Number.isFinite(value)) return '-';
+    if(CNS.formatNumber) return CNS.formatNumber(value, decimals);
+    return Number(value).toLocaleString('es-CL', {maximumFractionDigits:decimals});
+  }
 
-  cargaValor.innerHTML = round1(cargaMl).toString().replace('.', ',') + ' mL<br><span class="small-note">' + round1(cargaMg).toString().replace('.', ',') + ' mg</span>';
-  cargaNota.textContent = (nivel === 'lumbar')
-    ? 'Levobupivacaína / Chiro 0,25% 0,5 mL/kg.'
-    : 'Levobupivacaína / Chiro 0,25% 0,3 mL/kg.';
+  function setText(id, value){
+    const el = document.getElementById(id);
+    if(CNS.safeSetText) CNS.safeSetText(el, value);
+    else if(el) el.textContent = value;
+  }
 
-  // Top-up estándar
-  let topupStdMl = peso * 0.2;
-  let topupStdMg = topupStdMl * 2.5;
-  topupStdValor.innerHTML = round1(topupStdMl).toString().replace('.', ',') + ' mL<br><span class="small-note">' + round1(topupStdMg).toString().replace('.', ',') + ' mg</span>';
-  topupStdNota.textContent = 'Chiro 0,25% 0,2 mL/kg.';
+  function getSelected(name){
+    const selected = document.querySelector('input[name="' + name + '"]:checked');
+    return selected ? selected.value : null;
+  }
 
-  // Top-up conservador <=4 meses
-  if(edad === 'rn' || edad === '1_4m'){
-    topupConservadorBox.style.display = 'block';
-    topupGeneralBox.style.display = 'none';
+  function rangeText(minVal, maxVal, decimals, unit){
+    if(Math.abs(minVal - maxVal) < 0.0001) return fmt(minVal, decimals) + unit;
+    return fmt(minVal, decimals) + '–' + fmt(maxVal, decimals) + unit;
+  }
+
+  function ageMeta(age){
+    const data = {
+      rn:{
+        label:'RN',
+        min:0.25,
+        max:0.25,
+        warning:'Máxima cautela. Mayor riesgo de acumulación por inmadurez metabólica y mayor fracción libre. Vigilar toxicidad y preferir estrategias conservadoras.',
+        actions:[
+          ['high','Máxima cautela farmacocinética','En RN evita redosificación precoz y usa vigilancia estrecha de sedación, bloqueo motor, hemodinamia y toxicidad.'],
+          ['mid','Preferir estrategia conservadora','Si hay duda, reduce dosis, aumenta intervalos y reevalúa antes de repetir top-up.']
+        ]
+      },
+      '1_4m':{
+        label:'1–4 meses',
+        min:0.30,
+        max:0.30,
+        warning:'Grupo especialmente sensible. Top-up conservador e infusión con vigilancia estrecha; no asumir meseta farmacocinética estable.',
+        actions:[
+          ['high','Top-up conservador','Usa fracciones de la carga inicial y respeta tiempos prolongados antes de redosificar.'],
+          ['mid','Vigilar acumulación','Controla sedación, bloqueo motor, hemodinamia y signos neurológicos.']
+        ]
+      },
+      '5_8m':{
+        label:'5–8 meses',
+        min:0.35,
+        max:0.40,
+        warning:'Aún existe riesgo relativo de acumulación. Mantén estrategia conservadora de top-up y usa el extremo inferior del rango si hay fragilidad, recuperación lenta o duda clínica.',
+        actions:[
+          ['mid','Usar extremo inferior si hay duda','Especialmente si hay comorbilidad, bajo peso, hipoproteinemia o catéter de comportamiento incierto.'],
+          ['ok','Reevaluar antes de rescatar','No aumentes dosis sin revisar nivel, lateralización y bloqueo motor.']
+        ]
+      },
+      '9_12m':{
+        label:'9–12 meses',
+        min:0.40,
+        max:0.40,
+        warning:'Mayor margen farmacocinético que en lactantes pequeños, pero la vigilancia clínica sigue siendo obligatoria.',
+        actions:[
+          ['ok','Margen mayor, no ausencia de riesgo','Vigila clínica y necesidad real de rescates.'],
+          ['ok','Programar con límite de volumen','Mantén el tope de 5 mL/h si la infusión calculada lo supera.']
+        ]
+      },
+      gt1a:{
+        label:'>1 año',
+        min:0.50,
+        max:0.50,
+        warning:'Puede usarse esquema habitual por peso. En adolescentes algunas referencias usan límites menores para bupi/levobupi; ajustar a contexto.',
+        actions:[
+          ['ok','Esquema habitual por peso','Aun en mayores, revisar concentración real y límite de volumen de la bomba.'],
+          ['mid','Adolescente no es adulto pequeño automático','Considerar límites institucionales y comorbilidades si el peso es alto.']
+        ]
+      }
+    };
+    return data[age] || data.rn;
+  }
+
+  function renderActions(items){
+    const box = document.getElementById('actionList');
+    box.innerHTML = items.map(function(item){
+      const icon = item[0] === 'ok' ? 'fa-check' : (item[0] === 'mid' ? 'fa-triangle-exclamation' : 'fa-bolt');
+      return '<div class="peri-action-item">' +
+        '<div class="peri-action-mark ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
+        '<div class="peri-action-copy">' +
+          '<div class="peri-action-title">' + item[1] + '</div>' +
+          '<p class="peri-action-note">' + item[2] + '</p>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function updatePeriPed(){
+    const peso = parseLocal(document.getElementById('peso').value);
+    const nivel = getSelected('nivel') || 'lumbar';
+    const edad = getSelected('edadgrp') || 'rn';
+    const meta = ageMeta(edad);
+
+    setText('summaryLevel', nivel === 'lumbar' ? 'Lumbar' : 'Torácica');
+    setText('summaryAge', meta.label);
+    setText('ageDetail', meta.label);
+
+    if(!peso || peso <= 0){
+      setText('summaryWeight', '-');
+      setText('summaryNarrative', 'Ingresa peso para calcular carga inicial, top-up y programación PCA epidural.');
+      setText('loadResult', '-');
+      setText('topupResult', '-');
+      setText('pcaMaxHour', '-');
+      setText('pcaInfusion', '-');
+      setText('pcaBolus', '-');
+      setText('interpMain', 'Pendiente');
+      setText('interpSoft', 'Ingresa peso para generar una estrategia orientativa. Vigilar edad, signos de toxicidad, bloqueo motor y sedación.');
+      setText('ageWarning', 'En los más pequeños debe extremarse vigilancia clínica y seguimiento de toxicidad.');
+      setText('topupA', '-');
+      setText('topupB', '-');
+      renderActions([
+        ['mid','Ingresa peso para calcular','La programación se expresa en mL, pero el límite de seguridad se entiende en mg/kg/h y edad.']
+      ]);
+      return;
+    }
+
+    const cargaMlKg = nivel === 'lumbar' ? 0.5 : 0.3;
+    const cargaMl = peso * cargaMlKg;
+    const cargaMg = cargaMl * 2.5;
+
+    const topupMl = peso * 0.2;
+    const topupMg = topupMl * 2.5;
 
     const topA = cargaMl / 3;
     const topB = cargaMl / 2;
 
-    topupAValor.innerHTML = round1(topA).toString().replace('.', ',') + ' mL<br><span class="small-note">' + round1(topA * 2.5).toString().replace('.', ',') + ' mg</span>';
-    topupBValor.innerHTML = round1(topB).toString().replace('.', ',') + ' mL<br><span class="small-note">' + round1(topB * 2.5).toString().replace('.', ',') + ' mg</span>';
-    topupRepeticionValor.innerHTML =
-      'Si usaste A: ' + round1(topA / 2).toString().replace('.', ',') + ' mL<br>' +
-      '<span class="small-note">Si usaste B: ' + round1(topB / 2).toString().replace('.', ',') + ' mL</span>';
-  } else {
-    topupConservadorBox.style.display = 'none';
-    topupGeneralBox.style.display = 'block';
+    const minMaxHourMg = peso * meta.min;
+    const maxMaxHourMg = peso * meta.max;
+
+    let minInf = minMaxHourMg * 2 / 3;
+    let maxInf = maxMaxHourMg * 2 / 3;
+    const minBol = minMaxHourMg / 3;
+    const maxBol = maxMaxHourMg / 3;
+
+    let capped = false;
+    if(minInf > 5){ minInf = 5; capped = true; }
+    if(maxInf > 5){ maxInf = 5; capped = true; }
+
+    setText('summaryWeight', fmt(peso,1) + ' kg');
+    setText('summaryNarrative', meta.label + ', ' + fmt(peso,1) + ' kg, epidural ' + (nivel === 'lumbar' ? 'lumbar' : 'torácica') + '. Carga inicial ' + fmt(cargaMl,1) + ' mL; PCA máxima ' + rangeText(minMaxHourMg, maxMaxHourMg,1,' mg/h') + '.');
+
+    setText('loadResult', fmt(cargaMl,1) + ' mL');
+    setText('loadNote', 'Levobupivacaína 0,25% ' + fmt(cargaMlKg,1) + ' mL/kg = ' + fmt(cargaMg,1) + ' mg.');
+    setText('topupResult', fmt(topupMl,1) + ' mL');
+    setText('topupNote', 'Top-up estándar 0,2 mL/kg = ' + fmt(topupMg,1) + ' mg.');
+
+    setText('topupA', fmt(topA,1) + ' mL');
+    setText('topupB', fmt(topB,1) + ' mL');
+
+    const topupBox = document.getElementById('topupBox');
+    if(edad === 'rn' || edad === '1_4m' || edad === '5_8m'){
+      topupBox.className = 'peri-topup-card mb-3';
+      setText('topupTitle', 'Top-up conservador en <9 meses');
+      setText('topupText', 'En RN, 1–4 meses y 5–8 meses, usar estrategia conservadora por Tmax más tardío y riesgo de acumulación. Si requiere nuevo top-up, reducir el volumen usado previamente a la mitad y respetar el mismo intervalo.');
+      document.getElementById('topupA').closest('.note-summary-grid-2').style.display = 'grid';
+    } else {
+      topupBox.className = 'peri-topup-card is-general mb-3';
+      setText('topupTitle', 'Top-up habitual en 9–12 meses y >1 año');
+      setText('topupText', 'En pacientes de 9–12 meses y mayores no se aplica la regla conservadora basada en Tmax. Usar el top-up estándar según peso y contexto, reevaluando analgesia, nivel, lateralización y bloqueo motor antes de repetir.');
+      document.getElementById('topupA').closest('.note-summary-grid-2').style.display = 'none';
+    }
+
+    setText('pcaMaxHour', rangeText(minMaxHourMg, maxMaxHourMg,1,' mg/h'));
+    setText('pcaInfusion', rangeText(minInf, maxInf,1,' mL/h'));
+    setText('pcaBolus', rangeText(minBol, maxBol,1,' mL'));
+
+    setText('interpMain', capped ? 'Programar con límite de 5 mL/h' : 'Programación orientativa generada');
+    setText('interpSoft', capped ? 'La infusión continua calculada supera el límite práctico; se ajusta a 5 mL/h. No compenses automáticamente con bolos.' : 'La programación respeta el límite práctico de infusión continua. Reevalúa analgesia, bloqueo motor y toxicidad.');
+    setText('ageWarning', meta.warning);
+    setText('practicalLimit', capped ? 'Infusión ajustada a 5 mL/h por límite práctico.' : 'Infusión continua dentro del límite de 5 mL/h.');
+
+    const actions = meta.actions.slice();
+    actions.push(['mid','Verificar concentración real','Carga/top-up calculados para levobupivacaína 0,25%; PCA calculada para bupi/levobupi 0,1%.']);
+    if(capped){
+      actions.unshift(['high','Infusión capada a 5 mL/h','No aumentes bolos para compensar sin reevaluación clínica.']);
+    }
+    renderActions(actions);
   }
 
-  // PCA por edad (bupi / levobupi 0,1% = 1 mg/mL)
-  let minMgKgHr = 0;
-  let maxMgKgHr = 0;
-  let edadTxt = '';
-  let warnTxt = '';
-
-  if(edad === 'rn'){
-    minMgKgHr = 0.25;
-    maxMgKgHr = 0.25;
-    edadTxt = 'RN';
-    warnTxt = 'Máxima cautela. En lactantes muy pequeños existe mayor riesgo de acumulación. Si es posible, preferir levobupivacaína o ropivacaína y vigilar signos de toxicidad.';
-  }
-
-  if(edad === '1_4m'){
-    minMgKgHr = 0.30;
-    maxMgKgHr = 0.30;
-    edadTxt = '1–4 meses';
-    warnTxt = 'Grupo especialmente sensible. El top-up debe ser conservador y la infusión continua requiere vigilancia estrecha. No asumir meseta farmacocinética estable.';
-  }
-
-  if(edad === '5_8m'){
-    minMgKgHr = 0.35;
-    maxMgKgHr = 0.40;
-    edadTxt = '5–8 meses';
-    warnTxt = 'Aún existe riesgo de acumulación relativo. Usa el extremo inferior del rango si hay dudas clínicas, fragilidad o recuperación lenta.';
-  }
-
-  if(edad === '9_12m'){
-    minMgKgHr = 0.40;
-    maxMgKgHr = 0.40;
-    edadTxt = '9–12 meses';
-    warnTxt = 'Mayor margen farmacocinético que en lactantes pequeños, pero sigue siendo fundamental vigilar clínica, bloqueo y necesidad real de rescates.';
-  }
-
-  if(edad === 'gt1a'){
-    minMgKgHr = 0.50;
-    maxMgKgHr = 0.50;
-    edadTxt = '>1 año';
-    warnTxt = 'En mayores de 1 año puedes usar el esquema habitual por peso. Si es adolescente, recuerda que en algunas referencias se usan límites de 0,3 mg/kg/h para bupi/levobupi y 0,4 mg/kg/h para ropi.';
-  }
-
-  const minMaxHoraMg = peso * minMgKgHr;
-  const maxMaxHoraMg = peso * maxMgKgHr;
-
-  let minInf = (minMaxHoraMg * 2 / 3);
-  let maxInf = (maxMaxHoraMg * 2 / 3);
-  let minBol = (minMaxHoraMg / 3);
-  let maxBol = (maxMaxHoraMg / 3);
-
-  let infusionCapped = false;
-  if(minInf > 5){ minInf = 5; infusionCapped = true; }
-  if(maxInf > 5){ maxInf = 5; infusionCapped = true; }
-
-  edadPcaTexto.textContent = edadTxt;
-  maxHoraTexto.textContent = formatOneOrRange(minMaxHoraMg, maxMaxHoraMg, ' mg/h');
-  infusionTexto.innerHTML = formatOneOrRange(minInf, maxInf, ' mL/h') + (infusionCapped ? '<br><span class="small-note">ajustada a 5 mL/h</span>' : '');
-  boloTexto.innerHTML = formatOneOrRange(minBol, maxBol, ' mL') + '<br><span class="small-note">lockout 30 min</span>';
-  pcaWarnText.textContent = warnTxt;
-}
-
-document.addEventListener('DOMContentLoaded', function(){
   document.getElementById('peso').addEventListener('input', updatePeriPed);
-
-  document.querySelectorAll('input[name="nivel"]').forEach(el => {
-    el.addEventListener('change', updatePeriPed);
-  });
-
-  document.querySelectorAll('input[name="edadgrp"]').forEach(el => {
-    el.addEventListener('change', updatePeriPed);
+  document.querySelectorAll('input[name="nivel"], input[name="edadgrp"]').forEach(function(input){
+    input.addEventListener('change', updatePeriPed);
   });
 
   updatePeriPed();
-});
+})();
+
+function toggleInfo(){
+  const box = document.getElementById("infoContent");
+  box.style.display = (box.style.display === "none" || box.style.display === "") ? "block" : "none";
+}
 </script>
 
-<?php require("footer.php"); ?>
+<?php include("footer.php"); ?>

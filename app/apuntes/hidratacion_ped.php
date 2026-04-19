@@ -1,701 +1,352 @@
 <?php
-
-$titulo_info = "Utilidad Clínica";
-$descripcion_info = "Apunte interactivo para estimar una estrategia inicial de fluidoterapia intraoperatoria pediátrica. Separa mantención basal y pérdidas por exposición quirúrgica, y agrega sugerencias docentes para fiebre, sangrado, diuresis y riesgo de hipoglicemia.";
-$formula = "Mantención basal por Holliday-Segar / regla 4-2-1. La pérdida por exposición quirúrgica se presenta como una estimación docente en mL/kg/h según rango etáreo y magnitud quirúrgica.";
-$referencias = array(
-  "1.- Holliday MA, Segar WE. The maintenance need for water in parenteral fluid therapy. Pediatrics. 1957.",
-  "2.- Concha Pinto M, Rattalino M. Fluidoterapia perioperatoria en niños. Rev Chil Anest. 2022.",
-  "3.- NICE Guideline NG29. Intravenous fluid therapy in children and young people in hospital.",
-  "4.- OpenAnesthesia. Perioperative Fluid Administration in Children."
-);
-
-$icono_apunte = "<i class='fa-solid fa-droplet pe-3 pt-2'></i>";
-$titulo_apunte = "Reposición Intraoperatoria Pediátrica";
-
+$titulo_pagina = "Hidratación pediátrica";
+$navbar_titulo = "Apuntes";
 $boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
 $boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
 
-require("head.php");
+$titulo_info = "Utilidad clínica";
+$descripcion_info = "Apunte interactivo para estimar una estrategia inicial de fluidoterapia intraoperatoria pediátrica. Separa mantención basal y pérdidas por exposición quirúrgica, y agrega sugerencias docentes para fiebre, sangrado, diuresis y riesgo de hipoglicemia.";
+$formula = "Mantención basal por Holliday-Segar / regla 4-2-1. La pérdida por exposición quirúrgica se presenta como una estimación docente en mL/kg/h según rango etáreo y magnitud quirúrgica.";
+$referencias = array(
+  "Holliday MA, Segar WE. The maintenance need for water in parenteral fluid therapy. Pediatrics. 1957.",
+  "Concha Pinto M, Rattalino M. Fluidoterapia perioperatoria en niños. Rev Chil Anest. 2022.",
+  "NICE Guideline NG29. Intravenous fluid therapy in children and young people in hospital.",
+  "OpenAnesthesia. Perioperative Fluid Administration in Children."
+);
+
+include("head.php");
 ?>
+<link rel="stylesheet" href="css/clinical-note-system.css?v=1">
+<script src="js/clinical-note-system.js?v=1"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
     <div class="container-fluid px-0 px-md-2">
-      <div class="fluid-shell">
+      <div class="note-shell px-1 px-md-0 py-0">
 
         <style>
-          :root{
-            --brand:#27458f;
-            --brand2:#3559b7;
-            --bg:#f4f7fb;
-            --soft:#f8fafc;
-            --line:#dfe7f2;
-            --text:#1f2a37;
-            --muted:#667085;
-            --good:#edf8f7;
-            --warn:#fff9e8;
-            --danger:#fff5f3;
-            --mint:#eef7ff;
-            --mint-border:#cfe1ff;
-            --orange:#fff4e8;
-            --orange-border:#f1c38b;
-            --yellow:#fff9e8;
-            --yellow-border:#ecd798;
-            --red:#fff1f2;
-            --red-border:#efc4be;
-          }
-
-          body{background:var(--bg);}
-          .fluid-shell{
-            max-width:1100px;
-            margin:0 auto;
-          }
-
-          .fluid-topbar{
-            background:linear-gradient(135deg,var(--brand),var(--brand2));
-            color:#fff;
-            border-radius:1.25rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            padding:1.15rem 1.25rem;
-            margin-bottom:1rem;
-            overflow:hidden;
-          }
-
-          .fluid-topbar h1{color:#fff;}
-
-          .section-card{
-            border:0;
-            border-radius:1rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            background:#fff;
-            overflow:hidden;
-            margin-bottom:1rem;
-          }
-
-          .section-title{
-            font-size:.8rem;
-            letter-spacing:.05em;
-            text-transform:uppercase;
-            color:var(--muted);
-          }
-
-          .pill{
-            display:inline-block;
-            padding:.2rem .55rem;
-            border-radius:999px;
-            font-size:.78rem;
-            background:#eef3ff;
-            color:#3559b7;
-            font-weight:600;
-          }
-
-          .subtle{
-            font-size:.94rem;
-            color:#5f6b76;
-          }
-
-          .small-note{
-            font-size:.82rem;
-            color:#667085;
-            line-height:1.45;
-          }
-
-          .footer-note{
-            font-size:.82rem;
-            color:#6c757d;
-          }
-
-          .info-box{
-            background:#fff;
-            border-radius:1rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            margin-bottom:1rem;
-            overflow:hidden;
-          }
-
-          .info-box-header{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            gap:1rem;
-            padding:1rem;
-          }
-
-          .info-box-title{
-            font-size:.8rem;
-            text-transform:uppercase;
-            color:#667085;
-            letter-spacing:.08em;
-          }
-
-          .info-toggle-btn{
-            border-radius:.6rem;
-            font-size:.85rem;
-            padding:.35rem .7rem;
-            white-space:nowrap;
-            background:#6c757d;
-            border:none;
-            color:white;
-            transition:.2s;
-          }
-
-          .info-toggle-btn:hover{
-            background:#5a6268;
-            color:white;
-          }
-
-          .info-box-content{
-            padding:1rem;
-            display:none;
-            animation:fadeIn .2s ease-in-out;
-            border-top:1px solid #e9eef5;
-          }
-
-          @keyframes fadeIn{
-            from{opacity:0; transform:translateY(-5px);}
-            to{opacity:1; transform:translateY(0);}
-          }
-
-          .calc-grid{
+          .fluid-choice-grid{
             display:grid;
-            grid-template-columns:repeat(2,1fr);
-            gap:1rem;
+            grid-template-columns:repeat(5,minmax(0,1fr));
+            gap:.75rem;
           }
-
-          .card-block{
-            border:1px solid var(--line);
-            border-radius:1rem;
-            background:var(--soft);
-            padding:1rem;
+          .fluid-choice-grid.fluid-exp-grid{
+            grid-template-columns:repeat(3,minmax(0,1fr));
           }
-
-          .form-label-lite{
-            font-size:.92rem;
-            font-weight:600;
-            color:var(--text);
-            margin-bottom:.35rem;
+          .fluid-option-input{
+            position:absolute;
+            opacity:0;
+            pointer-events:none;
           }
-
-          .choice-grid{
-            display:grid;
-            grid-template-columns:repeat(5,1fr);
-            gap:.65rem;
-          }
-
-          @media (max-width:900px){
-            .choice-grid{grid-template-columns:repeat(3,1fr);}
-          }
-
-          @media (max-width:576px){
-            .choice-grid{grid-template-columns:repeat(2,1fr);}
-          }
-
-          .choice-grid-3{
-            display:grid;
-            grid-template-columns:repeat(3,1fr);
-            gap:.65rem;
-          }
-
-          .choice-grid-3 .choice-btn{
-            min-height:88px;
-          }
-
-          .choice-check{display:none;}
-
-          .choice-btn{
+          .fluid-option{
             display:flex;
             flex-direction:column;
             align-items:center;
             justify-content:center;
             text-align:center;
-            min-height:78px;
-            border:1px solid #dfe7f2;
+            min-height:82px;
+            border:2px solid var(--note-line);
             background:#fff;
             border-radius:1rem;
-            padding:.8rem;
-            font-weight:700;
-            color:#1f2a37;
+            padding:.75rem .65rem;
             cursor:pointer;
             transition:.15s ease;
-            line-height:1.15;
-            box-shadow:0 4px 14px rgba(0,0,0,.04);
+            box-shadow:0 3px 10px rgba(15,23,42,.04);
+            gap:.25rem;
           }
-
-          .choice-btn i{
-            font-size:1.1rem;
-            margin-bottom:.35rem;
+          .fluid-option i{
             color:#3559b7;
+            font-size:1.05rem;
           }
-
-          .choice-check:checked + .choice-btn{
-            background:#eef3ff;
-            border-color:#9fb9f8;
-            color:#27458f;
-            box-shadow:0 0 0 2px rgba(39,69,143,.05) inset, 0 8px 18px rgba(0,0,0,.06);
+          .fluid-option-input:checked + .fluid-option{
+            box-shadow:0 0 0 3px rgba(47,128,237,.14), 0 8px 18px rgba(15,23,42,.10);
+            border:4px solid var(--note-selected);
             transform:translateY(-1px);
           }
+          .fluid-option-title{
+            font-size:.92rem;
+            font-weight:800;
+            line-height:1.15;
+            color:var(--note-text);
+            margin:0;
+          }
+          .fluid-option-sub{
+            font-size:.76rem;
+            line-height:1.22;
+            color:var(--note-muted);
+            margin:0;
+            font-weight:600;
+          }
 
-          .result-row{
-            display:flex;
-            align-items:flex-start;
-            justify-content:space-between;
-            gap:1rem;
-            padding:.9rem 1rem;
-            border:1px solid #e6e9ef;
+          .fluid-plan-line{
+            padding:.75rem .85rem;
             border-radius:.9rem;
             background:#fff;
-            margin-bottom:.65rem;
+            border:1px solid var(--note-line-strong);
+            margin-bottom:.6rem;
           }
+          .fluid-plan-line:last-child{margin-bottom:0;}
 
-          .result-row:last-child{margin-bottom:0;}
-
-          .result-name{
-            font-weight:700;
-            color:#1f2a37;
-            line-height:1.2;
-          }
-
-          .result-note{
-            font-size:.82rem;
-            color:#667085;
-            margin-top:.2rem;
-            line-height:1.4;
-          }
-
-          .result-value{
-            min-width:140px;
-            text-align:right;
-            font-weight:800;
-            color:#27458f;
-            line-height:1.25;
-          }
-
-          .meta-grid{
+          .fluid-safety-list{
             display:grid;
-            grid-template-columns:repeat(3,1fr);
             gap:.75rem;
           }
-
-          .meta-card{
-            background:#fff;
-            border:1px solid #e6e9ef;
+          .fluid-safety-item{
+            display:flex;
+            align-items:flex-start;
+            gap:.8rem;
+            border:1px solid #ead38a;
             border-radius:1rem;
-            padding:.9rem;
+            background:#fff9e8;
+            padding:.95rem 1rem;
           }
-
-          .meta-label{
-            font-size:.76rem;
-            text-transform:uppercase;
-            letter-spacing:.06em;
-            color:#667085;
-            margin-bottom:.25rem;
+          .fluid-safety-mark{
+            flex:0 0 auto;
+            width:34px;
+            height:34px;
+            border-radius:999px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:#f4c542;
+            color:#fff;
+            margin-top:.08rem;
           }
-
-          .meta-value{
+          .fluid-safety-copy{min-width:0;flex:1;}
+          .fluid-safety-title{
             font-size:1rem;
-            font-weight:700;
-            color:#1f2a37;
-            line-height:1.35;
-          }
-
-          .good-box{
-            background:var(--good);
-            border:1px solid #cfe8e6;
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .warn-box{
-            background:var(--warn);
-            border:1px solid var(--yellow-border);
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .danger-box{
-            background:var(--danger);
-            border:1px solid var(--red-border);
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .mint-box{
-            background:var(--mint);
-            border:1px solid var(--mint-border);
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .orange-box{
-            background:var(--orange);
-            border:1px solid var(--orange-border);
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .yellow-box{
-            background:var(--yellow);
-            border:1px solid var(--yellow-border);
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .red-box{
-            background:var(--red);
-            border:1px solid var(--red-border);
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .tip-list{
-            margin:0;
-            padding-left:1.1rem;
-          }
-
-          .tip-list li{margin-bottom:.45rem;}
-
-          @media (max-width:900px){
-            .choice-grid{grid-template-columns:repeat(3,1fr);}
-          }
-
-          @media (max-width:768px){
-            .calc-grid{grid-template-columns:1fr;}
-            .meta-grid{grid-template-columns:1fr;}
-            .result-row{flex-direction:column;align-items:flex-start;}
-            .result-value{text-align:left;min-width:0;}
-          }
-
-          @media (max-width:576px){
-            .choice-grid{grid-template-columns:repeat(2,1fr);}
-            .choice-grid-3{grid-template-columns:1fr;}
-            .info-box-header{flex-direction:row;}
-            .info-toggle-btn{margin-left:auto;}
-          }
-          .choice-sub{
-            display:block;
-            margin-top:.28rem;
-            font-size:.72rem;
-            font-weight:500;
-            line-height:1.25;
-            color:#667085;
-          }
-
-          .choice-check:checked + .choice-btn .choice-sub{
-            color:#5b6f9f;
-          }
-
-          .aporte-final-card{
-            background:#eef4ff;
-            border:3px solid #9fb9f8;
-            border-radius:1.2rem;
-            padding:1.15rem 1.2rem;
-            text-align:center;
-            box-shadow:0 8px 20px rgba(39,69,143,.08);
-          }
-
-          .aporte-final-label{
-            font-size:.85rem;
-            text-transform:uppercase;
-            letter-spacing:.06em;
-            color:#5d6b85;
-            font-weight:700;
-            margin-bottom:.25rem;
-          }
-
-          .aporte-final-note{
-            font-size:.9rem;
-            color:#667085;
-            margin-bottom:.55rem;
-          }
-
-          .aporte-final-value{
-            font-size:2rem;
             font-weight:800;
-            line-height:1;
-            color:#27458f;
+            line-height:1.22;
+            color:var(--note-text);
+            margin-bottom:.15rem;
+          }
+          .fluid-safety-note{
+            margin:0;
+            font-size:.9rem;
+            line-height:1.4;
+            color:var(--note-muted);
           }
 
-          .calc-grid-single{
-            display:grid;
-            grid-template-columns:1fr;
-            gap:1rem;
+          @media (max-width:992px){
+            .fluid-choice-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+          }
+          @media (max-width:768px){
+            .fluid-choice-grid,
+            .fluid-choice-grid.fluid-exp-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+          }
+          @media (max-width:420px){
+            .fluid-choice-grid,
+            .fluid-choice-grid.fluid-exp-grid{grid-template-columns:1fr;}
           }
         </style>
 
-        <div class="fluid-topbar">
-          <div class="d-flex justify-content-between align-items-start gap-3">
-            <div>
-              <div class="small opacity-75 mb-1">APP clínica • cálculo automático</div>
-              <h1 class="h3 mb-2">Reposición Intraoperatoria Pediátrica</h1>
-              <div class="subtle text-white-50">Mantención basal y pérdidas por exposición quirúrgica, con sugerencias de manejo perioperatorio.</div>
-            </div>
-            <span class="pill bg-light text-dark">Pediatría</span>
-          </div>
+        <div class="note-hero mb-3">
+          <div class="note-hero-kicker">APP CLÍNICA · PEDIATRÍA · FLUIDOTERAPIA</div>
+          <h2>Reposición intraoperatoria pediátrica</h2>
+          <div class="note-hero-subtitle">Calcula mantención basal, estima pérdidas por exposición quirúrgica y obtiene un aporte horario inicial orientativo.</div>
         </div>
 
-        <div class="info-box">
+        <div class="info-box mb-3">
           <div class="info-box-header">
             <div class="info-box-title">Información</div>
             <button type="button" onclick="toggleInfo()" class="btn btn-sm info-toggle-btn">Mostrar / ocultar</button>
           </div>
-
           <div id="infoContent" class="info-box-content">
-            <?php echo $descripcion_info; ?>
-
+            <p class="mb-2"><?php echo $descripcion_info; ?></p>
             <?php if(!empty($formula)){ ?>
               <hr>
               <b>Comentario:</b><br>
               <?php echo $formula; ?>
             <?php } ?>
-
+            <hr>
+            <b>Fundamento docente:</b>
+            <p class="mb-0 mt-2">La planificación perioperatoria debe considerar requerimientos basales y pérdidas derivadas de la cirugía. El ayuno habitual no se repone de rutina y el “tercer espacio” no debe usarse como indicación automática de volumen adicional.</p>
             <?php if(!empty($referencias)){ ?>
               <hr>
               <b>Referencias:</b>
-              <ul class="mt-2 mb-0">
+              <ul class="mb-0 mt-2">
                 <?php foreach($referencias as $ref){ ?>
-                  <li><?php echo $ref; ?></li>
+                  <li class="mb-2"><?php echo $ref; ?></li>
                 <?php } ?>
               </ul>
             <?php } ?>
+          </div>
+        </div>
 
-            <hr>
-            <div class="small-note">
-              Fundamento docente: la planificación perioperatoria debe considerar requerimientos basales y pérdidas derivadas de la cirugía; el ayuno habitual no debe reponerse de rutina y el “tercer espacio” no debe usarse como indicación automática de volumen adicional.  [oai_citation:3‡revchilanestv5114061209 
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Datos de entrada</div>
+
+            <div class="note-input-group mb-3">
+              <label class="note-label">Peso</label>
+              <div class="note-input-inline">
+                <input class="note-input" type="text" inputmode="decimal" id="peso">
+                <div class="note-input-unit">kg</div>
+              </div>
+            </div>
+
+            <div class="note-section-label">Rango etáreo</div>
+            <div class="fluid-choice-grid mb-3">
+              <label>
+                <input class="fluid-option-input" type="radio" name="edadgrp" value="rn" checked>
+                <div class="fluid-option">
+                  <i class="fa-solid fa-baby"></i>
+                  <div class="fluid-option-title">RN</div>
+                </div>
+              </label>
+              <label>
+                <input class="fluid-option-input" type="radio" name="edadgrp" value="1_4m">
+                <div class="fluid-option">
+                  <i class="fa-solid fa-baby"></i>
+                  <div class="fluid-option-title">1–4 m</div>
+                </div>
+              </label>
+              <label>
+                <input class="fluid-option-input" type="radio" name="edadgrp" value="5_8m">
+                <div class="fluid-option">
+                  <i class="fa-solid fa-baby-carriage"></i>
+                  <div class="fluid-option-title">5–8 m</div>
+                </div>
+              </label>
+              <label>
+                <input class="fluid-option-input" type="radio" name="edadgrp" value="9_12m">
+                <div class="fluid-option">
+                  <i class="fa-solid fa-child-reaching"></i>
+                  <div class="fluid-option-title">9–12 m</div>
+                </div>
+              </label>
+              <label>
+                <input class="fluid-option-input" type="radio" name="edadgrp" value="gt1a">
+                <div class="fluid-option">
+                  <i class="fa-solid fa-child"></i>
+                  <div class="fluid-option-title">&gt;1 año</div>
+                </div>
+              </label>
+            </div>
+
+            <div class="note-section-label">Exposición quirúrgica</div>
+            <div class="fluid-choice-grid fluid-exp-grid">
+              <label>
+                <input class="fluid-option-input" type="radio" name="exposicion" value="minima" checked>
+                <div class="fluid-option">
+                  <div class="fluid-option-title">Mínima</div>
+                  <div class="fluid-option-sub">Superficial, corta</div>
+                </div>
+              </label>
+              <label>
+                <input class="fluid-option-input" type="radio" name="exposicion" value="moderada">
+                <div class="fluid-option">
+                  <div class="fluid-option-title">Moderada</div>
+                  <div class="fluid-option-sub">Abdominal simple / ORL mayor</div>
+                </div>
+              </label>
+              <label>
+                <input class="fluid-option-input" type="radio" name="exposicion" value="mayor">
+                <div class="fluid-option">
+                  <div class="fluid-option-title">Mayor</div>
+                  <div class="fluid-option-sub">Tórax / laparotomía amplia</div>
+                </div>
+              </label>
             </div>
           </div>
         </div>
 
-        <!-- A -->
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">A. Datos de entrada</div>
-
-<div class="calc-grid-single">
-              <div class="card-block">
-                <label class="form-label-lite">Peso</label>
-                <div class="input-group mb-3">
-                  <input class="form-control calc-trigger" type="number" step="0.1" id="peso" value="">
-                  <span class="input-group-text">kg</span>
-                </div>
-
-
-
-
-                <label class="form-label-lite">Rango etáreo</label>
-                <div class="choice-grid">
-                  <div>
-                    <input class="choice-check" type="radio" name="edadgrp" id="edad_rn" value="rn" checked>
-                    <label class="choice-btn" for="edad_rn">
-                      <i class="fa-solid fa-baby"></i>
-                      RN
-                    </label>
-                  </div>
-                  <div>
-                    <input class="choice-check" type="radio" name="edadgrp" id="edad_1_4m" value="1_4m">
-                    <label class="choice-btn" for="edad_1_4m">
-                      <i class="fa-solid fa-baby"></i>
-                      1–4 m
-                    </label>
-                  </div>
-                  <div>
-                    <input class="choice-check" type="radio" name="edadgrp" id="edad_5_8m" value="5_8m">
-                    <label class="choice-btn" for="edad_5_8m">
-                      <i class="fa-solid fa-baby-carriage"></i>
-                      5–8 m
-                    </label>
-                  </div>
-                  <div>
-                    <input class="choice-check" type="radio" name="edadgrp" id="edad_9_12m" value="9_12m">
-                    <label class="choice-btn" for="edad_9_12m">
-                      <i class="fa-solid fa-child-reaching"></i>
-                      9–12 m
-                    </label>
-                  </div>
-                  <div>
-                    <input class="choice-check" type="radio" name="edadgrp" id="edad_gt1a" value="gt1a">
-                    <label class="choice-btn" for="edad_gt1a">
-                      <i class="fa-solid fa-child"></i>
-                      &gt;1 año
-                    </label>
-                  </div>
-                </div>
-                <div class="small-note mt-2">
-                  Los rangos etáreos ajustan la interpretación clínica, el riesgo metabólico y la estimación orientativa de pérdidas por exposición.
-                </div>
-
-
-
-
-              <label class="form-label-lite pt-3">Exposición quirúrgica</label>
-              <div class="choice-grid">
-                <div>
-                  <input class="choice-check" type="radio" name="exposicion" id="exp_min" value="minima" checked>
-                  <label class="choice-btn" for="exp_min">
-                    <span>Mínima</span>
-                    <small class="choice-sub">Superficial, corta, escasa exposición</small>
-                  </label>
-                </div>
-
-                <div>
-                  <input class="choice-check" type="radio" name="exposicion" id="exp_mod" value="moderada">
-                  <label class="choice-btn" for="exp_mod">
-                    <span>Moderada</span>
-                    <small class="choice-sub">Abdominal simple, urológica, ORL mayor</small>
-                  </label>
-                </div>
-
-                <div>
-                  <input class="choice-check" type="radio" name="exposicion" id="exp_may" value="mayor">
-                  <label class="choice-btn" for="exp_may">
-                    <span>Mayor</span>
-                    <small class="choice-sub">Laparotomía amplia, tórax, cirugía mayor prolongada</small>
-                  </label>
-                </div>
-              </div>
-
-
+        <div class="note-summary-box mb-3">
+          <div class="note-summary-box-title">Resumen</div>
+          <div id="summaryNarrative" class="note-summary-box-text">Ingresa peso para calcular mantención basal, pérdida por exposición y aporte horario orientativo.</div>
+          <div class="note-summary-grid-2">
+            <div class="note-summary-item">
+              <div class="note-summary-k">Peso</div>
+              <div id="resPeso" class="note-summary-v">-</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Rango etáreo</div>
+              <div id="resEdad" class="note-summary-v">RN</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Exposición</div>
+              <div id="resExp" class="note-summary-v">Mínima</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Riesgo glucosa</div>
+              <div id="resGlucosa" class="note-summary-v">Alto / valorar</div>
             </div>
           </div>
         </div>
 
-        <!-- B -->
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">B. Resumen de datos</div>
-
-            <div class="meta-grid">
-              <div class="meta-card">
-                <div class="meta-label">Peso</div>
-                <div id="resPeso" class="meta-value">-</div>
-              </div>
-              <div class="meta-card">
-                <div class="meta-label">Rango etáreo</div>
-                <div id="resEdad" class="meta-value">RN</div>
-              </div>
-              <div class="meta-card">
-                <div class="meta-label">Exposición quirúrgica</div>
-                <div id="resExp" class="meta-value">Mínima</div>
-              </div>
-            </div>
+        <div class="note-result-grid-2 mb-3">
+          <div class="note-result-card">
+            <div class="note-result-card-label">Mantención basal</div>
+            <div id="mantBasal" class="note-result-card-value">-</div>
+            <div class="note-result-card-note">Regla de Holliday-Segar / 4-2-1.</div>
+          </div>
+          <div class="note-result-card">
+            <div class="note-result-card-label">Pérdida por exposición</div>
+            <div id="perdExp" class="note-result-card-value">-</div>
+            <div id="expNota" class="note-result-card-note">Estimación orientativa en mL/kg/h según edad y magnitud quirúrgica.</div>
           </div>
         </div>
 
-        <!-- C -->
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">C. Mantención basal</div>
+        <div class="note-interpretation mb-3">
+          <div class="note-interpretation-label">Resultado principal</div>
+          <div id="aporteHoraBig" class="note-interpretation-main">-</div>
+          <div id="aporteSoft" class="note-interpretation-soft">Mantención basal + exposición quirúrgica. Ajustar a respuesta clínica, pérdidas reales y protocolo institucional.</div>
 
-            <div class="mint-box">
-              <div class="result-row">
-                <div>
-                  <div class="result-name">Mantención basal</div>
-                  <div class="result-note">Regla de Holliday-Segar / 4-2-1.</div>
-                </div>
-                <div id="mantBasal" class="result-value">-</div>
-              </div>
-
-              <div class="result-row">
-                <div>
-                  <div class="result-name">Fluido de mantención sugerido</div>
-                  <div class="result-note">En general, solución balanceada; glucosa según edad/riesgo metabólico.</div>
-                </div>
-                <div id="fluidoMant" class="result-value">-</div>
-              </div>
-            </div>
+          <div id="drugPlan" class="mt-3 text-start">
+            <div class="fluid-plan-line"><strong>Fluido de mantención sugerido:</strong> <span id="fluidoMant">-</span></div>
+            <div class="fluid-plan-line"><strong>Glucosa:</strong> <span id="glucosaNota">Ingresa un peso para emitir recomendación.</span></div>
           </div>
         </div>
 
-        <!-- D -->
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">D. Pérdida por exposición quirúrgica</div>
-
-            <div class="good-box">
-              <div class="result-row">
-                <div>
-                  <div class="result-name">Pérdida por exposición</div>
-                  <div id="expNota" class="result-note">Estimación orientativa en mL/kg/h según edad y magnitud quirúrgica.</div>
-                </div>
-                <div id="perdExp" class="result-value">-</div>
-              </div>
-
-
-
-            </div>
-          </div>
+        <div class="note-warning mb-3">
+          <strong>Advertencia clínica:</strong>
+          <div id="warningText" class="mt-2">La estimación es orientativa. Sangrado, fiebre, diuresis, inestabilidad hemodinámica, comorbilidad y laboratorio deben manejarse por separado.</div>
         </div>
 
-
-
-<div class="section-card">
-  <div class="p-3 p-md-4">
-    <div class="section-title mb-3">Resultado principal</div>
-
-    <div class="aporte-final-card">
-      <div class="aporte-final-label">Aporte horario propuesto</div>
-      <div class="aporte-final-note">Mantención basal + exposición quirúrgica</div>
-      <div id="aporteHoraBig" class="aporte-final-value">-</div>
-    </div>
-  </div>
-</div>
-
-
-        <!-- E -->
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">E. Sugerencias de manejo</div>
-
-            <div class="orange-box mb-3">
-              <strong>Pérdidas por fiebre</strong><br>
-              <div class="small-note mt-2">
-                Como referencia práctica, puedes considerar agregar aproximadamente <strong>10% del mantenimiento por cada °C sobre 37</strong>. No debe transformarse en una regla rígida: reinterpretar según contexto clínico, duración quirúrgica y monitorización.
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Sugerencias de manejo</div>
+            <div class="fluid-safety-list">
+              <div class="fluid-safety-item">
+                <div class="fluid-safety-mark"><i class="fa-solid fa-temperature-high"></i></div>
+                <div class="fluid-safety-copy">
+                  <div class="fluid-safety-title">Pérdidas por fiebre</div>
+                  <p class="fluid-safety-note">Como referencia práctica, considerar alrededor de 10% del mantenimiento por cada °C sobre 37. Reinterpretar según contexto y duración quirúrgica.</p>
+                </div>
               </div>
-            </div>
-
-            <div class="red-box mb-3">
-              <strong>Pérdidas por sangrado</strong><br>
-              <div class="small-note mt-2">
-                Deben manejarse por separado. El sangrado requiere un plan específico de reposición con cristaloides/coloides/hemoderivados según magnitud, velocidad, volemia estimada, Hb/Hto y condición clínica. El artículo recomienda un plan específico cuando existe sangrado importante.  
+              <div class="fluid-safety-item">
+                <div class="fluid-safety-mark"><i class="fa-solid fa-droplet"></i></div>
+                <div class="fluid-safety-copy">
+                  <div class="fluid-safety-title">Pérdidas por sangrado</div>
+                  <p class="fluid-safety-note">El sangrado se maneja por separado con plan específico de reposición según magnitud, velocidad, volemia estimada, Hb/Hto y condición clínica.</p>
+                </div>
               </div>
-            </div>
-
-            <div class="yellow-box mb-3">
-              <strong>Pérdidas por diuresis</strong><br>
-              <div class="small-note mt-2">
-                No perseguir diuresis “bonita” con volumen automático. La antidiuresis puede ser una respuesta fisiológica al trauma quirúrgico; una oliguria aislada no obliga a cargar volumen sin valorar perfusión, hemodinamia y contexto.  
+              <div class="fluid-safety-item">
+                <div class="fluid-safety-mark"><i class="fa-solid fa-filter"></i></div>
+                <div class="fluid-safety-copy">
+                  <div class="fluid-safety-title">Diuresis</div>
+                  <p class="fluid-safety-note">No perseguir diuresis “bonita” con volumen automático. La antidiuresis puede ser respuesta fisiológica al trauma quirúrgico.</p>
+                </div>
               </div>
-            </div>
-
-            <div class="warn-box">
-              <strong>Glucosa e hipoglicemia</strong><br>
-              <div id="glucosaNota" class="small-note mt-2">
-                -
+              <div class="fluid-safety-item">
+                <div class="fluid-safety-mark"><i class="fa-solid fa-cubes-stacked"></i></div>
+                <div class="fluid-safety-copy">
+                  <div class="fluid-safety-title">Glucosa e hipoglicemia</div>
+                  <p class="fluid-safety-note">RN, prematuros, PEG, hijos de madre diabética, NPT, hipercatabolismo y falla hepática requieren mayor vigilancia y control de glicemia.</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- F -->
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">F. Tips docentes</div>
-
-            <div class="good-box">
-              <ul class="tip-list">
-                <li>No se reponen pérdidas por ayuno de rutina en el paciente pediátrico sano que se opera temprano en la mañana; considerar reposición solo si existe ayuno prolongado, deshidratación o pérdidas anormales. </li>
-                <li>En general no se repone el “tercer espacio”. Ese enfoque favorece la sobrehidratación y no debe usarse como indicación automática de volumen. </li>
-                <li>En la mayoría de las cirugías pediátricas, la glucosa puede no ser necesaria; sí debe considerarse en RN, prematuros, PEG, hijos de madre diabética, hipercatabolismo, NPT y falla hepática.  </li>
-                <li>Las pérdidas no hemáticas importantes deben reevaluarse con frecuencia. La cirugía simple y superficial puede requerir poco o ningún aporte adicional, mientras que la cirugía intracavitaria o mayor exige un plan más activo.</li>
-                <li>La meta no es “dar volumen”, sino mantener homeostasis, perfusión y un intravascular adecuado evitando tanto déficit como exceso.</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="footer-note">
-          Herramienta docente y de apoyo clínico. Ajustar siempre al contexto, pérdidas reales, hemodinamia, laboratorio y protocolo institucional.
+        <div class="note-teaching-wrap">
+          <div class="note-teaching-title">Perlas docentes</div>
+          <div class="note-teaching-main">La meta no es “dar volumen”, sino mantener homeostasis y perfusión evitando déficit y exceso</div>
+          <div class="note-tips"><strong>Qué hacer:</strong> separa mantención, exposición quirúrgica, sangrado y pérdidas reales. Reevalúa con signos clínicos, monitorización y laboratorio.</div>
+          <div class="note-tips"><strong>Qué evitar:</strong> reponer ayuno de rutina, perseguir diuresis aislada con bolos automáticos o usar “tercer espacio” como indicación rígida.</div>
+          <div class="note-tips"><strong>Perla:</strong> en cirugía simple y superficial, el aporte adicional puede ser mínimo; en cirugía intracavitaria o prolongada, el plan debe ser más activo.</div>
+          <div class="note-tips mb-0"><strong>Mensaje final:</strong> la fórmula inicia la conversación; el paciente y la cirugía la corrigen.</div>
         </div>
 
       </div>
@@ -704,127 +355,136 @@ require("head.php");
 </div>
 
 <script>
-function toggleInfo(){
-  let box = document.getElementById("infoContent");
-  box.style.display = (box.style.display === "none" || box.style.display === "") ? "block" : "none";
-}
+(function(){
+  const CNS = window.ClinicalNoteSystem;
+  const pesoInput = document.getElementById('peso');
 
-function getSelected(name){
-  const el = document.querySelector('input[name="' + name + '"]:checked');
-  return el ? el.value : null;
-}
-
-function round1(num){
-  return Math.round(num * 10) / 10;
-}
-
-function maintenance421(weight){
-  if(isNaN(weight) || weight <= 0) return 0;
-  if(weight <= 10) return weight * 4;
-  if(weight <= 20) return 40 + (weight - 10) * 2;
-  return 60 + (weight - 20);
-}
-
-function getAgeMeta(age){
-  const map = {
-    rn: {
-      label:'RN',
-      glucosa:true,
-      glucosaMsg:'RN: mayor riesgo de hipoglicemia. Considerar solución balanceada con glucosa y control seriado de glicemia.',
-      exp:{ minima:0.5, moderada:2.0, mayor:4.0 }
-    },
-    '1_4m': {
-      label:'1–4 m',
-      glucosa:true,
-      glucosaMsg:'1–4 meses: valorar glucosa según contexto, duración quirúrgica, ayuno y riesgo metabólico.',
-      exp:{ minima:0.5, moderada:2.0, mayor:4.0 }
-    },
-    '5_8m': {
-      label:'5–8 m',
-      glucosa:false,
-      glucosaMsg:'5–8 meses: en general no obligatoria de rutina; considerar si hay riesgo metabólico o cirugía prolongada.',
-      exp:{ minima:1.0, moderada:3.0, mayor:5.0 }
-    },
-    '9_12m': {
-      label:'9–12 m',
-      glucosa:false,
-      glucosaMsg:'9–12 meses: generalmente no obligatoria de rutina; individualizar según ayuno y contexto.',
-      exp:{ minima:1.0, moderada:3.0, mayor:5.0 }
-    },
-    gt1a: {
-      label:'>1 año',
-      glucosa:false,
-      glucosaMsg:'>1 año: en la mayoría de las cirugías pediátricas no se requiere glucosa de rutina, salvo factores de riesgo o procedimientos prolongados.',
-      exp:{ minima:1.0, moderada:4.0, mayor:6.0 }
-    }
-  };
-  return map[age] || map.rn;
-}
-
-function getExpLabel(exp){
-  if(exp === 'minima') return 'Mínima';
-  if(exp === 'moderada') return 'Moderada';
-  return 'Mayor';
-}
-
-function updateFluidPed(){
-  const peso = parseFloat(document.getElementById('peso').value);
-  const edad = getSelected('edadgrp') || 'rn';
-  const exposicion = getSelected('exposicion') || 'minima';
-
-  const resPeso = document.getElementById('resPeso');
-  const resEdad = document.getElementById('resEdad');
-  const resExp = document.getElementById('resExp');
-
-  const mantBasal = document.getElementById('mantBasal');
-  const fluidoMant = document.getElementById('fluidoMant');
-  const expNota = document.getElementById('expNota');
-  const perdExp = document.getElementById('perdExp');
-  const aporteHoraBig = document.getElementById('aporteHoraBig');
-  const glucosaNota = document.getElementById('glucosaNota');
-
-  const edadMeta = getAgeMeta(edad);
-
-  resPeso.textContent = (!isNaN(peso) && peso > 0) ? round1(peso).toString().replace('.', ',') + ' kg' : '-';
-  resEdad.textContent = edadMeta.label;
-  resExp.textContent = getExpLabel(exposicion);
-
-  if(isNaN(peso) || peso <= 0){
-    mantBasal.textContent = '-';
-    fluidoMant.textContent = '-';
-    perdExp.textContent = '-';
-    aporteHoraBig.textContent = '-';
-    expNota.textContent = 'Estimación orientativa en mL/kg/h según edad y magnitud quirúrgica.';
-    glucosaNota.textContent = 'Ingresa un peso para calcular la mantención basal y el aporte horario.';
-    return;
+  function parseLocal(value){
+    if(CNS && typeof CNS.parseDecimal === 'function') return CNS.parseDecimal(value);
+    const n = Number(String(value || '').replace(',', '.'));
+    return Number.isFinite(n) ? n : null;
   }
 
-  const basal = maintenance421(peso);
-  const expRate = edadMeta.exp[exposicion];
-  const expMlHr = peso * expRate;
-  const aporte = basal + expMlHr;
+  function fmt(value, decimals){
+    if(CNS && typeof CNS.formatNumber === 'function') return CNS.formatNumber(value, decimals);
+    return Number(value).toLocaleString('es-CL', {maximumFractionDigits: decimals});
+  }
 
-  mantBasal.innerHTML = round1(basal).toString().replace('.', ',') + ' mL/h';
-  perdExp.innerHTML = round1(expMlHr).toString().replace('.', ',') + ' mL/h';
-  aporteHoraBig.innerHTML = round1(aporte).toString().replace('.', ',') + ' <span style="font-size:1.1rem;font-weight:700;">mL/h</span>';
-  expNota.textContent = 'Estimación orientativa: ' + round1(expRate).toString().replace('.', ',') + ' mL/kg/h según edad y magnitud quirúrgica.';
-  fluidoMant.textContent = edadMeta.glucosa ? 'Balanceada + valorar glucosa' : 'Solución balanceada isotónica';
-  glucosaNota.textContent = edadMeta.glucosaMsg;
-}
+  function getSelected(name){
+    const el = document.querySelector('input[name="' + name + '"]:checked');
+    return el ? el.value : null;
+  }
 
-document.addEventListener('DOMContentLoaded', function(){
-  document.getElementById('peso').addEventListener('input', updateFluidPed);
+  function round1(num){
+    return Math.round(num * 10) / 10;
+  }
 
-  document.querySelectorAll('input[name="edadgrp"]').forEach(el => {
-    el.addEventListener('change', updateFluidPed);
-  });
+  function maintenance421(weight){
+    if(!weight || weight <= 0) return 0;
+    if(weight <= 10) return weight * 4;
+    if(weight <= 20) return 40 + (weight - 10) * 2;
+    return 60 + (weight - 20);
+  }
 
-  document.querySelectorAll('input[name="exposicion"]').forEach(el => {
+  function getAgeMeta(age){
+    const map = {
+      rn: {
+        label:'RN',
+        glucosaLabel:'Alto / valorar',
+        glucosa:true,
+        glucosaMsg:'RN: mayor riesgo de hipoglicemia. Considerar solución balanceada con glucosa y control seriado de glicemia.',
+        exp:{ minima:0.5, moderada:2.0, mayor:4.0 }
+      },
+      '1_4m': {
+        label:'1–4 m',
+        glucosaLabel:'Valorar',
+        glucosa:true,
+        glucosaMsg:'1–4 meses: valorar glucosa según contexto, duración quirúrgica, ayuno y riesgo metabólico.',
+        exp:{ minima:0.5, moderada:2.0, mayor:4.0 }
+      },
+      '5_8m': {
+        label:'5–8 m',
+        glucosaLabel:'Individualizar',
+        glucosa:false,
+        glucosaMsg:'5–8 meses: en general no obligatoria de rutina; considerar si hay riesgo metabólico o cirugía prolongada.',
+        exp:{ minima:1.0, moderada:3.0, mayor:5.0 }
+      },
+      '9_12m': {
+        label:'9–12 m',
+        glucosaLabel:'Individualizar',
+        glucosa:false,
+        glucosaMsg:'9–12 meses: generalmente no obligatoria de rutina; individualizar según ayuno y contexto.',
+        exp:{ minima:1.0, moderada:3.0, mayor:5.0 }
+      },
+      gt1a: {
+        label:'>1 año',
+        glucosaLabel:'Habitualmente no',
+        glucosa:false,
+        glucosaMsg:'>1 año: en la mayoría de las cirugías pediátricas no se requiere glucosa de rutina, salvo factores de riesgo o procedimientos prolongados.',
+        exp:{ minima:1.0, moderada:4.0, mayor:6.0 }
+      }
+    };
+    return map[age] || map.rn;
+  }
+
+  function getExpLabel(exp){
+    if(exp === 'minima') return 'Mínima';
+    if(exp === 'moderada') return 'Moderada';
+    return 'Mayor';
+  }
+
+  function updateFluidPed(){
+    const peso = parseLocal(pesoInput.value);
+    const edad = getSelected('edadgrp') || 'rn';
+    const exposicion = getSelected('exposicion') || 'minima';
+    const edadMeta = getAgeMeta(edad);
+
+    document.getElementById('resPeso').textContent = peso && peso > 0 ? fmt(peso,1) + ' kg' : '-';
+    document.getElementById('resEdad').textContent = edadMeta.label;
+    document.getElementById('resExp').textContent = getExpLabel(exposicion);
+    document.getElementById('resGlucosa').textContent = edadMeta.glucosaLabel;
+
+    if(!peso || peso <= 0){
+      document.getElementById('summaryNarrative').textContent = 'Ingresa peso para calcular mantención basal, pérdida por exposición y aporte horario orientativo.';
+      document.getElementById('mantBasal').textContent = '-';
+      document.getElementById('perdExp').textContent = '-';
+      document.getElementById('aporteHoraBig').textContent = '-';
+      document.getElementById('aporteSoft').textContent = 'Mantención basal + exposición quirúrgica. Ajustar a respuesta clínica, pérdidas reales y protocolo institucional.';
+      document.getElementById('expNota').textContent = 'Estimación orientativa en mL/kg/h según edad y magnitud quirúrgica.';
+      document.getElementById('fluidoMant').textContent = '-';
+      document.getElementById('glucosaNota').textContent = 'Ingresa un peso para emitir recomendación.';
+      return;
+    }
+
+    const basal = maintenance421(peso);
+    const expRate = edadMeta.exp[exposicion];
+    const expMlHr = peso * expRate;
+    const aporte = basal + expMlHr;
+
+    document.getElementById('summaryNarrative').textContent =
+      edadMeta.label + ', ' + fmt(peso,1) + ' kg, exposición ' + getExpLabel(exposicion).toLowerCase() + '. Aporte horario inicial orientativo: ' + fmt(round1(aporte),1) + ' mL/h.';
+
+    document.getElementById('mantBasal').textContent = fmt(round1(basal),1) + ' mL/h';
+    document.getElementById('perdExp').textContent = fmt(round1(expMlHr),1) + ' mL/h';
+    document.getElementById('aporteHoraBig').textContent = fmt(round1(aporte),1) + ' mL/h';
+    document.getElementById('aporteSoft').textContent = 'Aporte horario propuesto = mantención basal ' + fmt(round1(basal),1) + ' mL/h + exposición ' + fmt(round1(expMlHr),1) + ' mL/h.';
+    document.getElementById('expNota').textContent = 'Estimación orientativa: ' + fmt(expRate,1) + ' mL/kg/h según edad y magnitud quirúrgica.';
+    document.getElementById('fluidoMant').textContent = edadMeta.glucosa ? 'Balanceada + valorar glucosa' : 'Solución balanceada isotónica';
+    document.getElementById('glucosaNota').textContent = edadMeta.glucosaMsg;
+  }
+
+  pesoInput.addEventListener('input', updateFluidPed);
+  document.querySelectorAll('input[name="edadgrp"], input[name="exposicion"]').forEach(function(el){
     el.addEventListener('change', updateFluidPed);
   });
 
   updateFluidPed();
-});
+})();
+
+function toggleInfo(){
+  const box = document.getElementById("infoContent");
+  box.style.display = (box.style.display === "none" || box.style.display === "") ? "block" : "none";
+}
 </script>
 
-<?php require("footer.php"); ?>
+<?php include("footer.php"); ?>

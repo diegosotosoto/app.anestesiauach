@@ -1,130 +1,218 @@
 <?php
-
-$titulo_info = "Utilidad Clínica";
-$descripcion_info = "El Índice de Riesgo Cardíaco Revisado de Lee fue desarrollado para estimar el riesgo de complicaciones cardíacas mayores en cirugía no cardíaca. Considera seis variables clínicas simples y ayuda a identificar pacientes que pueden requerir evaluación perioperatoria adicional.";
-$formula = "Puntaje = número de factores presentes (0 a 6)";
-$referencias = array(
-  "1.- Lee TH, Marcantonio ER, Mangione CM, et al. Derivation and prospective validation of a simple index for prediction of cardiac risk of major noncardiac surgery. Circulation. 1999;100(10):1043-1049.",
-  "2.- Fleisher LA, Beckman JA, Brown KA, et al. 2009 ACCF/AHA focused update on perioperative beta blockade incorporated into the ACC/AHA 2007 guidelines on perioperative cardiovascular evaluation and care for noncardiac surgery. Circulation. 2009;120(21):e169-e276."
-);
-
-$icono_apunte = "<i class='fa-solid fa-heart-circle-exclamation pe-3 pt-2'></i>";
-$titulo_apunte = "Índice de Riesgo Cardíaco Revisado";
-
+$titulo_pagina = "Índice de Riesgo Cardíaco Revisado";
+$navbar_titulo = "Apuntes";
 $boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()'
- style='width:50px; height:40px; --bs-border-opacity: .1;' type='button' data-bs-toggle='collapse' data-bs-target='#metaApunte' aria-controls='metaApunte' aria-expanded='false' aria-label='Toggle navigation'> <i class='fa-solid fa-circle-info'></i> </button>";
+$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
 
-require("head.php");
+$titulo_info = "Utilidad clínica";
+$descripcion_info = "El Índice de Riesgo Cardíaco Revisado de Lee, también conocido como RCRI, estima riesgo de complicaciones cardíacas mayores en cirugía no cardíaca usando seis variables clínicas simples. Es útil para estratificar riesgo y orientar evaluación perioperatoria adicional.";
+$formula = "RCRI = número de factores presentes: cirugía de alto riesgo, cardiopatía isquémica, insuficiencia cardíaca, enfermedad cerebrovascular, diabetes tratada con insulina y creatinina >2,0 mg/dL. Puntaje total: 0 a 6.";
+$referencias = array(
+  "Lee TH, Marcantonio ER, Mangione CM, et al. Derivation and prospective validation of a simple index for prediction of cardiac risk of major noncardiac surgery. Circulation. 1999;100(10):1043-1049.",
+  "Fleisher LA, Fleischmann KE, Auerbach AD, et al. 2014 ACC/AHA guideline on perioperative cardiovascular evaluation and management of patients undergoing noncardiac surgery. Circulation. 2014;130:e278-e333.",
+  "Duceppe E, Parlow J, MacDonald P, et al. Canadian Cardiovascular Society Guidelines on Perioperative Cardiac Risk Assessment and Management for Patients Who Undergo Noncardiac Surgery. Can J Cardiol. 2017;33(1):17-32.",
+  "2024 AHA/ACC guideline for perioperative cardiovascular management for noncardiac surgery."
+);
+
+include("head.php");
 ?>
+<link rel="stylesheet" href="css/clinical-note-system.css?v=2">
+<script src="js/clinical-note-system.js?v=2"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
     <div class="container-fluid px-0 px-md-2">
-      <div class="lee-shell">
+      <div class="note-shell px-1 px-md-0 py-0">
 
         <style>
-          .lee-shell{max-width:980px;margin:0 auto;}
-          .lee-topbar{
-            background:linear-gradient(135deg,#27458f,#3559b7);
-            color:#fff;border-radius:1.25rem;box-shadow:0 8px 24px rgba(0,0,0,.06);
-            padding:1.15rem 1.25rem;margin-bottom:1rem;
+          .lee-factor-list{
+            display:grid;
+            gap:.75rem;
           }
-          .lee-topbar h1{color:#fff;}
-          .section-card{
-            border:0;border-radius:1rem;box-shadow:0 8px 24px rgba(0,0,0,.06);
-            background:#fff;overflow:hidden;margin-bottom:1rem;
+
+          .lee-factor-input{
+            position:absolute;
+            opacity:0;
+            pointer-events:none;
           }
-          .section-title{
-            font-size:.8rem;letter-spacing:.05em;text-transform:uppercase;color:#667085;
+
+          .lee-factor-card{
+            display:flex;
+            align-items:flex-start;
+            gap:.75rem;
+            border:2px solid var(--note-line);
+            background:#fff;
+            border-radius:1rem;
+            padding:.85rem .95rem;
+            cursor:pointer;
+            transition:.15s ease;
+            box-shadow:0 3px 10px rgba(15,23,42,.04);
           }
-          .pill{
-            display:inline-block;padding:.2rem .55rem;border-radius:999px;font-size:.78rem;
-            background:#eef3ff;color:#3559b7;font-weight:600;
+
+          .lee-factor-input:checked + .lee-factor-card{
+            background:#f4fbf7;
+            border-color:#b7e2c4;
+            box-shadow:0 0 0 3px rgba(46,166,99,.13), 0 8px 18px rgba(15,23,42,.10);
+            transform:translateY(-1px);
           }
-          .subtle{font-size:.94rem;color:#5f6b76;}
-          .risk-check{
-            display:flex;align-items:flex-start;gap:.85rem;padding:1rem;
-            border:1px solid #e7ebf2;border-radius:1rem;background:#f8fafc;transition:.15s ease;
+
+          .lee-checkmark{
+            flex:0 0 auto;
+            width:30px;
+            height:30px;
+            border-radius:999px;
+            border:2px solid #c9d3df;
+            background:#fff;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#fff;
+            margin-top:.05rem;
+            transition:.15s ease;
           }
-          .risk-check.active{
-            background:#edf4ff;border-color:#bfd2ff;
+
+          .lee-factor-input:checked + .lee-factor-card .lee-checkmark{
+            background:#2ea663;
+            border-color:#2ea663;
+            color:#fff;
           }
-          .risk-check input{
-            width:1.25rem;height:1.25rem;margin-top:.12rem;flex:0 0 auto;
+
+          .lee-factor-copy{
+            min-width:0;
+            flex:1;
           }
-          .risk-label{
-            font-weight:600;color:#1f2a37;line-height:1.25;
+
+          .lee-factor-title{
+            font-size:.96rem;
+            font-weight:800;
+            line-height:1.22;
+            color:var(--note-text);
+            margin-bottom:.1rem;
           }
-          .result-box{
-            border-radius:1rem;border:1px solid #dfe7f2;background:#f8fafc;padding:1rem;
+
+          .lee-factor-note{
+            margin:0;
+            font-size:.84rem;
+            line-height:1.35;
+            color:var(--note-muted);
           }
-          .result-main{
-            font-size:1.1rem;font-weight:700;color:#1f2a37;
+
+          .lee-risk-low{
+            background:#edf8f1 !important;
+            border-color:#b7ddc3 !important;
           }
-          .result-score{
-            font-size:2rem;font-weight:800;line-height:1;color:#3559b7;
+
+          .lee-risk-mid{
+            background:#fff9e8 !important;
+            border-color:#ead38a !important;
           }
-          .algo-box{
-            border-radius:1rem;padding:1rem;border:1px solid #dfe7f2;
+
+          .lee-risk-high{
+            background:#fff1f1 !important;
+            border-color:#efc0bd !important;
           }
-          .algo-low{background:#edf8f7;}
-          .algo-mid{background:#fff9e8;}
-          .algo-high{background:#fff5f3;}
-          .drug-line{
-            padding:.7rem .8rem;border-radius:.85rem;background:#fff;border:1px solid #e6e9ef;margin-bottom:.55rem;
+
+          .lee-action-list{
+            display:grid;
+            gap:.75rem;
           }
-          .drug-line:last-child{margin-bottom:0;}
-          .small-note{
-            font-size:.84rem;color:#667085;
+
+          .lee-action-item{
+            display:flex;
+            align-items:flex-start;
+            gap:.65rem;
+            border:1px solid #d9e2ef;
+            border-radius:1rem;
+            background:#fff;
+            padding:.75rem .85rem;
           }
-          .refs-card{display:none;}
-          .refs-card ul{
-            color:#667085;line-height:1.55;padding-left:1.1rem;margin-bottom:0;
+
+          .lee-action-mark{
+            flex:0 0 auto;
+            width:30px;
+            height:30px;
+            border-radius:999px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#fff;
+            margin-top:.08rem;
+          }
+
+          .lee-action-mark.ok{background:#2ea663;}
+          .lee-action-mark.mid{background:#f4c542;}
+          .lee-action-mark.high{background:#d92d20;}
+
+          .lee-action-copy{min-width:0;flex:1;}
+
+          .lee-action-title{
+            font-size:.95rem;
+            font-weight:800;
+            line-height:1.18;
+            color:var(--note-text);
+            margin-bottom:.1rem;
+          }
+
+          .lee-action-note{
+            margin:0;
+            font-size:.82rem;
+            line-height:1.32;
+            color:var(--note-muted);
+          }
+
+          .lee-plan-line{
+            padding:.75rem .85rem;
+            border-radius:.9rem;
+            background:#fff;
+            border:1px solid var(--note-line-strong);
+            margin-bottom:.6rem;
+          }
+
+          .lee-plan-line:last-child{
+            margin-bottom:0;
+          }
+
+          .lee-factor-pill{
+            display:inline-flex;
+            align-items:center;
+            gap:.35rem;
+            padding:.25rem .55rem;
+            border-radius:999px;
+            background:#f2f4f7;
+            color:#475467;
+            font-size:.78rem;
+            font-weight:700;
+            margin:.15rem .2rem .15rem 0;
+          }
+
+          .lee-factor-pill.active{
+            background:#eaf7ef;
+            color:#1f7a4d;
           }
         </style>
 
-        <div class="lee-topbar">
-          <div class="d-flex justify-content-between align-items-start gap-3">
-            <div>
-              <div class="small opacity-75 mb-1">APP clínica • cálculo interactivo</div>
-              <h1 class="h3 mb-2">Índice de Riesgo Cardíaco Revisado</h1>
-              <div class="subtle text-white-50">Checklist rápido para estimar riesgo cardíaco perioperatorio en cirugía no cardíaca.</div>
-            </div>
-            <span class="pill bg-light text-dark">Lee / RCRI</span>
-          </div>
+        <div class="note-hero mb-3">
+          <div class="note-hero-kicker">APP CLÍNICA · RIESGO CARDIOVASCULAR · CIRUGÍA NO CARDÍACA</div>
+          <h2>Índice de Riesgo Cardíaco Revisado</h2>
+          <div class="note-hero-subtitle">Checklist interactivo para estimar riesgo cardíaco perioperatorio y orientar la necesidad de evaluación adicional.</div>
         </div>
 
-
-
-<div class="info-box">
-
-  <div class="info-box-header">
-    <div class="info-box-title">Información</div>
-
-    <button type="button" onclick="toggleInfo()" class="btn btn-sm info-toggle-btn">
-      Mostrar / ocultar
-    </button>
-  </div>
-
-  <div id="infoContent" class="info-box-content">
-    <?php echo $descripcion_info; ?>
-
-    <?php if(!empty($formula)){ ?>
-      <hr>
-      <b>Fórmula:</b><br>
-      <?php echo $formula; ?>
-    <?php } ?>
-  </div>
-
-</div>
-
-
-        <div id="referenciasBox" class="section-card refs-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">Referencias</div>
-            <ul>
+        <div class="info-box mb-3">
+          <div class="info-box-header">
+            <div class="info-box-title">Información</div>
+            <button type="button" onclick="toggleInfo()" class="btn btn-sm info-toggle-btn">Mostrar / ocultar</button>
+          </div>
+          <div id="infoContent" class="info-box-content">
+            <p class="mb-2"><?php echo $descripcion_info; ?></p>
+            <?php if(!empty($formula)){ ?>
+              <hr>
+              <b>Fórmula:</b><br>
+              <?php echo $formula; ?>
+            <?php } ?>
+            <hr>
+            <b>Referencias:</b>
+            <ul class="mb-0 mt-2">
               <?php foreach($referencias as $ref){ ?>
                 <li class="mb-2"><?php echo $ref; ?></li>
               <?php } ?>
@@ -132,97 +220,156 @@ require("head.php");
           </div>
         </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">Factores de riesgo</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Factores del RCRI</div>
 
-            <div class="d-grid gap-2">
-              <label class="risk-check" id="wrap_cirugia">
-                <input class="form-check-input lee-check" type="checkbox" id="cirugia">
-                <div>
-                  <div class="risk-label">Cirugía de riesgo alto</div>
-                  <div class="small-note">Intraperitoneal, intratorácica o suprainguinal vascular.</div>
+            <div class="lee-factor-list">
+              <label>
+                <input class="lee-factor-input lee-check" type="checkbox" id="cirugia" data-label="Cirugía alto riesgo">
+                <div class="lee-factor-card">
+                  <div class="lee-checkmark"><i class="fa-solid fa-check"></i></div>
+                  <div class="lee-factor-copy">
+                    <div class="lee-factor-title">Cirugía de alto riesgo</div>
+                    <p class="lee-factor-note">Intraperitoneal, intratorácica o vascular suprainguinal.</p>
+                  </div>
                 </div>
               </label>
 
-              <label class="risk-check" id="wrap_infarto">
-                <input class="form-check-input lee-check" type="checkbox" id="infarto">
-                <div>
-                  <div class="risk-label">Antecedentes de cardiopatía isquémica</div>
-                  <div class="small-note">IAM previo, angina o evidencia equivalente.</div>
+              <label>
+                <input class="lee-factor-input lee-check" type="checkbox" id="isquemica" data-label="Cardiopatía isquémica">
+                <div class="lee-factor-card">
+                  <div class="lee-checkmark"><i class="fa-solid fa-check"></i></div>
+                  <div class="lee-factor-copy">
+                    <div class="lee-factor-title">Antecedente de cardiopatía isquémica</div>
+                    <p class="lee-factor-note">IAM previo, angina, prueba positiva, uso de nitratos o Q patológica.</p>
+                  </div>
                 </div>
               </label>
 
-              <label class="risk-check" id="wrap_insuf">
-                <input class="form-check-input lee-check" type="checkbox" id="insuf">
-                <div>
-                  <div class="risk-label">Antecedentes de insuficiencia cardíaca</div>
-                  <div class="small-note">ICC clínica actual o previa.</div>
+              <label>
+                <input class="lee-factor-input lee-check" type="checkbox" id="icc" data-label="Insuficiencia cardíaca">
+                <div class="lee-factor-card">
+                  <div class="lee-checkmark"><i class="fa-solid fa-check"></i></div>
+                  <div class="lee-factor-copy">
+                    <div class="lee-factor-title">Antecedente de insuficiencia cardíaca</div>
+                    <p class="lee-factor-note">ICC clínica actual o previa, edema pulmonar, disnea paroxística nocturna o signos compatibles.</p>
+                  </div>
                 </div>
               </label>
 
-              <label class="risk-check" id="wrap_cerebro">
-                <input class="form-check-input lee-check" type="checkbox" id="cerebro">
-                <div>
-                  <div class="risk-label">Antecedentes de ACV / AIT</div>
-                  <div class="small-note">Historia cerebrovascular previa.</div>
+              <label>
+                <input class="lee-factor-input lee-check" type="checkbox" id="acv" data-label="ACV/AIT">
+                <div class="lee-factor-card">
+                  <div class="lee-checkmark"><i class="fa-solid fa-check"></i></div>
+                  <div class="lee-factor-copy">
+                    <div class="lee-factor-title">Antecedente de ACV o AIT</div>
+                    <p class="lee-factor-note">Historia cerebrovascular previa.</p>
+                  </div>
                 </div>
               </label>
 
-              <label class="risk-check" id="wrap_insulina">
-                <input class="form-check-input lee-check" type="checkbox" id="insulina">
-                <div>
-                  <div class="risk-label">Usuario de insulina</div>
-                  <div class="small-note">Diabetes tratada con insulina.</div>
+              <label>
+                <input class="lee-factor-input lee-check" type="checkbox" id="insulina" data-label="Diabetes con insulina">
+                <div class="lee-factor-card">
+                  <div class="lee-checkmark"><i class="fa-solid fa-check"></i></div>
+                  <div class="lee-factor-copy">
+                    <div class="lee-factor-title">Diabetes tratada con insulina</div>
+                    <p class="lee-factor-note">Usuario de insulina en el manejo habitual.</p>
+                  </div>
                 </div>
               </label>
 
-              <label class="risk-check" id="wrap_creatinina">
-                <input class="form-check-input lee-check" type="checkbox" id="creatinina">
-                <div>
-                  <div class="risk-label">Creatinina &gt; 2.0 mg/dL</div>
-                  <div class="small-note">Disfunción renal significativa.</div>
+              <label>
+                <input class="lee-factor-input lee-check" type="checkbox" id="creatinina" data-label="Creatinina >2 mg/dL">
+                <div class="lee-factor-card">
+                  <div class="lee-checkmark"><i class="fa-solid fa-check"></i></div>
+                  <div class="lee-factor-copy">
+                    <div class="lee-factor-title">Creatinina &gt; 2,0 mg/dL</div>
+                    <p class="lee-factor-note">Disfunción renal significativa según definición original del índice.</p>
+                  </div>
                 </div>
               </label>
             </div>
           </div>
         </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">Resultado</div>
-
-            <div class="result-box">
-              <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
-                <div>
-                  <div class="small-note">Puntaje total</div>
-                  <div id="scoreText" class="result-main">0 factores de riesgo</div>
-                </div>
-                <div id="scoreNum" class="result-score">0</div>
-              </div>
-
-              <div id="riskPercent" class="result-main mb-2">Riesgo estimado: 0.4%</div>
-              <div id="riskInterpretation" class="subtle">Riesgo bajo de complicaciones cardíacas mayores perioperatorias.</div>
+        <div class="note-summary-box mb-3">
+          <div class="note-summary-box-title">Resumen</div>
+          <div id="summaryNarrative" class="note-summary-box-text">0 factores RCRI seleccionados. Riesgo estimado bajo; integrar con capacidad funcional, urgencia y magnitud quirúrgica.</div>
+          <div class="note-summary-grid-2">
+            <div class="note-summary-item">
+              <div class="note-summary-k">Puntaje</div>
+              <div id="summaryScore" class="note-summary-v">0</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Riesgo estimado</div>
+              <div id="summaryRisk" class="note-summary-v">0,4%</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Nivel</div>
+              <div id="summaryLevel" class="note-summary-v">Bajo</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Factores activos</div>
+              <div id="summaryFactors" class="note-summary-v">Ninguno</div>
             </div>
           </div>
         </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">Interpretación</div>
+        <div class="note-result-grid-2 mb-3">
+          <div id="scoreCard" class="note-result-card lee-risk-low">
+            <div class="note-result-card-label">Puntaje RCRI</div>
+            <div id="scoreNum" class="note-result-card-value">0</div>
+            <div id="scoreText" class="note-result-card-note">0 factores de riesgo</div>
+          </div>
+          <div id="riskCard" class="note-result-card lee-risk-low">
+            <div class="note-result-card-label">Riesgo cardíaco estimado</div>
+            <div id="riskPercent" class="note-result-card-value">0,4%</div>
+            <div id="riskInterpretation" class="note-result-card-note">Riesgo bajo de complicaciones cardíacas mayores perioperatorias.</div>
+          </div>
+        </div>
 
-            <div id="algoBox" class="algo-box algo-low">
-              <div id="algoRisk" class="fw-semibold mb-2">Conducta sugerida</div>
+        <div id="algoBox" class="note-interpretation mb-3">
+          <div class="note-interpretation-label">Conducta orientativa</div>
+          <div id="algoRisk" class="note-interpretation-main">Riesgo bajo</div>
+          <div id="algoExtra" class="note-interpretation-soft">Proceder con evaluación perioperatoria estándar si el contexto clínico, la cirugía y la capacidad funcional son favorables.</div>
 
-              <div id="drugPlan">
-                <div class="drug-line">Riesgo bajo. Proceder con evaluación perioperatoria estándar según contexto clínico.</div>
-              </div>
+          <div class="mt-3 text-start">
+            <div class="lee-plan-line"><strong>Lectura:</strong> <span id="planReading">Riesgo bajo. RCRI no sugiere por sí solo evaluación cardiovascular adicional.</span></div>
+            <div class="lee-plan-line"><strong>Qué integrar:</strong> <span id="planIntegrate">Capacidad funcional, síntomas cardiovasculares, urgencia, magnitud quirúrgica y biomarcadores si corresponden.</span></div>
+            <div class="lee-plan-line"><strong>Factores seleccionados:</strong> <span id="factorPills"><span class="lee-factor-pill">Ninguno</span></span></div>
+          </div>
+        </div>
 
-              <div id="algoExtra" class="small-note mt-3">
-                Este índice complementa, pero no reemplaza, la valoración clínica integral.
+        <div class="note-warning mb-3">
+          <strong>Advertencia clínica:</strong>
+          <div class="mt-2">El RCRI no decide exámenes ni suspensión quirúrgica de forma automática. No reemplaza capacidad funcional, síntomas activos, inestabilidad clínica, tipo de cirugía, biomarcadores, ECG ni juicio perioperatorio.</div>
+        </div>
+
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Conducta práctica</div>
+            <div id="actionList" class="lee-action-list">
+              <div class="lee-action-item">
+                <div class="lee-action-mark ok"><i class="fa-solid fa-check"></i></div>
+                <div class="lee-action-copy">
+                  <div class="lee-action-title">Riesgo bajo por RCRI</div>
+                  <p class="lee-action-note">Completar evaluación clínica estándar, capacidad funcional y contexto quirúrgico.</p>
+                </div>
               </div>
             </div>
           </div>
+        </div>
+
+        <div class="note-teaching-wrap">
+          <div class="note-teaching-title">Perlas docentes</div>
+          <div class="note-teaching-main">El RCRI estratifica; no autoriza ni cancela una cirugía por sí solo</div>
+          <div class="note-tips"><strong>Qué hacer:</strong> úsalo junto a capacidad funcional, síntomas, urgencia, magnitud de la cirugía y evaluación médica actual.</div>
+          <div class="note-tips"><strong>Qué evitar:</strong> pedir exámenes “por puntaje” sin preguntarte si cambiarán conducta perioperatoria.</div>
+          <div class="note-tips"><strong>Error frecuente:</strong> tratar el RCRI como score de riesgo anestésico global. Es cardíaco, no predice vía aérea, sangrado, delirium ni complicaciones pulmonares.</div>
+          <div class="note-tips"><strong>Cirugía urgente:</strong> un RCRI alto no debe retrasar una cirugía impostergable; debe gatillar optimización posible, monitorización y planificación.</div>
+          <div class="note-tips mb-0"><strong>Mensaje final:</strong> si hay angina inestable, insuficiencia cardíaca descompensada, arritmia significativa o valvulopatía severa sintomática, eso pesa más que el número del RCRI.</div>
         </div>
 
       </div>
@@ -231,164 +378,157 @@ require("head.php");
 </div>
 
 <script>
-function toggleReferencias(e){
-  if(e) e.preventDefault();
-  const box = document.getElementById('referenciasBox');
-  box.style.display = (box.style.display === 'block') ? 'none' : 'block';
-}
-
-(function () {
+(function(){
+  const CNS = window.ClinicalNoteSystem || {};
   const checks = Array.from(document.querySelectorAll('.lee-check'));
 
-  function updateVisualChecks() {
-    checks.forEach(ch => {
-      const wrap = document.getElementById('wrap_' + ch.id);
-      if (wrap) wrap.classList.toggle('active', ch.checked);
-    });
+  function setText(id, value){
+    const el = document.getElementById(id);
+    if(CNS.safeSetText) CNS.safeSetText(el, value);
+    else if(el) el.textContent = value;
   }
 
-  function calcularLee() {
-    const cirugia = document.getElementById('cirugia').checked ? 1 : 0;
-    const infarto = document.getElementById('infarto').checked ? 1 : 0;
-    const insuf = document.getElementById('insuf').checked ? 1 : 0;
-    const cerebro = document.getElementById('cerebro').checked ? 1 : 0;
-    const insulina = document.getElementById('insulina').checked ? 1 : 0;
-    const creatinina = document.getElementById('creatinina').checked ? 1 : 0;
-
-    const score = cirugia + infarto + insuf + cerebro + insulina + creatinina;
-
-    const scoreNum = document.getElementById('scoreNum');
-    const scoreText = document.getElementById('scoreText');
-    const riskPercent = document.getElementById('riskPercent');
-    const riskInterpretation = document.getElementById('riskInterpretation');
-    const algoBox = document.getElementById('algoBox');
-    const algoRisk = document.getElementById('algoRisk');
-    const drugPlan = document.getElementById('drugPlan');
-    const algoExtra = document.getElementById('algoExtra');
-
-    scoreNum.textContent = score;
-    scoreText.textContent = score + (score === 1 ? ' factor de riesgo' : ' factores de riesgo');
-
-    algoBox.classList.remove('algo-low', 'algo-mid', 'algo-high');
-
-    if (score === 0) {
-      riskPercent.textContent = 'Riesgo estimado: 0.4%';
-      riskInterpretation.textContent = 'Riesgo bajo de complicaciones cardíacas mayores perioperatorias.';
-      algoBox.classList.add('algo-low');
-      algoRisk.textContent = 'Conducta sugerida';
-      drugPlan.innerHTML = `
-        <div class="drug-line">Riesgo bajo. Proceder con evaluación perioperatoria estándar según contexto clínico.</div>
-      `;
-      algoExtra.textContent = 'No excluye juicio clínico, capacidad funcional ni necesidad de evaluación adicional si existen otros elementos relevantes.';
-    }
-    else if (score === 1) {
-      riskPercent.textContent = 'Riesgo estimado: 0.9%';
-      riskInterpretation.textContent = 'Riesgo discretamente aumentado de complicaciones cardíacas mayores.';
-      algoBox.classList.add('algo-low');
-      algoRisk.textContent = 'Conducta sugerida';
-      drugPlan.innerHTML = `
-        <div class="drug-line">Riesgo bajo-intermedio. Ajustar evaluación perioperatoria según cirugía, capacidad funcional y contexto cardiovascular.</div>
-      `;
-      algoExtra.textContent = 'Considera integrar el resultado con METs, síntomas, cirugía y comorbilidades.';
-    }
-    else if (score === 2) {
-      riskPercent.textContent = 'Riesgo estimado: 6.6%';
-      riskInterpretation.textContent = 'Riesgo intermedio de complicaciones cardíacas mayores.';
-      algoBox.classList.add('algo-mid');
-      algoRisk.textContent = 'Conducta sugerida';
-      drugPlan.innerHTML = `
-        <div class="drug-line">Riesgo intermedio. Puede justificar evaluación perioperatoria más detallada según la magnitud del procedimiento y la situación clínica.</div>
-      `;
-      algoExtra.textContent = 'Integra el índice con guías perioperatorias vigentes y necesidad de optimización médica.';
-    }
-    else {
-      riskPercent.textContent = 'Riesgo estimado: 11%';
-      riskInterpretation.textContent = 'Riesgo alto de complicaciones cardíacas mayores perioperatorias.';
-      algoBox.classList.add('algo-high');
-      algoRisk.textContent = 'Conducta sugerida';
-      drugPlan.innerHTML = `
-        <div class="drug-line">Riesgo alto. Requiere evaluación cardiovascular perioperatoria más exhaustiva y optimización antes del procedimiento, según urgencia clínica.</div>
-      `;
-      algoExtra.textContent = 'Recuerda que el RCRI es una ayuda para estratificación, no una indicación automática de exámenes o suspensión quirúrgica.';
+  function riskData(score){
+    if(score === 0){
+      return {
+        risk:'0,4%',
+        level:'Bajo',
+        css:'lee-risk-low',
+        interpretation:'Riesgo bajo de complicaciones cardíacas mayores perioperatorias.',
+        algo:'Riesgo bajo',
+        extra:'Proceder con evaluación perioperatoria estándar si el contexto clínico, la cirugía y la capacidad funcional son favorables.',
+        reading:'Riesgo bajo. RCRI no sugiere por sí solo evaluación cardiovascular adicional.'
+      };
     }
 
-    updateVisualChecks();
+    if(score === 1){
+      return {
+        risk:'0,9%',
+        level:'Bajo-intermedio',
+        css:'lee-risk-low',
+        interpretation:'Riesgo discretamente aumentado de complicaciones cardíacas mayores.',
+        algo:'Riesgo bajo-intermedio',
+        extra:'Integrar con capacidad funcional, síntomas, tipo de cirugía y estado cardiovascular actual.',
+        reading:'Riesgo bajo-intermedio. Puede requerir ajuste de evaluación según cirugía y capacidad funcional.'
+      };
+    }
+
+    if(score === 2){
+      return {
+        risk:'6,6%',
+        level:'Intermedio',
+        css:'lee-risk-mid',
+        interpretation:'Riesgo intermedio de complicaciones cardíacas mayores.',
+        algo:'Riesgo intermedio',
+        extra:'Puede justificar evaluación más detallada si el resultado cambiará manejo, monitorización u optimización.',
+        reading:'Riesgo intermedio. Evaluar necesidad de optimización, biomarcadores o monitorización según guías y contexto.'
+      };
+    }
+
+    return {
+      risk:'11%',
+      level:'Alto',
+      css:'lee-risk-high',
+      interpretation:'Riesgo alto de complicaciones cardíacas mayores perioperatorias.',
+      algo:'Riesgo alto',
+      extra:'Requiere evaluación cardiovascular perioperatoria más cuidadosa y optimización según urgencia clínica.',
+      reading:'Riesgo alto. No implica cancelar automáticamente, pero sí planificar optimización, monitorización y comunicación del riesgo.'
+    };
   }
 
-  checks.forEach(el => {
-    el.addEventListener('change', calcularLee);
+  function renderActions(score, activeLabels){
+    let items = [];
+
+    if(score === 0){
+      items = [
+        ['ok','Riesgo bajo por RCRI','Completar evaluación clínica estándar, capacidad funcional y contexto quirúrgico.'],
+        ['ok','No pedir exámenes solo por rutina','Solicitar estudios solo si cambiarán conducta o hay síntomas/contexto que lo justifique.']
+      ];
+    } else if(score === 1){
+      items = [
+        ['ok','Integrar con METs y síntomas','Un factor aislado no define por sí solo necesidad de evaluación adicional.'],
+        ['mid','Revisar magnitud quirúrgica','El mismo puntaje puede pesar distinto en cirugía menor versus cirugía mayor.']
+      ];
+    } else if(score === 2){
+      items = [
+        ['mid','Riesgo intermedio','Considerar evaluación adicional si cambiará conducta, monitorización o timing quirúrgico.'],
+        ['mid','Optimizar condiciones modificables','Control de IC, isquemia, glicemia, presión, anemia y función renal según contexto.']
+      ];
+    } else {
+      items = [
+        ['high','Riesgo alto','Coordinar evaluación cardiovascular, anestésica y quirúrgica según urgencia y posibilidad real de optimización.'],
+        ['high','Planificar monitorización y postoperatorio','Considerar unidad monitorizada, biomarcadores, ECG y manejo hemodinámico según protocolos.']
+      ];
+    }
+
+    if(activeLabels.includes('Insuficiencia cardíaca')){
+      items.push(['high','Insuficiencia cardíaca pesa clínicamente','Buscar descompensación, congestión, tolerancia al ejercicio y tratamiento optimizado.']);
+    }
+
+    if(activeLabels.includes('Cardiopatía isquémica')){
+      items.push(['mid','Isquemia conocida','Preguntar por síntomas activos, estabilidad, tratamiento y capacidad funcional.']);
+    }
+
+    document.getElementById('actionList').innerHTML = items.map(function(item){
+      const icon = item[0] === 'ok' ? 'fa-check' : (item[0] === 'mid' ? 'fa-triangle-exclamation' : 'fa-bolt');
+      return '<div class="lee-action-item">' +
+        '<div class="lee-action-mark ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
+        '<div class="lee-action-copy">' +
+          '<div class="lee-action-title">' + item[1] + '</div>' +
+          '<p class="lee-action-note">' + item[2] + '</p>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function renderPills(activeLabels){
+    const box = document.getElementById('factorPills');
+    if(activeLabels.length === 0){
+      box.innerHTML = '<span class="lee-factor-pill">Ninguno</span>';
+      return;
+    }
+    box.innerHTML = activeLabels.map(function(label){
+      return '<span class="lee-factor-pill active"><i class="fa-solid fa-check"></i>' + label + '</span>';
+    }).join('');
+  }
+
+  function updateLee(){
+    const active = checks.filter(function(ch){ return ch.checked; });
+    const score = active.length;
+    const labels = active.map(function(ch){ return ch.getAttribute('data-label'); });
+    const data = riskData(score);
+
+    setText('scoreNum', String(score));
+    setText('scoreText', score + (score === 1 ? ' factor de riesgo' : ' factores de riesgo'));
+    setText('riskPercent', data.risk);
+    setText('riskInterpretation', data.interpretation);
+    setText('summaryScore', String(score));
+    setText('summaryRisk', data.risk);
+    setText('summaryLevel', data.level);
+    setText('summaryFactors', labels.length ? labels.join(', ') : 'Ninguno');
+    setText('summaryNarrative', score + (score === 1 ? ' factor RCRI seleccionado. ' : ' factores RCRI seleccionados. ') + 'Riesgo estimado ' + data.risk + '; ' + data.level.toLowerCase() + '. Integrar con capacidad funcional, síntomas y magnitud quirúrgica.');
+    setText('algoRisk', data.algo);
+    setText('algoExtra', data.extra);
+    setText('planReading', data.reading);
+
+    document.getElementById('scoreCard').className = 'note-result-card ' + data.css;
+    document.getElementById('riskCard').className = 'note-result-card ' + data.css;
+
+    renderPills(labels);
+    renderActions(score, labels);
+  }
+
+  checks.forEach(function(ch){
+    ch.addEventListener('change', updateLee);
   });
 
-  calcularLee();
+  updateLee();
 })();
-</script>
-<style>
-.info-box{
-  background:#fff;
-  border-radius:1rem;
-  box-shadow:0 8px 24px rgba(0,0,0,.06);
-  margin-bottom:1rem;
-  overflow:hidden;
-}
 
-.info-box-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:1rem;
-  padding:1rem;
-}
-
-.info-box-title{
-  font-size:.8rem;
-  text-transform:uppercase;
-  color:#667085;
-  letter-spacing:.08em;
-}
-
-.info-toggle-btn{
-  border-radius:.6rem;
-  font-size:.85rem;
-  padding:.35rem .7rem;
-  white-space:nowrap;
-  background:#6c757d;
-  border:none;
-  color:white;
-  transition:.2s;
-}
-
-.info-toggle-btn:hover{
-  background:#5a6268;
-  color:white;
-}
-
-.info-box-content{
-  padding:1rem;
-  display:none;
-  animation:fadeIn .2s ease-in-out;
-  border-top:1px solid #e9eef5;
-}
-
-@keyframes fadeIn{
-  from{opacity:0; transform:translateY(-5px);}
-  to{opacity:1; transform:translateY(0);}
-}
-
-@media (max-width:576px){
-  .info-box-header{
-    flex-direction:row;
-  }
-
-  .info-toggle-btn{
-    margin-left:auto;
-  }
-}
-</style>
-<script>
 function toggleInfo(){
-  let box = document.getElementById("infoContent");
+  const box = document.getElementById("infoContent");
   box.style.display = (box.style.display === "none" || box.style.display === "") ? "block" : "none";
 }
 </script>
 
-<?php require("footer.php"); ?>
+<?php include("footer.php"); ?>

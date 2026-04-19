@@ -1,276 +1,78 @@
 <?php
-
-$titulo_info = "Utilidad Clínica";
-$descripcion_info = "El Delta de Presión de Pulso (Delta PP o PPV) es una herramienta dinámica para predecir respuesta a volumen en pacientes con ventilación mecánica. Un valor alto sugiere probabilidad de respuesta a fluidos, pero solo es interpretable si se cumplen criterios estrictos de validez.";
-$formula = "Delta PP = (PPmáx - PPmín) / ((PPmáx + PPmín) / 2) × 100";
-$referencias = array(
-  "1.- Hofer CK, Müller SM, Furrer L, Klaghofer R, Genoni M, Zollinger A. Stroke volume and pulse pressure variation for prediction of fluid responsiveness in patients undergoing off-pump coronary artery bypass grafting. Chest. 2005;128(2):848-854.",
-  "2.- Mahjoub Y, Lejeune V, Muller L, et al. Evaluation of pulse pressure variation validity criteria in critically ill patients: a prospective observational multicentre point-prevalence study. Br J Anaesth. 2014;112(4):681-685.",
-  "3.- Michard F, Boussat S, Chemla D, et al. Relation between respiratory changes in arterial pulse pressure and fluid responsiveness in septic patients with acute circulatory failure. Am J Respir Crit Care Med. 2000;162(1):134-138."
-);
-
-$icono_apunte = "<i class='fa-solid fa-wave-square pe-3 pt-2'></i>";
-$titulo_apunte = "Delta PP";
-
+$titulo_pagina = "Delta PP";
+$navbar_titulo = "Apuntes";
 $boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
 $boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
 
+$titulo_info = "Utilidad clínica";
+$descripcion_info = "El Delta de Presión de Pulso (Delta PP o PPV) es una herramienta dinámica para estimar respuesta a volumen en pacientes con ventilación mecánica. Un valor elevado solo es interpretable si se cumplen criterios estrictos de validez fisiológica.";
+$formula = "Delta PP = (PPmáx - PPmín) / ((PPmáx + PPmín) / 2) × 100";
+$referencias = array(
+  "Hofer CK, Müller SM, Furrer L, Klaghofer R, Genoni M, Zollinger A. Stroke volume and pulse pressure variation for prediction of fluid responsiveness in patients undergoing off-pump coronary artery bypass grafting. Chest. 2005;128(2):848-854.",
+  "Mahjoub Y, Lejeune V, Muller L, et al. Evaluation of pulse pressure variation validity criteria in critically ill patients: a prospective observational multicentre point-prevalence study. Br J Anaesth. 2014;112(4):681-685.",
+  "Michard F, Boussat S, Chemla D, et al. Relation between respiratory changes in arterial pulse pressure and fluid responsiveness in septic patients with acute circulatory failure. Am J Respir Crit Care Med. 2000;162(1):134-138."
+);
+
 require("head.php");
 ?>
+<link rel="stylesheet" href="css/clinical-note-system.css?v=1">
+<script src="js/clinical-note-system.js?v=1"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
     <div class="container-fluid px-0 px-md-2">
-      <div class="dpp-shell">
+      <div class="note-shell px-1 px-md-0 py-0">
 
         <style>
-          :root{
-            --brand:#27458f;
-            --brand2:#3559b7;
-            --bg:#f4f7fb;
-            --card:#ffffff;
-            --soft:#f8fafc;
-            --line:#dfe7f2;
-            --text:#1f2a37;
-            --muted:#667085;
-            --good:#edf8f7;
-            --warn:#fff9e8;
-            --danger:#fff5f3;
-          }
-
-          body{background:var(--bg);}
-
-          .dpp-shell{
-            max-width:980px;
-            margin:0 auto;
-          }
-
-          .dpp-topbar{
-            background:linear-gradient(135deg,var(--brand),var(--brand2));
-            color:#fff;
-            border-radius:1.25rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            padding:1.15rem 1.25rem;
-            margin-bottom:1rem;
-            overflow:hidden;
-          }
-
-          .dpp-topbar h1{color:#fff;}
-
-          .section-card{
-            border:0;
-            border-radius:1rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            background:#fff;
-            overflow:hidden;
-            margin-bottom:1rem;
-          }
-
-          .section-title{
-            font-size:.8rem;
-            letter-spacing:.05em;
-            text-transform:uppercase;
-            color:var(--muted);
-          }
-
-          .pill{
-            display:inline-block;
-            padding:.2rem .55rem;
-            border-radius:999px;
-            font-size:.78rem;
-            background:#eef3ff;
-            color:#3559b7;
-            font-weight:600;
-          }
-
-          .subtle{
-            font-size:.94rem;
-            color:#5f6b76;
-          }
-
-          .info-box{
-            background:#fff;
-            border-radius:1rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            margin-bottom:1rem;
-            overflow:hidden;
-          }
-
-          .info-box-header{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            gap:1rem;
-            padding:1rem;
-          }
-
-          .info-box-title{
-            font-size:.8rem;
-            text-transform:uppercase;
-            color:#667085;
-            letter-spacing:.08em;
-          }
-
-          .info-toggle-btn{
-            border-radius:.6rem;
-            font-size:.85rem;
-            padding:.35rem .7rem;
-            white-space:nowrap;
-            background:#6c757d;
-            border:none;
-            color:white;
-            transition:.2s;
-          }
-
-          .info-toggle-btn:hover{
-            background:#5a6268;
-            color:white;
-          }
-
-          .info-box-content{
-            padding:1rem;
-            display:none;
-            animation:fadeIn .2s ease-in-out;
-            border-top:1px solid #e9eef5;
-          }
-
-          @keyframes fadeIn{
-            from{opacity:0; transform:translateY(-5px);}
-            to{opacity:1; transform:translateY(0);}
-          }
-
-          .calc-grid{
-            display:grid;
-            grid-template-columns:repeat(2,1fr);
-            gap:1rem;
-          }
-
-          .input-card, .result-card{
-            border:1px solid var(--line);
-            border-radius:1rem;
-            background:var(--soft);
-            padding:1rem;
-          }
-
-          .result-box{
-            border-radius:1rem;
-            border:1px solid var(--line);
-            background:var(--soft);
-            padding:1rem;
-          }
-
-          .result-main{
-            font-size:1.08rem;
-            font-weight:700;
-            color:var(--text);
-          }
-
-          .result-num{
-            font-size:2rem;
-            font-weight:800;
-            line-height:1;
-            color:#3559b7;
-          }
-
-          .algo-box{
-            border-radius:1rem;
-            padding:1rem;
-            border:1px solid var(--line);
-          }
-
-          .algo-low{background:var(--good);}
-          .algo-mid{background:var(--warn);}
-          .algo-high{background:var(--danger);}
-
-          .drug-line{
-            padding:.7rem .8rem;
-            border-radius:.85rem;
-            background:#fff;
-            border:1px solid #e6e9ef;
-            margin-bottom:.55rem;
-          }
-
-          .drug-line:last-child{margin-bottom:0;}
-
-          .validity-grid{
-            display:grid;
-            grid-template-columns:repeat(2,1fr);
-            gap:.75rem;
-          }
-
-          .validity-item{
-            display:flex;
-            align-items:flex-start;
-            gap:.75rem;
-            padding:.9rem;
-            border-radius:1rem;
-            border:1px solid #e7ebf2;
-            background:#f8fafc;
-          }
-
-          .validity-item.bad{
-            background:#fff5f3;
-            border-color:#f3c2bd;
-          }
-
-          .small-note{
-            font-size:.84rem;
-            color:var(--muted);
-          }
-
-          .footer-note{
-            font-size:.82rem;
-            color:#6c757d;
-          }
-
+          .dpp-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;}
+          .dpp-summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;}
+          .dpp-main-result{background:linear-gradient(180deg,var(--note-brand-soft) 0%,#f7faff 100%);border:1px solid var(--note-brand-soft-border);border-radius:1rem;padding:1rem 1.1rem;}
+          .dpp-main-result-value{font-size:2rem;font-weight:900;line-height:1;color:var(--note-brand);}
+          .dpp-main-result-label{font-size:.82rem;text-transform:uppercase;letter-spacing:.06em;color:#3559b7;font-weight:700;margin-bottom:.35rem;}
+          .dpp-main-result-title{font-size:1.15rem;font-weight:800;color:var(--note-text);line-height:1.2;}
+          .dpp-question-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;}
+          .dpp-question{background:#fff;border:1px solid var(--note-line);border-radius:1rem;padding:1rem;}
+          .dpp-question-title{font-size:.98rem;font-weight:800;color:#3559b7;line-height:1.3;margin:0 0 .75rem 0;}
+          .dpp-binary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;}
+          .dpp-binary{min-width:0;}
+          .dpp-binary .note-option{width:100%;min-height:72px;align-items:flex-start;justify-content:flex-start;text-align:left;padding:.75rem .8rem;gap:.35rem;}
+          .dpp-binary-label{display:flex;align-items:flex-start;gap:.55rem;}
+          .dpp-binary-icon{width:24px;height:24px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;font-size:.82rem;flex:0 0 auto;}
+          .dpp-yes .dpp-binary-icon{background:#eaf7ef;color:#1f9d55;border:1px solid #b7e2c4;}
+          .dpp-no .dpp-binary-icon{background:#fff1f1;color:#d92d20;border:1px solid #f2b8b5;}
+          .dpp-binary-copy{min-width:0;flex:1;}
+          .dpp-binary-title{font-size:.93rem;font-weight:800;color:var(--note-text);line-height:1.24;}
+          .dpp-binary-help{font-size:.78rem;color:var(--note-muted);line-height:1.25;margin-top:.12rem;}
+          .dpp-footer-note{text-align:center;color:var(--note-muted);font-size:.86rem;}
           @media (max-width:768px){
-            .calc-grid, .validity-grid{
-              grid-template-columns:1fr;
-            }
+            .dpp-grid,.dpp-question-grid{grid-template-columns:1fr;}
           }
-
-          @media (max-width:576px){
-            .info-box-header{
-              flex-direction:row;
-            }
-            .info-toggle-btn{
-              margin-left:auto;
-            }
-            .result-num{
-              font-size:1.8rem;
-            }
+          @media (max-width:420px){
+            .dpp-binary-grid,.dpp-summary-grid{grid-template-columns:1fr;}
           }
         </style>
 
-        <div class="dpp-topbar">
-          <div class="d-flex justify-content-between align-items-start gap-3">
-            <div>
-              <div class="small opacity-75 mb-1">APP clínica • cálculo interactivo</div>
-              <h1 class="h3 mb-2">Delta PP</h1>
-              <div class="subtle text-white-50">Estimación de respuesta a volumen basada en variación respiratoria de la presión de pulso.</div>
-            </div>
-            <span class="pill bg-light text-dark">Hemodinámica</span>
-          </div>
+        <div class="note-hero mb-3">
+          <div class="note-hero-kicker">APP CLÍNICA · HEMODINÁMICA</div>
+          <h2>Delta de presión de pulso</h2>
+          <div class="note-hero-subtitle">Estimación orientativa de respuesta a volumen basada en variación respiratoria de la presión de pulso, con verificación explícita de validez fisiológica.</div>
         </div>
 
-        <div class="info-box">
+        <div class="info-box mb-3">
           <div class="info-box-header">
             <div class="info-box-title">Información</div>
-            <button type="button" onclick="toggleInfo()" class="btn btn-sm info-toggle-btn">
-              Mostrar / ocultar
-            </button>
+            <button type="button" onclick="toggleInfo()" class="btn btn-sm info-toggle-btn">Mostrar / ocultar</button>
           </div>
-
           <div id="infoContent" class="info-box-content">
-            <?php echo $descripcion_info; ?>
-
+            <p class="mb-2"><?php echo $descripcion_info; ?></p>
             <?php if(!empty($formula)){ ?>
               <hr>
               <b>Fórmula:</b><br>
               <?php echo $formula; ?>
             <?php } ?>
-
+            <hr>
+            <div class="small-note mb-2"><strong>Interpretación prudente:</strong> un Delta PP alto no obliga automáticamente a administrar volumen. Debe integrarse con perfusión, contexto quirúrgico, sangrado, función ventricular y riesgos de sobrecarga.</div>
             <?php if(!empty($referencias)){ ?>
               <hr>
               <b>Referencias:</b>
@@ -283,225 +85,327 @@ require("head.php");
           </div>
         </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">Datos de entrada</div>
-
-            <div class="calc-grid">
-              <div class="input-card">
-                <label class="form-label fw-semibold">Sistólica máxima</label>
-                <div class="input-group mb-3">
-                  <input type="number" class="form-control" id="s_max" value="120" oninput="calcularDeltaPP()">
-                  <span class="input-group-text">mmHg</span>
-                </div>
-
-                <label class="form-label fw-semibold">Diastólica máxima</label>
-                <div class="input-group">
-                  <input type="number" class="form-control" id="d_max" value="70" oninput="calcularDeltaPP()">
-                  <span class="input-group-text">mmHg</span>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Datos de entrada</div>
+            <div class="dpp-grid">
+              <div class="note-input-group">
+                <label class="note-label" for="s_max">Sistólica máxima</label>
+                <div class="note-input-inline">
+                  <input type="text" id="s_max" class="note-input" inputmode="decimal" value="">
+                  <div class="note-input-unit">mmHg</div>
                 </div>
               </div>
-
-              <div class="input-card">
-                <label class="form-label fw-semibold">Sistólica mínima</label>
-                <div class="input-group mb-3">
-                  <input type="number" class="form-control" id="s_min" value="100" oninput="calcularDeltaPP()">
-                  <span class="input-group-text">mmHg</span>
+              <div class="note-input-group">
+                <label class="note-label" for="d_max">Diastólica máxima</label>
+                <div class="note-input-inline">
+                  <input type="text" id="d_max" class="note-input" inputmode="decimal" value="">
+                  <div class="note-input-unit">mmHg</div>
                 </div>
-
-                <label class="form-label fw-semibold">Diastólica mínima</label>
-                <div class="input-group">
-                  <input type="number" class="form-control" id="d_min" value="65" oninput="calcularDeltaPP()">
-                  <span class="input-group-text">mmHg</span>
+              </div>
+              <div class="note-input-group">
+                <label class="note-label" for="s_min">Sistólica mínima</label>
+                <div class="note-input-inline">
+                  <input type="text" id="s_min" class="note-input" inputmode="decimal" value="">
+                  <div class="note-input-unit">mmHg</div>
+                </div>
+              </div>
+              <div class="note-input-group">
+                <label class="note-label" for="d_min">Diastólica mínima</label>
+                <div class="note-input-inline">
+                  <input type="text" id="d_min" class="note-input" inputmode="decimal" value="">
+                  <div class="note-input-unit">mmHg</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">Resultado</div>
-
-            <div class="calc-grid">
-              <div class="result-card">
-                <div class="small-note">PP máxima</div>
-                <div id="ppMax" class="result-main">50 mmHg</div>
-              </div>
-
-              <div class="result-card">
-                <div class="small-note">PP mínima</div>
-                <div id="ppMin" class="result-main">35 mmHg</div>
-              </div>
-            </div>
-
-            <div class="result-box mt-3">
-              <div class="d-flex justify-content-between align-items-center gap-3">
-                <div>
-                  <div class="small-note">Delta PP</div>
-                  <div id="interpretacion" class="result-main">Respondedor a volumen</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Criterios de validez</div>
+            <div class="dpp-question-grid">
+              <div class="dpp-question">
+                <div class="dpp-question-title">¿Tórax cerrado?</div>
+                <div class="dpp-binary-grid">
+                  <div class="dpp-binary">
+                    <input class="note-check validity-check" type="radio" name="thorax" id="thorax_yes" value="yes" checked>
+                    <label class="note-option dpp-yes" for="thorax_yes"><span class="dpp-binary-label"><span class="dpp-binary-icon"><i class="fa-solid fa-check"></i></span><span class="dpp-binary-copy"><span class="dpp-binary-title">Sí</span></span></span></label>
+                  </div>
+                  <div class="dpp-binary">
+                    <input class="note-check validity-check" type="radio" name="thorax" id="thorax_no" value="no">
+                    <label class="note-option dpp-no" for="thorax_no"><span class="dpp-binary-label"><span class="dpp-binary-icon"><i class="fa-solid fa-xmark"></i></span><span class="dpp-binary-copy"><span class="dpp-binary-title">No</span></span></span></label>
+                  </div>
                 </div>
-                <div id="deltaPP" class="result-num">35.29%</div>
               </div>
-              <div id="riskText" class="subtle mt-2">Valor claramente elevado, compatible con alta probabilidad de respuesta a volumen si el índice es válido.</div>
+              <div class="dpp-question">
+                <div class="dpp-question-title">¿Ventilación mecánica controlada, sin respiración espontánea importante?</div>
+                <div class="dpp-binary-grid">
+                  <div class="dpp-binary">
+                    <input class="note-check validity-check" type="radio" name="control" id="control_yes" value="yes" checked>
+                    <label class="note-option dpp-yes" for="control_yes"><span class="dpp-binary-label"><span class="dpp-binary-icon"><i class="fa-solid fa-check"></i></span><span class="dpp-binary-copy"><span class="dpp-binary-title">Sí</span></span></span></label>
+                  </div>
+                  <div class="dpp-binary">
+                    <input class="note-check validity-check" type="radio" name="control" id="control_no" value="no">
+                    <label class="note-option dpp-no" for="control_no"><span class="dpp-binary-label"><span class="dpp-binary-icon"><i class="fa-solid fa-xmark"></i></span><span class="dpp-binary-copy"><span class="dpp-binary-title">No</span></span></span></label>
+                  </div>
+                </div>
+              </div>
+              <div class="dpp-question">
+                <div class="dpp-question-title">¿Volumen corriente ≥ 8 mL/kg?</div>
+                <div class="dpp-binary-grid">
+                  <div class="dpp-binary">
+                    <input class="note-check validity-check" type="radio" name="vt" id="vt_yes" value="yes" checked>
+                    <label class="note-option dpp-yes" for="vt_yes"><span class="dpp-binary-label"><span class="dpp-binary-icon"><i class="fa-solid fa-check"></i></span><span class="dpp-binary-copy"><span class="dpp-binary-title">Sí</span></span></span></label>
+                  </div>
+                  <div class="dpp-binary">
+                    <input class="note-check validity-check" type="radio" name="vt" id="vt_no" value="no">
+                    <label class="note-option dpp-no" for="vt_no"><span class="dpp-binary-label"><span class="dpp-binary-icon"><i class="fa-solid fa-xmark"></i></span><span class="dpp-binary-copy"><span class="dpp-binary-title">No</span></span></span></label>
+                  </div>
+                </div>
+              </div>
+              <div class="dpp-question">
+                <div class="dpp-question-title">¿Ritmo sinusal?</div>
+                <div class="dpp-binary-grid">
+                  <div class="dpp-binary">
+                    <input class="note-check validity-check" type="radio" name="sinus" id="sinus_yes" value="yes" checked>
+                    <label class="note-option dpp-yes" for="sinus_yes"><span class="dpp-binary-label"><span class="dpp-binary-icon"><i class="fa-solid fa-check"></i></span><span class="dpp-binary-copy"><span class="dpp-binary-title">Sí</span></span></span></label>
+                  </div>
+                  <div class="dpp-binary">
+                    <input class="note-check validity-check" type="radio" name="sinus" id="sinus_no" value="no">
+                    <label class="note-option dpp-no" for="sinus_no"><span class="dpp-binary-label"><span class="dpp-binary-icon"><i class="fa-solid fa-xmark"></i></span><span class="dpp-binary-copy"><span class="dpp-binary-title">No</span></span></span></label>
+                  </div>
+                </div>
+              </div>
+              <div class="dpp-question">
+                <div class="dpp-question-title">¿Decúbito supino, sin cambios posturales relevantes?</div>
+                <div class="dpp-binary-grid">
+                  <div class="dpp-binary">
+                    <input class="note-check validity-check" type="radio" name="position" id="position_yes" value="yes" checked>
+                    <label class="note-option dpp-yes" for="position_yes"><span class="dpp-binary-label"><span class="dpp-binary-icon"><i class="fa-solid fa-check"></i></span><span class="dpp-binary-copy"><span class="dpp-binary-title">Sí</span></span></span></label>
+                  </div>
+                  <div class="dpp-binary">
+                    <input class="note-check validity-check" type="radio" name="position" id="position_no" value="no">
+                    <label class="note-option dpp-no" for="position_no"><span class="dpp-binary-label"><span class="dpp-binary-icon"><i class="fa-solid fa-xmark"></i></span><span class="dpp-binary-copy"><span class="dpp-binary-title">No</span></span></span></label>
+                  </div>
+                </div>
+              </div>
+              <div class="dpp-question">
+                <div class="dpp-question-title">¿Hay condiciones que invalidan o distorsionan la medición?</div>
+                <div class="dpp-binary-help mb-2">Ej: tórax abierto, ventilación muy protectora, esfuerzo espontáneo importante, hipertensión intraabdominal relevante, PEEP/VD muy alterados.</div>
+                <div class="dpp-binary-grid">
+                  <div class="dpp-binary">
+                    <input class="note-check validity-check" type="radio" name="invalidator" id="invalidator_no" value="no" checked>
+                    <label class="note-option dpp-yes" for="invalidator_no"><span class="dpp-binary-label"><span class="dpp-binary-icon"><i class="fa-solid fa-check"></i></span><span class="dpp-binary-copy"><span class="dpp-binary-title">No</span></span></span></label>
+                  </div>
+                  <div class="dpp-binary">
+                    <input class="note-check validity-check" type="radio" name="invalidator" id="invalidator_yes" value="yes">
+                    <label class="note-option dpp-no" for="invalidator_yes"><span class="dpp-binary-label"><span class="dpp-binary-icon"><i class="fa-solid fa-xmark"></i></span><span class="dpp-binary-copy"><span class="dpp-binary-title">Sí</span></span></span></label>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">Interpretación y manejo</div>
-
-            <div id="algoBox" class="algo-box algo-high">
-              <div id="algoTitle" class="fw-semibold mb-2">Conducta sugerida</div>
-
-              <div id="algoPlan">
-                <div class="drug-line">Delta PP > 12–13%: probable respondedor a volumen, si se cumplen criterios de validez.</div>
-              </div>
-
-              <div id="algoExtra" class="small-note mt-3">
-                Un Delta PP alto no obliga automáticamente a aportar volumen: debe integrarse con contexto clínico, perfusión y riesgos del paciente.
-              </div>
+        <div class="note-summary-box mb-3">
+          <div class="note-summary-box-title">Resumen</div>
+          <div id="summaryNarrative" class="note-summary-box-text">Ingresa las presiones y revisa los criterios de validez para interpretar el Delta PP con seguridad.</div>
+          <div class="note-summary-grid-2">
+            <div class="note-summary-item">
+              <div class="note-summary-k">PP máxima</div>
+              <div id="ppMax" class="note-summary-v">-</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">PP mínima</div>
+              <div id="ppMin" class="note-summary-v">-</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Validez del índice</div>
+              <div id="summaryValidity" class="note-summary-v">-</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Categoría</div>
+              <div id="summaryCategory" class="note-summary-v">-</div>
             </div>
           </div>
         </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">Requisitos para que el Delta PP sea fiable</div>
-
-            <div class="validity-grid">
-              <div class="validity-item">
-                <input class="form-check-input mt-1" type="checkbox" checked disabled>
-                <div>
-                  <div class="fw-semibold">Tórax cerrado</div>
-                  <div class="small-note">Pierde confiabilidad con tórax abierto.</div>
-                </div>
-              </div>
-
-              <div class="validity-item">
-                <input class="form-check-input mt-1" type="checkbox" checked disabled>
-                <div>
-                  <div class="fw-semibold">Ventilación mecánica controlada</div>
-                  <div class="small-note">Idealmente sin respiración espontánea significativa.</div>
-                </div>
-              </div>
-
-              <div class="validity-item">
-                <input class="form-check-input mt-1" type="checkbox" checked disabled>
-                <div>
-                  <div class="fw-semibold">Volumen corriente ≥ 8 ml/kg</div>
-                  <div class="small-note">Volúmenes bajos disminuyen sensibilidad del índice.</div>
-                </div>
-              </div>
-
-              <div class="validity-item">
-                <input class="form-check-input mt-1" type="checkbox" checked disabled>
-                <div>
-                  <div class="fw-semibold">Ritmo sinusal</div>
-                  <div class="small-note">Las arritmias invalidan o distorsionan la medición.</div>
-                </div>
-              </div>
-
-              <div class="validity-item">
-                <input class="form-check-input mt-1" type="checkbox" checked disabled>
-                <div>
-                  <div class="fw-semibold">Paciente en decúbito supino</div>
-                  <div class="small-note">Cambios posturales pueden alterar la interpretación.</div>
-                </div>
-              </div>
-
-              <div class="validity-item bad">
-                <input class="form-check-input mt-1" type="checkbox" disabled>
-                <div>
-                  <div class="fw-semibold">No usar si:</div>
-                  <div class="small-note">Respira espontáneamente, tiene PEEP/tidal muy particulares, tórax abierto, hipertensión intraabdominal relevante o disfunción VD importante.</div>
-                </div>
-              </div>
+        <div class="dpp-main-result mb-3">
+          <div class="dpp-main-result-label">Resultado principal</div>
+          <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+            <div>
+              <div id="resultTitle" class="dpp-main-result-title">Delta PP</div>
+              <div id="resultText" class="note-result-secondary mt-2">Resultado orientativo; interpretar solo si los criterios de validez son aceptables.</div>
             </div>
+            <div id="deltaPP" class="dpp-main-result-value">-</div>
+          </div>
+        </div>
 
-            <div class="small-note mt-3">
-              El Delta PP es una herramienta útil, pero solo dentro de su contexto fisiológico de validez.
+        <div class="note-interpretation mb-3">
+          <div class="note-interpretation-label">Interpretación clínica</div>
+          <div id="interpretationMain" class="note-interpretation-main">Pendiente de cálculo</div>
+          <div id="interpretationSoft" class="note-interpretation-soft">Integra el resultado con perfusión, sangrado, función ventricular y riesgos del paciente.</div>
+        </div>
+
+        <div id="warningBox" class="note-warning mb-3">
+          <div class="note-card-title">Advertencia</div>
+          <div id="warningText" class="mb-0">Si el índice no cumple criterios de validez, el número puede ser matemáticamente correcto pero clínicamente engañoso.</div>
+        </div>
+
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Conducta sugerida</div>
+            <div id="conductBox" class="conduct-box">
+              <div id="conductText">Usa el Delta PP como herramienta dinámica complementaria. Si el valor cae en zona gris o la validez es parcial, apóyate en otras maniobras dinámicas o ecografía.</div>
             </div>
           </div>
         </div>
 
-        <div class="footer-note">
-          Este módulo calcula Delta PP y orienta interpretación clínica simplificada. No reemplaza juicio clínico integral ni otras herramientas de evaluación de respuesta a fluidos.
+        <div class="note-teaching-wrap mt-3">
+          <div class="note-teaching-title">Perlas docentes</div>
+          <div class="note-teaching-main">Un Delta PP alto no siempre significa “dar volumen”</div>
+          <div class="note-tips"><strong>Qué hacer:</strong> confirmar que la fisiología del paciente hace interpretable el índice antes de actuar.</div>
+          <div class="note-tips"><strong>Qué evitar:</strong> tratar un Delta PP aislado como orden automática de fluidos.</div>
+          <div class="note-tips mb-0"><strong>Error frecuente:</strong> usar el índice con arritmia, respiración espontánea importante o ventilación no comparable, y luego confiar en el número.</div>
         </div>
 
+        <div class="dpp-footer-note mt-3">Este cálculo orienta interpretación hemodinámica simplificada. No reemplaza juicio clínico integral ni otras herramientas de evaluación de respuesta a fluidos.</div>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-function calcularDeltaPP(){
-  const sMax = parseFloat(document.getElementById('s_max').value);
-  const dMax = parseFloat(document.getElementById('d_max').value);
-  const sMin = parseFloat(document.getElementById('s_min').value);
-  const dMin = parseFloat(document.getElementById('d_min').value);
+(function(){
+  const CNS = window.ClinicalNoteSystem;
+  const ids = ['s_max','d_max','s_min','d_min'];
+  const inputs = ids.map(id => document.getElementById(id));
 
-  if([sMax,dMax,sMin,dMin].some(v => isNaN(v))){
-    return;
+  if (CNS && CNS.bindSelectionSync) {
+    CNS.bindSelectionSync('.validity-check');
   }
 
-  const ppMax = sMax - dMax;
-  const ppMin = sMin - dMin;
-  const delta = ((ppMax - ppMin) / ((ppMax + ppMin) / 2)) * 100;
-
-  document.getElementById('ppMax').textContent = ppMax.toFixed(0) + ' mmHg';
-  document.getElementById('ppMin').textContent = ppMin.toFixed(0) + ' mmHg';
-  document.getElementById('deltaPP').textContent = delta.toFixed(2) + '%';
-
-  const interpretacion = document.getElementById('interpretacion');
-  const riskText = document.getElementById('riskText');
-  const algoBox = document.getElementById('algoBox');
-  const algoTitle = document.getElementById('algoTitle');
-  const algoPlan = document.getElementById('algoPlan');
-  const algoExtra = document.getElementById('algoExtra');
-
-  algoBox.classList.remove('algo-low','algo-mid','algo-high');
-
-  if(delta > 12){
-    interpretacion.textContent = 'Respondedor a volumen';
-    riskText.textContent = 'Valor compatible con alta probabilidad de respuesta a volumen si el índice es válido.';
-    algoBox.classList.add('algo-high');
-    algoTitle.textContent = 'Conducta sugerida';
-    algoPlan.innerHTML = `
-      <div class="drug-line"><strong>Delta PP > 12–13%:</strong> probable respondedor a volumen.</div>
-      <div class="drug-line">Si el paciente presenta hipoperfusión y se cumplen criterios de validez, considerar prueba de volumen o estrategia dinámica equivalente.</div>
-    `;
-    algoExtra.textContent = 'Integra este hallazgo con contexto hemodinámico, sangrado, ecocardiografía y riesgo de sobrecarga.';
-  } else if(delta >= 9 && delta <= 12){
-    interpretacion.textContent = 'Zona gris';
-    riskText.textContent = 'Interpretación intermedia. No clasifica con seguridad como respondedor o no respondedor.';
-    algoBox.classList.add('algo-mid');
-    algoTitle.textContent = 'Conducta sugerida';
-    algoPlan.innerHTML = `
-      <div class="drug-line"><strong>Delta PP 9–12%:</strong> zona intermedia o gris.</div>
-      <div class="drug-line">Considerar otras maniobras dinámicas: elevación pasiva de piernas, prueba de volumen pequeña, eco o variación de volumen sistólico.</div>
-    `;
-    algoExtra.textContent = 'Evita tomar decisiones solo con este rango sin integrar otros datos.';
-  } else {
-    interpretacion.textContent = 'No respondedor a volumen';
-    riskText.textContent = 'Valor bajo, poco compatible con respuesta a fluidos si el índice es válido.';
-    algoBox.classList.add('algo-low');
-    algoTitle.textContent = 'Conducta sugerida';
-    algoPlan.innerHTML = `
-      <div class="drug-line"><strong>Delta PP < 9%:</strong> poco probable respondedor a volumen.</div>
-      <div class="drug-line">Si persiste inestabilidad, buscar otras causas: vasodilatación, disfunción miocárdica, obstrucción, sangrado no evaluado, etc.</div>
-    `;
-    algoExtra.textContent = 'Un valor bajo no excluye hipoperfusión por otras causas.';
+  function getSelected(name){
+    const el = document.querySelector('input[name="' + name + '"]:checked');
+    return el ? el.value : null;
   }
-}
 
-function toggleInfo(){
-  let box = document.getElementById("infoContent");
-  box.style.display = (box.style.display === "none" || box.style.display === "") ? "block" : "none";
-}
+  function getValidityState(){
+    const required = [
+      getSelected('thorax') === 'yes',
+      getSelected('control') === 'yes',
+      getSelected('vt') === 'yes',
+      getSelected('sinus') === 'yes',
+      getSelected('position') === 'yes',
+      getSelected('invalidator') === 'no'
+    ];
+    const validCount = required.filter(Boolean).length;
+    if (validCount === required.length) return 'valid';
+    if (validCount >= 4) return 'partial';
+    return 'invalid';
+  }
 
-calcularDeltaPP();
+  function update(){
+    const sMax = CNS.parseDecimal(document.getElementById('s_max').value);
+    const dMax = CNS.parseDecimal(document.getElementById('d_max').value);
+    const sMin = CNS.parseDecimal(document.getElementById('s_min').value);
+    const dMin = CNS.parseDecimal(document.getElementById('d_min').value);
+
+    if ([sMax,dMax,sMin,dMin].some(v => !Number.isFinite(v))) {
+      CNS.safeSetText('ppMax','-');
+      CNS.safeSetText('ppMin','-');
+      CNS.safeSetText('deltaPP','-');
+      CNS.safeSetText('summaryValidity','Pendiente');
+      CNS.safeSetText('summaryCategory','Pendiente');
+      CNS.safeSetText('resultTitle','Delta PP');
+      CNS.safeSetText('resultText','Completa las presiones y revisa los criterios de validez.');
+      CNS.safeSetText('interpretationMain','Pendiente de cálculo');
+      CNS.safeSetText('interpretationSoft','Integra el resultado con perfusión, sangrado, función ventricular y riesgos del paciente.');
+      CNS.safeSetText('warningText','Si el índice no cumple criterios de validez, el número puede ser matemáticamente correcto pero clínicamente engañoso.');
+      CNS.safeSetText('conductText','Usa el Delta PP como herramienta dinámica complementaria. Si el valor cae en zona gris o la validez es parcial, apóyate en otras maniobras dinámicas o ecografía.');
+      CNS.safeSetText('summaryNarrative','Ingresa las presiones y revisa los criterios de validez para interpretar el Delta PP con seguridad.');
+      return;
+    }
+
+    const ppMax = sMax - dMax;
+    const ppMin = sMin - dMin;
+    const meanPP = (ppMax + ppMin) / 2;
+    const delta = meanPP > 0 ? ((ppMax - ppMin) / meanPP) * 100 : NaN;
+
+    CNS.safeSetText('ppMax', Number.isFinite(ppMax) ? CNS.formatNumber(ppMax, 0) + ' mmHg' : '-');
+    CNS.safeSetText('ppMin', Number.isFinite(ppMin) ? CNS.formatNumber(ppMin, 0) + ' mmHg' : '-');
+    CNS.safeSetText('deltaPP', Number.isFinite(delta) ? CNS.formatNumber(delta, 1) + '%' : '-');
+
+    const validity = getValidityState();
+    let validityLabel = 'Parcial';
+    if (validity === 'valid') validityLabel = 'Adecuada';
+    if (validity === 'invalid') validityLabel = 'No adecuada';
+    CNS.safeSetText('summaryValidity', validityLabel);
+
+    let category = 'Zona gris';
+    let main = 'Interpretación intermedia';
+    let resultText = 'Resultado orientativo; interpretar solo si los criterios de validez son aceptables.';
+    let interpretationSoft = 'Integra el resultado con perfusión, sangrado, función ventricular y riesgos del paciente.';
+    let warningText = 'Si el índice no cumple criterios de validez, el número puede ser matemáticamente correcto pero clínicamente engañoso.';
+    let conductText = 'Usa el Delta PP como herramienta dinámica complementaria. Si el valor cae en zona gris o la validez es parcial, apóyate en otras maniobras dinámicas o ecografía.';
+
+    if (Number.isFinite(delta)) {
+      if (delta > 12) {
+        category = 'Alto';
+        main = validity === 'valid' ? 'Probable respondedor a volumen' : 'Delta PP alto con validez limitada';
+        resultText = validity === 'valid'
+          ? 'Valor elevado, compatible con alta probabilidad de respuesta a volumen si el contexto clínico acompaña.'
+          : 'El valor es alto, pero la confianza fisiológica del índice es incompleta.';
+        interpretationSoft = validity === 'valid'
+          ? 'Si existe hipoperfusión y el resto del contexto acompaña, puedes considerar prueba de volumen o estrategia dinámica equivalente.'
+          : 'No uses este resultado aislado para imponer fluidos; confirma con otras herramientas o mejora primero las condiciones de medición.';
+        conductText = validity === 'valid'
+          ? 'Delta PP > 12–13% con criterios de validez adecuados: probable respondedor a volumen. Integra con perfusión, sangrado y riesgo de sobrecarga.'
+          : 'Delta PP alto pero con validez parcial/no adecuada: confirma con elevación pasiva de piernas, eco o prueba de volumen pequeña antes de decidir.';
+      } else if (delta < 9) {
+        category = 'Bajo';
+        main = validity === 'valid' ? 'Poco probable respondedor a volumen' : 'Delta PP bajo con validez limitada';
+        resultText = validity === 'valid'
+          ? 'Valor bajo, poco compatible con respuesta a fluidos si el índice es fiable.'
+          : 'El valor es bajo, pero las condiciones de medición reducen la confianza del resultado.';
+        interpretationSoft = validity === 'valid'
+          ? 'Si persiste inestabilidad, considera otras causas: vasodilatación, disfunción miocárdica, obstrucción o sangrado no resuelto.'
+          : 'Un valor bajo sin criterios válidos no excluye hipovolemia ni otras causas de hipoperfusión.';
+        conductText = validity === 'valid'
+          ? 'Delta PP < 9% con validez adecuada: poco probable respondedor a volumen. Replantea otras causas de inestabilidad.'
+          : 'Delta PP bajo con validez insuficiente: no descartes respuesta a volumen solo por este resultado.';
+      } else {
+        category = 'Zona gris';
+        main = 'Resultado intermedio';
+        resultText = 'El valor cae en una zona gris. No clasifica con seguridad como respondedor o no respondedor.';
+        interpretationSoft = 'Usa otras maniobras dinámicas o ecocardiografía para refinar la decisión.';
+        conductText = 'Delta PP entre 9 y 12%: no tomes decisiones sólo con este valor. Prefiere maniobras complementarias o integración multimodal.';
+      }
+    }
+
+    if (validity === 'invalid') {
+      warningText = 'Los criterios de validez son insuficientes. No deberías usar este Delta PP como base principal para decidir fluidos.';
+    } else if (validity === 'partial') {
+      warningText = 'La validez del índice es parcial. Interpreta con cautela y apóyate en otras herramientas dinámicas.';
+    } else {
+      warningText = 'Aunque el índice sea válido, nunca reemplaza juicio clínico integral ni evaluación de riesgo de sobrecarga.';
+    }
+
+    CNS.safeSetText('summaryCategory', category);
+    CNS.safeSetText('resultTitle', main);
+    CNS.safeSetText('resultText', resultText);
+    CNS.safeSetText('interpretationMain', main);
+    CNS.safeSetText('interpretationSoft', interpretationSoft);
+    CNS.safeSetText('warningText', warningText);
+    CNS.safeSetText('conductText', conductText);
+    CNS.safeSetText('summaryNarrative', 'PP máxima ' + CNS.formatNumber(ppMax,0) + ' mmHg, PP mínima ' + CNS.formatNumber(ppMin,0) + ' mmHg. Delta PP ' + CNS.formatNumber(delta,1) + '%. Validez ' + validityLabel.toLowerCase() + ' del índice.');
+  }
+
+  inputs.forEach(el => el.addEventListener('input', update));
+  document.querySelectorAll('.validity-check').forEach(el => el.addEventListener('change', update));
+  update();
+})();
 </script>
 
 <?php

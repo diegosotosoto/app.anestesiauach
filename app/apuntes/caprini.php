@@ -1,818 +1,536 @@
 <?php
-
-$titulo_info = "Utilidad Clínica";
-$descripcion_info = "Apunte interactivo para estimar riesgo de tromboembolismo venoso mediante el modelo de Caprini 2013 y orientar medidas generales de profilaxis según el puntaje total.";
-$formula = "Estratificación orientativa: 0–1 bajo riesgo, 2 moderado, 3–4 alto, ≥5 muy alto. El score informa la decisión de profilaxis, pero no la prescribe por sí solo. Debe interpretarse junto al riesgo de sangrado, el tipo de cirugía y el contexto clínico.";
-$referencias = array(
-  "1.- Caprini Risk Assessment Model 2013.",
-  "2.- Prophylaxis Recommendations Based on Risk Level (según material adjunto).",
-  "3.- Ajustar siempre a protocolo institucional, riesgo hemorrágico, función renal y técnica anestésica."
-);
-
-$icono_apunte = "<i class='fa-solid fa-shield-heart pe-3 pt-2'></i>";
-$titulo_apunte = "Score de Caprini / Riesgo TVP";
-
+$titulo_pagina = "Score de Caprini";
+$navbar_titulo = "Apuntes";
 $boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
 $boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
 
+$titulo_info = "Utilidad clínica";
+$descripcion_info = "Apunte interactivo para estimar riesgo de tromboembolismo venoso mediante el modelo de Caprini y orientar medidas generales de tromboprofilaxis según puntaje total.";
+$formula = "Estratificación orientativa: 0–1 bajo riesgo, 2 riesgo moderado, 3–4 alto riesgo, ≥5 muy alto riesgo. El score informa la decisión de profilaxis, pero no la prescribe por sí solo. Debe interpretarse junto al riesgo de sangrado, función renal, neuroeje, tipo de cirugía y protocolo institucional.";
+$referencias = array(
+  "Caprini JA. Risk assessment as a guide for the prevention of the many faces of venous thromboembolism. Am J Surg. 2010.",
+  "Cronin M, Dengler N, Krauss ES, et al. Completion of the Updated Caprini Risk Assessment Model (2013 Version). Clin Appl Thromb Hemost. 2019.",
+  "Gould MK, Garcia DA, Wren SM, et al. Prevention of VTE in nonorthopedic surgical patients: ACCP Guidelines. Chest. 2012.",
+  "Ajustar siempre a protocolo institucional, riesgo hemorrágico, función renal y técnica anestésica."
+);
+
 require("head.php");
 ?>
+<link rel="stylesheet" href="css/clinical-note-system.css?v=2">
+<script src="js/clinical-note-system.js?v=2"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
     <div class="container-fluid px-0 px-md-2">
-      <div class="caprini-shell">
+      <div class="note-shell px-1 px-md-0 py-0">
 
         <style>
-          :root{
-            --brand:#27458f;
-            --brand2:#3559b7;
-            --bg:#f4f7fb;
-            --soft:#f8fafc;
-            --line:#dfe7f2;
-            --text:#1f2a37;
-            --muted:#667085;
-            --good:#edf8f7;
-            --warn:#fff9e8;
-            --danger:#fff5f3;
-            --mint:#eef7ff;
-            --mint-border:#cfe1ff;
-          }
-
-          body{background:var(--bg);}
-          .caprini-shell{max-width:1080px;margin:0 auto;}
-
-          .caprini-topbar{
-            background:linear-gradient(135deg,var(--brand),var(--brand2));
-            color:#fff;
-            border-radius:1.25rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            padding:1.15rem 1.25rem;
-            margin-bottom:1rem;
-            overflow:hidden;
-          }
-
-          .caprini-topbar h1{color:#fff;}
-
-          .section-card{
-            border:0;
-            border-radius:1rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
+          .caprini-group{
             background:#fff;
-            overflow:hidden;
-            margin-bottom:1rem;
-          }
-
-          .section-title{
-            font-size:.8rem;
-            letter-spacing:.05em;
-            text-transform:uppercase;
-            color:var(--muted);
-          }
-
-          .pill{
-            display:inline-block;
-            padding:.2rem .55rem;
-            border-radius:999px;
-            font-size:.78rem;
-            background:#eef3ff;
-            color:#3559b7;
-            font-weight:600;
-          }
-
-          .subtle{font-size:.94rem;color:#5f6b76;}
-          .small-note{font-size:.82rem;color:#667085;line-height:1.45;}
-          .footer-note{font-size:.82rem;color:#6c757d;}
-
-          .info-box{
-            background:#fff;
+            border:1px solid var(--note-line);
             border-radius:1rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
+            padding:1rem;
             margin-bottom:1rem;
-            overflow:hidden;
           }
 
-          .info-box-header{
+          .caprini-group:last-child{
+            margin-bottom:0;
+          }
+
+          .caprini-group-title{
             display:flex;
-            justify-content:space-between;
             align-items:center;
-            gap:1rem;
-            padding:1rem;
+            gap:.55rem;
+            font-size:1rem;
+            font-weight:850;
+            line-height:1.2;
+            color:var(--note-text);
+            margin:0 0 .25rem 0;
           }
 
-          .info-box-title{
+          .caprini-group-title i{
+            color:#3559b7;
+            font-size:.98rem;
+          }
+
+          .caprini-group-subtitle{
+            font-size:.84rem;
+            color:var(--note-muted);
+            line-height:1.35;
+            margin:0 0 .8rem 0;
+          }
+
+          .caprini-subblock-title{
             font-size:.8rem;
+            color:var(--note-muted);
+            font-weight:800;
+            letter-spacing:.04em;
             text-transform:uppercase;
-            color:#667085;
-            letter-spacing:.08em;
+            margin:.35rem 0 .55rem 0;
           }
 
-          .info-toggle-btn{
-            border-radius:.6rem;
-            font-size:.85rem;
-            padding:.35rem .7rem;
-            white-space:nowrap;
-            background:#6c757d;
-            border:none;
-            color:white;
-            transition:.2s;
-          }
-
-          .info-toggle-btn:hover{
-            background:#5a6268;
-            color:white;
-          }
-
-          .info-box-content{
-            padding:1rem;
-            display:none;
-            animation:fadeIn .2s ease-in-out;
-            border-top:1px solid #e9eef5;
-          }
-
-          @keyframes fadeIn{
-            from{opacity:0; transform:translateY(-5px);}
-            to{opacity:1; transform:translateY(0);}
-          }
-
-          .calc-grid{
+          .caprini-grid-2,
+          .caprini-grid-3,
+          .caprini-grid-4{
             display:grid;
-            grid-template-columns:repeat(2,1fr);
-            gap:1rem;
-          }
-
-          .card-block{
-            border:1px solid var(--line);
-            border-radius:1rem;
-            background:var(--soft);
-            padding:1rem;
-          }
-
-          .group-title{
-            font-size:.95rem;
-            font-weight:700;
-            color:var(--text);
-            margin-bottom:.25rem;
-          }
-
-          .group-subtitle{
-            font-size:.8rem;
-            color:#667085;
-            margin-bottom:.75rem;
-          }
-
-
-          .factor-check,
-          .factor-radio{
-            display:none;
-          }
-
-.factor-grid-2{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:.55rem;
-}
-
-.factor-grid-3{
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:.55rem;
-}
-
-.factor-grid-4{
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:.55rem;
-}
-
-.factor-btn{
-  display:flex;
-  flex-direction:column;
-  align-items:flex-start;
-  justify-content:center;
-  text-align:left;
-  min-height:68px;
-  border:1px solid #dfe7f2;
-  background:#fff;
-  border-radius:.85rem;
-  padding:.6rem .7rem;
-  font-weight:700;
-  color:#1f2a37;
-  cursor:pointer;
-  transition:.15s ease;
-  line-height:1.12;
-  box-shadow:0 4px 14px rgba(0,0,0,.04);
-  font-size:.92rem;
-}
-
-.factor-btn small{
-  font-weight:500;
-  color:#667085;
-  margin-top:.14rem;
-  line-height:1.15;
-  font-size:.72rem;
-}
-
-.factor-points{
-  display:inline-block;
-  margin-top:.28rem;
-  font-size:.7rem;
-  font-weight:800;
-  color:#3559b7;
-  background:#eef3ff;
-  border-radius:999px;
-  padding:.14rem .4rem;
-}
-
-          .factor-check:checked + .factor-btn,
-          .factor-radio:checked + .factor-btn{
-            background:#eef3ff;
-            border-color:#9fb9f8;
-            color:#27458f;
-            box-shadow:0 0 0 2px rgba(39,69,143,.05) inset, 0 8px 18px rgba(0,0,0,.06);
-            transform:translateY(-1px);
-          }
-
-          .summary-grid{
-            display:grid;
-            grid-template-columns:repeat(3,1fr);
             gap:.75rem;
           }
 
-          .summary-card{
+          .caprini-grid-2{grid-template-columns:repeat(2,minmax(0,1fr));}
+          .caprini-grid-3{grid-template-columns:repeat(3,minmax(0,1fr));}
+          .caprini-grid-4{grid-template-columns:repeat(4,minmax(0,1fr));}
+
+          .caprini-input{
+            position:absolute;
+            opacity:0;
+            pointer-events:none;
+          }
+
+          .caprini-option{
+            min-width:0;
+          }
+
+          .caprini-card{
+            display:flex;
+            align-items:flex-start;
+            gap:.65rem;
+            min-height:76px;
+            width:100%;
+            border:2px solid var(--note-line);
             background:#fff;
-            border:1px solid #e6e9ef;
             border-radius:1rem;
-            padding:.9rem;
+            padding:.75rem .8rem;
+            cursor:pointer;
+            transition:.15s ease;
+            box-shadow:0 3px 10px rgba(15,23,42,.04);
+            color:var(--note-text);
           }
 
-          .summary-label{
-            font-size:.76rem;
-            text-transform:uppercase;
-            letter-spacing:.06em;
-            color:#667085;
-            margin-bottom:.25rem;
+          .caprini-input:checked + .caprini-card{
+            background:#f4fbf7;
+            border-color:#b7e2c4;
+            box-shadow:0 0 0 3px rgba(46,166,99,.13), 0 8px 18px rgba(15,23,42,.10);
+            transform:translateY(-1px);
           }
 
-          .summary-value{
-            font-size:1rem;
-            font-weight:700;
-            color:#1f2a37;
-            line-height:1.35;
+          .caprini-mark{
+            flex:0 0 auto;
+            width:28px;
+            height:28px;
+            border-radius:999px;
+            border:2px solid #c9d3df;
+            background:#fff;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#fff;
+            margin-top:.02rem;
+            transition:.15s ease;
           }
 
-          .result-main-card{
-            background:#eef4ff;
-            border:3px solid #9fb9f8;
-            border-radius:1.2rem;
-            padding:1.15rem 1.2rem;
-            text-align:center;
-            box-shadow:0 8px 20px rgba(39,69,143,.08);
+          .caprini-input:checked + .caprini-card .caprini-mark{
+            background:#2ea663;
+            border-color:#2ea663;
+            color:#fff;
           }
 
-          .result-main-label{
-            font-size:.85rem;
-            text-transform:uppercase;
-            letter-spacing:.06em;
-            color:#5d6b85;
-            font-weight:700;
-            margin-bottom:.25rem;
+          .caprini-copy{
+            flex:1;
+            min-width:0;
           }
 
-          .result-main-note{
+          .caprini-label{
             font-size:.9rem;
-            color:#667085;
-            margin-bottom:.55rem;
-          }
-
-          .result-main-value{
-            font-size:2rem;
             font-weight:800;
-            line-height:1.05;
-            color:#27458f;
-          }
-
-          .good-box{
-            background:var(--good);
-            border:1px solid #cfe8e6;
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .warn-box{
-            background:var(--warn);
-            border:1px solid #ecd798;
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .danger-box{
-            background:var(--danger);
-            border:1px solid #efc4be;
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .mint-box{
-            background:var(--mint);
-            border:1px solid var(--mint-border);
-            border-radius:1rem;
-            padding:1rem;
-          }
-
-          .selected-list{
-            background:#f8fafc;
-            border:1px solid #dfe7f2;
-            border-radius:1rem;
-            padding:1rem;
-            min-height:88px;
-          }
-
-          .selected-list ul{
+            color:var(--note-text);
+            line-height:1.18;
             margin:0;
-            padding-left:1.1rem;
           }
 
-          .selected-list li{
-            margin-bottom:.35rem;
+          .caprini-points{
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            min-width:38px;
+            margin-top:.35rem;
+            padding:.16rem .46rem;
+            border-radius:999px;
+            background:#eef3ff;
+            color:#3559b7;
+            font-size:.76rem;
+            font-weight:900;
+            line-height:1.1;
           }
 
-          .tip-list{
+          .caprini-selected-list{
+            display:flex;
+            flex-wrap:wrap;
+            gap:.35rem;
+          }
+
+          .caprini-selected-pill{
+            display:inline-flex;
+            align-items:center;
+            gap:.3rem;
+            padding:.28rem .58rem;
+            border-radius:999px;
+            background:#eaf7ef;
+            color:#1f7a4d;
+            font-size:.78rem;
+            line-height:1.2;
+            font-weight:800;
+            max-width:100%;
+            overflow-wrap:anywhere;
+          }
+
+          .caprini-selected-empty{
+            color:var(--note-muted);
+            font-size:.9rem;
+          }
+
+          .caprini-action-list{
+            display:grid;
+            gap:.75rem;
+          }
+
+          .caprini-action-item{
+            display:flex;
+            align-items:flex-start;
+            gap:.65rem;
+            border:1px solid #d9e2ef;
+            border-radius:1rem;
+            background:#fff;
+            padding:.75rem .85rem;
+          }
+
+          .caprini-action-mark{
+            flex:0 0 auto;
+            width:30px;
+            height:30px;
+            border-radius:999px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#fff;
+            margin-top:.08rem;
+          }
+
+          .caprini-action-mark.ok{background:#2ea663;}
+          .caprini-action-mark.mid{background:#f4c542;}
+          .caprini-action-mark.high{background:#d92d20;}
+
+          .caprini-action-copy{min-width:0;flex:1;}
+
+          .caprini-action-title{
+            font-size:.95rem;
+            font-weight:800;
+            line-height:1.18;
+            color:var(--note-text);
+            margin-bottom:.1rem;
+          }
+
+          .caprini-action-note{
             margin:0;
-            padding-left:1.1rem;
+            font-size:.82rem;
+            line-height:1.32;
+            color:var(--note-muted);
           }
 
-          .tip-list li{
-            margin-bottom:.45rem;
+          .caprini-plan-line{
+            padding:.75rem .85rem;
+            border-radius:.9rem;
+            background:#fff;
+            border:1px solid var(--note-line-strong);
+            margin-bottom:.6rem;
           }
 
-@media (max-width:900px){
-  .factor-grid-4{
-    grid-template-columns:repeat(3,minmax(0,1fr));
-  }
+          .caprini-plan-line:last-child{
+            margin-bottom:0;
+          }
 
-  .factor-grid-3{
-    grid-template-columns:repeat(2,minmax(0,1fr));
-  }
+          .caprini-low{
+            background:#edf8f1 !important;
+            border-color:#b7ddc3 !important;
+          }
 
-  .factor-grid-2{
-    grid-template-columns:repeat(2,minmax(0,1fr));
-  }
+          .caprini-moderate{
+            background:#f2f8ff !important;
+            border-color:#d4e6ff !important;
+          }
 
-  .summary-grid{
-    grid-template-columns:repeat(2,1fr);
-  }
-}
+          .caprini-high{
+            background:#fff9e8 !important;
+            border-color:#ead38a !important;
+          }
 
-@media (max-width:576px){
-  .factor-grid-4{
-    grid-template-columns:repeat(2,minmax(0,1fr));
-  }
+          .caprini-veryhigh{
+            background:#fff1f1 !important;
+            border-color:#efc0bd !important;
+          }
 
-  .factor-grid-3{
-    grid-template-columns:repeat(2,minmax(0,1fr));
-  }
+          @media (max-width:900px){
+            .caprini-grid-4{grid-template-columns:repeat(2,minmax(0,1fr));}
+            .caprini-grid-3{grid-template-columns:repeat(2,minmax(0,1fr));}
+          }
 
-  .factor-grid-2{
-    grid-template-columns:repeat(2,minmax(0,1fr));
-  }
-
-  .factor-btn{
-    min-height:64px;
-    padding:.55rem .6rem;
-    font-size:.88rem;
-  }
-
-  .factor-btn small{
-    font-size:.68rem;
-  }
-
-  .summary-grid{
-    grid-template-columns:1fr;
-  }
-
-  .info-box-header{
-    flex-direction:row;
-  }
-
-  .info-toggle-btn{
-    margin-left:auto;
-  }
-}
-
-          @media (max-width:768px){
-            .calc-grid{
+          @media (max-width:420px){
+            .caprini-grid-2,
+            .caprini-grid-3,
+            .caprini-grid-4{
               grid-template-columns:1fr;
             }
-          }
 
-          @media (max-width:576px){
-            .summary-grid{
-              grid-template-columns:1fr;
-            }
-            .info-box-header{
-              flex-direction:row;
-            }
-            .info-toggle-btn{
-              margin-left:auto;
+            .caprini-card{
+              min-height:68px;
+              padding:.65rem .72rem;
             }
           }
         </style>
 
-        <div class="caprini-topbar">
-          <div class="d-flex justify-content-between align-items-start gap-3">
-            <div>
-              <div class="small opacity-75 mb-1">APP clínica • tromboprofilaxis</div>
-              <h1 class="h3 mb-2">Score de Caprini</h1>
-              <div class="subtle text-white-50">Estimación interactiva de riesgo de TEV y sugerencias generales de profilaxis.</div>
-            </div>
-            <span class="pill bg-light text-dark">TVP / TEV</span>
-          </div>
+        <div class="note-hero mb-3">
+          <div class="note-hero-kicker">APP CLÍNICA · TROMBOPROFILAXIS · TEV</div>
+          <h2>Score de Caprini</h2>
+          <div class="note-hero-subtitle">Calcula riesgo de tromboembolismo venoso perioperatorio y orienta profilaxis según puntaje, contexto y riesgo hemorrágico.</div>
         </div>
 
-        <div class="info-box">
+        <div class="info-box mb-3">
           <div class="info-box-header">
             <div class="info-box-title">Información</div>
             <button type="button" onclick="toggleInfo()" class="btn btn-sm info-toggle-btn">Mostrar / ocultar</button>
           </div>
-
           <div id="infoContent" class="info-box-content">
-            <?php echo $descripcion_info; ?>
-
+            <p class="mb-2"><?php echo $descripcion_info; ?></p>
             <?php if(!empty($formula)){ ?>
               <hr>
               <b>Comentario:</b><br>
               <?php echo $formula; ?>
             <?php } ?>
-
-            <?php if(!empty($referencias)){ ?>
-              <hr>
-              <b>Referencias:</b>
-              <ul class="mt-2 mb-0">
-                <?php foreach($referencias as $ref){ ?>
-                  <li><?php echo $ref; ?></li>
-                <?php } ?>
-              </ul>
-            <?php } ?>
+            <hr>
+            <b>Referencias:</b>
+            <ul class="mb-0 mt-2">
+              <?php foreach($referencias as $ref){ ?>
+                <li class="mb-2"><?php echo $ref; ?></li>
+              <?php } ?>
+            </ul>
           </div>
         </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">A. Factores de riesgo</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Factores de riesgo</div>
 
-            <div class="calc-grid">
+            <div class="caprini-group">
+              <div class="caprini-group-title"><i class="fa-solid fa-calendar-days"></i>Edad</div>
+              <p class="caprini-group-subtitle">Escoge solo una opción.</p>
+              <div class="caprini-grid-4">
+                <label class="caprini-option">
+                  <input class="caprini-input caprini-radio" type="radio" name="edad_caprini" data-points="0" data-label="Edad menor de 41 años" checked>
+                  <div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Menor de 41 años</div><span class="caprini-points">0</span></div></div>
+                </label>
+                <label class="caprini-option">
+                  <input class="caprini-input caprini-radio" type="radio" name="edad_caprini" data-points="1" data-label="Edad 41–60 años">
+                  <div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">41–60 años</div><span class="caprini-points">+1</span></div></div>
+                </label>
+                <label class="caprini-option">
+                  <input class="caprini-input caprini-radio" type="radio" name="edad_caprini" data-points="2" data-label="Edad 61–74 años">
+                  <div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">61–74 años</div><span class="caprini-points">+2</span></div></div>
+                </label>
+                <label class="caprini-option">
+                  <input class="caprini-input caprini-radio" type="radio" name="edad_caprini" data-points="3" data-label="Edad ≥75 años">
+                  <div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">≥75 años</div><span class="caprini-points">+3</span></div></div>
+                </label>
+              </div>
+            </div>
 
-              <div class="card-block">
-                <div class="group-title">Edad</div>
-                <div class="group-subtitle">Escoge solo una opción.</div>
-                <div class="factor-grid-4">
-                  <div>
-                    <input class="factor-radio caprini-radio" type="radio" name="edad_caprini" id="edad_0" data-points="0" data-label="Edad menor de 41 años" checked>
-                    <label class="factor-btn" for="edad_0">Menor de 41 años <span class="factor-points">0</span></label>
-                  </div>
-                  <div>
-                    <input class="factor-radio caprini-radio" type="radio" name="edad_caprini" id="edad_1" data-points="1" data-label="Edad 41–60 años">
-                    <label class="factor-btn" for="edad_1">41–60 años <span class="factor-points">+1</span></label>
-                  </div>
-                  <div>
-                    <input class="factor-radio caprini-radio" type="radio" name="edad_caprini" id="edad_2" data-points="2" data-label="Edad 61–74 años">
-                    <label class="factor-btn" for="edad_2">61–74 años <span class="factor-points">+2</span></label>
-                  </div>
-                  <div>
-                    <input class="factor-radio caprini-radio" type="radio" name="edad_caprini" id="edad_3" data-points="3" data-label="Edad ≥75 años">
-                    <label class="factor-btn" for="edad_3">≥75 años <span class="factor-points">+3</span></label>
-                  </div>
-                </div>
+            <div class="caprini-group">
+              <div class="caprini-group-title"><i class="fa-solid fa-scalpel-line-dashed"></i>Cirugía planificada</div>
+              <p class="caprini-group-subtitle">Escoge solo una opción.</p>
+              <div class="caprini-grid-4">
+                <label class="caprini-option">
+                  <input class="caprini-input caprini-radio" type="radio" name="cirugia_caprini" data-points="0" data-label="Sin cirugía relevante" checked>
+                  <div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Sin cirugía relevante</div><span class="caprini-points">0</span></div></div>
+                </label>
+                <label class="caprini-option">
+                  <input class="caprini-input caprini-radio" type="radio" name="cirugia_caprini" data-points="1" data-label="Cirugía menor <45 minutos">
+                  <div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Cirugía menor &lt;45 min</div><span class="caprini-points">+1</span></div></div>
+                </label>
+                <label class="caprini-option">
+                  <input class="caprini-input caprini-radio" type="radio" name="cirugia_caprini" data-points="2" data-label="Cirugía mayor >45 minutos">
+                  <div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Cirugía mayor &gt;45 min</div><span class="caprini-points">+2</span></div></div>
+                </label>
+                <label class="caprini-option">
+                  <input class="caprini-input caprini-radio" type="radio" name="cirugia_caprini" data-points="1" data-label="Cirugía de más de 2 horas">
+                  <div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Cirugía &gt;2 horas</div><span class="caprini-points">+1</span></div></div>
+                </label>
+              </div>
+            </div>
+
+            <div class="caprini-group">
+              <div class="caprini-group-title"><i class="fa-solid fa-bed"></i>Movilidad / inmovilización / acceso</div>
+              <p class="caprini-group-subtitle">Reposo en cama es excluyente. Yeso y acceso venoso central pueden coexistir.</p>
+
+              <div class="caprini-subblock-title">Reposo / movilidad</div>
+              <div class="caprini-grid-3 mb-3">
+                <label class="caprini-option"><input class="caprini-input caprini-radio" type="radio" name="reposo_caprini" data-points="0" data-label="Sin reposo relevante" checked><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Sin reposo relevante</div><span class="caprini-points">0</span></div></div></label>
+                <label class="caprini-option"><input class="caprini-input caprini-radio" type="radio" name="reposo_caprini" data-points="1" data-label="Reposo en cama <72 horas"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Reposo &lt;72 h</div><span class="caprini-points">+1</span></div></div></label>
+                <label class="caprini-option"><input class="caprini-input caprini-radio" type="radio" name="reposo_caprini" data-points="2" data-label="Reposo en cama ≥72 horas"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Reposo ≥72 h</div><span class="caprini-points">+2</span></div></div></label>
               </div>
 
-<div class="card-block">
-  <div class="group-title">Cirugía planificada</div>
-  <div class="group-subtitle">Escoge solo una opción.</div>
-  <div class="factor-grid-4">
-    <div>
-      <input class="factor-radio caprini-radio" type="radio" name="cirugia_caprini" id="cx_0" data-points="0" data-label="Sin cirugía relevante" checked>
-      <label class="factor-btn" for="cx_0">
-        Sin cirugía relevante
-        <span class="factor-points">0</span>
-      </label>
-    </div>
-    <div>
-      <input class="factor-radio caprini-radio" type="radio" name="cirugia_caprini" id="cx_1" data-points="1" data-label="Cirugía menor planificada <45 minutos">
-      <label class="factor-btn" for="cx_1">
-        Cirugía menor &lt;45 min
-        <span class="factor-points">+1</span>
-      </label>
-    </div>
-    <div>
-      <input class="factor-radio caprini-radio" type="radio" name="cirugia_caprini" id="cx_2" data-points="2" data-label="Cirugía mayor planificada >45 minutos">
-      <label class="factor-btn" for="cx_2">
-        Cirugía mayor &gt;45 min
-        <span class="factor-points">+2</span>
-      </label>
-    </div>
-    <div>
-      <input class="factor-radio caprini-radio" type="radio" name="cirugia_caprini" id="cx_3" data-points="1" data-label="Cirugía de más de 2 horas">
-      <label class="factor-btn" for="cx_3">
-        Cirugía &gt;2 horas
-        <span class="factor-points">+1</span>
-      </label>
-    </div>
-  </div>
-</div>
+              <div class="caprini-grid-2">
+                <label class="caprini-option"><input class="caprini-input caprini-item" type="checkbox" data-points="2" data-label="Yeso o inmovilizador de extremidad inferior"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Yeso / inmovilizador EEII</div><span class="caprini-points">+2</span></div></div></label>
+                <label class="caprini-option"><input class="caprini-input caprini-item" type="checkbox" data-points="2" data-label="Acceso venoso central"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Acceso venoso central</div><span class="caprini-points">+2</span></div></div></label>
+              </div>
+            </div>
 
-<div class="card-block">
-  <div class="group-title">Movilidad / inmovilización / acceso</div>
-  <div class="group-subtitle">Reposo en cama es excluyente. Yeso y acceso venoso central pueden coexistir.</div>
+            <div class="caprini-group">
+              <div class="caprini-group-title"><i class="fa-solid fa-weight-scale"></i>Hallazgos y comorbilidades de 1 punto</div>
+              <p class="caprini-group-subtitle">BMI es excluyente. El resto puede coexistir.</p>
 
-  <div class="mb-3">
-    <div class="small-note mb-2"><b>Reposo / movilidad</b></div>
-    <div class="factor-grid-3">
-      <div>
-        <input class="factor-radio caprini-radio" type="radio" name="reposo_caprini" id="rep_0" data-points="0" data-label="Sin reposo relevante" checked>
-        <label class="factor-btn" for="rep_0">
-          Sin reposo relevante
-          <span class="factor-points">0</span>
-        </label>
-      </div>
-      <div>
-        <input class="factor-radio caprini-radio" type="radio" name="reposo_caprini" id="rep_1" data-points="1" data-label="Reposo o movilidad reducida <72 horas">
-        <label class="factor-btn" for="rep_1">
-          Reposo &lt;72 h
-          <span class="factor-points">+1</span>
-        </label>
-      </div>
-      <div>
-        <input class="factor-radio caprini-radio" type="radio" name="reposo_caprini" id="rep_2" data-points="2" data-label="Reposo en cama ≥72 horas">
-        <label class="factor-btn" for="rep_2">
-          Reposo ≥72 h
-          <span class="factor-points">+2</span>
-        </label>
-      </div>
-    </div>
-  </div>
-
-  <div class="factor-grid-2">
-    <div>
-      <input class="factor-check caprini-item" type="checkbox" id="fmob_3" data-points="2" data-label="Yeso inmovilizador en el último mes">
-      <label class="factor-btn" for="fmob_3">
-        Yeso inmovilizador último mes
-        <span class="factor-points">+2</span>
-      </label>
-    </div>
-    <div>
-      <input class="factor-check caprini-item" type="checkbox" id="fmob_4" data-points="2" data-label="Acceso venoso central en el último mes">
-      <label class="factor-btn" for="fmob_4">
-        Acceso venoso central último mes
-        <span class="factor-points">+2</span>
-      </label>
-    </div>
-  </div>
-</div>
-
-<div class="card-block">
-  <div class="group-title">Hallazgos y comorbilidades de 1 punto</div>
-  <div class="group-subtitle">BMI es excluyente. El resto puede coexistir.</div>
-
-  <div class="mb-3">
-    <div class="small-note mb-2"><b>BMI</b></div>
-    <div class="factor-grid-3">
-      <div>
-        <input class="factor-radio caprini-radio" type="radio" name="bmi_caprini" id="bmi_0" data-points="0" data-label="BMI <25" checked>
-        <label class="factor-btn" for="bmi_0">
-          BMI &lt;25
-          <span class="factor-points">0</span>
-        </label>
-      </div>
-      <div>
-        <input class="factor-radio caprini-radio" type="radio" name="bmi_caprini" id="bmi_1" data-points="1" data-label="BMI ≥25">
-        <label class="factor-btn" for="bmi_1">
-          BMI ≥25
-          <span class="factor-points">+1</span>
-        </label>
-      </div>
-      <div>
-        <input class="factor-radio caprini-radio" type="radio" name="bmi_caprini" id="bmi_2" data-points="1" data-label="BMI >40">
-        <label class="factor-btn" for="bmi_2">
-          BMI &gt;40
-          <span class="factor-points">+1</span>
-        </label>
-      </div>
-    </div>
-  </div>
-
-  <div class="factor-grid-2">
-    <div>
-      <input class="factor-check caprini-item" type="checkbox" id="f1_1" data-points="1" data-label="Várices visibles">
-      <label class="factor-btn" for="f1_1">Várices visibles <span class="factor-points">+1</span></label>
-    </div>
-    <div>
-      <input class="factor-check caprini-item" type="checkbox" id="f1_2" data-points="1" data-label="Piernas hinchadas actuales">
-      <label class="factor-btn" for="f1_2">Piernas hinchadas actuales <span class="factor-points">+1</span></label>
-    </div>
-    <div>
-      <input class="factor-check caprini-item" type="checkbox" id="f1_4" data-points="1" data-label="Infarto al miocardio">
-      <label class="factor-btn" for="f1_4">Infarto al miocardio <span class="factor-points">+1</span></label>
-    </div>
-    <div>
-      <input class="factor-check caprini-item" type="checkbox" id="f1_5" data-points="1" data-label="Insuficiencia cardíaca congestiva">
-      <label class="factor-btn" for="f1_5">Insuficiencia cardíaca congestiva <span class="factor-points">+1</span></label>
-    </div>
-    <div>
-      <input class="factor-check caprini-item" type="checkbox" id="f1_6" data-points="1" data-label="Enfermedad inflamatoria intestinal">
-      <label class="factor-btn" for="f1_6">Enfermedad inflamatoria intestinal <span class="factor-points">+1</span></label>
-    </div>
-    <div>
-      <input class="factor-check caprini-item" type="checkbox" id="f1_7" data-points="1" data-label="Infección grave actual o reciente">
-      <label class="factor-btn" for="f1_7">Infección grave / neumonía <span class="factor-points">+1</span></label>
-    </div>
-    <div>
-      <input class="factor-check caprini-item" type="checkbox" id="f1_8" data-points="1" data-label="Enfermedad pulmonar existente (ej. EPOC)">
-      <label class="factor-btn" for="f1_8">Enfermedad pulmonar (ej. EPOC) <span class="factor-points">+1</span></label>
-    </div>
-  </div>
-</div>
-
-
-              <div class="card-block">
-                <div class="group-title">Mujeres</div>
-                <div class="group-subtitle">Marca los que correspondan.</div>
-                <div class="factor-grid-2">
-                  <div>
-                    <input class="factor-check caprini-item" type="checkbox" id="fw_1" data-points="1" data-label="Uso de hormonas (ACO o TRH)">
-                    <label class="factor-btn" for="fw_1">Hormonas: ACO / TRH <span class="factor-points">+1</span></label>
-                  </div>
-                  <div>
-                    <input class="factor-check caprini-item" type="checkbox" id="fw_2" data-points="1" data-label="Embarazo o puerperio dentro de 1 mes">
-                    <label class="factor-btn" for="fw_2">Embarazo / puerperio &lt;1 mes <span class="factor-points">+1</span></label>
-                  </div>
-                  <div>
-                    <input class="factor-check caprini-item" type="checkbox" id="fw_3" data-points="1" data-label="Óbito inexplicado, aborto recurrente >3, parto prematuro con preeclampsia o RCIU">
-                    <label class="factor-btn" for="fw_3">Antecedentes obstétricos de riesgo <span class="factor-points">+1</span></label>
-                  </div>
-                </div>
+              <div class="caprini-subblock-title">BMI</div>
+              <div class="caprini-grid-3 mb-3">
+                <label class="caprini-option"><input class="caprini-input caprini-radio" type="radio" name="bmi_caprini" data-points="0" data-label="BMI <25" checked><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">BMI &lt;25</div><span class="caprini-points">0</span></div></div></label>
+                <label class="caprini-option"><input class="caprini-input caprini-radio" type="radio" name="bmi_caprini" data-points="1" data-label="BMI ≥25"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">BMI ≥25</div><span class="caprini-points">+1</span></div></div></label>
+                <label class="caprini-option"><input class="caprini-input caprini-radio" type="radio" name="bmi_caprini" data-points="1" data-label="BMI >40"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">BMI &gt;40</div><span class="caprini-points">+1</span></div></div></label>
               </div>
 
-              <div class="card-block">
-                <div class="group-title">Otros factores de 1 punto</div>
-                <div class="group-subtitle">Marca todos los que apliquen.</div>
-                <div class="factor-grid-2">
-                  <div>
-                    <input class="factor-check caprini-item" type="checkbox" id="fo_2" data-points="1" data-label="Tabaquismo">
-                    <label class="factor-btn" for="fo_2">Tabaquismo <span class="factor-points">+1</span></label>
-                  </div>
-                  <div>
-                    <input class="factor-check caprini-item" type="checkbox" id="fo_3" data-points="1" data-label="Diabetes que requiere insulina">
-                    <label class="factor-btn" for="fo_3">Diabetes insulinorrequirente <span class="factor-points">+1</span></label>
-                  </div>
-                  <div>
-                    <input class="factor-check caprini-item" type="checkbox" id="fo_4" data-points="1" data-label="Quimioterapia">
-                    <label class="factor-btn" for="fo_4">Quimioterapia <span class="factor-points">+1</span></label>
-                  </div>
-                  <div>
-                    <input class="factor-check caprini-item" type="checkbox" id="fo_5" data-points="1" data-label="Transfusiones sanguíneas">
-                    <label class="factor-btn" for="fo_5">Transfusiones sanguíneas <span class="factor-points">+1</span></label>
-                  </div>
-                </div>
+              <div class="caprini-grid-2">
+                <label class="caprini-option"><input class="caprini-input caprini-item" type="checkbox" data-points="1" data-label="Várices visibles"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Várices visibles</div><span class="caprini-points">+1</span></div></div></label>
+                <label class="caprini-option"><input class="caprini-input caprini-item" type="checkbox" data-points="1" data-label="Piernas hinchadas actuales"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Piernas hinchadas actuales</div><span class="caprini-points">+1</span></div></div></label>
+                <label class="caprini-option"><input class="caprini-input caprini-item" type="checkbox" data-points="1" data-label="Infarto al miocardio"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Infarto al miocardio</div><span class="caprini-points">+1</span></div></div></label>
+                <label class="caprini-option"><input class="caprini-input caprini-item" type="checkbox" data-points="1" data-label="Insuficiencia cardíaca congestiva"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Insuficiencia cardíaca</div><span class="caprini-points">+1</span></div></div></label>
+                <label class="caprini-option"><input class="caprini-input caprini-item" type="checkbox" data-points="1" data-label="Enfermedad inflamatoria intestinal"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Enfermedad inflamatoria intestinal</div><span class="caprini-points">+1</span></div></div></label>
+                <label class="caprini-option"><input class="caprini-input caprini-item" type="checkbox" data-points="1" data-label="Infección grave actual o reciente"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Infección grave / neumonía</div><span class="caprini-points">+1</span></div></div></label>
+                <label class="caprini-option"><input class="caprini-input caprini-item" type="checkbox" data-points="1" data-label="Enfermedad pulmonar existente"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Enfermedad pulmonar</div><span class="caprini-points">+1</span></div></div></label>
               </div>
+            </div>
 
-              <div class="card-block">
-                <div class="group-title">Otros Factores de 2 puntos</div>
-                <div class="factor-grid-2">
-                  <div>
-                    <input class="factor-check caprini-item" type="checkbox" id="f2_1" data-points="2" data-label="Malignidad presente o pasada">
-                    <label class="factor-btn" for="f2_1">Malignidad presente o pasada <span class="factor-points">+2</span></label>
-                  </div>
-                </div>
+            <div class="caprini-group">
+              <div class="caprini-group-title"><i class="fa-solid fa-venus"></i>Mujeres / obstétrico</div>
+              <p class="caprini-group-subtitle">Marca los que correspondan.</p>
+              <div class="caprini-grid-2">
+                <label class="caprini-option"><input class="caprini-input caprini-item" type="checkbox" data-points="1" data-label="Uso de hormonas (ACO o TRH)"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Hormonas: ACO / TRH</div><span class="caprini-points">+1</span></div></div></label>
+                <label class="caprini-option"><input class="caprini-input caprini-item" type="checkbox" data-points="1" data-label="Embarazo o puerperio dentro de 1 mes"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Embarazo / puerperio &lt;1 mes</div><span class="caprini-points">+1</span></div></div></label>
+                <label class="caprini-option"><input class="caprini-input caprini-item" type="checkbox" data-points="1" data-label="Antecedentes obstétricos de riesgo"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Antecedentes obstétricos de riesgo</div><span class="caprini-points">+1</span></div></div></label>
               </div>
+            </div>
 
-              <div class="card-block">
-                <div class="group-title">Factores de 3 puntos</div>
-                <div class="group-subtitle">Marca los que apliquen.</div>
-                <div class="factor-grid-2">
-                  <div>
-                    <input class="factor-check caprini-item" type="checkbox" id="f3_1" data-points="3" data-label="Antecedente personal de TEV">
-                    <label class="factor-btn" for="f3_1">Antecedente personal de TEV <span class="factor-points">+3</span></label>
-                  </div>
-                  <div>
-                    <input class="factor-check caprini-item" type="checkbox" id="f3_2" data-points="3" data-label="Antecedente familiar de TEV">
-                    <label class="factor-btn" for="f3_2">Antecedente familiar de TEV <span class="factor-points">+3</span></label>
-                  </div>
-                  <div>
-                    <input class="factor-check caprini-item" type="checkbox" id="f3_3" data-points="3" data-label="Historia personal o familiar de trombofilia conocida">
-                    <label class="factor-btn" for="f3_3">Historia personal/familiar de trombofilia <span class="factor-points">+3</span></label>
-                  </div>
-                </div>
+            <div class="caprini-group">
+              <div class="caprini-group-title"><i class="fa-solid fa-notes-medical"></i>Otros factores</div>
+              <p class="caprini-group-subtitle">Marca todos los que apliquen.</p>
+              <div class="caprini-grid-2">
+                <label class="caprini-option"><input class="caprini-input caprini-item" type="checkbox" data-points="1" data-label="Tabaquismo"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Tabaquismo</div><span class="caprini-points">+1</span></div></div></label>
+                <label class="caprini-option"><input class="caprini-input caprini-item" type="checkbox" data-points="1" data-label="Diabetes insulinorrequirente"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Diabetes insulinorrequirente</div><span class="caprini-points">+1</span></div></div></label>
+                <label class="caprini-option"><input class="caprini-input caprini-item" type="checkbox" data-points="1" data-label="Quimioterapia"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Quimioterapia</div><span class="caprini-points">+1</span></div></div></label>
+                <label class="caprini-option"><input class="caprini-input caprini-item" type="checkbox" data-points="1" data-label="Transfusiones sanguíneas"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Transfusiones sanguíneas</div><span class="caprini-points">+1</span></div></div></label>
+                <label class="caprini-option"><input class="caprini-input caprini-item" type="checkbox" data-points="2" data-label="Malignidad presente o pasada"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Malignidad presente o pasada</div><span class="caprini-points">+2</span></div></div></label>
               </div>
+            </div>
 
-              <div class="card-block">
-                <div class="group-title">Factores de 5 puntos</div>
-                <div class="group-subtitle">Marca los que apliquen.</div>
-                <div class="factor-grid-2">
-                  <div>
-                    <input class="factor-check caprini-item" type="checkbox" id="f5_1" data-points="5" data-label="Artroplastía electiva de cadera o rodilla">
-                    <label class="factor-btn" for="f5_1">Artroplastía electiva cadera/rodilla <span class="factor-points">+5</span></label>
-                  </div>
-                  <div>
-                    <input class="factor-check caprini-item" type="checkbox" id="f5_2" data-points="5" data-label="Fractura de cadera, pelvis o pierna">
-                    <label class="factor-btn" for="f5_2">Fractura cadera / pelvis / pierna <span class="factor-points">+5</span></label>
-                  </div>
-                  <div>
-                    <input class="factor-check caprini-item" type="checkbox" id="f5_3" data-points="5" data-label="Trauma severo o fracturas múltiples">
-                    <label class="factor-btn" for="f5_3">Trauma severo / fracturas múltiples <span class="factor-points">+5</span></label>
-                  </div>
-                  <div>
-                    <input class="factor-check caprini-item" type="checkbox" id="f5_4" data-points="5" data-label="Lesión medular con parálisis">
-                    <label class="factor-btn" for="f5_4">Lesión medular con parálisis <span class="factor-points">+5</span></label>
-                  </div>
-                  <div>
-                    <input class="factor-check caprini-item" type="checkbox" id="f5_5" data-points="5" data-label="ACV">
-                    <label class="factor-btn" for="f5_5">ACV <span class="factor-points">+5</span></label>
-                  </div>
-                </div>
+            <div class="caprini-group">
+              <div class="caprini-group-title"><i class="fa-solid fa-dna"></i>Factores de 3 puntos</div>
+              <p class="caprini-group-subtitle">Trombosis previa, historia familiar o trombofilia elevan fuertemente el riesgo.</p>
+              <div class="caprini-grid-2">
+                <label class="caprini-option"><input class="caprini-input caprini-item" type="checkbox" data-points="3" data-label="Antecedente personal de TEV"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Antecedente personal de TEV</div><span class="caprini-points">+3</span></div></div></label>
+                <label class="caprini-option"><input class="caprini-input caprini-item" type="checkbox" data-points="3" data-label="Antecedente familiar de TEV"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Antecedente familiar de TEV</div><span class="caprini-points">+3</span></div></div></label>
+                <label class="caprini-option"><input class="caprini-input caprini-item" type="checkbox" data-points="3" data-label="Historia personal o familiar de trombofilia"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Trombofilia personal/familiar</div><span class="caprini-points">+3</span></div></div></label>
               </div>
+            </div>
 
+            <div class="caprini-group">
+              <div class="caprini-group-title"><i class="fa-solid fa-triangle-exclamation"></i>Factores de 5 puntos</div>
+              <p class="caprini-group-subtitle">Factores mayores: suelen desplazar al paciente a muy alto riesgo.</p>
+              <div class="caprini-grid-2">
+                <label class="caprini-option"><input class="caprini-input caprini-item" type="checkbox" data-points="5" data-label="Artroplastía electiva de cadera o rodilla"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Artroplastía cadera/rodilla</div><span class="caprini-points">+5</span></div></div></label>
+                <label class="caprini-option"><input class="caprini-input caprini-item" type="checkbox" data-points="5" data-label="Fractura de cadera, pelvis o pierna"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Fractura cadera / pelvis / pierna</div><span class="caprini-points">+5</span></div></div></label>
+                <label class="caprini-option"><input class="caprini-input caprini-item" type="checkbox" data-points="5" data-label="Trauma severo o fracturas múltiples"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Trauma severo / fracturas múltiples</div><span class="caprini-points">+5</span></div></div></label>
+                <label class="caprini-option"><input class="caprini-input caprini-item" type="checkbox" data-points="5" data-label="Lesión medular con parálisis"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">Lesión medular con parálisis</div><span class="caprini-points">+5</span></div></div></label>
+                <label class="caprini-option"><input class="caprini-input caprini-item" type="checkbox" data-points="5" data-label="ACV"><div class="caprini-card"><div class="caprini-mark"><i class="fa-solid fa-check"></i></div><div class="caprini-copy"><div class="caprini-label">ACV</div><span class="caprini-points">+5</span></div></div></label>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="note-summary-box mb-3">
+          <div class="note-summary-box-title">Resumen</div>
+          <div id="summaryNarrative" class="note-summary-box-text">0 puntos. Bajo riesgo; generalmente basta deambulación precoz si el contexto clínico lo permite.</div>
+          <div class="note-summary-grid-2">
+            <div class="note-summary-item">
+              <div class="note-summary-k">Puntaje total</div>
+              <div id="scoreTotal" class="note-summary-v">0</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Categoría</div>
+              <div id="scoreCategory" class="note-summary-v">Bajo riesgo</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Factores activos</div>
+              <div id="scoreItemsCount" class="note-summary-v">0 seleccionados</div>
+            </div>
+            <div class="note-summary-item">
+              <div class="note-summary-k">Conducta inicial</div>
+              <div id="summaryConduct" class="note-summary-v">Deambulación precoz</div>
             </div>
           </div>
         </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">B. Tarjeta resumen</div>
+        <div class="note-result-grid-2 mb-3">
+          <div id="scoreCard" class="note-result-card caprini-low">
+            <div class="note-result-card-label">Score de Caprini</div>
+            <div id="resultMain" class="note-result-card-value">0 puntos</div>
+            <div id="resultNote" class="note-result-card-note">Estratificación orientativa de riesgo TEV.</div>
+          </div>
+          <div id="riskCard" class="note-result-card caprini-low">
+            <div class="note-result-card-label">Riesgo</div>
+            <div id="riskMain" class="note-result-card-value">Bajo riesgo</div>
+            <div id="riskNote" class="note-result-card-note">0–1 puntos.</div>
+          </div>
+        </div>
 
-            <div class="summary-grid mb-3">
-              <div class="summary-card">
-                <div class="summary-label">Puntaje total</div>
-                <div id="scoreTotal" class="summary-value">0</div>
-              </div>
-              <div class="summary-card">
-                <div class="summary-label">Categoría</div>
-                <div id="scoreCategory" class="summary-value">Bajo riesgo</div>
-              </div>
-              <div class="summary-card">
-                <div class="summary-label">Factores activos</div>
-                <div id="scoreItemsCount" class="summary-value">0 seleccionados</div>
-              </div>
-            </div>
+        <div id="algoBox" class="note-interpretation mb-3">
+          <div class="note-interpretation-label">Interpretación y conducta</div>
+          <div id="managementTitle" class="note-interpretation-main">Bajo riesgo</div>
+          <div id="managementText" class="note-interpretation-soft">El score informa decisiones sobre prevención de TEV, pero no prescribe profilaxis por sí solo. En bajo riesgo, la deambulación precoz suele ser suficiente.</div>
 
-            <div class="selected-list">
-              <div class="summary-label mb-2">Opciones seleccionadas</div>
-              <div id="selectedFactorsWrap" class="small-note">Aún no has seleccionado factores.</div>
+          <div class="mt-3 text-start">
+            <div class="caprini-plan-line"><strong>Conducta orientativa:</strong> <span id="managementExamples">Deambulación precoz; no suele requerirse profilaxis mecánica ni farmacológica de rutina.</span></div>
+            <div class="caprini-plan-line"><strong>Factores seleccionados:</strong> <span id="selectedFactorsWrap" class="caprini-selected-empty">Aún no has seleccionado factores.</span></div>
+            <div class="caprini-plan-line"><strong>Limitación:</strong> <span>Revisar riesgo hemorrágico, función renal, técnica neuroaxial, tipo de cirugía y protocolo institucional.</span></div>
+          </div>
+        </div>
+
+        <div class="note-warning mb-3">
+          <strong>Advertencia:</strong>
+          <div class="mt-2">El puntaje de Caprini orienta la tromboprofilaxis, pero no reemplaza evaluación de sangrado, plaquetas, función renal, neuroeje, tipo de cirugía ni protocolo institucional.</div>
+        </div>
+
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">Conducta práctica</div>
+            <div id="actionList" class="caprini-action-list">
+              <div class="caprini-action-item">
+                <div class="caprini-action-mark ok"><i class="fa-solid fa-check"></i></div>
+                <div class="caprini-action-copy">
+                  <div class="caprini-action-title">Bajo riesgo</div>
+                  <p class="caprini-action-note">Deambulación precoz si no hay otros elementos clínicos que aumenten el riesgo.</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">C. Resultado principal</div>
-
-            <div id="resultCard" class="result-main-card">
-              <div class="result-main-label">Score de Caprini</div>
-              <div class="result-main-note">Estratificación orientativa de riesgo TEV</div>
-              <div id="resultMain" class="result-main-value">0 puntos</div>
-            </div>
-          </div>
+        <div class="note-teaching-wrap">
+          <div class="note-teaching-title">Perlas docentes</div>
+          <div class="note-teaching-main">Interpretar el score, no obedecerlo ciegamente</div>
+          <div class="note-tips"><strong>Qué hacer:</strong> calcula Caprini y luego cruza el resultado con riesgo hemorrágico, cirugía, función renal, neuroeje y movilidad real.</div>
+          <div class="note-tips"><strong>Qué evitar:</strong> anticoagular por puntaje sin revisar sangrado activo, plaquetas, función renal o retiro de catéter neuroaxial.</div>
+          <div class="note-tips"><strong>Muy alto riesgo:</strong> suele justificar profilaxis combinada y, en casos seleccionados, profilaxis extendida postalta.</div>
+          <div class="note-tips"><strong>Reevaluación:</strong> el puntaje puede cambiar si el paciente prolonga inmovilidad, desarrolla infección o acumula nuevos factores.</div>
+          <div class="note-tips mb-0"><strong>Mensaje final:</strong> si no puedes usar profilaxis farmacológica por sangrado, no olvides profilaxis mecánica y deambulación.</div>
         </div>
 
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">D. Sugerencias de manejo</div>
-
-            <div id="managementBox" class="good-box">
-              <strong id="managementTitle">Bajo riesgo</strong><br>
-              <div id="managementText" class="small-note mt-2">
-                El score informa decisiones sobre prevención de TEV, pero no prescribe profilaxis por sí solo. En bajo riesgo suele bastar la deambulación precoz.
-              </div>
-            </div>
-
-            <div id="managementExamples" class="mint-box mt-3">
-              <strong>Ejemplos orientativos</strong>
-              <ul class="tip-list mt-2">
-                <li>Deambulación precoz.</li>
-                <li>No suele requerirse profilaxis mecánica ni farmacológica de rutina.</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-card">
-          <div class="p-3 p-md-4">
-            <div class="section-title mb-3">E. Tips docentes</div>
-
-            <div class="warn-box">
-              <ul class="tip-list">
-                <li>El score de Caprini informa la decisión de profilaxis, pero la selección final depende también del riesgo de sangrado.</li>
-                <li>En riesgo alto y muy alto, la profilaxis farmacológica suele ser razonable, pero revisa siempre función renal, sangrado activo, plaquetas, neuroeje y tipo de cirugía.</li>
-                <li>En muy alto riesgo, el material adjunto sugiere considerar profilaxis combinada farmacológica y mecánica, y en algunos casos profilaxis extendida postalta.</li>
-                <li>Un puntaje alto no obliga a anticoagular a todo paciente: primero define si la profilaxis está contraindicada o debe priorizarse la profilaxis mecánica.</li>
-                <li>Reevalúa el score si el paciente cambia de condición, prolonga su inmovilidad o acumula nuevos factores durante la hospitalización.</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="footer-note">
+        <div class="note-footer mt-3">
           Herramienta docente y de apoyo clínico. Ajustar siempre a riesgo hemorrágico, función renal, anestesia neuroaxial y protocolo institucional.
         </div>
 
@@ -822,130 +540,198 @@ require("head.php");
 </div>
 
 <script>
-function toggleInfo(){
-  let box = document.getElementById("infoContent");
-  box.style.display = (box.style.display === "none" || box.style.display === "") ? "block" : "none";
-}
+(function(){
+  const CNS = window.ClinicalNoteSystem || {};
 
-function applyResultStyle(level){
-  const resultCard = document.getElementById('resultCard');
-  const managementBox = document.getElementById('managementBox');
+  const radios = Array.from(document.querySelectorAll('.caprini-radio'));
+  const checks = Array.from(document.querySelectorAll('.caprini-item'));
+  const allInputs = radios.concat(checks);
 
-  resultCard.classList.remove('good-box','warn-box','danger-box','mint-box');
-  managementBox.classList.remove('good-box','warn-box','danger-box','mint-box');
-
-  if(level === 'low'){
-    resultCard.classList.add('good-box');
-    managementBox.classList.add('good-box');
-  } else if(level === 'moderate'){
-    resultCard.classList.add('mint-box');
-    managementBox.classList.add('mint-box');
-  } else if(level === 'high'){
-    resultCard.classList.add('warn-box');
-    managementBox.classList.add('warn-box');
-  } else {
-    resultCard.classList.add('danger-box');
-    managementBox.classList.add('danger-box');
+  function setText(id, value){
+    const el = document.getElementById(id);
+    if(CNS.safeSetText) CNS.safeSetText(el, value);
+    else if(el) el.textContent = value;
   }
-}
 
-function updateCaprini(){
-  const checkItems = document.querySelectorAll('.caprini-item:checked');
-  const radioItems = document.querySelectorAll('.caprini-radio:checked');
+  function setHTML(id, value){
+    const el = document.getElementById(id);
+    if(el) el.innerHTML = value;
+  }
 
-  let total = 0;
-  let selected = [];
+  function escapeHtml(s){
+    return String(s)
+      .replaceAll('&','&amp;')
+      .replaceAll('<','&lt;')
+      .replaceAll('>','&gt;')
+      .replaceAll('"','&quot;')
+      .replaceAll("'","&#039;");
+  }
 
-  radioItems.forEach(item => {
-    const pts = parseInt(item.dataset.points || '0', 10);
-    total += pts;
-    if(pts > 0){
-      selected.push(item.dataset.label + ' (+' + pts + ')');
+  function riskData(total){
+    if(total <= 1){
+      return {
+        category:'Bajo riesgo',
+        title:'Bajo riesgo',
+        range:'0–1 puntos',
+        conduct:'Deambulación precoz',
+        text:'El score informa decisiones sobre prevención de TEV, pero no prescribe profilaxis por sí solo. En bajo riesgo, la deambulación precoz suele ser suficiente.',
+        examples:'Deambulación precoz; no suele requerirse profilaxis mecánica ni farmacológica de rutina.',
+        css:'caprini-low',
+        level:'ok'
+      };
     }
-  });
-
-  checkItems.forEach(item => {
-    const pts = parseInt(item.dataset.points || '0', 10);
-    total += pts;
-    selected.push(item.dataset.label + ' (+' + pts + ')');
-  });
-
-  document.getElementById('scoreTotal').textContent = total;
-  document.getElementById('scoreItemsCount').textContent = selected.length + ' seleccionados';
-  document.getElementById('resultMain').textContent = total + ' puntos';
-
-  const selectedWrap = document.getElementById('selectedFactorsWrap');
-  if(selected.length === 0){
-    selectedWrap.textContent = 'Aún no has seleccionado factores.';
-  } else {
-    selectedWrap.innerHTML = '<ul><li>' + selected.join('</li><li>') + '</li></ul>';
+    if(total === 2){
+      return {
+        category:'Riesgo moderado',
+        title:'Riesgo moderado',
+        range:'2 puntos',
+        conduct:'Mecánica o farmacológica',
+        text:'Puede considerarse profilaxis mecánica o farmacológica según contexto clínico y riesgo hemorrágico.',
+        examples:'Compresión neumática intermitente o profilaxis farmacológica según protocolo local y riesgo de sangrado.',
+        css:'caprini-moderate',
+        level:'mid'
+      };
+    }
+    if(total <= 4){
+      return {
+        category:'Alto riesgo',
+        title:'Alto riesgo',
+        range:'3–4 puntos',
+        conduct:'Farmacológica ± mecánica',
+        text:'Suele recomendarse profilaxis farmacológica durante hospitalización, agregando métodos mecánicos cuando sea apropiado.',
+        examples:'Profilaxis farmacológica durante hospitalización; agregar compresión neumática si corresponde.',
+        css:'caprini-high',
+        level:'high'
+      };
+    }
+    return {
+      category:'Muy alto riesgo',
+      title:'Muy alto riesgo',
+      range:'≥5 puntos',
+      conduct:'Combinada; considerar extendida',
+      text:'Se aconseja profilaxis combinada farmacológica y mecánica si no hay contraindicación. En pacientes seleccionados puede considerarse profilaxis extendida postalta.',
+      examples:'Profilaxis farmacológica + mecánica; considerar profilaxis extendida postalta según cirugía, cáncer, movilidad y protocolo.',
+      css:'caprini-veryhigh',
+      level:'high'
+    };
   }
 
-  let category = '';
-  let title = '';
-  let text = '';
-  let examples = '';
-  let style = 'low';
+  function selectedLabels(){
+    const selected = [];
 
-  if(total <= 1){
-    category = 'Bajo riesgo';
-    title = 'Bajo riesgo (0–1 puntos)';
-    text = 'El score informa decisiones sobre prevención de TEV, pero no prescribe profilaxis por sí solo. En bajo riesgo, la deambulación precoz suele ser suficiente.';
-    examples = `
-      <ul class="tip-list mt-2">
-        <li>Deambulación precoz.</li>
-        <li>No suele requerirse profilaxis mecánica ni farmacológica de rutina.</li>
-      </ul>`;
-    style = 'low';
-  } else if(total === 2){
-    category = 'Riesgo moderado';
-    title = 'Riesgo moderado (2 puntos)';
-    text = 'Puede considerarse profilaxis mecánica o farmacológica según el contexto clínico.';
-    examples = `
-      <ul class="tip-list mt-2">
-        <li>Compresión neumática intermitente.</li>
-        <li>Profilaxis farmacológica según contexto clínico y riesgo hemorrágico.</li>
-      </ul>`;
-    style = 'moderate';
-  } else if(total >= 3 && total <= 4){
-    category = 'Alto riesgo';
-    title = 'Alto riesgo (3–4 puntos)';
-    text = 'Se recomienda profilaxis farmacológica durante la hospitalización, agregando métodos mecánicos cuando sea apropiado.';
-    examples = `
-      <ul class="tip-list mt-2">
-        <li>Profilaxis farmacológica durante hospitalización.</li>
-        <li>Agregar compresión neumática intermitente si corresponde.</li>
-        <li>Ejemplos frecuentes: HNF o HBPM según protocolo local.</li>
-      </ul>`;
-    style = 'high';
-  } else {
-    category = 'Muy alto riesgo';
-    title = 'Muy alto riesgo (≥5 puntos)';
-    text = 'Se aconseja profilaxis combinada farmacológica y mecánica. A menudo puede considerarse profilaxis extendida postalta por 7–10 días. En algunos casos, puntajes mayores de 8 podrían beneficiarse de profilaxis más prolongada, habitualmente hasta 30 días.';
-    examples = `
-      <ul class="tip-list mt-2">
-        <li>Profilaxis farmacológica + profilaxis mecánica.</li>
-        <li>Considerar profilaxis extendida postalta 7–10 días.</li>
-        <li>En pacientes seleccionados con puntajes &gt;8, considerar prolongación hasta 30 días.</li>
-      </ul>`;
-    style = 'veryhigh';
+    document.querySelectorAll('.caprini-radio:checked').forEach(function(item){
+      const pts = parseInt(item.dataset.points || '0', 10);
+      if(pts > 0){
+        selected.push({label:item.dataset.label || '', pts:pts});
+      }
+    });
+
+    document.querySelectorAll('.caprini-item:checked').forEach(function(item){
+      const pts = parseInt(item.dataset.points || '0', 10);
+      selected.push({label:item.dataset.label || '', pts:pts});
+    });
+
+    return selected;
   }
 
-  document.getElementById('scoreCategory').textContent = category;
-  document.getElementById('managementTitle').textContent = title;
-  document.getElementById('managementText').textContent = text;
-  document.getElementById('managementExamples').innerHTML = '<strong>Ejemplos orientativos</strong>' + examples;
+  function calculateTotal(){
+    let total = 0;
+    document.querySelectorAll('.caprini-radio:checked, .caprini-item:checked').forEach(function(item){
+      total += parseInt(item.dataset.points || '0', 10);
+    });
+    return total;
+  }
 
-  applyResultStyle(style);
-}
+  function renderSelected(selected){
+    if(!selected.length){
+      setHTML('selectedFactorsWrap', '<span class="caprini-selected-empty">Aún no has seleccionado factores.</span>');
+      return;
+    }
 
-document.addEventListener('DOMContentLoaded', function(){
-  document.querySelectorAll('.caprini-item, .caprini-radio').forEach(el => {
+    const pills = selected.map(function(item){
+      return '<span class="caprini-selected-pill"><i class="fa-solid fa-check"></i>' + escapeHtml(item.label) + ' (+' + item.pts + ')</span>';
+    }).join('');
+
+    setHTML('selectedFactorsWrap', '<span class="caprini-selected-list">' + pills + '</span>');
+  }
+
+  function renderActions(data, total){
+    let items = [];
+
+    if(data.level === 'ok'){
+      items = [
+        ['ok','Bajo riesgo','Deambulación precoz si no hay otros elementos clínicos que aumenten el riesgo.'],
+        ['ok','Evitar sobretratamiento','No indicar profilaxis farmacológica por rutina si el riesgo de TEV es bajo y no hay otros factores.']
+      ];
+    } else if(total === 2){
+      items = [
+        ['mid','Riesgo moderado','Evaluar profilaxis mecánica o farmacológica según cirugía, movilidad y riesgo hemorrágico.'],
+        ['mid','Individualizar','El mismo puntaje no pesa igual en cirugía menor ambulatoria que en cirugía mayor hospitalizada.']
+      ];
+    } else if(total <= 4){
+      items = [
+        ['high','Alto riesgo','Considerar profilaxis farmacológica si no hay contraindicación, más mecánica según contexto.'],
+        ['mid','Revisar seguridad','Antes de anticoagular: sangrado, plaquetas, función renal, neuroeje y timing quirúrgico.']
+      ];
+    } else {
+      items = [
+        ['high','Muy alto riesgo','Suele justificar profilaxis combinada farmacológica y mecánica si el sangrado lo permite.'],
+        ['high','Considerar profilaxis extendida','Especialmente en cáncer, cirugía mayor, movilidad reducida o puntajes muy altos, según protocolo.']
+      ];
+    }
+
+    items.push(['mid','Reevaluar durante hospitalización','El score puede cambiar con inmovilidad prolongada, infección, acceso central o nuevos eventos.']);
+
+    document.getElementById('actionList').innerHTML = items.map(function(item){
+      const icon = item[0] === 'ok' ? 'fa-check' : (item[0] === 'mid' ? 'fa-triangle-exclamation' : 'fa-bolt');
+      return '<div class="caprini-action-item">' +
+        '<div class="caprini-action-mark ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
+        '<div class="caprini-action-copy">' +
+          '<div class="caprini-action-title">' + item[1] + '</div>' +
+          '<p class="caprini-action-note">' + item[2] + '</p>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function updateCaprini(){
+    const total = calculateTotal();
+    const selected = selectedLabels();
+    const data = riskData(total);
+
+    setText('scoreTotal', String(total));
+    setText('scoreCategory', data.category);
+    setText('scoreItemsCount', selected.length + (selected.length === 1 ? ' seleccionado' : ' seleccionados'));
+    setText('summaryConduct', data.conduct);
+    setText('resultMain', total + (total === 1 ? ' punto' : ' puntos'));
+    setText('riskMain', data.category);
+    setText('riskNote', data.range + '.');
+    setText('managementTitle', data.title);
+    setText('managementText', data.text);
+    setText('managementExamples', data.examples);
+
+    const narrative = total + (total === 1 ? ' punto. ' : ' puntos. ') + data.category + '; ' + data.conduct.toLowerCase() + '. Ajustar siempre al riesgo hemorrágico y contexto quirúrgico.';
+    setText('summaryNarrative', narrative);
+
+    renderSelected(selected);
+
+    document.getElementById('scoreCard').className = 'note-result-card ' + data.css;
+    document.getElementById('riskCard').className = 'note-result-card ' + data.css;
+
+    renderActions(data, total);
+  }
+
+  allInputs.forEach(function(el){
     el.addEventListener('change', updateCaprini);
   });
 
   updateCaprini();
-});
+})();
+
+function toggleInfo(){
+  const box = document.getElementById("infoContent");
+  box.style.display = (box.style.display === "none" || box.style.display === "") ? "block" : "none";
+}
 </script>
 
 <?php require("footer.php"); ?>
