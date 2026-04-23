@@ -1,7 +1,165 @@
 <?php  //Conexión
-  require("../conectar.php");
-  $conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
-  $conexion->set_charset("utf8");
+
+require("../conectar.php");
+
+$conexion = new mysqli($db_host, $db_usuario, $db_contra, $db_nombre);
+
+$conexion->set_charset("utf8mb4");
+
+/*
+
+  MARCAR NOTA COMO VISTA
+
+  - Usa cookie hkjh41lu4l1k23jhlkj13 = email del usuario
+
+  - Busca usuario en usuarios_dolor
+
+  - Busca nota por ruta en tabla notas
+
+  - Inserta/actualiza usuario_notas
+
+*/
+
+$archivo_actual = basename($_SERVER['PHP_SELF']);
+
+/*
+
+  Excluir archivos PHP auxiliares que NO son notas.
+
+  No hace falta excluir imágenes ni carpetas:
+
+  basename($_SERVER['PHP_SELF']) solo devolverá el archivo PHP ejecutado.
+
+*/
+
+$archivos_excluidos = [
+
+    'apuntes.php',
+
+    'head.php',
+
+    'head_apuntes.php',
+
+    'footer.php',
+
+    'dosis_ped_pdf.php'
+
+];
+
+if (!in_array($archivo_actual, $archivos_excluidos, true)) {
+
+    $usuario_id = 0;
+
+    // Cookie 13 guarda el email del usuario
+
+    if (isset($_COOKIE['hkjh41lu4l1k23jhlkj13']) && $_COOKIE['hkjh41lu4l1k23jhlkj13'] !== '') {
+
+        $email_usuario_cookie = trim($_COOKIE['hkjh41lu4l1k23jhlkj13']);
+
+        $sql_usuario = "SELECT ID
+
+                        FROM anestes1_hoja_dolor.usuarios_dolor
+
+                        WHERE email_usuario = ?
+
+                          AND verified = 1
+
+                        LIMIT 1";
+
+        $stmt_usuario = $conexion->prepare($sql_usuario);
+
+        if ($stmt_usuario) {
+
+            $stmt_usuario->bind_param("s", $email_usuario_cookie);
+
+            $stmt_usuario->execute();
+
+            $res_usuario = $stmt_usuario->get_result();
+
+            if ($fila_usuario = $res_usuario->fetch_assoc()) {
+
+                $usuario_id = (int)$fila_usuario['ID'];
+
+            }
+
+            $stmt_usuario->close();
+
+        }
+
+    }
+
+    if ($usuario_id > 0) {
+
+        $ruta_actual = 'apuntes/' . $archivo_actual;
+
+        $sql_nota = "SELECT id
+
+                     FROM anestes1_hoja_dolor.notas
+
+                     WHERE ruta = ?
+
+                       AND estado = 'publicada'
+
+                     LIMIT 1";
+
+        $stmt_nota = $conexion->prepare($sql_nota);
+
+        if ($stmt_nota) {
+
+            $stmt_nota->bind_param("s", $ruta_actual);
+
+            $stmt_nota->execute();
+
+            $res_nota = $stmt_nota->get_result();
+
+            if ($fila_nota = $res_nota->fetch_assoc()) {
+
+                $nota_id = (int)$fila_nota['id'];
+
+                $sql_vista = "INSERT INTO anestes1_hoja_dolor.usuario_notas (
+
+                                usuario_id,
+
+                                nota_id,
+
+                                vista_at,
+
+                                ultima_visita_at
+
+                              )
+
+                              VALUES (?, ?, NOW(), NOW())
+
+                              ON DUPLICATE KEY UPDATE
+
+                                vista_at = COALESCE(vista_at, NOW()),
+
+                                ultima_visita_at = NOW(),
+
+                                updated_at = NOW()";
+
+                $stmt_vista = $conexion->prepare($sql_vista);
+
+                if ($stmt_vista) {
+
+                    $stmt_vista->bind_param("ii", $usuario_id, $nota_id);
+
+                    $stmt_vista->execute();
+
+                    $stmt_vista->close();
+
+                }
+
+            }
+
+            $stmt_nota->close();
+
+        }
+
+    }
+
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
