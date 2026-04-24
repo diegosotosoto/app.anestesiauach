@@ -1,9 +1,16 @@
 <?php  //Conexión
-  require("conectar.php");
-  $conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
-  $conexion->set_charset("utf8");
+
+require("conectar.php");
+
+$conexion = new mysqli($db_host, $db_usuario, $db_contra, $db_nombre);
+
+$conexion->set_charset("utf8mb4");
+
+require("notificaciones_head.php");
+
 ?>
 
+ 
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -458,6 +465,188 @@
       background:linear-gradient(180deg, #27458f 0%, #2453c6 45%, #4fb6ff 100%) !important;
     }
   }
+
+  .notif-unread{
+  background: #eef4ff;
+}
+.notif-unread:hover{
+  background: #e4edff;
+}
+
+
+.btn-icon-topbar{
+  width: 48px;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.min-w-0{
+  min-width: 0;
+}
+
+.notif-unread{
+  background:#eef4ff;
+}
+
+.notif-unread:hover{
+  background:#e4edff;
+}
+.notif-dropdown{
+  width: 360px;
+  max-width: 94vw;
+  border: 0;
+  border-radius: 24px;
+  overflow: hidden;
+  background: #f7f9fc;
+  box-shadow: 0 18px 42px rgba(0,0,0,.14);
+  margin-top: 10px;
+}
+
+.notif-dropdown-header{
+  padding: 20px 24px 16px 24px;
+  background: linear-gradient(180deg, #f7fbff 0%, #eef5ff 100%);
+  border-bottom: 1px solid #cfd8e6;
+}
+
+.notif-dropdown-title{
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #2d5fd3;
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.notif-dropdown-subtitle{
+  font-size: .92rem;
+  color: #6b7280;
+}
+
+.notif-dropdown-body{
+  max-height: 360px;
+  overflow: auto;
+  background: #ffffff;
+}
+
+.notif-dropdown-footer{
+  min-height: 14px;
+  background: #eef1f5;
+  border-top: 1px solid #d7dde7;
+}
+
+.notif-item{
+  background: #ffffff;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+}
+
+.notif-item:last-child{
+  border-bottom: 0 !important;
+}
+
+.notif-unread{
+  background: #eef4ff;
+}
+
+.notif-unread:hover{
+  background: #e4edff;
+}
+
+#notif-empty-state{
+  padding: 22px 24px !important;
+  color: #6b7280 !important;
+  background: #ffffff;
+}
+
+.notif-dropdown .dropdown-item:active,
+.notif-dropdown .dropdown-item:focus{
+  background-color: inherit;
+  color: inherit;
+}
+
+.notif-dropdown .btn{
+  border-radius: 12px;
+}
+
+.notif-dropdown-wrap{
+  position: relative;
+}
+
+.notif-dropdown-menu{
+  width: 360px;
+  max-width: 94vw;
+}
+
+@media (min-width: 992px){
+  .notif-dropdown-wrap .notif-dropdown-menu{
+    left: calc(100% + 18px) !important;
+    right: auto !important;
+    top: 8px !important;
+    transform: none !important;
+  }
+}
+
+@media (max-width: 991.98px){
+  .notif-dropdown-wrap .notif-dropdown-menu{
+    right: 0 !important;
+    left: auto !important;
+  }
+}
+.notif-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  align-items:center;
+  margin-top:2px;
+}
+
+.notif-actions .btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:42px;
+  padding:10px 16px;
+  border-radius:18px;
+  font-weight:600;
+  line-height:1;
+}
+
+.notif-btn-primary{
+  background:#ffffff;
+  color:#2f63d8;
+  border:2px solid #2f63d8;
+}
+
+.notif-btn-primary:hover{
+  background:#eef4ff;
+  color:#244fb1;
+  border-color:#244fb1;
+}
+
+.notif-btn-success{
+  background:#ffffff;
+  color:#2f63d8;
+  border:2px solid #2f63d8;
+}
+
+.notif-btn-success:hover{
+  background:#eef4ff;
+  color:#244fb1;
+  border-color:#244fb1;
+}
+
+.notif-btn-secondary{
+  background:#ffffff;
+  color:#9a6a00;
+  border:2px solid #d7a73a;
+}
+
+.notif-btn-secondary:hover{
+  background:#fff7e6;
+  color:#7a5300;
+  border-color:#c6921f;
+}
 </style>
 <body>
 
@@ -473,9 +662,102 @@
             <?php if($titulo_navbar){echo $titulo_navbar;} ?>
           </a>
 
-          <a class="d-sm-block d-sm-none pe-1" href="#">
-            <?php if($boton_navbar){echo $boton_navbar;} ?>
-          </a>
+
+
+
+
+<div class="d-flex d-md-none align-items-center">
+
+
+
+<div class="dropdown ms-2">
+  <button class="btn btn-light position-relative btn-icon-topbar" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+  <i class="fa-solid fa-bell text-white"></i>
+    <?php if (!empty($total_notificaciones_no_leidas) && $total_notificaciones_no_leidas > 0): ?>
+      <span id="notif-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+        <?= $total_notificaciones_no_leidas > 99 ? '99+' : (int)$total_notificaciones_no_leidas ?>
+      </span>
+    <?php endif; ?>
+  </button>
+
+
+
+
+<div class="dropdown-menu dropdown-menu-end p-0 shadow notif-dropdown">
+  <div class="notif-dropdown-header">
+    <div class="notif-dropdown-title">Notificaciones</div>
+    <div class="notif-dropdown-subtitle" id="notif-count-text"><?= (int)$total_notificaciones_no_leidas ?> sin leer</div>
+  </div>
+
+  <div id="notif-list" class="notif-dropdown-body">
+    <?php if (!empty($notificaciones_nav)): ?>
+      <?php foreach ($notificaciones_nav as $notif): ?>
+        <div
+          class="dropdown-item py-3 border-bottom notif-item <?= ((int)$notif['leida'] === 0 ? 'notif-unread' : '') ?>"
+
+      data-destinatario-id="<?= htmlspecialchars((string)$notif['destinatario_id']) ?>"
+      data-es-sistema="<?= !empty($notif['es_sistema']) ? '1' : '0' ?>"
+        >
+          <div class="d-flex align-items-start gap-2">
+            <div class="pt-1">
+              <i class="<?= !empty($notif['icono']) ? htmlspecialchars($notif['icono']) : 'fa-solid fa-bell' ?>"></i>
+            </div>
+
+            <div class="flex-grow-1">
+              <div class="fw-semibold"><?= htmlspecialchars($notif['titulo']) ?></div>
+
+              <div class="small text-muted mb-2">
+                <?= htmlspecialchars(mb_strimwidth($notif['mensaje'], 0, 90, '...')) ?>
+              </div>
+
+<div class="notif-actions">
+
+
+<?php if (!empty($notif['url_destino'])): ?>
+  <a href="<?= htmlspecialchars($notif['url_destino']) ?>" class="btn btn-sm notif-btn-primary notif-open-btn">
+    Revisar
+  </a>
+<?php endif; ?>
+
+<?php if (empty($notif['es_sistema']) && (int)$notif['leida'] === 0): ?>
+  <button type="button" class="btn btn-sm notif-btn-success notif-read-btn">
+    Marcar leída
+  </button>
+<?php endif; ?>
+
+<?php if (!empty($notif['es_sistema'])): ?>
+  <button type="button" class="btn btn-sm notif-btn-secondary notif-hide-local-btn">
+    Descartar
+  </button>
+<?php endif; ?>
+
+
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    <?php else: ?>
+       <div class="notif-dropdown-footer"> <div class="text-muted small" id="notif-empty-state">No tienes notificaciones.</div></div>
+    <?php endif; ?>
+
+
+
+  </div>
+</div>
+
+
+
+
+
+</div>
+</div>
+
+
+
+
 
           <div class="offcanvas offcanvas-start px-0 mx-0 bg-sidebar" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
             <div class="h-100 d-flex flex-column">
@@ -492,22 +774,128 @@
 
 
                   <div class='list-group' id='offcanvasExampleLabel'>
-                    <?php
-                      if(isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
-                        echo "
-                          <div class='list-group-item list-group-item-action fs-5'>
-                            <h6><i class='fs-2 fa-solid fa-user-doctor ps-2 pe-3 text-success'></i>".urldecode($_COOKIE['hkjh41lu4l1k23jhlkj14'])."</h6>
-                            <div class='text-black-50 text-break' style='font-size: 12px'>
-                              ".$_COOKIE['hkjh41lu4l1k23jhlkj13']."
-                            </div>
-                          </div>
-                        ";
-                      } else {
-                        echo "<div class='list-group'>
-                          <a href='login.php' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-right-to-bracket ps-2 pe-3 fs-3' style='color: #44B2FF'></i>Login</a>
-                        </div>";
-                      }
-                    ?>
+
+
+
+
+
+<?php if(isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])): ?>
+  <div class="list-group-item list-group-item-action fs-5">
+    <div class="d-flex align-items-center justify-content-between gap-2">
+
+      <div class="d-flex align-items-center flex-grow-1 min-w-0">
+        <div class="pe-3">
+          <i class="fs-2 fa-solid fa-user-doctor text-success"></i>
+        </div>
+
+        <div class="flex-grow-1 min-w-0">
+          <h6 class="mb-1 text-truncate">
+            <?= htmlspecialchars(urldecode($_COOKIE['hkjh41lu4l1k23jhlkj14'])) ?>
+          </h6>
+          <div class="text-black-50 text-break" style="font-size: 12px">
+            <?= htmlspecialchars($_COOKIE['hkjh41lu4l1k23jhlkj13']) ?>
+          </div>
+        </div>
+      </div>
+
+
+
+<div class="d-none d-md-flex align-items-center">
+<div class="dropdown flex-shrink-0 notif-dropdown-wrap">
+        <button class="btn btn-light position-relative btn-icon-topbar rounded-4" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="fa-solid fa-bell"></i>
+
+          <?php if (!empty($total_notificaciones_no_leidas) && $total_notificaciones_no_leidas > 0): ?>
+            <span id="notif-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              <?= $total_notificaciones_no_leidas > 99 ? '99+' : (int)$total_notificaciones_no_leidas ?>
+            </span>
+          <?php endif; ?>
+        </button>
+
+
+
+<div class="dropdown-menu p-0 shadow notif-dropdown notif-dropdown-menu">
+
+  <div class="notif-dropdown-header">
+    <div class="notif-dropdown-title">Notificaciones</div>
+    <div class="notif-dropdown-subtitle" id="notif-count-text"><?= (int)$total_notificaciones_no_leidas ?> sin leer</div>
+  </div>
+
+  <div id="notif-list" class="notif-dropdown-body">
+    <?php if (!empty($notificaciones_nav)): ?>
+      <?php foreach ($notificaciones_nav as $notif): ?>
+        <div
+          class="dropdown-item py-3 border-bottom notif-item <?= ((int)$notif['leida'] === 0 ? 'notif-unread' : '') ?>"
+
+        data-destinatario-id="<?= htmlspecialchars((string)$notif['destinatario_id']) ?>"
+        data-es-sistema="<?= !empty($notif['es_sistema']) ? '1' : '0' ?>"
+
+        >
+          <div class="d-flex align-items-start gap-2">
+            <div class="pt-1">
+              <i class="<?= !empty($notif['icono']) ? htmlspecialchars($notif['icono']) : 'fa-solid fa-bell' ?>"></i>
+            </div>
+
+            <div class="flex-grow-1">
+              <div class="fw-semibold"><?= htmlspecialchars($notif['titulo']) ?></div>
+
+              <div class="small text-muted mb-2">
+                <?= htmlspecialchars(mb_strimwidth($notif['mensaje'], 0, 90, '...')) ?>
+              </div>
+
+<div class="notif-actions">
+
+<?php if (!empty($notif['url_destino'])): ?>
+  <a href="<?= htmlspecialchars($notif['url_destino']) ?>" class="btn btn-sm notif-btn-primary notif-open-btn">
+    Revisar
+  </a>
+<?php endif; ?>
+
+<?php if (empty($notif['es_sistema']) && (int)$notif['leida'] === 0): ?>
+  <button type="button" class="btn btn-sm notif-btn-success notif-read-btn">
+    Marcar leída
+  </button>
+<?php endif; ?>
+
+<?php if (!empty($notif['es_sistema'])): ?>
+  <button type="button" class="btn btn-sm notif-btn-secondary notif-hide-local-btn">
+    Descartar
+  </button>
+<?php endif; ?>
+
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    <?php else: ?>
+       <div class="notif-dropdown-footer"> <div class="text-muted small" id="notif-empty-state">No tienes notificaciones.</div></div>
+    <?php endif; ?>
+  </div>
+  
+</div>
+
+</div>
+
+</div>
+
+
+
+    </div>
+  </div>
+<?php else: ?>
+  <div class="list-group">
+    <a href="login.php" class="list-group-item list-group-item-action fs-6">
+      <i class="fa-solid fa-right-to-bracket ps-2 pe-3 fs-3" style="color: #44B2FF"></i>Login
+    </a>
+  </div>
+<?php endif; ?>
+
+
+
+
+
 
                     <hr class='pt-0'>
 
@@ -523,7 +911,9 @@
                           $con_users_b="SELECT `admin`, `staff_`, `intern_`, `becad_`, `becad_otro` FROM `usuarios_dolor` WHERE `email_usuario` = '$check_usuario'";
                           $users_b=$conexion->query($con_users_b);
                           $usuario=$users_b ? $users_b->fetch_assoc() : null;
-                          $escribe_badge = 0;
+
+
+                          $escribe_badge = "";
 
                           if($usuario && ($usuario['admin']==1 || $usuario['staff_']==1)){
                             $query_badge="SELECT `staff_b` FROM `bitacora_proced` WHERE `staff_b` = '$nombre_usuario' AND `aprobado_staff_b` = '0'";
@@ -534,11 +924,15 @@
                             $consutal_badge2=$conexion->query($query_badge2);
                             $badge2 = $consutal_badge2 ? mysqli_num_rows($consutal_badge2) : 0;
 
-                            $escribe_badge=$badge+$badge2;
+                            $total_badge = $badge + $badge2;
+
+                            if($total_badge > 0){
+                              $escribe_badge = "<span class='badge text-bg-danger'>".$total_badge."</span>";
+                            }
                           }
 
                           echo "<div class='list-group'>
-                            <a href='bitacora.php' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-clipboard ps-2 pe-3 fs-3' style='color: #CE2E2E'></i>Bitácora &nbsp;<span class='badge text-bg-danger'>".$escribe_badge."</span></a>
+                            <a href='bitacora.php' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-clipboard ps-2 pe-3 fs-3' style='color: #CE2E2E'></i>Bitácora ". $escribe_badge ."</a>
                           </div>";
 
                           echo "<div class='list-group'>
@@ -598,6 +992,29 @@
                                 </form>
                                 <script>function envioForm3(){document.getElementById('gest_bitacora').submit();}</script>
                               ";
+
+
+                              echo "
+                                <form id='admin_notas' action='admin_notas.php' method='post'><input type='hidden' name='email_user_ad' value='$email_user'/>
+                                  <div class='list-group'>
+                                    <a href='#' onclick='envioForm4()' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-calculator ps-2 pe-3 fs-3 text-primary'></i>Admin Apuntes</a>
+                                  </div>
+                                </form>
+                                <script>function envioForm4(){document.getElementById('admin_notas').submit();}</script>
+                              "; 
+
+
+                              echo "
+                                <form id='admin_notificaciones' action='admin_notificaciones.php' method='post'><input type='hidden' name='email_user_ad' value='$email_user'/>
+                                  <div class='list-group'>
+                                    <a href='#' onclick='envioForm5()' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-bell ps-2 pe-3 fs-3 text-primary'></i>Admin Notif</a>
+                                  </div>
+                                </form>
+                                <script>function envioForm5(){document.getElementById('admin_notificaciones').submit();}</script>
+                              ";            
+
+
+
                             }
                           }
                         ?>
@@ -640,3 +1057,164 @@
     <div class="saving-text">Guardando...</div>
   </div>
 </div>
+
+<script>
+document.addEventListener('click', function(e){
+  const item = e.target.closest('.notif-item[data-destinatario-id]');
+  if(!item) return;
+
+  const destinatarioId = item.dataset.destinatarioId;
+  if(!destinatarioId) return;
+
+  const body = new URLSearchParams();
+  body.append('destinatario_id', destinatarioId);
+
+  if (navigator.sendBeacon) {
+    const blob = new Blob([body.toString()], {
+      type: 'application/x-www-form-urlencoded; charset=UTF-8'
+    });
+    navigator.sendBeacon('marcar_notificacion_leida.php', blob);
+  } else {
+    fetch('marcar_notificacion_leida.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+      },
+      body: body.toString(),
+      keepalive: true
+    }).catch(() => {});
+  }
+});
+</script>
+
+<script>
+const notifAjaxUrl = 'notificacion_accion_ajax.php';
+
+document.addEventListener('click', async function(e) {
+  const readBtn = e.target.closest('.notif-read-btn');
+  if (!readBtn) return;
+
+  e.preventDefault();
+  e.stopPropagation();
+
+  const item = e.target.closest('.notif-item');
+  if (!item) return;
+
+  const destinatarioId = item.dataset.destinatarioId;
+  if (!destinatarioId) return;
+
+  try {
+    const body = new URLSearchParams();
+    body.append('destinatario_id', destinatarioId);
+    body.append('accion', 'leer');
+
+    const response = await fetch(notifAjaxUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+      },
+      body: body.toString()
+    });
+
+    const raw = await response.text();
+    console.log('Respuesta AJAX:', raw);
+
+    let data;
+    try {
+      data = JSON.parse(raw);
+    } catch (parseError) {
+      throw new Error('La respuesta no es JSON válido');
+    }
+
+    if (!data.ok) {
+      alert(data.message || 'No se pudo actualizar la notificación');
+      return;
+    }
+
+    item.remove();
+    actualizarBadgeNotificaciones(data.total_no_leidas);
+    asegurarEstadoVacioNotificaciones();
+
+  } catch (err) {
+    console.error(err);
+    alert('Error de red al actualizar la notificación: ' + err);
+  }
+});
+
+document.addEventListener('click', function(e) {
+  const openBtn = e.target.closest('.notif-open-btn');
+  if (!openBtn) return;
+
+  const item = e.target.closest('.notif-item');
+  if (!item) return;
+
+  const destinatarioId = item.dataset.destinatarioId;
+  if (!destinatarioId) return;
+
+  const body = new URLSearchParams();
+  body.append('destinatario_id', destinatarioId);
+  body.append('accion', 'leer');
+
+  if (navigator.sendBeacon) {
+    const blob = new Blob([body.toString()], {
+      type: 'application/x-www-form-urlencoded; charset=UTF-8'
+    });
+    navigator.sendBeacon('notificacion_accion_ajax.php', blob);
+  } else {
+    fetch('notificacion_accion_ajax.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+      },
+      body: body.toString(),
+      keepalive: true
+    }).catch(() => {});
+  }
+});
+
+function actualizarBadgeNotificaciones(total) {
+  const badge = document.getElementById('notif-badge');
+  const countText = document.getElementById('notif-count-text');
+
+  if (countText) {
+    countText.textContent = total + ' sin leer';
+  }
+
+  if (total > 0) {
+    if (badge) {
+      badge.textContent = total > 99 ? '99+' : String(total);
+    } else {
+      const bellBtn = document.querySelector('.btn-icon-topbar');
+      if (bellBtn) {
+        const span = document.createElement('span');
+        span.id = 'notif-badge';
+        span.className = 'position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger';
+        span.textContent = total > 99 ? '99+' : String(total);
+        bellBtn.appendChild(span);
+      }
+    }
+  } else {
+    if (badge) badge.remove();
+  }
+}
+
+function asegurarEstadoVacioNotificaciones() {
+  const list = document.getElementById('notif-list');
+  if (!list) return;
+
+  const items = list.querySelectorAll('.notif-item');
+  let emptyState = document.getElementById('notif-empty-state');
+
+  if (items.length === 0) {
+    if (!emptyState) {
+      emptyState = document.createElement('div');
+      emptyState.id = 'notif-empty-state';
+      emptyState.className = 'p-3 text-muted small';
+      emptyState.textContent = 'No tienes notificaciones.';
+      list.appendChild(emptyState);
+    }
+  } else {
+    if (emptyState) emptyState.remove();
+  }
+}
+</script>

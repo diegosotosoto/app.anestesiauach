@@ -1,4 +1,4 @@
-<?php
+<?php 
 $titulo_pagina = "Clasificación ASA";
 $navbar_titulo = "Apuntes";
 $boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
@@ -19,11 +19,6 @@ require("head.php");
 ?>
 <link rel="stylesheet" href="css/clinical-note-system.css?v=2">
 <script src="js/clinical-note-system.js?v=2"></script>
-
-<div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
-  <div class="apunte-surface">
-    <div class="container-fluid px-0 px-md-2">
-      <div class="note-shell px-1 px-md-0 py-0">
 
         <style>
           .asa-choice-grid{
@@ -278,6 +273,12 @@ require("head.php");
             }
           }
         </style>
+        
+<div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
+  <div class="apunte-surface">
+    <div class="container-fluid px-0 px-md-2">
+      <div class="note-shell px-1 px-md-0 py-0">
+
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · EVALUACIÓN PREOPERATORIA</div>

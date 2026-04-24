@@ -17,7 +17,9 @@ $boton_navbar = "<button class='navbar-toggler text-white shadow-sm' style='widt
 
 require("head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=20260416-1">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=2">
+<script src="js/clinical-note-system.js?v=2"></script>
+
 <style>
   .last-shell{max-width:980px;margin:0 auto;}
   .last-section-card{background:#fff;border:1px solid var(--note-line);border-radius:1.25rem;box-shadow:var(--note-shadow);overflow:hidden;margin-bottom:1rem;}
@@ -453,8 +455,6 @@ require("head.php");
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="js/clinical-note-system.js?v=20260416-1"></script>
 <script>
 (function(){
   const CNS = window.ClinicalNoteSystem;

@@ -493,45 +493,56 @@ $stmt_apuntes->close();
 }
 
 .apunte-star{
-
   color: #f59e0b;
-
-  font-size: .95rem;
-
+  font-size: 1rem;
+  line-height: 1;
+  display: block;
 }
 
 .apunte-fav-btn{
-
-  margin-left: .5rem;
-
+  margin-left: .2rem;
   border: none;
-
-  background: transparent;
-
+  background: transparent !important;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
   padding: 0;
-
   cursor: pointer;
-
   line-height: 1;
-
   color: #cbd5e1;
-
-  transition: transform .15s ease, color .15s ease;
-
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  flex: 0 0 32px;
+  transition: transform .15s ease, color .15s ease, background-color .15s ease;
 }
 
 .apunte-fav-btn:hover{
-
-  transform: scale(1.08);
-
+  transform: scale(1.03);
   color: #f59e0b;
-
+  background: rgba(245, 158, 11, 0.08) !important;
 }
 
 .apunte-fav-btn.is-active{
-
   color: #f59e0b;
+  background: rgba(245, 158, 11, 0.12) !important;
+}
 
+@media (max-width: 768px){
+  .apunte-fav-btn{
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
+    flex: 0 0 48px;
+    border-radius: 12px;
+  }
+
+  .apunte-star{
+    font-size: 1.4rem;
+  }
 }
 
 @media (max-width: 549px){
@@ -587,91 +598,56 @@ $stmt_apuntes->close();
 </style>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
-
   <div class="apunte-surface">
-
     <div class="container-fluid px-0 px-md-2">
-
       <div class="apuntes-shell">
-
         <div class="apuntes-hero">
-
           <div class="small opacity-75 mb-1">APP clínica • recursos y cálculos</div>
-
           <div class="apuntes-hero-title">Sección de Apuntes y Cálculos</div>
-
           <div class="apuntes-hero-subtitle">Acceso rápido a escalas, scores, buscadores, checklists y utilidades clínicas.</div>
-
         </div>
-
         <div class="accordion apuntes-accordion" id="accordionApuntes">
-
           <div class="accordion-item apuntes-standard" id="favoritosAccordionItem" <?= empty($favoritos) ? 'style="display:none;"' : '' ?>>
 
-            <h2 class="accordion-header" id="headingFavoritos">
-
-<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFavoritos" aria-expanded="true" aria-controls="collapseFavoritos">
-
-                <i class="fa-solid fa-star me-3 text-warning"></i>Favoritos
-
-              </button>
-
-            </h2>
+<h2 class="accordion-header" id="headingFavoritos">
+  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFavoritos" aria-expanded="true" aria-controls="#collapseFavoritos">
+    <span class="apuntes-icon d-inline-flex align-items-center justify-content-center">
+      <i class="fa-solid fa-star text-warning" style="font-size: 30px;"></i>
+    </span>
+    Favoritos
+  </button>
+</h2>
 
 <div id="collapseFavoritos" class="accordion-collapse collapse show" aria-labelledby="headingFavoritos">
-  
               <div class="accordion-body">
-
                 <div class="apuntes-list" id="favoritosContainer">
-
                   <?php foreach ($favoritos as $nota): ?>
-
                     <div class="apuntes-link favorito-item" data-nota-id="<?= (int)$nota['nota_id'] ?>">
-
 <a href="<?= htmlspecialchars($nota['ruta']) ?>" class="apuntes-link-main" data-nota-id="<?= (int)$nota['nota_id'] ?>">
-
                         <i class="<?= htmlspecialchars($nota['icono_fa']) ?>"></i>
-
                         <span><?= htmlspecialchars($nota['titulo']) ?></span>
-
                       </a>
-
                       <span class="apunte-meta">
 
 <?php if ($nota['es_nueva']): ?>
-
   <span class="apunte-badge-new" data-nota-id="<?= (int)$nota['nota_id'] ?>">New</span>
-
 <?php endif; ?>
 
                         <button
-
                           type="button"
-
                           class="apunte-fav-btn is-active"
-
                           data-nota-id="<?= (int)$nota['nota_id'] ?>"
-
                           data-titulo="<?= htmlspecialchars($nota['titulo'], ENT_QUOTES) ?>"
-
                           data-ruta="<?= htmlspecialchars($nota['ruta'], ENT_QUOTES) ?>"
-
                           data-icono="<?= htmlspecialchars($nota['icono_fa'], ENT_QUOTES) ?>"
-
                           data-new="<?= (int)$nota['es_nueva'] ?>"
-
                           aria-label="Toggle favorito"
-
                           title="Favorito"
-
                         >
 
                           <i class="fa-solid fa-star"></i>
-
                         </button>
-
                       </span>
-
                     </div>
 
                   <?php endforeach; ?>

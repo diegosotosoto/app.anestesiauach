@@ -19,14 +19,12 @@
 
 <div class="dashboard-grid pt-5">
 
-
       <a href='links.php'
          class='btn shadow dashboard-tile rounded-3 border-0'
          style='background-image:linear-gradient(145deg,#0a7d3d 0%,#18b565 55%,#7fe0b0 100%);'>
     <i class="fa-solid fa-link fa-2xl"></i>
         <div class='tile-label'>Links<br>Útiles</div>
       </a>
-
 
 
 		<?php 
@@ -199,24 +197,10 @@
   </a>
 
 
-
-
-
-
-</div>
-
-
-
-
-
-
+		</div>
 
 		</div>
 	</div>
-
-
-
-	
 	</div>
 
 </div>
