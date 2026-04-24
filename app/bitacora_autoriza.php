@@ -191,14 +191,16 @@ require("head.php");
 
 <?php
 //Guarda la Bitácora para becado
-if($_POST['bitacora_autoriza']){
-  $submit_b=$_POST['submit_b'];
-  $id_b=$_POST['bitacora_autoriza'];
+if(!empty($_POST['bitacora_autoriza'])){
+  $submit_b = (int)$_POST['submit_b'];
+  $id_b = (int)$_POST['bitacora_autoriza'];
+
   $consulta_us="UPDATE `bitacora_proced` SET `aprobado_staff_b`='$submit_b' WHERE `id_b`='$id_b'";
   $escribir_us=$conexion->query($consulta_us);
 
-  if($_POST['comentarios_b_a']){
-    $feedback_b=$_COOKIE['hkjh41lu4l1k23jhlkj14'].": ".$_POST['comentarios_b_a'];
+  if(!empty($_POST['comentarios_b_a'])){
+    $comentario_b_a = $conexion->real_escape_string($_POST['comentarios_b_a']);
+    $feedback_b = $_COOKIE['hkjh41lu4l1k23jhlkj14'].": ".$comentario_b_a;
     $consulta_fb="UPDATE `bitacora_proced` SET `feedback_b`= '$feedback_b' WHERE `id_b`='$id_b'";
     $escribir_fb=$conexion->query($consulta_fb);
   }
@@ -213,14 +215,16 @@ if($_POST['bitacora_autoriza']){
 }
 
 //Guarda la Bitácora para interno
-if($_POST['bitacora_autoriza_i']){
-  $submit_i=$_POST['submit_i'];
-  $id_i=$_POST['bitacora_autoriza_i'];
+if(!empty($_POST['bitacora_autoriza_i'])){
+  $submit_i = (int)$_POST['submit_i'];
+  $id_i = (int)$_POST['bitacora_autoriza_i'];
+
   $consulta_usi="UPDATE `bitacora_internos` SET `aprobado_staff_i`='$submit_i' WHERE `id_i`='$id_i'";
   $escribir_usi=$conexion->query($consulta_usi);
 
-  if($_POST['comentarios_i_a']){
-    $feedback_i=$_COOKIE['hkjh41lu4l1k23jhlkj14'].": ".$_POST['comentarios_i_a'];
+  if(!empty($_POST['comentarios_i_a'])){
+    $comentario_i_a = $conexion->real_escape_string($_POST['comentarios_i_a']);
+    $feedback_i = $_COOKIE['hkjh41lu4l1k23jhlkj14'].": ".$comentario_i_a;
     $consulta_fbi="UPDATE `bitacora_internos` SET `feedback_i`= '$feedback_i' WHERE `id_i`='$id_i'";
     $escribir_fbi=$conexion->query($consulta_fbi);
   }
@@ -263,17 +267,18 @@ if($_POST['bitacora_autoriza_i']){
       </div>
 
 <?php
-$staff=$_COOKIE['hkjh41lu4l1k23jhlkj14'];
+$staff = $_COOKIE['hkjh41lu4l1k23jhlkj13'];
+$staff = $conexion->real_escape_string($staff);
 
-$con_users="SELECT * FROM `bitacora_proced` WHERE `aprobado_staff_b` = '0' AND `staff_b` = '$staff' ";
-$tab_users=$conexion->query($con_users);
-$sin_bitacoras1=mysqli_num_rows($tab_users);
+$con_users = "SELECT * FROM `bitacora_proced` WHERE `aprobado_staff_b` = '0' AND `staff_b` = '$staff'";
+$tab_users = $conexion->query($con_users);
+$sin_bitacoras1 = $tab_users ? mysqli_num_rows($tab_users) : 0;
 
-$con_internos="SELECT * FROM `bitacora_internos` WHERE `aprobado_staff_i` = '0' AND `staff_i` = '$staff' ";
-$tab_internos=$conexion->query($con_internos);
-$sin_bitacoras2=mysqli_num_rows($tab_internos);
+$con_internos = "SELECT * FROM `bitacora_internos` WHERE `aprobado_staff_i` = '0' AND `staff_i` = '$staff'";
+$tab_internos = $conexion->query($con_internos);
+$sin_bitacoras2 = $tab_internos ? mysqli_num_rows($tab_internos) : 0;
 
-if($sin_bitacoras1==0 and $sin_bitacoras2==0){
+if($sin_bitacoras1 == 0 && $sin_bitacoras2 == 0){
   echo "<div class='bitacora-entry-card'><div class='bitacora-entry-body'><div class='empty-state'>Sin elementos que validar.</div></div></div>";
 }
 

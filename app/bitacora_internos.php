@@ -1,4 +1,4 @@
-<?php
+<?php 
 //Ve si está activa la cookie o redirige al login
 if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
   header('Location: login.php');
@@ -180,7 +180,8 @@ if($_POST['rut_i']){
   $vvp_i=htmlentities(addslashes($_POST['vvp_i']));
   $espinal_i=htmlentities(addslashes($_POST['espinal_i']));
   $seminario_i=htmlentities(addslashes($_POST['seminario_i']));
-  $staff_i=htmlentities(addslashes($_POST['staff_i']));
+  $staff_i=trim($_POST['staff_i']);
+  $staff_i=$conexion->real_escape_string($staff_i);
   $comentarios_i=htmlentities(addslashes($_POST['comentarios_i']));
 
   $confirma_bitacora_i="SELECT * FROM `bitacora_internos` WHERE `rut_i` = '$rut_i' AND `ficha_i` = '$ficha_i' AND `fecha_i` = '$fecha_i' AND `autor_i` = '$autor_i' AND `evaluacion_i` = '$evaluacion_i' AND `ventilacion_i` = '$ventilacion_i' AND `intubacion_i` = '$intubacion_i' AND `lma_i` = '$lma_i' AND `ayudas_i` = '$ayudas_i' AND `vvp_i` = '$vvp_i' AND `espinal_i` = '$espinal_i'";
@@ -416,16 +417,20 @@ if($_POST['rut_i']){
                 <div class='bitacora-label'>Anestesiólog@ Responsable</div>
                 <div class="bitacora-required">Requerido (*)</div>
               </div>
+
               <select class="form-select bitacora-select" id="staff_i" name="staff_i" required>
                 <option value=""></option>
                 <?php
-                  $consulta_staff="SELECT `nombre_usuario` FROM `usuarios_dolor` WHERE `staff_` = '1' OR `admin` = '1' ";
-                  $busqueda_staff=$conexion->query($consulta_staff);
-                  while($staff=$busqueda_staff->fetch_assoc()){
-                    echo "<option value='".$staff['nombre_usuario']."'>".$staff['nombre_usuario']."</option>";
+                  $consulta_staff="SELECT `nombre_usuario`, `email_usuario` FROM `usuarios_dolor` WHERE `staff_` = '1' OR `admin` = '1' ORDER BY `nombre_usuario` ASC";
+                  $busca_staff=$conexion->query($consulta_staff);
+                  while($staff=$busca_staff->fetch_assoc()){
+                    $nombre_staff = htmlspecialchars(html_entity_decode($staff['nombre_usuario'], ENT_QUOTES | ENT_HTML5, 'UTF-8'), ENT_QUOTES, 'UTF-8');
+                    $email_staff = htmlspecialchars($staff['email_usuario'], ENT_QUOTES, 'UTF-8');
+                    echo "<option value='".$email_staff."'>".$nombre_staff."</option>";
                   }
                 ?>
               </select>
+              
               <div class="invalid-feedback pt-0 pb-1">Ingrese un valor válido</div>
             </div>
 

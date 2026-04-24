@@ -12,8 +12,8 @@
 
   $consulta_corr="SELECT * FROM `usuarios_dolor` WHERE `verified` = '1' ORDER BY `nombre_usuario` ASC";
   $busqueda_corr=$conexion->query($consulta_corr);
-?>
 
+?>
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
     <div class="container-fluid px-0 px-md-2">
@@ -347,6 +347,15 @@
 
               <div class="role-grid" id="correoDirectoryGrid">
                 <?php
+
+                  function h_nombre($v){
+                    return htmlspecialchars(
+                      html_entity_decode((string)$v, ENT_QUOTES | ENT_HTML5, 'UTF-8'),
+                      ENT_QUOTES,
+                      'UTF-8'
+                    );
+                  }
+
                   $grupos = array(
                     'Administrador' => array(
                       'icon' => 'fa fa-user-shield',
@@ -401,11 +410,18 @@
                       $calidad='Usuario';
                     }
 
-                    $nombre = htmlspecialchars($fila['nombre_usuario'], ENT_QUOTES, 'UTF-8');
+                    $nombre = h_nombre($fila['nombre_usuario']);
                     $email = htmlspecialchars($fila['email_usuario'], ENT_QUOTES, 'UTF-8');
                     $calidad_safe = htmlspecialchars($calidad, ENT_QUOTES, 'UTF-8');
 
-                    $grupos[$grupo]['items'][] = "<a class='correo-item correo-entry' data-role='".$calidad_safe."' href='mailto:".$email."'>
+                    $nombre_busqueda = htmlspecialchars(
+                      mb_strtolower(html_entity_decode((string)$fila['nombre_usuario'], ENT_QUOTES | ENT_HTML5, 'UTF-8'), 'UTF-8'),
+                      ENT_QUOTES,
+                      'UTF-8'
+                    );
+
+                    $grupos[$grupo]['items'][] = "<a class='correo-item correo-entry' data-role='".$calidad_safe."' data-name='".$nombre_busqueda."' href='mailto:".$email."'>
+
                         <div class='correo-head'>
                           <div class='correo-name'>".$nombre."</div>
                           <span class='correo-role-pill'>".$calidad_safe."</span>
@@ -475,7 +491,7 @@ $(document).ready(function(){
       let visibleInGroup = 0;
 
       $group.find('.correo-entry').each(function(){
-        const text = $(this).text().toLowerCase();
+        const text = (($(this).data('name') || '') + ' ' + $(this).text()).toLowerCase();
         const matches = query === '' || text.indexOf(query) !== -1;
         $(this).toggle(matches);
         if(matches){

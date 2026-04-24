@@ -199,7 +199,8 @@ if($_POST['rut_b']){
   $neuroaxial_b=htmlentities(addslashes($_POST['neuroaxial_b']));
   $regional_b=htmlentities(addslashes($_POST['regional_b']));
   $dolor_b=htmlentities(addslashes($_POST['dolor_b']));
-  $staff_b=htmlentities(addslashes($_POST['staff_b']));
+  $staff_b=trim($_POST['staff_b']);
+  $staff_b=$conexion->real_escape_string($staff_b);
   $comentarios_b=htmlentities(addslashes($_POST['comentarios_b']));
 
   $confirma_bitacora_b="SELECT * FROM `bitacora_proced` WHERE `rut_b` = '$rut_b' AND `ficha_b` = '$ficha_b' AND `fecha_b` = '$fecha_b' AND `autor_b` = '$autor_b' AND `via_aerea_b` = '$via_aerea_b' AND `vad_b` = '$vad_b' AND `acceso_vascular_b` = '$acceso_vascular_b' AND `invasivo_b` = '$invasivo_b' AND `cvc_b` = '$cvc_b' AND `neuroaxial_b` = '$neuroaxial_b' AND `regional_b` = '$regional_b'";
@@ -466,16 +467,20 @@ if($_POST['rut_b']){
                 <div class='bitacora-label'>Anestesiólog@ Responsable</div>
                 <div class="bitacora-required">Requerido (*)</div>
               </div>
-              <select class="form-select bitacora-select" id="staff_b" name="staff_b" required>
-                <option value=""></option>
-                <?php
-                  $consulta_staff="SELECT `nombre_usuario` FROM `usuarios_dolor` WHERE `staff_` = '1' OR `admin` = '1' ";
-                  $busqueda_staff=$conexion->query($consulta_staff);
-                  while($staff=$busqueda_staff->fetch_assoc()){
-                    echo "<option value='".$staff['nombre_usuario']."'>".$staff['nombre_usuario']."</option>";
-                  }
-                ?>
-              </select>
+
+            <select class="form-select bitacora-select" id="staff_b" name="staff_b" required>
+              <option value=""></option>
+              <?php
+                $consulta_staff="SELECT `nombre_usuario`, `email_usuario` FROM `usuarios_dolor` WHERE `staff_` = '1' OR `admin` = '1' ORDER BY `nombre_usuario` ASC";
+                $busca_staff=$conexion->query($consulta_staff);
+                while($staff=$busca_staff->fetch_assoc()){
+                  $nombre_staff = htmlspecialchars(html_entity_decode($staff['nombre_usuario'], ENT_QUOTES | ENT_HTML5, 'UTF-8'), ENT_QUOTES, 'UTF-8');
+                  $email_staff = htmlspecialchars($staff['email_usuario'], ENT_QUOTES, 'UTF-8');
+                  echo "<option value='".$email_staff."'>".$nombre_staff."</option>";
+                }
+              ?>
+            </select>
+                          
               <div class="invalid-feedback pt-0 pb-1">Ingrese un valor válido</div>
             </div>
 

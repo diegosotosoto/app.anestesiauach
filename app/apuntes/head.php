@@ -1085,7 +1085,6 @@ if (!in_array($archivo_actual, $archivos_excluidos, true)) {
               </div>";
 
 
-
         echo "<div class='list-group'>
           <a href='../correos.php' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-envelope ps-2 pe-3 fs-3' style='color: #29A09B'></i>Directorio Correos</a> 
               </div>";

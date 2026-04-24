@@ -384,7 +384,11 @@ $stmt_apuntes->close();
 
   justify-content: space-between;
 
-  gap: .75rem;
+  gap: .6rem;
+
+  min-width: 0;
+
+  overflow: hidden;
 
   background: #f8fafc;
 
@@ -426,9 +430,11 @@ $stmt_apuntes->close();
 
   color: inherit;
 
-  flex: 1;
+  flex: 1 1 auto;
 
   min-width: 0;
+
+  overflow: hidden;
 
 }
 
@@ -446,6 +452,12 @@ $stmt_apuntes->close();
 
   text-align: center;
 
+}
+
+.apunte-title{
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .apuntes-empty{
@@ -466,7 +478,11 @@ $stmt_apuntes->close();
 
   align-items: center;
 
-  gap: .45rem;
+  gap: .35rem;
+
+  flex: 0 0 auto;
+
+  white-space: nowrap;
 
 }
 
@@ -500,13 +516,13 @@ $stmt_apuntes->close();
 }
 
 .apunte-fav-btn{
-  margin-left: .2rem;
+  margin-left: .1rem;
   border: none;
   background: transparent !important;
-  width: 32px;
-  height: 32px;
-  min-width: 32px;
-  min-height: 32px;
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  min-height: 30px;
   padding: 0;
   cursor: pointer;
   line-height: 1;
@@ -515,7 +531,7 @@ $stmt_apuntes->close();
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  flex: 0 0 32px;
+  flex: 0 0 30px;
   transition: transform .15s ease, color .15s ease, background-color .15s ease;
 }
 
@@ -532,67 +548,52 @@ $stmt_apuntes->close();
 
 @media (max-width: 768px){
   .apunte-fav-btn{
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
-    flex: 0 0 48px;
-    border-radius: 12px;
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    min-height: 30px;
+    flex: 0 0 30px;
+    border-radius: 8px;
   }
 
   .apunte-star{
-    font-size: 1.4rem;
+    font-size: 1rem;
   }
 }
 
 @media (max-width: 549px){
-
   .apuntes-shell{
-
     max-width: 100%;
-
   }
 
   .apuntes-hero{
-
     border-radius: 1rem;
-
     padding: 1rem;
-
   }
 
   .apuntes-hero-title{
-
     font-size: 1.08rem;
-
   }
 
   .apuntes-accordion .accordion-button{
-
     padding: .95rem 1rem;
-
     font-size: .96rem;
-
   }
 
   .apuntes-icon{
-
     height: 30px;
-
     width: 30px;
-
     margin-right: 14px;
-
   }
 
   .apuntes-link{
-
     padding: .85rem .9rem;
-
     font-size: .96rem;
-
   }
 
+    .apunte-meta{
+    gap: .25rem;
+  }
 }
 
 </style>

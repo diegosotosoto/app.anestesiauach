@@ -1,4 +1,13 @@
 <?php
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require_once __DIR__ . '/PHPMailer/src/Exception.php';
+require_once __DIR__ . '/PHPMailer/src/PHPMailer.php';
+require_once __DIR__ . '/PHPMailer/src/SMTP.php';
+
+
 if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
     header('Location: login.php');
     exit;
@@ -18,6 +27,10 @@ $stmt_admin = $conexion->prepare("
     WHERE `email_usuario` = ?
     LIMIT 1
 ");
+
+
+
+
 
 if(!$stmt_admin){
     die("Error preparando consulta de usuario.");
@@ -82,6 +95,139 @@ function datetime_local_to_sql($value){
         $value .= ':00';
     }
     return $value;
+}
+
+function obtener_emails_destinatarios_notificacion($conexion, $notificacion_id){
+    $destinatarios = [];
+
+    $stmt = $conexion->prepare("\n        SELECT DISTINCT\n            ud.`email_usuario`,\n            ud.`nombre_usuario`\n        FROM `notificacion_destinatarios` nd\n        INNER JOIN `usuarios_dolor` ud\n            ON ud.`ID` = nd.`usuario_id`\n        WHERE nd.`notificacion_id` = ?\n          AND ud.`verified` = 1\n          AND ud.`email_usuario` IS NOT NULL\n          AND ud.`email_usuario` <> ''\n    ");
+
+    if(!$stmt){
+        return $destinatarios;
+    }
+
+    $stmt->bind_param("i", $notificacion_id);
+    $stmt->execute();
+
+    if(method_exists($stmt, 'get_result')){
+        $res = $stmt->get_result();
+        while($row = $res->fetch_assoc()){
+            $email = trim((string)$row['email_usuario']);
+            if(filter_var($email, FILTER_VALIDATE_EMAIL)){
+                $destinatarios[$email] = [
+                    'email' => $email,
+                    'nombre' => html_entity_decode((string)$row['nombre_usuario'], ENT_QUOTES | ENT_HTML5, 'UTF-8')
+                ];
+            }
+        }
+    }else{
+        $stmt->bind_result($email_tmp, $nombre_tmp);
+        while($stmt->fetch()){
+            $email = trim((string)$email_tmp);
+            if(filter_var($email, FILTER_VALIDATE_EMAIL)){
+                $destinatarios[$email] = [
+                    'email' => $email,
+                    'nombre' => html_entity_decode((string)$nombre_tmp, ENT_QUOTES | ENT_HTML5, 'UTF-8')
+                ];
+            }
+        }
+    }
+
+    $stmt->close();
+    return array_values($destinatarios);
+}
+
+function enviar_correo_notificacion_app($destinatarios, $titulo, $mensaje_notif, $url_destino, $remitente_email, $remitente_nombre){
+    if(empty($destinatarios)){
+        return ['ok' => false, 'enviados' => 0, 'error' => 'No hay destinatarios con correo válido.'];
+    }
+
+    $remitente_email = trim((string)$remitente_email);
+    $remitente_nombre = trim(html_entity_decode((string)$remitente_nombre, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+
+    if(!filter_var($remitente_email, FILTER_VALIDATE_EMAIL)){
+        return ['ok' => false, 'enviados' => 0, 'error' => 'El usuario logueado no tiene un correo válido para usar como remitente.'];
+    }
+
+    if($remitente_nombre === ''){
+        $remitente_nombre = $remitente_email;
+    }
+
+    $titulo_limpio = trim((string)$titulo);
+    $mensaje_limpio = trim((string)$mensaje_notif);
+    $url_limpia = trim((string)$url_destino);
+
+    $titulo_html = htmlspecialchars($titulo_limpio, ENT_QUOTES, 'UTF-8');
+    $mensaje_html = nl2br(htmlspecialchars($mensaje_limpio, ENT_QUOTES, 'UTF-8'));
+    $url_html = htmlspecialchars($url_limpia, ENT_QUOTES, 'UTF-8');
+    $remitente_html = htmlspecialchars($remitente_nombre . ' <' . $remitente_email . '>', ENT_QUOTES, 'UTF-8');
+
+    $body_url = '';
+    $alt_url = '';
+
+    if($url_limpia !== ''){
+        $body_url = "\n            <p style='margin-top:18px;'>\n                <strong>Enlace relacionado:</strong><br>\n                <a href='{$url_html}' style='color:#0d6efd;'>{$url_html}</a>\n            </p>\n        ";
+        $alt_url = "\n\nEnlace relacionado:\n" . $url_limpia;
+    }
+
+    $mail = new PHPMailer(true);
+
+    try{
+        /*
+         * Configuración opcional SMTP:
+         * Puedes definir estas constantes en conectar.php o en un archivo de configuración cargado antes:
+         * APP_SMTP_HOST, APP_SMTP_USER, APP_SMTP_PASS, APP_SMTP_PORT, APP_SMTP_SECURE.
+         * Si APP_SMTP_HOST no existe, PHPMailer usará mail() del servidor.
+         */
+        if(defined('APP_SMTP_HOST') && APP_SMTP_HOST !== ''){
+            $mail->isSMTP();
+            $mail->Host = APP_SMTP_HOST;
+            $mail->SMTPAuth = defined('APP_SMTP_USER') && APP_SMTP_USER !== '';
+
+            if($mail->SMTPAuth){
+                $mail->Username = APP_SMTP_USER;
+                $mail->Password = defined('APP_SMTP_PASS') ? APP_SMTP_PASS : '';
+            }
+
+            $mail->Port = defined('APP_SMTP_PORT') ? (int)APP_SMTP_PORT : 587;
+
+            if(defined('APP_SMTP_SECURE') && APP_SMTP_SECURE !== ''){
+                $mail->SMTPSecure = APP_SMTP_SECURE;
+            }
+        }else{
+            $mail->isMail();
+        }
+
+        $mail->CharSet = 'UTF-8';
+        $mail->Encoding = 'base64';
+        $mail->setFrom($remitente_email, $remitente_nombre);
+        $mail->addReplyTo($remitente_email, $remitente_nombre);
+
+        foreach($destinatarios as $dest){
+            $email = trim((string)($dest['email'] ?? ''));
+            $nombre = trim((string)($dest['nombre'] ?? ''));
+
+            if(filter_var($email, FILTER_VALIDATE_EMAIL)){
+                $mail->addAddress($email, $nombre);
+            }
+        }
+
+        if(count($mail->getToAddresses()) === 0){
+            return ['ok' => false, 'enviados' => 0, 'error' => 'No se encontraron correos válidos para enviar.'];
+        }
+
+        $mail->isHTML(true);
+        $mail->Subject = '[Anestesia App] ' . $titulo_limpio;
+        $mail->Body = "\n            <div style='font-family:Arial,Helvetica,sans-serif; color:#1f2937; line-height:1.5; max-width:680px;'>\n                <div style='border:1px solid #e5e7eb; border-radius:14px; overflow:hidden;'>\n                    <div style='background:#0d6efd; color:#ffffff; padding:16px 18px;'>\n                        <h2 style='margin:0; font-size:20px;'>Anestesia App</h2>\n                    </div>\n                    <div style='padding:18px;'>\n                        <h3 style='margin-top:0; color:#111827;'>{$titulo_html}</h3>\n                        <p>{$mensaje_html}</p>\n                        {$body_url}\n                        <hr style='border:none; border-top:1px solid #e5e7eb; margin:22px 0;'>\n                        <p style='font-size:13px; color:#6b7280; margin:0;'>\n                            Este correo fue enviado desde Anestesia App por {$remitente_html}.<br>\n                            También quedó registrado como notificación interna en la aplicación.\n                        </p>\n                    </div>\n                </div>\n            </div>\n        ";
+        $mail->AltBody = "Anestesia App\n\n" . $titulo_limpio . "\n\n" . $mensaje_limpio . $alt_url . "\n\nEnviado por: " . $remitente_nombre . " <" . $remitente_email . ">";
+        $mail->send();
+
+        return ['ok' => true, 'enviados' => count($mail->getToAddresses()), 'error' => ''];
+
+    }catch(Throwable $e){
+        error_log('Error PHPMailer admin_notificaciones.php: ' . $mail->ErrorInfo . ' | ' . $e->getMessage());
+        return ['ok' => false, 'enviados' => 0, 'error' => $mail->ErrorInfo ?: $e->getMessage()];
+    }
 }
 
 $mensaje = "";
@@ -170,6 +316,7 @@ if(isset($_POST['crear_notificacion']) && $_POST['crear_notificacion'] === '1'){
     $publicada = isset($_POST['publicada']) ? 1 : 0;
     $usuario_individual = isset($_POST['usuario_id']) ? (int)$_POST['usuario_id'] : 0;
     $grupo = trim($_POST['grupo'] ?? '');
+    $enviar_email = isset($_POST['enviar_email']) ? 1 : 0;
 
     $tipos_validos = ['info','warning','success','urgent'];
     $alcances_validos = ['individual','grupo','global'];
@@ -329,6 +476,25 @@ if(isset($_POST['crear_notificacion']) && $_POST['crear_notificacion'] === '1'){
             $conexion->commit();
             $mensaje = "Notificación creada correctamente.";
 
+            if($enviar_email === 1){
+                $destinatarios_email = obtener_emails_destinatarios_notificacion($conexion, $notificacion_id);
+
+                $resultado_email = enviar_correo_notificacion_app(
+                    $destinatarios_email,
+                    $titulo,
+                    $mensaje_notif,
+                    $url_destino,
+                    $usuario_actual['email_usuario'],
+                    $usuario_actual['nombre_usuario']
+                );
+
+                if($resultado_email['ok']){
+                    $mensaje .= " Además, se envió el correo a " . (int)$resultado_email['enviados'] . " destinatario(s).";
+                }else{
+                    $mensaje .= " La notificación interna fue creada, pero el correo no pudo enviarse.";
+                    $error = "Error al enviar correo: " . $resultado_email['error'];
+                }
+            }
         }catch(Throwable $e){
             $conexion->rollback();
             $error = "Error al crear la notificación: " . $e->getMessage();
@@ -793,6 +959,18 @@ if($res_listado){
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="publicada" id="publicada" checked>
                             <label class="form-check-label" for="publicada">Publicada inmediatamente</label>
+                        </div>
+                    </div>
+
+                    <div class="admin-full">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" name="enviar_email" id="enviar_email" value="1">
+                            <label class="form-check-label" for="enviar_email">
+                                Enviar también por correo electrónico
+                            </label>
+                        </div>
+                        <div class="admin-muted mt-1">
+                            El correo usará como remitente al usuario logueado: <?= h($usuario_actual['email_usuario']) ?>
                         </div>
                     </div>
                 </div>
