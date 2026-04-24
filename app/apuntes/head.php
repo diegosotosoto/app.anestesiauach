@@ -601,25 +601,6 @@ if (!in_array($archivo_actual, $archivos_excluidos, true)) {
   }
 } 
 
-
-.notif-unread{
-  background: #eef4ff;
-}
-.notif-unread:hover{
-  background: #e4edff;
-}
-.btn-icon-topbar{
-  width: 48px;
-  height: 48px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.min-w-0{
-  min-width: 0;
-}
-
 .notif-unread{
   background:#eef4ff;
 }
@@ -628,107 +609,129 @@ if (!in_array($archivo_actual, $archivos_excluidos, true)) {
   background:#e4edff;
 }
 
+.btn-icon-topbar{
+  width:48px;
+  height:48px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.min-w-0{
+  min-width:0;
+}
 
 .notif-dropdown{
-  width: 360px;
-  max-width: 94vw;
-  border: 0;
-  border-radius: 24px;
-  overflow: hidden;
-  background: #f7f9fc;
-  box-shadow: 0 18px 42px rgba(0,0,0,.14);
-  margin-top: 10px;
+  width:360px;
+  max-width:calc(100vw - 24px);
+  border:0;
+  border-radius:24px;
+  overflow:hidden;
+  background:#f7f9fc;
+  box-shadow:0 18px 42px rgba(0,0,0,.14);
+  margin-top:10px;
 }
 
 .notif-dropdown-header{
-  padding: 20px 24px 16px 24px;
-  background: linear-gradient(180deg, #f7fbff 0%, #eef5ff 100%);
-  border-bottom: 1px solid #cfd8e6;
+  padding:20px 24px 16px 24px;
+  background:linear-gradient(180deg, #f7fbff 0%, #eef5ff 100%);
+  border-bottom:1px solid #cfd8e6;
 }
 
 .notif-dropdown-title{
-  font-size: 1.05rem;
-  font-weight: 800;
-  color: #2d5fd3;
-  line-height: 1.2;
-  margin-bottom: 4px;
+  font-size:1.05rem;
+  font-weight:800;
+  color:#2d5fd3;
+  line-height:1.2;
+  margin-bottom:4px;
 }
 
 .notif-dropdown-subtitle{
-  font-size: .92rem;
-  color: #6b7280;
+  font-size:.92rem;
+  color:#6b7280;
 }
 
 .notif-dropdown-body{
-  max-height: 360px;
-  overflow: auto;
-  background: #ffffff;
+  max-height:360px;
+  overflow:auto;
+  background:#ffffff;
 }
 
 .notif-dropdown-footer{
-  min-height: 14px;
-  background: #eef1f5;
-  border-top: 1px solid #d7dde7;
+  min-height:14px;
+  background:#eef1f5;
+  border-top:1px solid #d7dde7;
 }
 
 .notif-item{
-  background: #ffffff;
-  padding-left: 20px !important;
-  padding-right: 20px !important;
+  background:#ffffff;
+  padding-left:20px !important;
+  padding-right:20px !important;
+  white-space:normal !important;
 }
 
 .notif-item:last-child{
-  border-bottom: 0 !important;
+  border-bottom:0 !important;
 }
 
-.notif-unread{
-  background: #eef4ff;
+.notif-item .fw-semibold{
+  white-space:normal !important;
+  overflow-wrap:anywhere;
+  word-break:normal;
+  line-height:1.25;
 }
 
-.notif-unread:hover{
-  background: #e4edff;
+.notif-mensaje{
+  white-space:normal !important;
+  overflow:visible !important;
+  text-overflow:unset !important;
+  overflow-wrap:anywhere;
+  word-break:normal;
+  line-height:1.35;
+  max-width:100%;
 }
 
 #notif-empty-state{
-  padding: 22px 24px !important;
-  color: #6b7280 !important;
-  background: #ffffff;
+  padding:22px 24px !important;
+  color:#6b7280 !important;
+  background:#ffffff;
 }
 
 .notif-dropdown .dropdown-item:active,
 .notif-dropdown .dropdown-item:focus{
-  background-color: inherit;
-  color: inherit;
+  background-color:inherit;
+  color:inherit;
 }
 
 .notif-dropdown .btn{
-  border-radius: 12px;
+  border-radius:12px;
 }
 
 .notif-dropdown-wrap{
-  position: relative;
+  position:relative;
 }
 
 .notif-dropdown-menu{
-  width: 360px;
-  max-width: 94vw;
+  width:360px;
+  max-width:calc(100vw - 24px);
 }
 
-@media (min-width: 992px){
+@media (min-width:992px){
   .notif-dropdown-wrap .notif-dropdown-menu{
-    left: calc(100% + 18px) !important;
-    right: auto !important;
-    top: 8px !important;
-    transform: none !important;
+    left:calc(100% + 18px) !important;
+    right:auto !important;
+    top:8px !important;
+    transform:none !important;
   }
 }
 
-@media (max-width: 991.98px){
+@media (max-width:991.98px){
   .notif-dropdown-wrap .notif-dropdown-menu{
-    right: 0 !important;
-    left: auto !important;
+    right:0 !important;
+    left:auto !important;
   }
 }
+
 .notif-actions{
   display:flex;
   flex-wrap:wrap;
@@ -748,25 +751,14 @@ if (!in_array($archivo_actual, $archivos_excluidos, true)) {
   line-height:1;
 }
 
-
-.notif-btn-primary{
-  background:#ffffff;
-  color:#2f63d8;
-  border:2px solid #2f63d8;
-}
-
-.notif-btn-primary:hover{
-  background:#eef4ff;
-  color:#244fb1;
-  border-color:#244fb1;
-}
-
+.notif-btn-primary,
 .notif-btn-success{
   background:#ffffff;
   color:#2f63d8;
   border:2px solid #2f63d8;
 }
 
+.notif-btn-primary:hover,
 .notif-btn-success:hover{
   background:#eef4ff;
   color:#244fb1;
@@ -784,7 +776,6 @@ if (!in_array($archivo_actual, $archivos_excluidos, true)) {
   color:#7a5300;
   border-color:#c6921f;
 }
-
   </style>
 
 
@@ -847,9 +838,9 @@ if (!in_array($archivo_actual, $archivos_excluidos, true)) {
             <div class="flex-grow-1">
               <div class="fw-semibold"><?= htmlspecialchars($notif['titulo']) ?></div>
 
-              <div class="small text-muted mb-2">
-                <?= htmlspecialchars(mb_strimwidth($notif['mensaje'], 0, 90, '...')) ?>
-              </div>
+            <div class="small text-muted mb-2 notif-mensaje">
+              <?= nl2br(htmlspecialchars($notif['mensaje'])) ?>
+            </div>
 
 <div class="notif-actions">
 
@@ -975,9 +966,9 @@ if (!in_array($archivo_actual, $archivos_excluidos, true)) {
             <div class="flex-grow-1">
               <div class="fw-semibold"><?= htmlspecialchars($notif['titulo']) ?></div>
 
-              <div class="small text-muted mb-2">
-                <?= htmlspecialchars(mb_strimwidth($notif['mensaje'], 0, 90, '...')) ?>
-              </div>
+            <div class="small text-muted mb-2 notif-mensaje">
+              <?= nl2br(htmlspecialchars($notif['mensaje'])) ?>
+            </div>
 
 <div class="notif-actions">
 

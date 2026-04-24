@@ -66,7 +66,7 @@ if(!$usuario_actual || (int)$usuario_actual['admin'] !== 1){
 $usuario_id_actual = (int)$usuario_actual['ID'];
 
 // Variables navbar
-$boton_toggler = "<a class='btn btn-lg shadow-sm border-light d-sm-block d-sm-none' style='--bs-border-opacity: .1;' href='index.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
+$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white d-sm-block d-sm-none'>Notificaciones</span>";
 $boton_navbar = "<a></a><a></a>";
 
@@ -200,7 +200,20 @@ function enviar_correo_notificacion_app($destinatarios, $titulo, $mensaje_notif,
 
         $mail->CharSet = 'UTF-8';
         $mail->Encoding = 'base64';
-        $mail->setFrom($remitente_email, $remitente_nombre);
+
+        /*
+         * El From debe ser una cuenta autorizada por el servidor/dominio de la app.
+         * Define APP_MAIL_FROM_EMAIL y APP_MAIL_FROM_NAME en conectar.php si quieres cambiarla.
+         */
+        $cuenta_autorizada_email = (defined('APP_MAIL_FROM_EMAIL') && APP_MAIL_FROM_EMAIL !== '')
+            ? APP_MAIL_FROM_EMAIL
+            : 'notificaciones@anestesiauach.cl';
+
+        $cuenta_autorizada_nombre = (defined('APP_MAIL_FROM_NAME') && APP_MAIL_FROM_NAME !== '')
+            ? APP_MAIL_FROM_NAME
+            : 'App Anestesua UACh';
+
+        $mail->setFrom($cuenta_autorizada_email, $cuenta_autorizada_nombre);
         $mail->addReplyTo($remitente_email, $remitente_nombre);
 
         foreach($destinatarios as $dest){
@@ -217,9 +230,9 @@ function enviar_correo_notificacion_app($destinatarios, $titulo, $mensaje_notif,
         }
 
         $mail->isHTML(true);
-        $mail->Subject = '[Anestesia App] ' . $titulo_limpio;
-        $mail->Body = "\n            <div style='font-family:Arial,Helvetica,sans-serif; color:#1f2937; line-height:1.5; max-width:680px;'>\n                <div style='border:1px solid #e5e7eb; border-radius:14px; overflow:hidden;'>\n                    <div style='background:#0d6efd; color:#ffffff; padding:16px 18px;'>\n                        <h2 style='margin:0; font-size:20px;'>Anestesia App</h2>\n                    </div>\n                    <div style='padding:18px;'>\n                        <h3 style='margin-top:0; color:#111827;'>{$titulo_html}</h3>\n                        <p>{$mensaje_html}</p>\n                        {$body_url}\n                        <hr style='border:none; border-top:1px solid #e5e7eb; margin:22px 0;'>\n                        <p style='font-size:13px; color:#6b7280; margin:0;'>\n                            Este correo fue enviado desde Anestesia App por {$remitente_html}.<br>\n                            También quedó registrado como notificación interna en la aplicación.\n                        </p>\n                    </div>\n                </div>\n            </div>\n        ";
-        $mail->AltBody = "Anestesia App\n\n" . $titulo_limpio . "\n\n" . $mensaje_limpio . $alt_url . "\n\nEnviado por: " . $remitente_nombre . " <" . $remitente_email . ">";
+        $mail->Subject = '[App Anestesua UACh] ' . $titulo_limpio;
+        $mail->Body = "\n            <div style='font-family:Arial,Helvetica,sans-serif; color:#1f2937; line-height:1.5; max-width:680px;'>\n                <div style='border:1px solid #e5e7eb; border-radius:14px; overflow:hidden;'>\n                    <div style='background:#0d6efd; color:#ffffff; padding:16px 18px;'>\n                        <h2 style='margin:0; font-size:20px;'>App Anestesua UACh</h2>\n                    </div>\n                    <div style='padding:18px;'>\n                        <h3 style='margin-top:0; color:#111827;'>{$titulo_html}</h3>\n                        <p>{$mensaje_html}</p>\n                        {$body_url}\n                        <hr style='border:none; border-top:1px solid #e5e7eb; margin:22px 0;'>\n                        <p style='font-size:13px; color:#6b7280; margin:0;'>\n                            Este correo fue enviado desde App Anestesua UACh por {$remitente_html}.<br>\n                            También quedó registrado como notificación interna en la aplicación.\n                        </p>\n                    </div>\n                </div>\n            </div>\n        ";
+        $mail->AltBody = "App Anestesua UACh\n\n" . $titulo_limpio . "\n\n" . $mensaje_limpio . $alt_url . "\n\nEste correo fue enviado desde una cuenta autorizada de App Anestesua UACh. Autor/remitente del mensaje: " . $remitente_nombre . " <" . $remitente_email . ">. Si respondes este correo, la respuesta será dirigida a ese remitente.";
         $mail->send();
 
         return ['ok' => true, 'enviados' => count($mail->getToAddresses()), 'error' => ''];

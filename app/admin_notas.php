@@ -21,7 +21,7 @@
     }
 
     // Variables navbar
-    $boton_toggler = "<a class='btn btn-lg shadow-sm border-light d-sm-block d-sm-none' style='--bs-border-opacity: .1;' href='index.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
+    $boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
     $titulo_navbar = "<span class='text-white d-sm-block d-sm-none'>Gestión de Notas</span>";
     $boton_navbar = "<a></a><a></a>";
 

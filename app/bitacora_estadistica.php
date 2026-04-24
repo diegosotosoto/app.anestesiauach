@@ -1074,6 +1074,9 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
     </div>
   </div>        
+
+
+
 <script type="text/javascript">
     google.charts.load("current", {packages:['corechart']});
     google.charts.setOnLoadCallback(drawChart);
@@ -1174,19 +1177,11 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
   }
 </script>
 
-
-
-
 </div>
-
-
-
-
-
-
-
-
-
+</div>
+</div>
+</div>
+</div>
 
 
 

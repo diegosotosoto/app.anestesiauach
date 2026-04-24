@@ -566,7 +566,7 @@ while($estad = $busqueda_est->fetch_assoc()){
     </div>
   </div>
 </div>
-
+</div>
 <?php
 $conexion->close();
 require("footer.php");
