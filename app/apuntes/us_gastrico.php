@@ -16,7 +16,7 @@ $referencias = array(
   "Van de Putte P, Perlas A. Ultrasound assessment of gastric content and volume. Br J Anaesth. 2014."
 );
 
-include("head.php");
+require("../head.php");
 ?>
 <link rel="stylesheet" href="css/clinical-note-system.css?v=2">
 <script src="js/clinical-note-system.js?v=2"></script>
@@ -301,7 +301,7 @@ include("head.php");
             <hr>
             <b>Referencia visual de exploración:</b>
             <div class="gas-image-card mt-3">
-              <img src="us_gastrico.jpeg" alt="Guía de posición del transductor y estructuras anatómicas">
+              <img src="img_apuntes/us_gastrico.jpeg" alt="Guía de posición del transductor y estructuras anatómicas">
               <div class="gas-image-cap">Posición del transductor y estructuras objetivo durante evaluación del antro gástrico.</div>
             </div>
 
@@ -419,7 +419,7 @@ include("head.php");
               </div>
             </div>
             <div class="gas-image-card">
-              <img id="visualImg" src="estomago_vacio.jpg" alt="Referencia visual del contenido gástrico">
+              <img id="visualImg" src="img_apuntes/estomago_vacio.jpg" alt="Referencia visual del contenido gástrico">
               <div id="visualCap" class="gas-image-cap">Referencia de antro vacío.</div>
             </div>
           </div>
@@ -557,7 +557,7 @@ include("head.php");
         titulo:'Estómago vacío',
         texto:'Antro pequeño o colapsado, con paredes próximas y sin distensión evidente.',
         clinical:'Si el antro está realmente vacío y no hay otros factores de riesgo, la lectura ecográfica orienta a bajo riesgo.',
-        img:'estomago_vacio.jpg',
+        img:'img_apuntes/estomago_vacio.jpg',
         cap:'Referencia de antro vacío.',
         box:'gas-visual-box is-low'
       },
@@ -565,7 +565,7 @@ include("head.php");
         titulo:'Líquido claro',
         texto:'Contenido anecoico o hipoecoico, con distensión más uniforme del antro.',
         clinical:'El líquido claro requiere cuantificar volumen. Si supera 1,5 mL/kg, la preocupación por aspiración aumenta.',
-        img:'liquido_claro.jpg',
+        img:'img_apuntes/liquido_claro.jpg',
         cap:'Referencia de líquido claro.',
         box:'gas-visual-box is-mid'
       },
@@ -573,7 +573,7 @@ include("head.php");
         titulo:'Contenido espeso / mixto',
         texto:'Material denso o particulado, con ecos internos y aspecto mixto.',
         clinical:'El material particulado pesa mucho en la decisión clínica, incluso si el volumen calculado no parece extremo.',
-        img:'solido_fluido.jpg',
+        img:'img_apuntes/solido_fluido.jpg',
         cap:'Referencia de contenido espeso o mixto.',
         box:'gas-visual-box is-warn'
       },
@@ -581,7 +581,7 @@ include("head.php");
         titulo:'Contenido sólido',
         texto:'Patrón heterogéneo, a veces con sombra acústica o aspecto tipo ground glass.',
         clinical:'Debe tratarse como alto riesgo práctico de aspiración.',
-        img:'solido_reciente.jpg',
+        img:'img_apuntes/solido_reciente.jpg',
         cap:'Referencia de contenido sólido / sólido reciente.',
         box:'gas-visual-box is-danger'
       }
@@ -772,4 +772,4 @@ function toggleInfo(){
 }
 </script>
 
-<?php include("footer.php"); ?>
+<?php require("../footer.php"); ?>

@@ -15,7 +15,7 @@ $referencias = array(
   "StatPearls. Chloroprocaine. Dosis orientativa máxima de 11 mg/kg sin epinefrina y 14 mg/kg con epinefrina para infiltración o bloqueo periférico."
 );
 
-include("head.php");
+require("../head.php");
 ?>
 <link rel="stylesheet" href="css/clinical-note-system.css?v=1">
 <script src="js/clinical-note-system.js?v=1"></script>
@@ -421,4 +421,4 @@ $drugs = array(
 })();
 </script>
 
-<?php include("footer.php"); ?>
+<?php require("../footer.php"); ?>

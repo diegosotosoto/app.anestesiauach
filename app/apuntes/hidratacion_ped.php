@@ -15,7 +15,7 @@ $referencias = array(
   "OpenAnesthesia. Perioperative Fluid Administration in Children."
 );
 
-include("head.php");
+require("../head.php");
 ?>
 <link rel="stylesheet" href="css/clinical-note-system.css?v=1">
 <script src="js/clinical-note-system.js?v=1"></script>
@@ -487,4 +487,4 @@ function toggleInfo(){
 }
 </script>
 
-<?php include("footer.php"); ?>
+<?php require("../footer.php"); ?>

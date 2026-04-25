@@ -1,12 +1,200 @@
 <?php  //Conexión
 
-require("conectar.php");
+$app_root_dir = __DIR__;
+$script_dir = realpath(dirname($_SERVER['SCRIPT_FILENAME'] ?? __FILE__));
+$script_dir = $script_dir ? $script_dir : $app_root_dir;
+$root_path_norm = str_replace('\\', '/', $app_root_dir);
+$script_path_norm = str_replace('\\', '/', $script_dir);
+$relative_script_dir = '';
+
+if (strpos($script_path_norm, $root_path_norm) === 0) {
+  $relative_script_dir = trim(substr($script_path_norm, strlen($root_path_norm)), '/');
+}
+
+$script_depth = $relative_script_dir === '' ? 0 : count(explode('/', $relative_script_dir));
+$is_apuntes_context = $relative_script_dir === 'apuntes';
+$app_path_prefix = str_repeat('../', $script_depth);
+
+function app_path($path) {
+  global $app_path_prefix;
+  return $app_path_prefix . ltrim((string)$path, '/');
+}
+
+function app_nav_url($path) {
+  $path = (string)$path;
+  if ($path === '' || preg_match('~^(https?:)?//|^mailto:|^tel:|^#~i', $path)) {
+    return $path;
+  }
+  return app_path($path);
+}
+
+require($app_root_dir . "/conectar.php");
 
 $conexion = new mysqli($db_host, $db_usuario, $db_contra, $db_nombre);
 
 $conexion->set_charset("utf8mb4");
 
-require("notificaciones_head.php");
+require($app_root_dir . "/notificaciones_head.php");
+
+function app_head_safe_text($value) {
+  return htmlspecialchars(
+    html_entity_decode(urldecode((string)$value), ENT_QUOTES | ENT_HTML5, 'UTF-8'),
+    ENT_QUOTES,
+    'UTF-8'
+  );
+}
+
+function app_head_render_notificaciones_widget($notificaciones_nav, $total_notificaciones_no_leidas) {
+  ?>
+  <div class="dropdown flex-shrink-0 notif-dropdown-wrap" id="notif-widget">
+    <button class="btn btn-light position-relative btn-icon-topbar rounded-4" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="fa-solid fa-bell"></i>
+
+      <?php if (!empty($total_notificaciones_no_leidas) && $total_notificaciones_no_leidas > 0): ?>
+        <span id="notif-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+          <?= $total_notificaciones_no_leidas > 99 ? '99+' : (int)$total_notificaciones_no_leidas ?>
+        </span>
+      <?php endif; ?>
+    </button>
+
+    <div class="dropdown-menu dropdown-menu-end p-0 shadow notif-dropdown notif-dropdown-menu">
+      <div class="notif-dropdown-header">
+        <div class="notif-dropdown-title">Notificaciones</div>
+        <div class="notif-dropdown-subtitle" id="notif-count-text"><?= (int)$total_notificaciones_no_leidas ?> sin leer</div>
+      </div>
+
+      <div id="notif-list" class="notif-dropdown-body">
+        <?php if (!empty($notificaciones_nav)): ?>
+          <?php foreach ($notificaciones_nav as $notif): ?>
+            <div
+              class="dropdown-item py-3 border-bottom notif-item <?= ((int)$notif['leida'] === 0 ? 'notif-unread' : '') ?>"
+              data-destinatario-id="<?= htmlspecialchars((string)$notif['destinatario_id']) ?>"
+              data-es-sistema="<?= !empty($notif['es_sistema']) ? '1' : '0' ?>"
+            >
+              <div class="d-flex align-items-start gap-2">
+                <div class="pt-1">
+                  <i class="<?= !empty($notif['icono']) ? htmlspecialchars($notif['icono']) : 'fa-solid fa-bell' ?>"></i>
+                </div>
+
+                <div class="flex-grow-1">
+                  <div class="fw-semibold"><?= htmlspecialchars($notif['titulo']) ?></div>
+
+                  <div class="small text-muted mb-2 notif-mensaje">
+                    <?= nl2br(htmlspecialchars($notif['mensaje'])) ?>
+                  </div>
+
+                  <div class="notif-actions">
+                    <?php if (!empty($notif['url_destino'])): ?>
+                      <a href="<?= htmlspecialchars(app_nav_url($notif['url_destino'])) ?>" class="btn btn-sm notif-btn-primary notif-open-btn">
+                        Revisar
+                      </a>
+                    <?php endif; ?>
+
+                    <?php if (empty($notif['es_sistema']) && (int)$notif['leida'] === 0): ?>
+                      <button type="button" class="btn btn-sm notif-btn-success notif-read-btn">
+                        Marcar leída
+                      </button>
+                    <?php endif; ?>
+
+                    <?php if (!empty($notif['es_sistema'])): ?>
+                      <button type="button" class="btn btn-sm notif-btn-secondary notif-hide-local-btn">
+                        Descartar
+                      </button>
+                    <?php endif; ?>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <div class="notif-dropdown-footer">
+            <div class="text-muted small" id="notif-empty-state">No tienes notificaciones.</div>
+          </div>
+        <?php endif; ?>
+      </div>
+    </div>
+  </div>
+  <?php
+}
+
+if ($is_apuntes_context) {
+  $archivo_actual = basename($_SERVER['PHP_SELF']);
+  $archivos_excluidos = [
+    'apuntes.php',
+    'head.php',
+    'head_apuntes.php',
+    'footer.php',
+    'dosis_ped_pdf.php',
+    'marcar_notificacion_leida.php',
+    'notificacion_accion_ajax.php'
+  ];
+
+  if (!in_array($archivo_actual, $archivos_excluidos, true)) {
+    $usuario_id = 0;
+
+    if (isset($_COOKIE['hkjh41lu4l1k23jhlkj13']) && $_COOKIE['hkjh41lu4l1k23jhlkj13'] !== '') {
+      $email_usuario_cookie = trim($_COOKIE['hkjh41lu4l1k23jhlkj13']);
+      $sql_usuario = "SELECT ID
+                      FROM usuarios_dolor
+                      WHERE email_usuario = ?
+                        AND verified = 1
+                      LIMIT 1";
+      $stmt_usuario = $conexion->prepare($sql_usuario);
+
+      if ($stmt_usuario) {
+        $stmt_usuario->bind_param("s", $email_usuario_cookie);
+        $stmt_usuario->execute();
+        $res_usuario = $stmt_usuario->get_result();
+
+        if ($fila_usuario = $res_usuario->fetch_assoc()) {
+          $usuario_id = (int)$fila_usuario['ID'];
+        }
+
+        $stmt_usuario->close();
+      }
+    }
+
+    if ($usuario_id > 0) {
+      $ruta_actual = 'apuntes/' . $archivo_actual;
+      $sql_nota = "SELECT id
+                   FROM notas
+                   WHERE ruta = ?
+                     AND estado = 'publicada'
+                   LIMIT 1";
+      $stmt_nota = $conexion->prepare($sql_nota);
+
+      if ($stmt_nota) {
+        $stmt_nota->bind_param("s", $ruta_actual);
+        $stmt_nota->execute();
+        $res_nota = $stmt_nota->get_result();
+
+        if ($fila_nota = $res_nota->fetch_assoc()) {
+          $nota_id = (int)$fila_nota['id'];
+          $sql_vista = "INSERT INTO usuario_notas (
+                          usuario_id,
+                          nota_id,
+                          vista_at,
+                          ultima_visita_at
+                        )
+                        VALUES (?, ?, NOW(), NOW())
+                        ON DUPLICATE KEY UPDATE
+                          vista_at = COALESCE(vista_at, NOW()),
+                          ultima_visita_at = NOW(),
+                          updated_at = NOW()";
+          $stmt_vista = $conexion->prepare($sql_vista);
+
+          if ($stmt_vista) {
+            $stmt_vista->bind_param("ii", $usuario_id, $nota_id);
+            $stmt_vista->execute();
+            $stmt_vista->close();
+          }
+        }
+
+        $stmt_nota->close();
+      }
+    }
+  }
+}
 
 ?>
 
@@ -19,14 +207,14 @@ require("notificaciones_head.php");
 	<meta name="theme-color" content="#27458f">
 	<meta http-equiv="Cache-control" content="no-cache">
 	<title>App Anestesia UACH</title>
-	<link rel="icon" type="image/x-icon" href="images/favicon.ico">
-	<link rel="manifest" href="manifest.json"/>
-	<link rel="apple-touch-icon" href="images/logo192.png"/>	
-    <link href="css/bootstrap.min.css" rel="stylesheet"/>
-	<link rel="stylesheet" href="css/all.css"/>
-	<link rel="stylesheet" href="style.css"/>
-	<link rel="stylesheet" href="css/overlay.css"/>
-	<script src="js/jquery-3.6.1.min.js"></script>
+	<link rel="icon" type="image/x-icon" href="<?= app_path('images/favicon.ico') ?>">
+	<link rel="manifest" href="<?= app_path('manifest.json') ?>"/>
+	<link rel="apple-touch-icon" href="<?= app_path('images/logo192.png') ?>"/>	
+    <link href="<?= app_path('css/bootstrap.min.css') ?>" rel="stylesheet"/>
+	<link rel="stylesheet" href="<?= app_path('css/all.css') ?>"/>
+	<link rel="stylesheet" href="<?= app_path('style.css') ?>"/>
+	<link rel="stylesheet" href="<?= app_path('css/overlay.css') ?>"/>
+	<script src="<?= app_path('js/jquery-3.6.1.min.js') ?>"></script>
 
 <style>
   :root{
@@ -77,6 +265,133 @@ require("notificaciones_head.php");
     border-radius:28px;
     padding:28px 16px 36px 16px;
     min-height:calc(100vh - 80px);
+  }
+
+  .apunte-surface{
+    background:rgba(255,255,255,.72);
+    backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,.65);
+    box-shadow:var(--app-shadow);
+    border-radius:28px;
+    padding:20px 12px 28px 12px;
+    min-height:calc(100vh - 80px);
+  }
+
+  .apunte-card{
+    border:0;
+    border-radius:1.1rem;
+    box-shadow:0 8px 24px rgba(0,0,0,.06);
+    background:#fff;
+    overflow:hidden;
+  }
+
+  .apunte-hero{
+    background:linear-gradient(135deg,var(--app-navy),#3559b7);
+    color:#fff;
+    padding:1.1rem 1.2rem;
+  }
+
+  .apunte-title{
+    font-size:1.05rem;
+    font-weight:700;
+    line-height:1.2;
+    display:flex;
+    align-items:center;
+    gap:.75rem;
+  }
+
+  .apunte-title i{
+    font-size:1.25rem;
+  }
+
+  .apunte-body{
+    padding:1.1rem 1rem 1.25rem 1rem;
+  }
+
+  .section-card{
+    border:0;
+    border-radius:1rem;
+    box-shadow:0 8px 24px rgba(0,0,0,.06);
+  }
+
+  .section-title{
+    font-size:.78rem;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:#6c757d;
+  }
+
+  .info-card{
+    background:#fff;
+    border:1px solid #e7edf5;
+    border-radius:1rem;
+  }
+
+  .info-card .list-group-item{
+    border-left:0;
+    border-right:0;
+    padding:1rem 1.05rem;
+  }
+
+  .info-card .list-group-item:first-child{
+    border-top:0;
+  }
+
+  .info-card .list-group-item:last-child{
+    border-bottom:0;
+  }
+
+  .calc-row{
+    padding:.95rem 0;
+    border-bottom:1px solid #e9eef5;
+  }
+
+  .calc-row:last-child{
+    border-bottom:0;
+  }
+
+  .calc-label{
+    font-weight:500;
+    color:#28303d;
+  }
+
+  .calc-input,
+  .calc-select,
+  .calc-result-input{
+    border-radius:.85rem !important;
+    min-height:48px;
+  }
+
+  .calc-result{
+    border:1px solid #dfe7f2;
+    border-radius:.9rem;
+    background:#f8fafc;
+    padding:.1rem .35rem;
+  }
+
+  .btn-calc-main{
+    border-radius:1rem;
+    padding:.8rem 1.15rem;
+    font-weight:600;
+    box-shadow:0 8px 24px rgba(0,0,0,.06);
+  }
+
+  .toggle-pill{
+    border-radius:999px;
+  }
+
+  .sticky-tools{
+    position:sticky;
+    top:0;
+    z-index:1000;
+    background:rgba(255,255,255,.95);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid #e9ecef;
+  }
+
+  .footer-note{
+    font-size:.82rem;
+    color:#6c757d;
   }
 
   .dashboard-grid{
@@ -428,6 +743,32 @@ require("notificaciones_head.php");
       backdrop-filter:none;
     }
 
+    .apunte-surface{
+      min-height:auto;
+      padding:10px 0 20px 0;
+      border-radius:0;
+      box-shadow:none;
+      border:0;
+      background:transparent;
+      backdrop-filter:none;
+    }
+
+    .apunte-card{
+      border-radius:1rem;
+    }
+
+    .apunte-hero{
+      padding:1rem 1rem;
+    }
+
+    .apunte-title{
+      font-size:.98rem;
+    }
+
+    .apunte-body{
+      padding:1rem;
+    }
+
     .dashboard-grid{
       max-width:100%;
       grid-template-columns:repeat(2, minmax(135px, 170px));
@@ -661,92 +1002,9 @@ require("notificaciones_head.php");
 
 
 <div class="d-flex d-md-none align-items-center">
-
-
-
-<div class="dropdown ms-2">
-  <button class="btn btn-light position-relative btn-icon-topbar" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-  <i class="fa-solid fa-bell text-white"></i>
-    <?php if (!empty($total_notificaciones_no_leidas) && $total_notificaciones_no_leidas > 0): ?>
-      <span id="notif-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-        <?= $total_notificaciones_no_leidas > 99 ? '99+' : (int)$total_notificaciones_no_leidas ?>
-      </span>
-    <?php endif; ?>
-  </button>
-
-
-
-
-<div class="dropdown-menu dropdown-menu-end p-0 shadow notif-dropdown">
-  <div class="notif-dropdown-header">
-    <div class="notif-dropdown-title">Notificaciones</div>
-    <div class="notif-dropdown-subtitle" id="notif-count-text"><?= (int)$total_notificaciones_no_leidas ?> sin leer</div>
+  <div id="notif-slot-mobile" class="ms-2">
+    <?php if($usuario_id_nav > 0){ app_head_render_notificaciones_widget($notificaciones_nav, $total_notificaciones_no_leidas); } ?>
   </div>
-
-  <div id="notif-list" class="notif-dropdown-body">
-    <?php if (!empty($notificaciones_nav)): ?>
-      <?php foreach ($notificaciones_nav as $notif): ?>
-        <div
-          class="dropdown-item py-3 border-bottom notif-item <?= ((int)$notif['leida'] === 0 ? 'notif-unread' : '') ?>"
-
-      data-destinatario-id="<?= htmlspecialchars((string)$notif['destinatario_id']) ?>"
-      data-es-sistema="<?= !empty($notif['es_sistema']) ? '1' : '0' ?>"
-        >
-          <div class="d-flex align-items-start gap-2">
-            <div class="pt-1">
-              <i class="<?= !empty($notif['icono']) ? htmlspecialchars($notif['icono']) : 'fa-solid fa-bell' ?>"></i>
-            </div>
-
-            <div class="flex-grow-1">
-              <div class="fw-semibold"><?= htmlspecialchars($notif['titulo']) ?></div>
-
-            <div class="small text-muted mb-2 notif-mensaje">
-              <?= nl2br(htmlspecialchars($notif['mensaje'])) ?>
-            </div>
-
-<div class="notif-actions">
-
-
-<?php if (!empty($notif['url_destino'])): ?>
-  <a href="<?= htmlspecialchars($notif['url_destino']) ?>" class="btn btn-sm notif-btn-primary notif-open-btn">
-    Revisar
-  </a>
-<?php endif; ?>
-
-<?php if (empty($notif['es_sistema']) && (int)$notif['leida'] === 0): ?>
-  <button type="button" class="btn btn-sm notif-btn-success notif-read-btn">
-    Marcar leída
-  </button>
-<?php endif; ?>
-
-<?php if (!empty($notif['es_sistema'])): ?>
-  <button type="button" class="btn btn-sm notif-btn-secondary notif-hide-local-btn">
-    Descartar
-  </button>
-<?php endif; ?>
-
-
-
-
-              </div>
-            </div>
-          </div>
-        </div>
-      <?php endforeach; ?>
-    <?php else: ?>
-       <div class="notif-dropdown-footer"> <div class="text-muted small" id="notif-empty-state">No tienes notificaciones.</div></div>
-    <?php endif; ?>
-
-
-
-  </div>
-</div>
-
-
-
-
-
-</div>
 </div>
 
 
@@ -763,7 +1021,7 @@ require("notificaciones_head.php");
               <div class="offcanvas-body">
                 <div class="container text-center pb-5">
                   <div class="row ps-1 pt-3 pb-3 d-xs-none d-none d-sm-block">
-                    <div class="navbar-brand"><img src="images/austral_b.png" style="width: 30% ;"></div>
+                    <div class="navbar-brand"><img src="<?= app_path('images/austral_b.png') ?>" style="width: 30% ;"></div>
                   </div>
 
 
@@ -784,95 +1042,17 @@ require("notificaciones_head.php");
 
         <div class="flex-grow-1 min-w-0">
           <h6 class="mb-1 text-truncate">
-            <?= htmlspecialchars(urldecode($_COOKIE['hkjh41lu4l1k23jhlkj14'])) ?>
+            <?= app_head_safe_text($_COOKIE['hkjh41lu4l1k23jhlkj14']) ?>
           </h6>
           <div class="text-black-50 text-break" style="font-size: 12px">
-            <?= htmlspecialchars($_COOKIE['hkjh41lu4l1k23jhlkj13']) ?>
+            <?= app_head_safe_text($_COOKIE['hkjh41lu4l1k23jhlkj13']) ?>
           </div>
         </div>
       </div>
 
 
 
-<div class="d-none d-md-flex align-items-center">
-<div class="dropdown flex-shrink-0 notif-dropdown-wrap">
-        <button class="btn btn-light position-relative btn-icon-topbar rounded-4" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-          <i class="fa-solid fa-bell"></i>
-
-          <?php if (!empty($total_notificaciones_no_leidas) && $total_notificaciones_no_leidas > 0): ?>
-            <span id="notif-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-              <?= $total_notificaciones_no_leidas > 99 ? '99+' : (int)$total_notificaciones_no_leidas ?>
-            </span>
-          <?php endif; ?>
-        </button>
-
-
-
-<div class="dropdown-menu p-0 shadow notif-dropdown notif-dropdown-menu">
-
-  <div class="notif-dropdown-header">
-    <div class="notif-dropdown-title">Notificaciones</div>
-    <div class="notif-dropdown-subtitle" id="notif-count-text"><?= (int)$total_notificaciones_no_leidas ?> sin leer</div>
-  </div>
-
-  <div id="notif-list" class="notif-dropdown-body">
-    <?php if (!empty($notificaciones_nav)): ?>
-      <?php foreach ($notificaciones_nav as $notif): ?>
-        <div
-          class="dropdown-item py-3 border-bottom notif-item <?= ((int)$notif['leida'] === 0 ? 'notif-unread' : '') ?>"
-
-        data-destinatario-id="<?= htmlspecialchars((string)$notif['destinatario_id']) ?>"
-        data-es-sistema="<?= !empty($notif['es_sistema']) ? '1' : '0' ?>"
-
-        >
-          <div class="d-flex align-items-start gap-2">
-            <div class="pt-1">
-              <i class="<?= !empty($notif['icono']) ? htmlspecialchars($notif['icono']) : 'fa-solid fa-bell' ?>"></i>
-            </div>
-
-            <div class="flex-grow-1">
-              <div class="fw-semibold"><?= htmlspecialchars($notif['titulo']) ?></div>
-
-            <div class="small text-muted mb-2 notif-mensaje">
-              <?= nl2br(htmlspecialchars($notif['mensaje'])) ?>
-            </div>
-
-<div class="notif-actions">
-
-<?php if (!empty($notif['url_destino'])): ?>
-  <a href="<?= htmlspecialchars($notif['url_destino']) ?>" class="btn btn-sm notif-btn-primary notif-open-btn">
-    Revisar
-  </a>
-<?php endif; ?>
-
-<?php if (empty($notif['es_sistema']) && (int)$notif['leida'] === 0): ?>
-  <button type="button" class="btn btn-sm notif-btn-success notif-read-btn">
-    Marcar leída
-  </button>
-<?php endif; ?>
-
-<?php if (!empty($notif['es_sistema'])): ?>
-  <button type="button" class="btn btn-sm notif-btn-secondary notif-hide-local-btn">
-    Descartar
-  </button>
-<?php endif; ?>
-
-                
-              </div>
-            </div>
-          </div>
-        </div>
-      <?php endforeach; ?>
-    <?php else: ?>
-       <div class="notif-dropdown-footer"> <div class="text-muted small" id="notif-empty-state">No tienes notificaciones.</div></div>
-    <?php endif; ?>
-  </div>
-  
-</div>
-
-</div>
-
-</div>
+<div class="d-none d-md-flex align-items-center" id="notif-slot-desktop"></div>
 
 
 
@@ -880,7 +1060,7 @@ require("notificaciones_head.php");
   </div>
 <?php else: ?>
   <div class="list-group">
-    <a href="login.php" class="list-group-item list-group-item-action fs-6">
+    <a href="<?= app_path('login.php') ?>" class="list-group-item list-group-item-action fs-6">
       <i class="fa-solid fa-right-to-bracket ps-2 pe-3 fs-3" style="color: #44B2FF"></i>Login
     </a>
   </div>
@@ -895,7 +1075,7 @@ require("notificaciones_head.php");
 
                     <ul class='list-group pt-2'>
                       <div class='list-group'>
-                        <a href='index.php' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-house ps-2 pe-3 fs-3' style='color: #44B2FF'></i>Inicio</a>
+                        <a href='<?= app_path('index.php') ?>' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-house ps-2 pe-3 fs-3' style='color: #44B2FF'></i>Inicio</a>
                       </div>
 
                       <?php
@@ -926,23 +1106,23 @@ require("notificaciones_head.php");
                           }
 
                           echo "<div class='list-group'>
-                            <a href='bitacora.php' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-clipboard ps-2 pe-3 fs-3' style='color: #CE2E2E'></i>Bitácora ". $escribe_badge ."</a>
+                            <a href='".app_path('bitacora.php')."' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-clipboard ps-2 pe-3 fs-3' style='color: #CE2E2E'></i>Bitácora ". $escribe_badge ."</a>
                           </div>";
 
                           echo "<div class='list-group'>
-                            <a href='apuntes.php' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-calculator ps-2 pe-3 fs-3' style='color: #FFD700'></i>Cálculos y Apuntes</a>
+                            <a href='".app_path('apuntes.php')."' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-calculator ps-2 pe-3 fs-3' style='color: #FFD700'></i>Cálculos y Apuntes</a>
                           </div>";
 
                           echo "<div class='list-group'>
-                            <a href='vista_epa.php' class='list-group-item list-group-item-action fs-6 text-break'><i class='fa-solid fa-clipboard ps-2 pe-3 fs-3' style='color: #FF5A00'></i>E. Preanestésica</a>
+                            <a href='".app_path('vista_epa.php')."' class='list-group-item list-group-item-action fs-6 text-break'><i class='fa-solid fa-clipboard ps-2 pe-3 fs-3' style='color: #FF5A00'></i>E. Preanestésica</a>
                           </div>";
 
                           echo "<div class='list-group'>
-                            <a href='telefonos.php' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-phone ps-2 pe-3 fs-3' style='color: #6405d0'></i>Teléfonos Frecuentes</a>
+                            <a href='".app_path('telefonos.php')."' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-phone ps-2 pe-3 fs-3' style='color: #6405d0'></i>Teléfonos Frecuentes</a>
                           </div>";
 
                           echo "<div class='list-group'>
-                            <a href='correos.php' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-envelope ps-2 pe-3 fs-3' style='color: #29A09B'></i>Directorio Correos</a>
+                            <a href='".app_path('correos.php')."' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-envelope ps-2 pe-3 fs-3' style='color: #29A09B'></i>Directorio Correos</a>
                           </div>";
                         }
                       ?>
@@ -961,7 +1141,7 @@ require("notificaciones_head.php");
                               $escribe_badge3="<span class='badge text-bg-danger'>".$badge3."</span>";
 
                               echo "
-                                <form id='gest_users' action='gestion_usuarios.php' method='post'><input type='hidden' name='email_user_ad' value='$email_user'/>
+                                <form id='gest_users' action='".app_path('gestion_usuarios.php')."' method='post'><input type='hidden' name='email_user_ad' value='$email_user'/>
                                   <div class='list-group'>
                                     <a href='#' onclick='envioForm1()' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-users ps-2 pe-3 fs-3 text-primary'></i>Gestión Usuarios &nbsp;$escribe_badge3</a>
                                   </div>
@@ -970,7 +1150,7 @@ require("notificaciones_head.php");
                               ";
 
                               echo "
-                                <form id='gest_pacientes' action='gestion_pacientes.php' method='post'><input type='hidden' name='email_user_ad' value='$email_user'/>
+                                <form id='gest_pacientes' action='".app_path('gestion_pacientes.php')."' method='post'><input type='hidden' name='email_user_ad' value='$email_user'/>
                                   <div class='list-group'>
                                     <a href='#' onclick='envioForm2()' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-bed ps-2 pe-3 fs-3 text-primary'></i>Gestión Pacientes</a>
                                   </div>
@@ -979,7 +1159,7 @@ require("notificaciones_head.php");
                               ";
 
                               echo "
-                                <form id='gest_bitacora' action='gestion_bitacora.php' method='post'><input type='hidden' name='email_user_ad' value='$email_user'/>
+                                <form id='gest_bitacora' action='".app_path('gestion_bitacora.php')."' method='post'><input type='hidden' name='email_user_ad' value='$email_user'/>
                                   <div class='list-group'>
                                     <a href='#' onclick='envioForm3()' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-clipboard ps-2 pe-3 fs-3 text-primary'></i>Gestión Bitácora</a>
                                   </div>
@@ -989,7 +1169,7 @@ require("notificaciones_head.php");
 
 
                               echo "
-                                <form id='admin_notas' action='admin_notas.php' method='post'><input type='hidden' name='email_user_ad' value='$email_user'/>
+                                <form id='admin_notas' action='".app_path('admin_notas.php')."' method='post'><input type='hidden' name='email_user_ad' value='$email_user'/>
                                   <div class='list-group'>
                                     <a href='#' onclick='envioForm4()' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-calculator ps-2 pe-3 fs-3 text-primary'></i>Admin Apuntes</a>
                                   </div>
@@ -999,7 +1179,7 @@ require("notificaciones_head.php");
 
 
                               echo "
-                                <form id='admin_notificaciones' action='admin_notificaciones.php' method='post'><input type='hidden' name='email_user_ad' value='$email_user'/>
+                                <form id='admin_notificaciones' action='".app_path('admin_notificaciones.php')."' method='post'><input type='hidden' name='email_user_ad' value='$email_user'/>
                                   <div class='list-group'>
                                     <a href='#' onclick='envioForm5()' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-bell ps-2 pe-3 fs-3 text-primary'></i>Admin Notif</a>
                                   </div>
@@ -1008,7 +1188,7 @@ require("notificaciones_head.php");
                               ";            
 
                               echo "
-                                <form id='admin_exportar_bitacoras' action='admin_exportar_bitacoras.php' method='post'><input type='hidden' name='email_user_ad' value='$email_user'/>
+                                <form id='admin_exportar_bitacoras' action='".app_path('admin_exportar_bitacoras.php')."' method='post'><input type='hidden' name='email_user_ad' value='$email_user'/>
                                   <div class='list-group'>
                                     <a href='#' onclick='envioForm6()' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-file-export ps-2 pe-3 fs-3 text-primary'></i>Exportar BBDD</a>
                                   </div>
@@ -1026,7 +1206,7 @@ require("notificaciones_head.php");
                       </div>
 
                       <div class='list-group'>
-                        <a href='acerca_de.php' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-circle-question ps-2 pe-3 fs-3' style="color: #FF6347;"></i>Acerca de</a>
+                        <a href='<?= app_path('acerca_de.php') ?>' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-circle-question ps-2 pe-3 fs-3' style="color: #FF6347;"></i>Acerca de</a>
                       </div>
                     </ul>
 
@@ -1034,7 +1214,7 @@ require("notificaciones_head.php");
                       if(isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
                         echo "<ul class='list-group pt-5'>
                           <div class='list-group'>
-                            <a href='cierra_sesion.php' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-door-open ps-2 pe-3 fs-3 text-success'></i>Cerrar sesión</a>
+                            <a href='".app_path('cierra_sesion.php')."' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-door-open ps-2 pe-3 fs-3 text-success'></i>Cerrar sesión</a>
                           </div>
                         </ul>";
                       }
@@ -1060,6 +1240,22 @@ require("notificaciones_head.php");
 </div>
 
 <script>
+function ubicarWidgetNotificaciones() {
+  const widget = document.getElementById('notif-widget');
+  if (!widget) return;
+
+  const mobileSlot = document.getElementById('notif-slot-mobile');
+  const desktopSlot = document.getElementById('notif-slot-desktop');
+  const targetSlot = window.matchMedia('(min-width: 768px)').matches ? desktopSlot : mobileSlot;
+
+  if (targetSlot && widget.parentElement !== targetSlot) {
+    targetSlot.appendChild(widget);
+  }
+}
+
+ubicarWidgetNotificaciones();
+window.addEventListener('resize', ubicarWidgetNotificaciones);
+
 document.addEventListener('click', function(e){
   const item = e.target.closest('.notif-item[data-destinatario-id]');
   if(!item) return;
@@ -1074,9 +1270,9 @@ document.addEventListener('click', function(e){
     const blob = new Blob([body.toString()], {
       type: 'application/x-www-form-urlencoded; charset=UTF-8'
     });
-    navigator.sendBeacon('marcar_notificacion_leida.php', blob);
+    navigator.sendBeacon('<?= app_path('marcar_notificacion_leida.php') ?>', blob);
   } else {
-    fetch('marcar_notificacion_leida.php', {
+    fetch('<?= app_path('marcar_notificacion_leida.php') ?>', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
@@ -1089,7 +1285,7 @@ document.addEventListener('click', function(e){
 </script>
 
 <script>
-const notifAjaxUrl = 'notificacion_accion_ajax.php';
+const notifAjaxUrl = '<?= app_path('notificacion_accion_ajax.php') ?>';
 
 document.addEventListener('click', async function(e) {
   const readBtn = e.target.closest('.notif-read-btn');
@@ -1160,9 +1356,9 @@ document.addEventListener('click', function(e) {
     const blob = new Blob([body.toString()], {
       type: 'application/x-www-form-urlencoded; charset=UTF-8'
     });
-    navigator.sendBeacon('notificacion_accion_ajax.php', blob);
+    navigator.sendBeacon('<?= app_path('notificacion_accion_ajax.php') ?>', blob);
   } else {
-    fetch('notificacion_accion_ajax.php', {
+    fetch('<?= app_path('notificacion_accion_ajax.php') ?>', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'

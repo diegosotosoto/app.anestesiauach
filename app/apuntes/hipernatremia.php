@@ -18,7 +18,7 @@ $referencias = array(
   "Goshima T, Terasawa T, Iwata M, et al. Treatment of acute hypernatremia caused by sodium overload in adults: A systematic review. Medicine. 2022;101(8):e28945."
 );
 
-include("head.php");
+require("../head.php");
 ?>
 <link rel="stylesheet" href="css/clinical-note-system.css?v=2">
 <script src="js/clinical-note-system.js?v=2"></script>
@@ -740,4 +740,4 @@ function toggleInfo(){
 }
 </script>
 
-<?php include("footer.php"); ?>
+<?php require("../footer.php"); ?>

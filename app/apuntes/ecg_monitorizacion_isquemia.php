@@ -14,15 +14,12 @@ $referencias = array(
   "Tablas docentes de correlación anatómica entre territorios coronarios, derivadas ECG y localización miocárdica."
 );
 
-/*
-  Deja estas imágenes en la misma carpeta que este archivo.
-*/
-$img_montajes    = rawurlencode("IMG_0036.png");
-$img_sensibilidad= rawurlencode("NUMERO.png");
-$img_territorios = rawurlencode("TABLE_5.jpeg");
-$img_coronarias  = rawurlencode("Coronary.jpeg");
+$img_montajes    = "img_apuntes/" . rawurlencode("IMG_0036.png");
+$img_sensibilidad= "img_apuntes/" . rawurlencode("NUMERO.png");
+$img_territorios = "img_apuntes/" . rawurlencode("TABLE_5.jpeg");
+$img_coronarias  = "img_apuntes/" . rawurlencode("Coronary.jpeg");
 
-include("head.php");
+require("../head.php");
 ?>
 <link rel="stylesheet" href="css/clinical-note-system.css?v=1">
 <script src="js/clinical-note-system.js?v=1"></script>
@@ -543,4 +540,4 @@ function toggleInfo(){
 }
 </script>
 
-<?php include("footer.php"); ?>
+<?php require("../footer.php"); ?>

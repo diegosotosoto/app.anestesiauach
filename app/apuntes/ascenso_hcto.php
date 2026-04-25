@@ -15,7 +15,7 @@ $referencias = array(
   "Protocolos docentes locales de transfusión perioperatoria pediátrica."
 );
 
-require("head.php");
+require("../head.php");
 ?>
 <link rel="stylesheet" href="css/clinical-note-system.css?v=2">
 <script src="js/clinical-note-system.js?v=2"></script>
@@ -697,4 +697,4 @@ function toggleInfo(){
 }
 </script>
 
-<?php require("footer.php"); ?>
+<?php require("../footer.php"); ?>

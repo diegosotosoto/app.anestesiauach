@@ -15,7 +15,7 @@ $referencias = array(
   "Benumof JL. Lung isolation and one-lung ventilation. Anesthesiology Clinics."
 );
 
-include("head.php");
+require("../head.php");
 ?>
 <link rel="stylesheet" href="css/clinical-note-system.css?v=2">
 <script src="js/clinical-note-system.js?v=2"></script>
@@ -272,12 +272,12 @@ include("head.php");
             <div class="tdl-schema-grid mt-3">
               <div class="tdl-schema-card">
                 <div class="tdl-schema-title">TDL izquierdo</div>
-                <img src="IMG_5527.jpg" alt="Esquema TDL izquierdo" class="tdl-diagram">
+                <img src="img_apuntes/IMG_5527.jpg" alt="Esquema TDL izquierdo" class="tdl-diagram">
                 <div class="note-muted mt-2 text-center">Elección habitual por mayor margen anatómico antes de la primera emergencia lobar.</div>
               </div>
               <div class="tdl-schema-card">
                 <div class="tdl-schema-title">TDL derecho</div>
-                <img src="IMG_5528.jpg" alt="Esquema TDL derecho" class="tdl-diagram">
+                <img src="img_apuntes/IMG_5528.jpg" alt="Esquema TDL derecho" class="tdl-diagram">
                 <div class="note-muted mt-2 text-center">Reservado para indicaciones anatómicas o quirúrgicas específicas.</div>
               </div>
             </div>
@@ -649,4 +649,4 @@ function toggleInfo(){
 }
 </script>
 
-<?php include("footer.php"); ?>
+<?php require("../footer.php"); ?>

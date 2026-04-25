@@ -15,7 +15,7 @@ $referencias = array(
   "OpenAirway. Cormack-Lehane Grading Examples [Internet]. Disponible en: https://openairway.org/cormack-lehane-grading-examples/"
 );
 
-include("head.php");
+require("../head.php");
 ?>
 <link rel="stylesheet" href="css/clinical-note-system.css?v=1">
 <script src="js/clinical-note-system.js?v=1"></script>
@@ -201,7 +201,7 @@ include("head.php");
               <div class="cl-main-grid">
                 <div>
                   <div class="cl-image-shell mb-3">
-                    <img id="clImage" src="1.jpg" alt="Cormack-Lehane grado seleccionado">
+                    <img id="clImage" src="img_apuntes/1.jpg" alt="Cormack-Lehane grado seleccionado">
                   </div>
 
                   <div id="gradeSummaryBox" class="note-summary-box cl-grade-summary grade-1">
@@ -303,7 +303,7 @@ include("head.php");
 
   const gradeData = {
     '1': {
-      image: '1.jpg',
+      image: 'img_apuntes/1.jpg',
       panelClass: 'grade-1',
       grade: 'Grado I',
       vision: 'Glotis completa visible',
@@ -317,7 +317,7 @@ include("head.php");
       summary: 'Cormack-Lehane I: glotis completa visible, compatible con exposición glótica favorable.'
     },
     '2a': {
-      image: '2a.jpg',
+      image: 'img_apuntes/2a.jpg',
       panelClass: 'grade-2a',
       grade: 'Grado IIa',
       vision: 'Porción posterior de la glotis visible',
@@ -331,7 +331,7 @@ include("head.php");
       summary: 'Cormack-Lehane IIa: parte de la glotis visible, generalmente la porción posterior, con exposición algo limitada.'
     },
     '2b': {
-      image: '2b.jpg',
+      image: 'img_apuntes/2b.jpg',
       panelClass: 'grade-2b',
       grade: 'Grado IIb',
       vision: 'Solo aritenoides o mínima visión posterior',
@@ -345,7 +345,7 @@ include("head.php");
       summary: 'Cormack-Lehane IIb: solo aritenoides o mínima visión posterior; aumenta la probabilidad de necesitar bougie u otra ayuda.'
     },
     '3': {
-      image: '3.jpg',
+      image: 'img_apuntes/3.jpg',
       panelClass: 'grade-3',
       grade: 'Grado III',
       vision: 'Solo epiglotis visible',
@@ -359,7 +359,7 @@ include("head.php");
       summary: 'Cormack-Lehane III: no se visualiza la glotis y solo se observa la epiglotis; requiere optimización seria o cambio de estrategia.'
     },
     '4': {
-      image: '4.jpg',
+      image: 'img_apuntes/4.jpg',
       panelClass: 'grade-4',
       grade: 'Grado IV',
       vision: 'No se ve glotis ni epiglotis',
@@ -412,4 +412,4 @@ include("head.php");
 })();
 </script>
 
-<?php require("footer.php"); ?>
+<?php require("../footer.php"); ?>

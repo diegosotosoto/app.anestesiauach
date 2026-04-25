@@ -17,7 +17,7 @@ $referencias = array(
   "Kristensen SD, Knuuti J, Saraste A, et al. 2014 ESC/ESA Guidelines on non-cardiac surgery: cardiovascular assessment and management. Eur Heart J. 2014;35:2383-2431."
 );
 
-require("head.php");
+require("../head.php");
 ?>
 <link rel="stylesheet" href="css/clinical-note-system.css?v=1">
 <script src="js/clinical-note-system.js?v=1"></script>
@@ -449,4 +449,4 @@ require("head.php");
 })();
 </script>
 
-<?php require("footer.php"); ?>
+<?php require("../footer.php"); ?>

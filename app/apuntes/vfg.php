@@ -15,7 +15,7 @@ $referencias = array(
   "Miller RD. Miller's Anesthesia. Perioperative renal function and drug dosing considerations."
 );
 
-include("head.php");
+require("../head.php");
 ?>
 <link rel="stylesheet" href="css/clinical-note-system.css?v=2">
 <script src="js/clinical-note-system.js?v=2"></script>
@@ -593,4 +593,4 @@ function toggleInfo(){
 }
 </script>
 
-<?php include("footer.php"); ?>
+<?php require("../footer.php"); ?>

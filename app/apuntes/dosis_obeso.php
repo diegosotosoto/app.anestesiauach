@@ -18,7 +18,7 @@ $referencias = array(
   "7.- Morse JD et al. A universal pharmacokinetic model for dexmedetomidine in children and adults. J Clin Med. 2020;9:3480.",
   "8.- Li JY et al. Pharmacokinetics of a cisatracurium dose according to fat-free mass for anesthesia induction in morbidly obese patients. Nan Fang Yi Ke Da Xue Xue Bao. 2016;36(10):1396-1400."
 );
-include("head.php");
+require("../head.php");
 ?>
 <link rel="stylesheet" href="css/clinical-note-system.css?v=1">
 <script src="js/clinical-note-system.js?v=1"></script>
@@ -317,4 +317,4 @@ document.addEventListener('DOMContentLoaded', function(){ updateSummary(); rende
   </div>
 </div>
 
-<?php include("footer.php"); ?>
+<?php require("../footer.php"); ?>

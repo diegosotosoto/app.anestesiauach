@@ -13,7 +13,7 @@ $referencias = array(
   "Voepel-Lewis T, Zanotti J, Dammeyer JA, Merkel S. Reliability and validity of the Face, Legs, Activity, Cry, Consolability behavioral tool in assessing acute pain in critically ill patients. Am J Crit Care. 2010;19(1):55-61."
 );
 
-include("head.php");
+require("../head.php");
 ?>
 <link rel="stylesheet" href="css/clinical-note-system.css?v=1">
 <script src="js/clinical-note-system.js?v=1"></script>
@@ -526,4 +526,4 @@ function toggleInfo(){
 }
 </script>
 
-<?php include("footer.php"); ?>
+<?php require("../footer.php"); ?>

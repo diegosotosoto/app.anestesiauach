@@ -62,7 +62,7 @@ $colorCards = array(
   array('titulo'=>'Efedrina','sub'=>'Vasoactivos','clase'=>'drug-vasoactive')
 );
 
-include("head.php");
+require("../head.php");
 ?>
 <link rel="stylesheet" href="css/clinical-note-system.css?v=1">
 <script src="js/clinical-note-system.js?v=1"></script>
@@ -235,4 +235,4 @@ include("head.php");
   </div>
 </div>
 
-<?php include('footer.php'); ?>
+<?php require("../footer.php"); ?>

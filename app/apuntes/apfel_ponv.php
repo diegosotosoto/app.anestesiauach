@@ -14,7 +14,7 @@ $referencias = array(
   "Usar el score como apoyo orientativo; la decisión final depende también del tipo de cirugía, técnica anestésica, opioides y contexto clínico."
 );
 
-include("head.php");
+require("../head.php");
 ?>
 <link rel="stylesheet" href="css/clinical-note-system.css?v=1">
 <script src="js/clinical-note-system.js?v=1"></script>
@@ -401,4 +401,4 @@ function toggleInfo(){
 }
 </script>
 
-<?php include("footer.php"); ?>
+<?php require("../footer.php"); ?>

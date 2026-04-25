@@ -27,7 +27,7 @@ $referencias = array(
   "Compilación local del usuario basada en DAS, Miller y notas operativas de pabellón para intubación vigil con fibroscopio / Ambuscope."
 );
 
-require('head.php');
+require("../head.php");
 ?>
 <link rel="stylesheet" href="css/clinical-note-system.css?v=20260416-3">
 <script src="js/clinical-note-system.js?v=20260416-1"></script>
@@ -470,4 +470,4 @@ require('head.php');
 })();
 </script>
 
-<?php include('footer.php'); ?>
+<?php require("../footer.php"); ?>

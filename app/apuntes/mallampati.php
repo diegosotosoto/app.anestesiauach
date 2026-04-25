@@ -15,7 +15,7 @@ $referencias = array(
   "Lundstrøm LH, Vester-Andersen M, Møller AM, et al. Poor prognostic value of the modified Mallampati score: a meta-analysis involving 177 088 patients. Br J Anaesth. 2011."
 );
 
-include("head.php");
+require("../head.php");
 ?>
 <link rel="stylesheet" href="css/clinical-note-system.css?v=2">
 <script src="js/clinical-note-system.js?v=2"></script>
@@ -233,7 +233,7 @@ include("head.php");
               <div class="mp-main-grid">
                 <div>
                   <div class="mp-image-shell">
-                    <img id="mpImage" src="../images/malampatti-scale.png" alt="Score de Mallampati">
+                    <img id="mpImage" src="img_apuntes/malampatti-scale.png" alt="Score de Mallampati">
                   </div>
                   <div id="summaryBox" class="note-summary-box mp-summary-box mt-3 mb-0" style="background:#e9f8ef;border-color:#b7e4c7;">
                     <div class="note-summary-box-title">Resumen</div>
@@ -477,4 +477,4 @@ function toggleInfo(){
 }
 </script>
 
-<?php include("footer.php"); ?>
+<?php require("../footer.php"); ?>

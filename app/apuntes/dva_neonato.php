@@ -15,7 +15,7 @@ $referencias = array(
   "Las presentaciones comerciales pueden variar según país, laboratorio y unidad clínica."
 );
 
-require('head.php');
+require("../head.php");
 ?>
 <link rel="stylesheet" href="css/clinical-note-system.css?v=1">
 <script src="js/clinical-note-system.js?v=1"></script>
@@ -443,4 +443,4 @@ function toggleInfo(){
 })();
 </script>
 
-<?php require('footer.php'); ?>
+<?php require("../footer.php"); ?>

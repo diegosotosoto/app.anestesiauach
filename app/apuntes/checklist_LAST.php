@@ -15,7 +15,7 @@ $boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
 $boton_navbar = "<button class='navbar-toggler text-white shadow-sm' style='width:50px; height:40px; --bs-border-opacity: .1;' type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation'> ? </button>";
 
-require("head.php");
+require("../head.php");
 ?>
 <link rel="stylesheet" href="css/clinical-note-system.css?v=2">
 <script src="js/clinical-note-system.js?v=2"></script>
@@ -660,4 +660,4 @@ function renderDose(weight){
 })();
 </script>
 
-<?php require("footer.php"); ?>
+<?php require("../footer.php"); ?>

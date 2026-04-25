@@ -14,7 +14,7 @@ $referencias = array(
   "Rosenberg H, Pollock N, Schiemann A, Bulger T, Stowell K. Malignant Hyperthermia: a review. Orphanet J Rare Dis. 2015;10:93."
 );
 
-include("head.php");
+require("../head.php");
 ?>
 <link rel="stylesheet" href="css/clinical-note-system.css?v=1">
 <script src="js/clinical-note-system.js?v=1"></script>
@@ -646,5 +646,5 @@ include("head.php");
 </script>
 
 <?php
-include("footer.php");
+require("../footer.php");
 ?>

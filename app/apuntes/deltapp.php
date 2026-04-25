@@ -14,7 +14,7 @@ $referencias = array(
   "Michard F, Boussat S, Chemla D, et al. Relation between respiratory changes in arterial pulse pressure and fluid responsiveness in septic patients with acute circulatory failure. Am J Respir Crit Care Med. 2000;162(1):134-138."
 );
 
-require("head.php");
+require("../head.php");
 ?>
 <link rel="stylesheet" href="css/clinical-note-system.css?v=1">
 <script src="js/clinical-note-system.js?v=1"></script>
@@ -409,5 +409,5 @@ require("head.php");
 </script>
 
 <?php
-require("footer.php");
+require("../footer.php");
 ?>

@@ -17,7 +17,7 @@ $boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
 $boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
 
-require("head.php");
+require("../head.php");
 
 $domains = array(
   "conciencia" => array(
@@ -507,4 +507,4 @@ document.addEventListener('change', function(e){
 
 showEmptyState();
 </script>
-<?php require("footer.php"); ?>
+<?php require("../footer.php"); ?>

@@ -15,7 +15,7 @@ $referencias = array(
   "Recomendaciones docentes locales de manejo perioperatorio de glicemia intraoperatoria."
 );
 
-include("head.php");
+require("../head.php");
 ?>
 <link rel="stylesheet" href="css/clinical-note-system.css?v=<?php echo time(); ?>">
 <script src="js/clinical-note-system.js?v=1"></script>
@@ -1103,4 +1103,4 @@ function toggleGlySection(head){
 }
 </script>
 
-<?php include("footer.php"); ?>
+<?php require("../footer.php"); ?>

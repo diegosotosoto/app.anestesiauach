@@ -19,7 +19,7 @@ $boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
 $boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity: .1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
 
-require("head.php");
+require("../head.php");
 ?>
 <link rel="stylesheet" href="css/clinical-note-system.css?v=2">
 
@@ -575,5 +575,5 @@ if(initialQuery){
 
 <?php
 $conexion->close();
-require("footer.php");
+require("../footer.php");
 ?>

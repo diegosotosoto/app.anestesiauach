@@ -1,13 +1,5 @@
 <?php
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
-require_once __DIR__ . '/PHPMailer/src/Exception.php';
-require_once __DIR__ . '/PHPMailer/src/PHPMailer.php';
-require_once __DIR__ . '/PHPMailer/src/SMTP.php';
-
-
 if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
     header('Location: login.php');
     exit;
@@ -137,9 +129,67 @@ function obtener_emails_destinatarios_notificacion($conexion, $notificacion_id){
     return array_values($destinatarios);
 }
 
+function app_notificaciones_es_localhost(){
+    $host = strtolower((string)($_SERVER['HTTP_HOST'] ?? ''));
+    $server = strtolower((string)($_SERVER['SERVER_NAME'] ?? ''));
+
+    return $host === ''
+        || strpos($host, 'localhost') === 0
+        || strpos($host, '127.0.0.1') === 0
+        || $server === 'localhost'
+        || $server === '127.0.0.1';
+}
+
+function app_notificaciones_cargar_phpmailer(){
+    static $cargado = null;
+
+    if($cargado !== null){
+        return $cargado;
+    }
+
+    $archivos = [
+        __DIR__ . '/PHPMailer/src/Exception.php',
+        __DIR__ . '/PHPMailer/src/PHPMailer.php',
+        __DIR__ . '/PHPMailer/src/SMTP.php'
+    ];
+
+    foreach($archivos as $archivo){
+        if(!is_readable($archivo)){
+            error_log('PHPMailer no disponible para admin_notificaciones.php: no se puede leer ' . $archivo);
+            $cargado = false;
+            return false;
+        }
+    }
+
+    require_once $archivos[0];
+    require_once $archivos[1];
+    require_once $archivos[2];
+
+    $cargado = class_exists('\\PHPMailer\\PHPMailer\\PHPMailer');
+    return $cargado;
+}
+
 function enviar_correo_notificacion_app($destinatarios, $titulo, $mensaje_notif, $url_destino, $remitente_email, $remitente_nombre){
     if(empty($destinatarios)){
         return ['ok' => false, 'enviados' => 0, 'error' => 'No hay destinatarios con correo válido.'];
+    }
+
+    if(app_notificaciones_es_localhost()){
+        return [
+            'ok' => true,
+            'enviados' => 0,
+            'omitido' => true,
+            'error' => 'En localhost se omitió el envío real de correo.'
+        ];
+    }
+
+    if(!app_notificaciones_cargar_phpmailer()){
+        return [
+            'ok' => false,
+            'enviados' => 0,
+            'omitido' => false,
+            'error' => 'PHPMailer no está disponible o no se puede leer en este entorno.'
+        ];
     }
 
     $remitente_email = trim((string)$remitente_email);
@@ -170,7 +220,7 @@ function enviar_correo_notificacion_app($destinatarios, $titulo, $mensaje_notif,
         $alt_url = "\n\nEnlace relacionado:\n" . $url_limpia;
     }
 
-    $mail = new PHPMailer(true);
+    $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
 
     try{
         /*
@@ -260,6 +310,152 @@ $grupos_disponibles = [
     'todos_alumnos' => 'Todos los alumnos',
     'todos_verificados' => 'Todos los verificados'
 ];
+
+/*
+|--------------------------------------------------------------------------
+| Eliminación masiva
+|--------------------------------------------------------------------------
+*/
+if(isset($_POST['accion_admin_masiva']) && $_POST['accion_admin_masiva'] === 'eliminar_multiples'){
+    $tipo_eliminacion = trim($_POST['tipo_eliminacion'] ?? '');
+    $usuario_eliminacion = isset($_POST['usuario_eliminacion_id']) ? (int)$_POST['usuario_eliminacion_id'] : 0;
+    $grupo_eliminacion = trim($_POST['grupo_eliminacion'] ?? '');
+    $confirmacion_masiva = isset($_POST['confirmacion_masiva']) ? 1 : 0;
+
+    if($confirmacion_masiva !== 1){
+        $error = "Debes confirmar la eliminación masiva.";
+    }elseif(!in_array($tipo_eliminacion, ['individual','grupo','global','todas'], true)){
+        $error = "Selecciona un filtro de eliminación válido.";
+    }elseif($tipo_eliminacion === 'individual' && $usuario_eliminacion <= 0){
+        $error = "Selecciona un usuario para eliminar sus notificaciones individuales.";
+    }elseif($tipo_eliminacion === 'grupo' && !array_key_exists($grupo_eliminacion, $grupos_disponibles)){
+        $error = "Selecciona un grupo válido para eliminar sus notificaciones.";
+    }else{
+        $conexion->begin_transaction();
+
+        try{
+            if($tipo_eliminacion === 'individual'){
+                $eliminadas = 0;
+                $stmt_count = $conexion->prepare("
+                    SELECT COUNT(DISTINCT n.`id`) AS total
+                    FROM `notificaciones` n
+                    INNER JOIN `notificacion_destinatarios` nd
+                        ON nd.`notificacion_id` = n.`id`
+                    WHERE n.`alcance` = 'individual'
+                      AND nd.`usuario_id` = ?
+                ");
+
+                if(!$stmt_count){
+                    throw new RuntimeException("Error preparando conteo de notificaciones.");
+                }
+
+                $stmt_count->bind_param("i", $usuario_eliminacion);
+                $stmt_count->execute();
+                if(method_exists($stmt_count, 'get_result')){
+                    $res_count = $stmt_count->get_result();
+                    $row_count = $res_count ? $res_count->fetch_assoc() : null;
+                    $eliminadas = (int)($row_count['total'] ?? 0);
+                }else{
+                    $stmt_count->bind_result($total_count);
+                    if($stmt_count->fetch()){
+                        $eliminadas = (int)$total_count;
+                    }
+                }
+                $stmt_count->close();
+
+                $stmt_notif = $conexion->prepare("
+                    DELETE n, nd
+                    FROM `notificaciones` n
+                    INNER JOIN `notificacion_destinatarios` nd
+                        ON nd.`notificacion_id` = n.`id`
+                    WHERE n.`alcance` = 'individual'
+                      AND nd.`usuario_id` = ?
+                ");
+
+                if(!$stmt_notif){
+                    throw new RuntimeException("Error preparando eliminación de notificaciones.");
+                }
+
+                $stmt_notif->bind_param("i", $usuario_eliminacion);
+                $stmt_notif->execute();
+                $stmt_notif->close();
+            }elseif($tipo_eliminacion === 'grupo'){
+                $stmt_dest = $conexion->prepare("
+                    DELETE nd
+                    FROM `notificacion_destinatarios` nd
+                    INNER JOIN `notificaciones` n
+                        ON n.`id` = nd.`notificacion_id`
+                    WHERE n.`alcance` = 'grupo'
+                      AND n.`grupo_destino` = ?
+                ");
+
+                if(!$stmt_dest){
+                    throw new RuntimeException("Error preparando eliminación de destinatarios.");
+                }
+
+                $stmt_dest->bind_param("s", $grupo_eliminacion);
+                $stmt_dest->execute();
+                $stmt_dest->close();
+
+                $stmt_notif = $conexion->prepare("
+                    DELETE FROM `notificaciones`
+                    WHERE `alcance` = 'grupo'
+                      AND `grupo_destino` = ?
+                ");
+
+                if(!$stmt_notif){
+                    throw new RuntimeException("Error preparando eliminación de notificaciones.");
+                }
+
+                $stmt_notif->bind_param("s", $grupo_eliminacion);
+                $stmt_notif->execute();
+                $eliminadas = (int)$stmt_notif->affected_rows;
+                $stmt_notif->close();
+            }elseif($tipo_eliminacion === 'global'){
+                $stmt_dest = $conexion->prepare("
+                    DELETE nd
+                    FROM `notificacion_destinatarios` nd
+                    INNER JOIN `notificaciones` n
+                        ON n.`id` = nd.`notificacion_id`
+                    WHERE n.`alcance` = 'global'
+                ");
+
+                if(!$stmt_dest){
+                    throw new RuntimeException("Error preparando eliminación de destinatarios.");
+                }
+
+                $stmt_dest->execute();
+                $stmt_dest->close();
+
+                $stmt_notif = $conexion->prepare("DELETE FROM `notificaciones` WHERE `alcance` = 'global'");
+
+                if(!$stmt_notif){
+                    throw new RuntimeException("Error preparando eliminación de notificaciones.");
+                }
+
+                $stmt_notif->execute();
+                $eliminadas = (int)$stmt_notif->affected_rows;
+                $stmt_notif->close();
+            }else{
+                if(!$conexion->query("DELETE FROM `notificacion_destinatarios`")){
+                    throw new RuntimeException("Error eliminando destinatarios.");
+                }
+
+                if(!$conexion->query("DELETE FROM `notificaciones`")){
+                    throw new RuntimeException("Error eliminando notificaciones.");
+                }
+
+                $eliminadas = (int)$conexion->affected_rows;
+            }
+
+            $conexion->commit();
+            $mensaje = "Eliminación masiva completada. Notificaciones eliminadas: " . $eliminadas . ".";
+        }catch(Throwable $e){
+            $conexion->rollback();
+            $error = "No se pudo completar la eliminación masiva: " . $e->getMessage();
+        }
+    }
+}
 
 /*
 |--------------------------------------------------------------------------
@@ -365,7 +561,7 @@ if(isset($_POST['crear_notificacion']) && $_POST['crear_notificacion'] === '1'){
             ");
 
             if(!$stmt_notif){
-                throw new Exception("Error preparando la notificación.");
+                throw new RuntimeException("Error preparando la notificación.");
             }
 
             $stmt_notif->bind_param(
@@ -384,7 +580,7 @@ if(isset($_POST['crear_notificacion']) && $_POST['crear_notificacion'] === '1'){
             );
 
             if(!$stmt_notif->execute()){
-                throw new Exception("Error creando la notificación.");
+                throw new RuntimeException("Error creando la notificación.");
             }
 
             $notificacion_id = (int)$stmt_notif->insert_id;
@@ -398,13 +594,13 @@ if(isset($_POST['crear_notificacion']) && $_POST['crear_notificacion'] === '1'){
                 ");
 
                 if(!$stmt_dest){
-                    throw new Exception("Error preparando destinatario individual.");
+                    throw new RuntimeException("Error preparando destinatario individual.");
                 }
 
                 $stmt_dest->bind_param("ii", $notificacion_id, $usuario_individual);
 
                 if(!$stmt_dest->execute()){
-                    throw new Exception("Error asignando destinatario individual.");
+                    throw new RuntimeException("Error asignando destinatario individual.");
                 }
 
                 $stmt_dest->close();
@@ -422,13 +618,13 @@ if(isset($_POST['crear_notificacion']) && $_POST['crear_notificacion'] === '1'){
                 $stmt_global = $conexion->prepare($sql_global);
 
                 if(!$stmt_global){
-                    throw new Exception("Error preparando destinatarios globales.");
+                    throw new RuntimeException("Error preparando destinatarios globales.");
                 }
 
                 $stmt_global->bind_param("i", $notificacion_id);
 
                 if(!$stmt_global->execute()){
-                    throw new Exception("Error asignando destinatarios globales.");
+                    throw new RuntimeException("Error asignando destinatarios globales.");
                 }
 
                 $stmt_global->close();
@@ -461,7 +657,7 @@ if(isset($_POST['crear_notificacion']) && $_POST['crear_notificacion'] === '1'){
                         $where_grupo = "`verified` = 1";
                         break;
                     default:
-                        throw new Exception("Grupo inválido.");
+                        throw new RuntimeException("Grupo inválido.");
                 }
 
                 $sql_grupo = "
@@ -474,13 +670,13 @@ if(isset($_POST['crear_notificacion']) && $_POST['crear_notificacion'] === '1'){
                 $stmt_grupo = $conexion->prepare($sql_grupo);
 
                 if(!$stmt_grupo){
-                    throw new Exception("Error preparando destinatarios por grupo.");
+                    throw new RuntimeException("Error preparando destinatarios por grupo.");
                 }
 
                 $stmt_grupo->bind_param("i", $notificacion_id);
 
                 if(!$stmt_grupo->execute()){
-                    throw new Exception("Error asignando destinatarios por grupo.");
+                    throw new RuntimeException("Error asignando destinatarios por grupo.");
                 }
 
                 $stmt_grupo->close();
@@ -502,7 +698,11 @@ if(isset($_POST['crear_notificacion']) && $_POST['crear_notificacion'] === '1'){
                 );
 
                 if($resultado_email['ok']){
-                    $mensaje .= " Además, se envió el correo a " . (int)$resultado_email['enviados'] . " destinatario(s).";
+                    if(!empty($resultado_email['omitido'])){
+                        $mensaje .= " En localhost se omitió el envío real de correo, pero la notificación interna fue creada.";
+                    }else{
+                        $mensaje .= " Además, se envió el correo a " . (int)$resultado_email['enviados'] . " destinatario(s).";
+                    }
                 }else{
                     $mensaje .= " La notificación interna fue creada, pero el correo no pudo enviarse.";
                     $error = "Error al enviar correo: " . $resultado_email['error'];
@@ -565,7 +765,8 @@ $sql_listado = "
         SUM(CASE WHEN nd.`leida` = 1 THEN 1 ELSE 0 END) AS total_leidas,
 
         MIN(CASE WHEN n.`alcance` = 'individual' THEN ud_ind.`nombre_usuario` ELSE NULL END) AS usuario_destino_nombre,
-        MIN(CASE WHEN n.`alcance` = 'individual' THEN ud_ind.`email_usuario` ELSE NULL END) AS usuario_destino_email
+        MIN(CASE WHEN n.`alcance` = 'individual' THEN ud_ind.`email_usuario` ELSE NULL END) AS usuario_destino_email,
+        MIN(CASE WHEN n.`alcance` = 'individual' THEN ud_ind.`ID` ELSE NULL END) AS usuario_destino_id
 
     FROM `notificaciones` n
     LEFT JOIN `notificacion_destinatarios` nd
@@ -818,7 +1019,7 @@ if($res_listado){
                 <div class="admin-grid">
                     <div>
                         <label class="admin-label">Título</label>
-                        <input class="admin-input" type="text" name="titulo" required>
+                        <input class="admin-input" type="text" name="titulo" value="Notificación" required>
                     </div>
 
                     <div>
@@ -995,14 +1196,109 @@ if($res_listado){
         </div>
 
         <div class="admin-card">
-            <h4 class="mb-3">Notificaciones existentes</h4>
+            <h4 class="mb-3">Eliminar múltiples notificaciones</h4>
+
+            <form method="post" id="formEliminacionMasiva">
+                <input type="hidden" name="accion_admin_masiva" value="eliminar_multiples">
+
+                <div class="admin-grid">
+                    <div>
+                        <label class="admin-label">Filtro de eliminación</label>
+                        <select class="admin-select" name="tipo_eliminacion" id="tipoEliminacion">
+                            <option value="">Ver todas</option>
+                            <option value="individual">Individuales de un usuario</option>
+                            <option value="grupo">Grupales por grupo</option>
+                            <option value="global">Globales</option>
+                            <option value="todas">Eliminar todas</option>
+                        </select>
+                    </div>
+
+                    <div id="usuarioEliminacionWrap">
+                        <label class="admin-label">Usuario</label>
+                        <input type="hidden" name="usuario_eliminacion_id" id="usuario_eliminacion_id_hidden" value="0">
+
+                        <input
+                            type="text"
+                            id="usuarioEliminacionSearch"
+                            class="admin-input"
+                            placeholder="Escribe nombre o correo..."
+                            autocomplete="off"
+                        >
+
+                        <div id="usuarioEliminacionSeleccionado" class="admin-muted mt-2" style="display:none;"></div>
+
+                        <div id="usuarioEliminacionResultados" class="usuario-resultados mt-2">
+                            <?php foreach($usuarios as $u){ ?>
+                                <?php
+                                    $nombre_usuario_limpio = html_entity_decode((string)$u['nombre_usuario'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                                    $email_usuario_limpio = (string)$u['email_usuario'];
+                                ?>
+                                <button
+                                    type="button"
+                                    class="usuario-resultado-item usuario-eliminacion-item"
+                                    data-id="<?= (int)$u['ID'] ?>"
+                                    data-nombre="<?= htmlspecialchars(mb_strtolower($nombre_usuario_limpio, 'UTF-8'), ENT_QUOTES, 'UTF-8') ?>"
+                                    data-email="<?= htmlspecialchars(mb_strtolower($email_usuario_limpio, 'UTF-8'), ENT_QUOTES, 'UTF-8') ?>"
+                                    data-label="<?= htmlspecialchars($nombre_usuario_limpio . ' (' . $email_usuario_limpio . ')', ENT_QUOTES, 'UTF-8') ?>"
+                                >
+                                    <?= h_usuario($u['nombre_usuario']) ?> (<?= h($u['email_usuario']) ?>)
+                                </button>
+                            <?php } ?>
+                        </div>
+                    </div>
+
+                    <div id="grupoEliminacionWrap" class="hidden">
+                        <label class="admin-label">Grupo</label>
+                        <select class="admin-select" name="grupo_eliminacion" id="grupoEliminacionSelect">
+                            <option value="">Selecciona un grupo</option>
+                            <?php foreach($grupos_disponibles as $key => $label){ ?>
+                                <option value="<?= h($key) ?>"><?= h($label) ?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+
+                    <div class="admin-full">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="confirmacion_masiva" id="confirmacionMasiva" value="1">
+                            <label class="form-check-label" for="confirmacionMasiva">
+                                Confirmo que esta acción eliminará notificaciones existentes.
+                            </label>
+                        </div>
+                        <div class="admin-muted mt-1">
+                            El filtro “Individuales de un usuario” elimina sólo notificaciones creadas como individuales para ese usuario.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-actions">
+                    <button class="btn btn-danger" type="submit">Eliminar notificaciones filtradas</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="admin-card">
+            <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-3">
+                <h4 class="mb-0">Notificaciones existentes</h4>
+                <div class="admin-muted" id="contadorNotificacionesFiltradas">
+                    Mostrando <?= count($notificaciones) ?> de <?= count($notificaciones) ?>
+                </div>
+            </div>
 
             <?php if(empty($notificaciones)){ ?>
                 <div class="admin-muted">No hay notificaciones creadas aún.</div>
             <?php } ?>
 
+            <div class="admin-muted hidden" id="sinNotificacionesFiltradas">
+                No hay notificaciones que coincidan con el filtro seleccionado.
+            </div>
+
             <?php foreach($notificaciones as $n){ ?>
-                <div class="border rounded p-3 mb-3 bg-light">
+                <div
+                    class="border rounded p-3 mb-3 bg-light notificacion-item"
+                    data-alcance="<?= h($n['alcance']) ?>"
+                    data-grupo="<?= h($n['grupo_destino'] ?? '') ?>"
+                    data-usuario-id="<?= (int)($n['usuario_destino_id'] ?? 0) ?>"
+                >
                     <h5 class="mb-2"><?= h($n['titulo']) ?></h5>
 
                     <div class="mb-2">
@@ -1091,6 +1387,211 @@ function actualizarCamposAlcance() {
 
 alcanceSelect.addEventListener('change', actualizarCamposAlcance);
 actualizarCamposAlcance();
+
+const formEliminacionMasiva = document.getElementById('formEliminacionMasiva');
+const tipoEliminacion = document.getElementById('tipoEliminacion');
+const usuarioEliminacionWrap = document.getElementById('usuarioEliminacionWrap');
+const grupoEliminacionWrap = document.getElementById('grupoEliminacionWrap');
+const grupoEliminacionSelect = document.getElementById('grupoEliminacionSelect');
+const usuarioEliminacionSearch = document.getElementById('usuarioEliminacionSearch');
+const usuarioEliminacionResultados = document.getElementById('usuarioEliminacionResultados');
+const usuarioEliminacionHidden = document.getElementById('usuario_eliminacion_id_hidden');
+const usuarioEliminacionSeleccionado = document.getElementById('usuarioEliminacionSeleccionado');
+const notificacionItems = document.querySelectorAll('.notificacion-item');
+const contadorNotificacionesFiltradas = document.getElementById('contadorNotificacionesFiltradas');
+const sinNotificacionesFiltradas = document.getElementById('sinNotificacionesFiltradas');
+
+function actualizarCamposEliminacion() {
+    if (!tipoEliminacion || !usuarioEliminacionWrap || !grupoEliminacionWrap) return;
+
+    usuarioEliminacionWrap.classList.add('hidden');
+    grupoEliminacionWrap.classList.add('hidden');
+
+    if (tipoEliminacion.value === 'individual') {
+        usuarioEliminacionWrap.classList.remove('hidden');
+    }
+
+    if (tipoEliminacion.value === 'grupo') {
+        grupoEliminacionWrap.classList.remove('hidden');
+    }
+
+    filtrarNotificacionesExistentes();
+}
+
+function limpiarSeleccionUsuarioEliminacion() {
+    if (!usuarioEliminacionHidden || !usuarioEliminacionSeleccionado) return;
+
+    usuarioEliminacionHidden.value = 0;
+    usuarioEliminacionSeleccionado.style.display = 'none';
+    usuarioEliminacionSeleccionado.textContent = '';
+
+    if (usuarioEliminacionResultados) {
+        usuarioEliminacionResultados.querySelectorAll('.usuario-eliminacion-item').forEach(btn => {
+            btn.classList.remove('activo');
+        });
+    }
+}
+
+function filtrarUsuariosEliminacion() {
+    if (!usuarioEliminacionSearch || !usuarioEliminacionResultados) return;
+
+    const texto = usuarioEliminacionSearch.value.trim().toLowerCase();
+    const items = usuarioEliminacionResultados.querySelectorAll('.usuario-eliminacion-item');
+
+    items.forEach(item => {
+        const nombre = item.dataset.nombre || '';
+        const email = item.dataset.email || '';
+        const coincide = texto === '' || nombre.includes(texto) || email.includes(texto);
+
+        if (coincide) {
+            item.classList.remove('oculto');
+        } else {
+            item.classList.add('oculto');
+        }
+    });
+}
+
+function filtrarNotificacionesExistentes() {
+    if (!tipoEliminacion || !notificacionItems.length) return;
+
+    const tipo = tipoEliminacion.value;
+    const usuarioId = usuarioEliminacionHidden ? usuarioEliminacionHidden.value : '0';
+    const grupo = grupoEliminacionSelect ? grupoEliminacionSelect.value : '';
+    let visibles = 0;
+
+    notificacionItems.forEach(item => {
+        const alcance = item.dataset.alcance || '';
+        const itemGrupo = item.dataset.grupo || '';
+        const itemUsuarioId = item.dataset.usuarioId || '0';
+        let mostrar = true;
+
+        if (tipo === 'individual') {
+            mostrar = alcance === 'individual' && (usuarioId === '0' || itemUsuarioId === usuarioId);
+        } else if (tipo === 'grupo') {
+            mostrar = alcance === 'grupo' && (grupo === '' || itemGrupo === grupo);
+        } else if (tipo === 'global') {
+            mostrar = alcance === 'global';
+        } else if (tipo === 'todas' || tipo === '') {
+            mostrar = true;
+        }
+
+        if (mostrar) {
+            item.classList.remove('hidden');
+            visibles += 1;
+        } else {
+            item.classList.add('hidden');
+        }
+    });
+
+    if (contadorNotificacionesFiltradas) {
+        contadorNotificacionesFiltradas.textContent = 'Mostrando ' + visibles + ' de ' + notificacionItems.length;
+    }
+
+    if (sinNotificacionesFiltradas) {
+        if (visibles === 0) {
+            sinNotificacionesFiltradas.classList.remove('hidden');
+        } else {
+            sinNotificacionesFiltradas.classList.add('hidden');
+        }
+    }
+}
+
+if (tipoEliminacion) {
+    tipoEliminacion.addEventListener('change', actualizarCamposEliminacion);
+    actualizarCamposEliminacion();
+}
+
+if (grupoEliminacionSelect) {
+    grupoEliminacionSelect.addEventListener('change', filtrarNotificacionesExistentes);
+}
+
+if (usuarioEliminacionSearch) {
+    usuarioEliminacionSearch.addEventListener('input', function() {
+        limpiarSeleccionUsuarioEliminacion();
+        filtrarUsuariosEliminacion();
+        filtrarNotificacionesExistentes();
+    });
+}
+
+if (usuarioEliminacionResultados) {
+    usuarioEliminacionResultados.addEventListener('click', function(e) {
+        const item = e.target.closest('.usuario-eliminacion-item');
+        if (!item) return;
+
+        const id = item.dataset.id || '0';
+        const label = item.dataset.label || '';
+
+        if (usuarioEliminacionHidden) {
+            usuarioEliminacionHidden.value = id;
+        }
+
+        if (usuarioEliminacionSearch) {
+            usuarioEliminacionSearch.value = label;
+        }
+
+        if (usuarioEliminacionSeleccionado) {
+            usuarioEliminacionSeleccionado.textContent = 'Seleccionado: ' + label;
+            usuarioEliminacionSeleccionado.style.display = 'block';
+        }
+
+        usuarioEliminacionResultados.querySelectorAll('.usuario-eliminacion-item').forEach(btn => {
+            btn.classList.remove('activo');
+        });
+        item.classList.add('activo');
+
+        filtrarUsuariosEliminacion();
+        filtrarNotificacionesExistentes();
+    });
+}
+
+if (formEliminacionMasiva && tipoEliminacion) {
+    formEliminacionMasiva.addEventListener('submit', function(e) {
+        const tipo = tipoEliminacion.value;
+        const confirmacion = document.getElementById('confirmacionMasiva');
+
+        if (!confirmacion || !confirmacion.checked) {
+            e.preventDefault();
+            alert('Debes marcar la confirmación antes de eliminar notificaciones.');
+            return;
+        }
+
+        if (tipo === '') {
+            e.preventDefault();
+            alert('Selecciona un filtro de eliminación antes de continuar.');
+            return;
+        }
+
+        if (tipo === 'individual' && (!usuarioEliminacionHidden || usuarioEliminacionHidden.value === '0')) {
+            e.preventDefault();
+            alert('Selecciona un usuario antes de eliminar notificaciones individuales.');
+            return;
+        }
+
+        if (tipo === 'grupo' && (!grupoEliminacionSelect || grupoEliminacionSelect.value === '')) {
+            e.preventDefault();
+            alert('Selecciona un grupo antes de eliminar notificaciones grupales.');
+            return;
+        }
+
+        if (tipo === 'grupo') {
+            if (!confirm('¿Confirmas eliminar las notificaciones grupales del grupo seleccionado? Esta acción no se puede deshacer.')) {
+                e.preventDefault();
+            }
+        }
+
+        if (tipo === 'global') {
+            if (!confirm('¿Confirmas eliminar todas las notificaciones globales? Esta acción no se puede deshacer.')) {
+                e.preventDefault();
+            }
+        }
+
+        if (tipo === 'todas') {
+            if (!confirm('¿Confirmas eliminar TODAS las notificaciones existentes? Esta acción no se puede deshacer.')) {
+                e.preventDefault();
+            }
+        }
+    });
+}
 
 const usuarioSearch = document.getElementById('usuarioSearch');
 const usuarioResultados = document.getElementById('usuarioResultados');

@@ -5,8 +5,8 @@
   <div class="container py-2 py-md-5 px-4 px-md-3" style="font-size: min(max(14px, 1.5vw), 16px)">
     <div class="row">
     <div class="col-lg-3 mb-0">
-        <a class="d-inline-flex align-items-center mb-2 link-dark text-decoration-none" href="/" aria-label="Bootstrap" style="font-size: min(max(14px, 1.5vw), 18px)">
-          <span class='fs-5' style='color:#22304a;'><img class='pe-2' src='images/austral_black.png' style='width: 48px; opacity:.72' />Anestesia <small class='ps-0 opacity-50'> UACH</small></span>
+        <a class="d-inline-flex align-items-center mb-2 link-dark text-decoration-none" href="<?= function_exists('app_path') ? app_path('index.php') : '/' ?>" aria-label="Bootstrap" style="font-size: min(max(14px, 1.5vw), 18px)">
+          <span class='fs-5' style='color:#22304a;'><img class='pe-2' src='<?= function_exists('app_path') ? app_path('images/austral_black.png') : 'images/austral_black.png' ?>' style='width: 48px; opacity:.72' />Anestesia <small class='ps-0 opacity-50'> UACH</small></span>
         </a>
         <hr class="ms-0 mt-1 mb-2 me-0">
         <ul class="list-unstyled small text-muted">
@@ -60,7 +60,7 @@
 <!-- Overlay global de navegación -->
 <div id="loading-overlay" aria-hidden="true">
   <div class="loading-card">
-    <img src="images/logo192.png" alt="Cargando" class="loading-logo">
+    <img src="<?= function_exists('app_path') ? app_path('images/logo192.png') : 'images/logo192.png' ?>" alt="Cargando" class="loading-logo">
     <div class="loading-spinner"></div>
     <div class="loading-text">Cargando...</div>
   </div>
@@ -218,8 +218,8 @@
 })();
 </script>
 
-<script src="js/bootstrap.bundle.min.js"></script>
-<script type="text/javascript" src="index.js"></script>
+<script src="<?= function_exists('app_path') ? app_path('js/bootstrap.bundle.min.js') : 'js/bootstrap.bundle.min.js' ?>"></script>
+<script type="text/javascript" src="<?= function_exists('app_path') ? app_path('index.js') : 'index.js' ?>"></script>
 
 </body>
 </html>

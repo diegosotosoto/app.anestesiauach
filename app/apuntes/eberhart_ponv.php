@@ -14,7 +14,7 @@ $referencias = array(
   "Aplicar juicio clínico adicional en cirugía pediátrica no oftalmológica y cuando existan factores no incluidos en el score."
 );
 
-include("head.php");
+require("../head.php");
 ?>
 <link rel="stylesheet" href="css/clinical-note-system.css?v=1">
 <script src="js/clinical-note-system.js?v=1"></script>
@@ -456,4 +456,4 @@ function toggleInfo(){
 }
 </script>
 
-<?php include("footer.php"); ?>
+<?php require("../footer.php"); ?>

@@ -16,7 +16,7 @@
 		$boton_navbar="<button class='navbar-toggler text-white shadow-sm' style='width:50px; height:40px; --bs-border-opacity: .1;' type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation'> ? </button>";
 
 	//Carga Head de la página
-	require("head.php");
+	require("../../head.php");
  
 
 	?>
@@ -311,7 +311,7 @@
 
 	<?php
 		//Conexión
-		require("footer.php");
+		require("../../footer.php");
 
 	?>
 

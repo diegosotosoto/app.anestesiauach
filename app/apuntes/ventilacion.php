@@ -15,7 +15,7 @@ $referencias = array(
   "Young CC, Harris EM, Vacchiano C, et al. Lung-protective ventilation for the surgical patient: international expert panel-based consensus recommendations. Br J Anaesth. 2019."
 );
 
-include("head.php");
+require("../head.php");
 ?>
 <link rel="stylesheet" href="css/clinical-note-system.css?v=2">
 <script src="js/clinical-note-system.js?v=2"></script>
@@ -596,4 +596,4 @@ function toggleInfo(){
 }
 </script>
 
-<?php include("footer.php"); ?>
+<?php require("../footer.php"); ?>
