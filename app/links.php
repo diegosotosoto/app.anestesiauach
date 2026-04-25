@@ -25,10 +25,21 @@ require("head.php");
       </div>
 
 
-
-
       <div class="links-grid">
 
+        <!-- Pharmacopilot -->
+        <a href="https://pharmacopilot.glide.page/" target="_blank" class="link-tile">
+          <i class="fa-solid fa-pills fa-2x mb-2"></i>
+          <div class="link-title">Pharmacopilot</div>
+          <div class="link-desc">Herramienta práctica para cálculo y uso de fármacos.</div>
+        </a>
+
+        <!-- Pharmacopilot -->
+        <a href="https://www.baby-blocks.com/en-espanol" target="_blank" class="link-tile">
+          <i class="fa-solid fa-baby fa-2x mb-2"></i>
+          <div class="link-title">Baby Blocks</div>
+          <div class="link-desc">Plataforma educativa especializada en anestesia regional pediátrica y POCUS</div>
+        </a>
 
         <!-- PODCAST ANESTESIA UC -->
         <a href="https://podcasts.apple.com/cl/podcast/podcast-de-la-divisi%C3%B3n-de-anestesiolog%C3%ADa-uc/id1278733546" target="_blank" class="link-tile">
@@ -36,7 +47,6 @@ require("head.php");
           <div class="link-title">Podcast Anestesiología UC</div>
           <div class="link-desc">Capítulos docentes que tratan temas de la especialidad</div>
         </a>
-
 
         <!-- NSQIP -->
         <a href="https://riskcalculator.facs.org/RiskCalculator/" target="_blank" class="link-tile">
@@ -50,13 +60,6 @@ require("head.php");
           <i class="fa-solid fa-dna fa-2x mb-2"></i>
           <div class="link-title">OrphanAnesthesia</div>
           <div class="link-desc">Guías anestésicas para enfermedades raras.</div>
-        </a>
-
-        <!-- Pharmacopilot -->
-        <a href="https://pharmacopilot.glide.page/" target="_blank" class="link-tile">
-          <i class="fa-solid fa-pills fa-2x mb-2"></i>
-          <div class="link-title">Pharmacopilot</div>
-          <div class="link-desc">Herramienta práctica para cálculo y uso de fármacos.</div>
         </a>
 
         <!-- SACHILE -->
