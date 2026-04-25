@@ -86,142 +86,273 @@
     <div class="container-fluid px-0 px-md-2">
       <div class="apuntes-shell">
 
-        <style>
-          .login-shell{
-            max-width: 980px;
-            margin: 0 auto;
-          }
+<style>
+.login-shell{
+  max-width:980px;
+  margin:0 auto;
+}
 
-          .login-grid{
-            display:grid;
-            grid-template-columns: minmax(280px, 420px) minmax(320px, 520px);
-            gap: 1rem;
-            align-items: stretch;
-          }
+.about-card{
+  border:0;
+  border-radius:24px;
+  box-shadow:0 8px 24px rgba(0,0,0,.06);
+  background:#fff;
+}
 
-          .login-hero,
-          .login-card{
-            border:0;
-            border-radius:1.25rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            overflow:hidden;
-          }
+.about-section-title,
+.login-section-title{
+  font-size:.82rem;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  color:#667085;
+  margin-bottom:16px;
+  text-align:center;
+}
 
-          .login-hero{
-            background:linear-gradient(135deg, #27458f, #3559b7);
-            color:#fff;
-            padding:1.4rem 1.35rem;
-            display:flex;
-            flex-direction:column;
-            justify-content:space-between;
-            min-height: 100%;
-          }
+/* Bienvenida */
 
-          .login-hero h1{
-            color:#fff;
-            font-weight:700;
-          }
+.about-welcome-card{
+  overflow:hidden;
+  border-radius:28px;
+  padding:8px 18px 14px;
+}
 
-          .login-pill{
-            display:inline-block;
-            padding:.25rem .6rem;
-            border-radius:999px;
-            font-size:.8rem;
-            font-weight:600;
-            background:rgba(255,255,255,.16);
-            color:#fff;
-            width:max-content;
-          }
+.about-hero-img{
+  width:100%;
+  display:block;
+  border-radius:28px;
+  margin:0;
+}
 
-          .login-hero-list{
-            display:grid;
-            gap:.7rem;
-            margin-top:1rem;
-          }
+.about-welcome-body{
+  padding:14px 0 0;
+  text-align:center;
+}
 
-          .login-hero-item{
-            display:flex;
-            gap:.75rem;
-            align-items:flex-start;
-            background:rgba(255,255,255,.10);
-            border:1px solid rgba(255,255,255,.12);
-            border-radius:1rem;
-            padding:.9rem 1rem;
-          }
+.about-welcome-title{
+  font-size:1.55rem;
+  font-weight:800;
+  color:#10265f;
+  line-height:1.15;
+  margin:0;
+}
 
-          .login-card{
-            background:#fff;
-          }
+.about-title-line{
+  width:54px;
+  height:4px;
+  border-radius:999px;
+  background:#2f63d8;
+  margin:14px auto 16px;
+}
 
-          .login-card-body{
-            padding:1.35rem 1.2rem 1.35rem 1.2rem;
-          }
+.about-welcome-text{
+  font-size:1.02rem;
+  color:#4b5563;
+  line-height:1.55;
+  margin:0 auto 22px;
+  max-width:620px;
+}
 
-          .login-section-title{
-            font-size:.82rem;
-            text-transform:uppercase;
-            letter-spacing:.05em;
-            color:#667085;
-            margin-bottom:.7rem;
-          }
+.about-feature-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:12px;
+}
 
-          .login-input{
-            min-height:54px;
-            border-radius:1rem;
-            border:1px solid #dfe7f2;
-          }
+.about-feature-card{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  text-align:left;
+  border:1px solid #e3eaf5;
+  background:#fff;
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 8px 20px rgba(33,55,98,.06);
+}
 
-          .login-addon{
-            border-radius:0 1rem 1rem 0 !important;
-          }
+.about-feature-card i{
+  font-size:2rem;
+  color:#2f63d8;
+  width:42px;
+  text-align:center;
+  flex:0 0 42px;
+}
 
-          .login-toggle{
-            border-radius:0 !important;
-          }
+.about-feature-card strong{
+  display:block;
+  font-size:1.05rem;
+  color:#10265f;
+  line-height:1.2;
+}
 
-          .login-links{
-            display:grid;
-            gap:.45rem;
-            margin-top:.75rem;
-          }
+.about-feature-card span{
+  display:block;
+  margin-top:4px;
+  font-size:.95rem;
+  color:#5f6b7a;
+  line-height:1.35;
+}
 
-          .login-links a{
-            color:#2453c6;
-            text-decoration:none;
-          }
+.about-closing{
+  margin-top:22px;
+  padding-top:18px;
+  border-top:1px solid #dfe7f2;
+}
 
-          .login-links a:hover{
-            text-decoration:underline;
-          }
+.about-closing strong{
+  display:block;
+  font-size:1.1rem;
+  color:#1d5fd3;
+}
 
-          .login-submit{
-            border-radius:1rem;
-            padding:.85rem 1.1rem;
-            font-weight:600;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-          }
+.about-closing span{
+  display:block;
+  margin-top:4px;
+  font-size:.95rem;
+  color:#5f6b7a;
+}
 
-          @media (max-width: 991px){
-            .login-grid{
-              grid-template-columns:1fr;
-            }
-          }
+/* Login */
 
-          @media (max-width: 549px){
-            .login-hero,
-            .login-card{
-              border-radius:1rem;
-            }
+.login-panel-card{
+  padding:24px 16px;
+}
 
-            .login-hero{
-              padding:1.1rem 1rem;
-            }
+.login-card-body{
+  max-width:520px;
+  margin:0 auto;
+  padding:0;
+}
 
-            .login-card-body{
-              padding:1.1rem 1rem;
-            }
-          }
-        </style>
+.login-section-title{
+  margin-bottom:22px;
+}
+
+.login-form-box{
+  border:1px solid #dfe7f2;
+  border-radius:22px;
+  background:#f8fafc;
+  padding:18px 16px;
+}
+
+.login-form-box .form-label{
+  display:block;
+  font-size:.95rem;
+  margin-bottom:6px;
+  text-align:center;
+}
+
+.login-input{
+  min-height:42px;
+  border-radius:14px;
+  border:1px solid #dfe7f2;
+  font-size:.95rem;
+}
+
+.login-addon{
+  min-width:46px;
+  justify-content:center;
+  border-radius:0 14px 14px 0 !important;
+}
+
+.login-toggle{
+  min-width:42px;
+  border-radius:0 !important;
+}
+
+.login-links{
+  display:grid;
+  gap:6px;
+  margin-top:12px;
+  text-align:center;
+}
+
+.login-links a{
+  color:#2453c6;
+  text-decoration:none;
+}
+
+.login-links a:hover{
+  text-decoration:underline;
+}
+
+.login-submit{
+  min-height:42px;
+  border-radius:16px;
+  padding:8px 20px;
+  font-size:1rem;
+  font-weight:700;
+  box-shadow:0 8px 24px rgba(0,0,0,.06);
+}
+
+/* Responsive */
+
+@media (min-width:768px){
+  .about-feature-grid{
+    grid-template-columns:repeat(2, 1fr);
+  }
+}
+
+@media (max-width:549px){
+  .about-card{
+    border-radius:22px;
+  }
+
+  .about-welcome-card{
+    padding:8px 14px 14px;
+  }
+
+  .about-welcome-title{
+    font-size:1.38rem;
+  }
+
+  .about-welcome-text{
+    font-size:1rem;
+  }
+
+  .login-panel-card{
+    padding:20px 14px;
+  }
+
+  .login-section-title{
+    margin-bottom:20px;
+  }
+
+  .login-form-box{
+    padding:16px 14px;
+  }
+}
+@media (min-width:992px){
+  .login-card-body{
+    max-width:960px;
+  }
+
+  .login-form-box{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px 22px;
+    align-items:end;
+  }
+
+  .login-links{
+    grid-column:1 / -1;
+    display:flex;
+    justify-content:center;
+    gap:28px;
+    margin-top:4px;
+  }
+
+  .login-form-box .pt-3{
+    grid-column:1 / -1;
+    padding-top:6px !important;
+  }
+
+  .login-input{
+    min-height:42px;
+  }
+}
+</style>
 
         <div class="login-shell">
 
@@ -232,69 +363,110 @@
           ?>
 
           <form class="needs-validation" action="login.php" method="post" novalidate autocomplete="off">
-            <div class="login-grid">
 
-              <div class="login-hero">
-                <div>
-                  <div class="small opacity-75 mb-2">APP clínica • acceso seguro</div>
-                  <span class="login-pill mb-3">Anestesia UACh</span>
-                  <h1 class="h3 mb-3">¡Hola! <i class="fa-solid fa-face-smile-wink ps-2"></i></h1>
-                  <div class="text-white-50">Ingresa tus datos para acceder a recursos docentes, cálculos clínicos, directorios y bitácoras.</div>
-                </div>
+<div class="about-card about-welcome-card mb-3">
+  <img src="images/about.jpg" class="about-hero-img" alt="App Anestesia UACh">
 
-                <div class="login-hero-list">
-                  <div class="login-hero-item">
-                    <i class="fa-solid fa-calculator pt-1"></i>
-                    <div>Cálculos y herramientas clínicas de acceso rápido.</div>
-                  </div>
-                  <div class="login-hero-item">
-                    <i class="fa-solid fa-book-medical pt-1"></i>
-                    <div>Apuntes, checklists y material de apoyo para residentes.</div>
-                  </div>
-                  <div class="login-hero-item">
-                    <i class="fa-solid fa-user-doctor pt-1"></i>
-                    <div>Bitácoras, directorios y recursos del programa.</div>
-                  </div>
-                </div>
-              </div>
+  <div class="about-welcome-body">
+    <div class="about-section-title text-center">Bienvenidos</div>
 
-              <div class="login-card">
-                <div class="login-card-body">
-                  <div class="login-section-title">Ingreso</div>
+    <h2 class="about-welcome-title">
+      ¡Bienvenido a App Anestesia UACh!
+    </h2>
 
-                  <div class="mb-3">
-                    <label class="form-label text-muted">E-Mail</label>
-                    <div class="input-group">
-                      <input type="email" name="email_usuario_v" class="form-control login-input" required>
-                      <span class="input-group-text bg-primary text-white login-addon"><i class="fa fa-envelope"></i></span>
-                    </div>
-                  </div>
+    <div class="about-title-line"></div>
 
-                  <div class="mb-2">
-                    <label class="form-label text-muted">Contraseña</label>
-                    <div class="input-group">
-                      <input type="password" name="pass_usuario_v" id="pass_usuario_v" class="form-control login-input" required>
-                      <button class="btn btn-outline-secondary border-secondary border-opacity-25 login-toggle" type="button" id="button-addon2" onclick="mostrar()">
-                        <i id="icono" class="opacity-75 fa-solid fa-eye"></i>
-                      </button>
-                      <span class="input-group-text bg-primary text-white login-addon"><i class="fa fa-key"></i></span>
-                    </div>
-                  </div>
+    <p class="about-welcome-text">
+      Tu plataforma integral de recursos, cálculo clínico y apoyo docente para residentes e internos de Anestesiología.
+    </p>
 
-                  <div class="login-links">
-                    <small><a href="nueva_cuenta.php">Crear nueva cuenta</a></small>
-                    <small><a href="nuevo_password.php">Olvidé mi contraseña</a></small>
-                  </div>
+    <div class="about-feature-grid">
+      <div class="about-feature-card">
+        <i class="fa-solid fa-book-open"></i>
+        <div>
+          <strong>Recursos</strong>
+          <span>Material de estudio y guías clínicas</span>
+        </div>
+      </div>
 
-                  <div class="pt-4">
-                    <button type="submit" name="registro" class="btn btn-primary btn-lg login-submit">
-                      <i class="fa-solid fa-right-to-bracket pe-2"></i>Ingresar
-                    </button>
-                  </div>
-                </div>
-              </div>
+      <div class="about-feature-card">
+        <i class="fa-solid fa-calculator"></i>
+        <div>
+          <strong>Cálculos Clínicos</strong>
+          <span>Herramientas de apoyo para la práctica clínica</span>
+        </div>
+      </div>
 
-            </div>
+      <div class="about-feature-card">
+        <i class="fa-solid fa-stethoscope"></i>
+        <div>
+          <strong>Casos Clínicos</strong>
+          <span>Aprende con casos reales y simulados</span>
+        </div>
+      </div>
+
+      <div class="about-feature-card">
+        <i class="fa-solid fa-users"></i>
+        <div>
+          <strong>Comunidad</strong>
+          <span>Conecta con residentes y especialistas</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-closing">
+      <strong>Aprende, calcula, comparte y crece.</strong>
+      <span>Todo lo que necesitas, en un solo lugar.</span>
+    </div>
+  </div>
+</div>
+
+
+
+
+<section class="about-card login-panel-card mb-3">
+  <div class="login-card-body">
+    <div class="login-section-title">Ingreso</div>
+
+    <div class="login-form-box">
+      <div class="mb-3">
+        <label class="form-label text-muted">E-Mail</label>
+        <div class="input-group">
+          <input type="email" name="email_usuario_v" class="form-control login-input" required>
+          <span class="input-group-text bg-primary text-white login-addon">
+            <i class="fa fa-envelope"></i>
+          </span>
+        </div>
+      </div>
+
+      <div class="mb-2">
+        <label class="form-label text-muted">Contraseña</label>
+        <div class="input-group">
+          <input type="password" name="pass_usuario_v" id="pass_usuario_v" class="form-control login-input" required>
+
+          <button class="btn btn-outline-secondary border-secondary border-opacity-25 login-toggle" type="button" id="button-addon2" onclick="mostrar()">
+            <i id="icono" class="opacity-75 fa-solid fa-eye"></i>
+          </button>
+
+          <span class="input-group-text bg-primary text-white login-addon">
+            <i class="fa fa-key"></i>
+          </span>
+        </div>
+      </div>
+
+      <div class="login-links">
+        <small><a href="nueva_cuenta.php">Crear nueva cuenta</a></small>
+        <small><a href="nuevo_password.php">Olvidé mi contraseña</a></small>
+      </div>
+
+      <div class="pt-3 text-center">
+        <button type="submit" name="registro" class="btn btn-primary login-submit">
+          <i class="fa-solid fa-right-to-bracket pe-2"></i>Ingresar
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
           </form>
 
           <script type="text/javascript">

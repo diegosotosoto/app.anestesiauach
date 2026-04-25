@@ -1007,7 +1007,14 @@ require("notificaciones_head.php");
                                 <script>function envioForm5(){document.getElementById('admin_notificaciones').submit();}</script>
                               ";            
 
-
+                              echo "
+                                <form id='admin_exportar_bitacoras' action='admin_exportar_bitacoras.php' method='post'><input type='hidden' name='email_user_ad' value='$email_user'/>
+                                  <div class='list-group'>
+                                    <a href='#' onclick='envioForm6()' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-file-export ps-2 pe-3 fs-3 text-primary'></i>Exportar BBDD</a>
+                                  </div>
+                                </form>
+                                <script>function envioForm6(){document.getElementById('admin_exportar_bitacoras').submit();}</script>
+                              ";        
 
                             }
                           }

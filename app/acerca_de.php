@@ -15,232 +15,383 @@
     <div class="container-fluid px-0 px-md-2">
       <div class="apuntes-shell">
 
-        <style>
-          .about-shell{
-            max-width:980px;
-            margin:0 auto;
-          }
+    <style>
 
-          .about-topbar{
-            background:linear-gradient(135deg, #27458f, #3559b7);
-            color:#fff;
-            border-radius:1.25rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            padding:1.15rem 1.25rem;
-          }
+.about-topbar{
+  background:linear-gradient(135deg, #27458f 0%, #3a57c4 55%, #4f7de8 100%);
+  color:#fff;
+  border-radius:28px;
+  box-shadow:0 14px 32px rgba(33,55,98,.16);
+  padding:22px 20px;
+}
 
-          .about-topbar h1{
-            color:#fff;
-          }
+.about-topbar h1{
+  color:#fff;
+  font-size:1.55rem;
+  font-weight:800;
+  line-height:1.15;
+}
 
-          .subtle{
-            font-size:.92rem;
-          }
+.subtle{
+  font-size:1rem;
+  line-height:1.45;
+}
 
-          .pill{
-            display:inline-block;
-            padding:.25rem .6rem;
-            border-radius:999px;
-            font-size:.8rem;
-            font-weight:600;
-          }
+.pill{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px 14px;
+  border-radius:999px;
+  font-size:.9rem;
+  font-weight:800;
+  white-space:nowrap;
+}
 
-          .about-card{
-            border:0;
-            border-radius:1rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            background:#fff;
-          }
+@media (max-width:549px){
+  .about-topbar{
+    padding:20px 18px;
+    border-radius:24px;
+  }
 
-          .about-logo{
-            width:256px;
-            height:256px;
-            object-fit:contain;
-          }
+  .about-topbar h1{
+    font-size:1.38rem;
+  }
 
-          .about-title{
-            font-size:1.5rem;
-            font-weight:700;
-            color:#1f2a37;
-          }
+  .subtle{
+    font-size:.98rem;
+  }
+}
 
-          .about-link{
-            color:#2453c6;
-            text-decoration:none;
-            font-weight:600;
-            word-break:break-word;
-          }
+.about-shell{
+  max-width:980px;
+  margin:0 auto;
+}
 
-          .about-link:hover{
-            text-decoration:underline;
-          }
+.about-card{
+  border:0;
+  border-radius:24px;
+  box-shadow:0 8px 24px rgba(0,0,0,.06);
+  background:#fff;
+}
 
-          .about-share{
-            border-radius:.9rem;
-            font-weight:600;
-          }
+.about-section-title{
+  font-size:.82rem;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  color:#667085;
+  margin-bottom:16px;
+}
 
-          .about-image{
-            width:100%;
-            max-width:320px;
-            border-radius:1rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.08);
-          }
+/* Hero bienvenida */
 
-          .about-section-title{
-            font-size:.82rem;
-            text-transform:uppercase;
-            letter-spacing:.05em;
-            color:#667085;
-            margin-bottom:.7rem;
-          }
+.about-welcome-card{
+  overflow:hidden;
+  border-radius:28px;
+}
 
-          .about-text-box{
-            border:1px solid #dfe7f2;
-            border-radius:1rem;
-            background:#f8fafc;
-            padding:1rem 1.1rem;
-            color:#4b5563;
-            line-height:1.65;
-            text-align:left;
-          }
+.about-hero-img{
+  width:100%;
+  display:block;
+  border-radius:28px 28px 0 0;
+}
 
-          .about-meta{
-            display:grid;
-            gap:.75rem;
-          }
+.about-welcome-body{
+  padding:24px 18px 26px;
+  text-align:center;
+}
 
-          .about-meta-row{
-            display:flex;
-            align-items:flex-start;
-            gap:1rem;
-            border:1px solid #dfe7f2;
-            border-radius:1rem;
-            background:#f8fafc;
-            padding:1rem 1.1rem;
-          }
+.about-welcome-title{
+  font-size:1.55rem;
+  font-weight:800;
+  color:#10265f;
+  line-height:1.15;
+  margin:0;
+}
 
-          .about-meta-label{
-            font-weight:700;
-            color:#1f2a37;
-            min-width:72px;
-            flex:0 0 72px;
-          }
+.about-title-line{
+  width:54px;
+  height:4px;
+  border-radius:999px;
+  background:#2f63d8;
+  margin:14px auto 16px;
+}
 
-          .about-meta-value{
-            text-align:left;
-            color:#4b5563;
-            word-break:break-word;
-            line-height:1.2;
-            flex:1 1 auto;
-          }
+.about-welcome-text{
+  font-size:1.02rem;
+  color:#4b5563;
+  line-height:1.55;
+  margin:0 auto 22px;
+  max-width:620px;
+}
 
-        @media (max-width:549px){
-          .about-topbar{
-            padding:1rem;
-          }
+.about-feature-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:12px;
+}
 
-          .about-title{
-            font-size:1.25rem;
-          }
+.about-feature-card{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  text-align:left;
+  border:1px solid #e3eaf5;
+  background:#fff;
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 8px 20px rgba(33,55,98,.06);
+}
 
-          .about-meta-row{
-            flex-direction:column;
-            align-items:flex-start;
-            gap:.75rem;
-          }
+.about-feature-card i{
+  font-size:2rem;
+  color:#2f63d8;
+  width:42px;
+  text-align:center;
+  flex:0 0 42px;
+}
 
-          .about-meta-label{
-            min-width:auto;
-            flex:none;
-          }
+.about-feature-card strong{
+  display:block;
+  font-size:1.05rem;
+  color:#10265f;
+  line-height:1.2;
+}
 
-          .about-meta-value{
-            text-align:left;
-            width:100%;
-          }
+.about-feature-card span{
+  display:block;
+  margin-top:4px;
+  font-size:.95rem;
+  color:#5f6b7a;
+  line-height:1.35;
+}
 
-          .about-author-card{
-            align-items:flex-start;
-          }
+.about-closing{
+  margin-top:22px;
+  padding-top:18px;
+  border-top:1px solid #dfe7f2;
+}
 
-          .about-author-photo{
-            width:56px;
-            height:56px;
-            min-width:56px;
-            border-radius:14px;
-          }
-        }
+.about-closing strong{
+  display:block;
+  font-size:1.1rem;
+  color:#1d5fd3;
+}
 
-        .about-meta-value{
-          text-align:right;
-          color:#4b5563;
-          word-break:break-word;
-          line-height:1.2;
-        }
+.about-closing span{
+  display:block;
+  margin-top:4px;
+  font-size:.95rem;
+  color:#5f6b7a;
+}
 
-        .about-meta-link{
-          display:block;
-          margin-top:.18rem;
-          line-height:1.2;
-        }
+/* Equipo */
 
-        .about-author-row{
-          align-items:flex-start;
-        }
+.about-team-card{
+  padding:20px 14px;
+}
 
-        .about-author-card{
-          display:flex;
-          align-items:center;
-          gap:14px;
-          width:100%;
-          text-align:left;
-        }
+.team-list{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
 
-        .about-author-photo{
-          width:64px;
-          height:64px;
-          min-width:64px;
-          border-radius:16px;
-          overflow:hidden;
-          background:#eef4ff;
-          display:flex;
-          align-items:center;
-          justify-content:center;
-        }
+.team-member{
+  display:grid;
+  grid-template-columns:88px 1fr;
+  grid-template-areas:
+    "role role"
+    "avatar info";
+  gap:8px 14px;
+  align-items:center;
+  padding:14px 16px;
+  border:1px solid #dfe7f2;
+  border-radius:18px;
+  background:#f8fafc;
+}
 
-        .about-author-photo img{
-          width:100%;
-          height:100%;
-          object-fit:cover;
-          display:block;
-        }
+.team-role{
+  font-size:.74rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  margin-bottom:0;
+  color:#2f63d8;
+}
 
-        .about-author-info{
-          text-align:left;
-          line-height:1.25;
-          min-width:0;
-        }
+.team-avatar{
+  grid-area:avatar;
+  width:88px;
+  height:108px;
+  max-width:88px;
+  min-width:88px;
+  border-radius:22px;
+  object-fit:cover;
+  display:block;
+  background:#eef4ff;
+  overflow:hidden;
+}
 
-        .about-author-name{
-          font-weight:700;
-          color:#1f2a37;
-        }
 
-        .about-author-role{
-          margin-top:.2rem;
-          font-size:.92rem;
-          color:#6b7280;
-        }
+.team-info{
+  grid-area:info;
+  text-align:left;
+}
 
-        .about-meta-link{
-          display:block;
-          margin-top:.25rem;
-          line-height:1.2;
-        }
-        
-        img { width: 80px; }
-        </style>
+.team-avatar-placeholder{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#2f63d8;
+  font-size:2.1rem;
+}
+
+.team-name{
+  font-size:1.05rem;
+  font-weight:800;
+  color:#1f2937;
+  line-height:1.12;
+  margin-bottom:2px;
+}
+
+.team-desc{
+  font-size:.92rem;
+  color:#6b7280;
+  line-height:1.15;
+}
+
+.team-email{
+  display:inline-block;
+  margin-top:3px;
+  font-size:.9rem;
+  font-weight:700;
+  color:#2f63d8;
+  text-decoration:none;
+  overflow-wrap:anywhere;
+  line-height:1.15;
+}
+
+/* Compartir */
+
+.about-share-card{
+  padding:22px 16px;
+  overflow:hidden;
+}
+
+.share-content{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:18px;
+  text-align:center;
+  width:100%;
+}
+
+.share-info{
+  max-width:360px;
+  margin-left:0;
+}
+
+.share-qr{
+  width:min(340px, 86vw);
+  max-width:100%;
+  height:auto;
+  display:block;
+  border-radius:22px;
+  box-shadow:0 12px 28px rgba(33,55,98,.12);
+  background:#fff;
+  padding:10px;
+}
+
+.share-btn{
+  min-height:46px;
+  border-radius:16px;
+  padding:10px 18px;
+  font-weight:700;
+}
+
+.share-info h3{
+  font-size:1.35rem;
+  font-weight:800;
+  color:#10265f;
+  margin-bottom:8px;
+}
+
+.share-info p{
+  font-size:1rem;
+  color:#6b7280;
+  line-height:1.4;
+  margin-bottom:18px;
+}
+
+.share-btn{
+  min-height:48px;
+  border-radius:18px;
+  padding:10px 20px;
+  font-weight:700;
+}
+
+/* Responsive */
+
+@media (min-width:768px){
+  .about-welcome-body{
+    padding:30px 34px 34px;
+  }
+
+  .about-feature-grid{
+    grid-template-columns:repeat(2, 1fr);
+  }
+
+  .team-member{
+    grid-template-columns:100px 88px 1fr;
+    grid-template-areas:"role avatar info";
+  }
+
+  .share-content{
+    flex-direction:row;
+    justify-content:center;
+    align-items:center;
+    gap:48px;
+    text-align:left;
+  }
+
+  .share-info{
+    margin-left:0;
+  }
+}
+
+@media (max-width:549px){
+  .about-card{
+    border-radius:22px;
+  }
+
+  .about-welcome-title{
+    font-size:1.38rem;
+  }
+
+  .about-welcome-text{
+    font-size:1rem;
+  }
+
+  .team-member{
+
+    padding:12px 14px;
+
+  }
+
+  .team-avatar{
+
+    width:68px;
+
+    height:85px;
+
+    min-width:68px;
+
+  }
+
+}
+</style>
 
         <div class="about-shell">
 
@@ -255,109 +406,91 @@
             </div>
           </div>
 
-          <div class="about-card mb-3">
-            <div class="p-4">
-              <div class="row align-items-center g-4">
-                <div class="col-12 col-lg-8">
-                  <div class="about-section-title">Bienvenidos</div>
-                  <div class="about-text-box">
-                    ¡Bienvenido a la Aplicación Web de los Residentes de Anestesiología de la UACh!<br><br>
-                    Nuestra aplicación es el lugar perfecto para que los Residentes e Internos de Anestesiología encuentren recursos valiosos para mejorar conocimientos y habilidades. Aquí encontrarás contenido exclusivo, herramientas de cálculo, estudio y casos clínicos.<br><br>
-                    Además, nuestra aplicación te permitirá conectar con Residentes de Anestesiología y Especialistas de la UACh, lo que te brindará una valiosa oportunidad para aprender y compartir experiencia.<br><br>
-                    Estamos emocionados de tenerte a bordo y esperamos que disfrutes al máximo tu experiencia en nuestra app. ¡Comienza a explorar ahora mismo!
-                  </div>
-                </div>
-               
-              </div>
-            </div>
-          </div>
-
-          <div class="about-card">
-            <div class="p-4">
-              <div class="about-section-title">Equipo de Desarrollo</div>
-              <div class="about-meta">
-              <div class="about-meta-row about-author-row">
-                <div class="about-meta-label">Autor</div>
-                <div class="about-author-card">
-                  <div class="about-author-photo">
-                    <img src="images/autor-diego.jpg" alt="Diego Soto Soto">
-                  </div>
-                  <div class="about-author-info">
-                    <div class="about-author-name">Diego Soto Soto</div>
-                    <div class="about-author-role">Médico Anestesiólogo</div>
-                    <div class="about-author-role">Docente de Anestesiología UACh</div>      
-                    <a class="about-link about-meta-link" href="mailto:diegosotosoto@gmail.com">diegosotosoto@gmail.com</a>
-                  </div>
-                </div>
-              </div>
-
-              <div class="about-meta-row about-author-row">
-                <div class="about-meta-label">Revisora</div>
-                <div class="about-author-card">
-                  <div class="about-author-photo">
-                    <img src="images/revisora-martina.jpg" alt="Martina Saavedra Rendic">
-                  </div>
-                  <div class="about-author-info">
-                    <div class="about-author-name">Martina Saavedra Rendic</div>
-                    <div class="about-author-role">Médico Anestesiólogo</div>
-                    <div class="about-author-role">Docente de Anestesiología UACh</div>      
-                    <a class="about-link about-meta-link" href="martina.saavedra.rendic@gmail.com">martina.saavedra.rendic@gmail.com</a>
-                  </div>
-                </div>
-              </div>
-
-              <div class="about-meta-row about-author-row">
-                <div class="about-meta-label">Revisor</div>
-                <div class="about-author-card">
-                  <div class="about-author-photo">
-                    <img src="images/revisor-sebastian.jpg" alt="Sebastian Estrada Eguiguiren">
-                  </div>
-                  <div class="about-author-info">
-                    <div class="about-author-name">Sebastián Estrada Eguiguiren</div>
-                    <div class="about-author-role">Residente de Anestesiología UACh</div>      
-                    <a class="about-link about-meta-link" href="seba.igee@gmail.com">seba.igee@gmail.com</a>
-                  </div>
-                </div>
-              </div>
-              </div>
-            </div>
-          </div>
 
 
-          <div class="about-card mb-3">
-            <div class="p-4 text-center">
-                <div class="col-12 col-lg-4 text-center">
-                  <img src="images/IMG0001.jpeg" class="about-image" alt="Imagen App Anestesia UACh">
-                </div> 
-              <div class="mb-3 pt-2">
-                <a class="about-link" href="https://app.anestesiauach.cl/">app.anestesiauach.cl</a>
-              </div>
+<section class="about-card about-team-card mb-3">
+  <div class="about-section-title text-center">Equipo de Desarrollo</div>
 
-              <button id="button-compartir" class="btn btn-primary about-share not-overlay">Compartir  <i class="fa-solid fa-arrow-up-from-bracket"></i></button>
+  <div class="team-list">
 
-              <script>
-                let shareData = {
-                  title: 'Anest UACh',
-                  text: 'App Anestesia UACh',
-                  url: 'https://app.anestesiauach.cl/',
-                };
+    <div class="team-member">
+      <div class="team-role">Autor</div>
+      <img src="images/autor_diego.jpg" class="team-avatar" alt="Diego Soto Soto">
+      <div class="team-info">
+        <div class="team-name">Dr. Diego Soto Soto</div>
+        <div class="team-desc">Anestesiólogo CAV - HBV</div>
+        <div class="team-desc">Docente de Anestesiología UACh</div>
+        <a href="mailto:diegosotosoto@gmail.com" class="team-email">diegosotosoto@gmail.com</a>
+      </div>
+    </div>
 
-                const btn = document.querySelector('#button-compartir');
+    <div class="team-member">
+      <div class="team-role">Revisora</div>
+      <img src="images/revisor_martina.jpg" class="team-avatar" alt="Martina Saavedra Rendic">
+      <div class="team-info">
+        <div class="team-name">Dra. Martina Saavedra Rendic</div>
+        <div class="team-desc">Anestesióloga HBV</div>
+        <div class="team-desc">Docente de Anestesiología UACh</div>
+        <a href="mailto:martina.saavedra.rendic@gmail.com" class="team-email">martina.saavedra.rendic@gmail.com</a>
+      </div>
+    </div>
 
-                if (btn) {
-                  btn.addEventListener('click', async () => {
-                    try {
-                      if (navigator.share) {
-                        await navigator.share(shareData);
-                      }
-                    } catch (e) {
-                      console.log(e);
-                    }
-                  });
-                }
-              </script>
-            </div>
-          </div>
+    <div class="team-member">
+      <div class="team-role">Revisor</div>
+      <img src="images/revisor_sebastian.jpg" class="team-avatar" alt="Sebastian Estrada Eguiguren">
+      <div class="team-info">
+        <div class="team-name">Dr. Sebastián Estrada Eguiguren</div>
+        <div class="team-desc">Residente de Anestesiología UACh</div>
+        <a href="mailto:seba.igee@gmail.com" class="team-email">seba.igee@gmail.com</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<section class="about-card about-share-card mb-3">
+  <div class="about-section-title text-center">Compartir App</div>
+
+  <div class="share-content">
+    <img src="images/IMG0001.jpeg" class="share-qr" alt="QR App Anestesia UACh">
+
+    <div class="share-info">
+      <h3>Escanea o Comparte</h3>
+      <p>Comparte App Anestesia UACh con residentes, internos y docentes.</p>
+
+      <a class="about-link d-block mb-3" href="https://app.anestesiauach.cl/">
+        app.anestesiauach.cl
+      </a>
+
+      <button id="button-compartir" class="btn btn-primary share-btn not-overlay">
+        Compartir <i class="fa-solid fa-arrow-up-from-bracket ms-2"></i>
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  const shareData = {
+    title: 'Anest UACh',
+    text: 'App Anestesia UACh',
+    url: 'https://app.anestesiauach.cl/',
+  };
+
+  const btn = document.querySelector('#button-compartir');
+
+  if (btn) {
+    btn.addEventListener('click', async () => {
+      try {
+        if (navigator.share) {
+          await navigator.share(shareData);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    });
+  }
+</script>
 
         </div>
       </div>
