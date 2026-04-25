@@ -37,8 +37,20 @@ $conexion->set_charset("utf8mb4");
 require($app_root_dir . "/notificaciones_head.php");
 
 function app_head_safe_text($value) {
+  $texto = urldecode((string)$value);
+
+  for ($i = 0; $i < 3; $i++) {
+    $decodificado = html_entity_decode($texto, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+    if ($decodificado === $texto) {
+      break;
+    }
+
+    $texto = $decodificado;
+  }
+
   return htmlspecialchars(
-    html_entity_decode(urldecode((string)$value), ENT_QUOTES | ENT_HTML5, 'UTF-8'),
+    $texto,
     ENT_QUOTES,
     'UTF-8'
   );
