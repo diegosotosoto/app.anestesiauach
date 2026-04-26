@@ -41,23 +41,23 @@ function post_val($key, $default = '')
 function usuario_grupo_key($usr)
 {
     $admin = isset($usr['admin']) ? (int)$usr['admin'] : 0;
+    $staff = isset($usr['staff_']) ? (int)$usr['staff_'] : 0;
+    $interno = isset($usr['intern_']) ? (int)$usr['intern_'] : 0;
     $becad = isset($usr['becad_']) ? (int)$usr['becad_'] : 0;
+    $becadOtro = isset($usr['becad_otro']) ? (int)$usr['becad_otro'] : 0;
     $anio = isset($usr['anio_residencia']) ? (int)$usr['anio_residencia'] : 0;
-    $nombre = strtolower(html_entity_decode((string)($usr['nombre_usuario'] ?? ''), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
-    $email = strtolower((string)($usr['email_usuario'] ?? ''));
-    $texto = $nombre . ' ' . $email;
 
-    if ($admin === 1) {
-        return 'staff';
-    }
-    if (strpos($texto, 'pasante') !== false) {
-        return 'becados_pasantes';
-    }
-    if (strpos($texto, 'intern') !== false) {
-        return 'internos';
-    }
     if ($becad === 1 || $anio > 0) {
         return 'becados';
+    }
+    if ($becadOtro === 1 || $interno === 1) {
+        return 'becados_pasantes';
+    }
+    if ($staff === 1) {
+        return 'staff';
+    }
+    if ($admin === 1) {
+        return 'individual';
     }
     return 'individual';
 }
@@ -66,7 +66,6 @@ function usuario_grupo_label($grupo)
 {
     $labels = array(
         'becados' => 'Becados',
-        'internos' => 'Internos',
         'becados_pasantes' => 'Becados Pasantes',
         'staff' => 'Staff',
         'individual' => 'Individual'
@@ -263,7 +262,7 @@ if ($resCalendarios) {
 }
 
 $usuarios = array();
-$resUsuarios = $conexion->query("SELECT `ID`, `nombre_usuario`, `email_usuario`, `becad_`, `anio_residencia`, `admin`, `verified`
+$resUsuarios = $conexion->query("SELECT `ID`, `nombre_usuario`, `email_usuario`, `admin`, `staff_`, `intern_`, `becad_`, `becad_otro`, `anio_residencia`, `verified`
     FROM `usuarios_dolor`
     WHERE `verified` = 1
     ORDER BY `becad_` DESC, `anio_residencia` ASC, `nombre_usuario` ASC");
@@ -279,7 +278,7 @@ $asignaciones = array();
 $tablaAsignacionesExiste = true;
 $resAsignaciones = $conexion->query("SELECT ca.`id`, ca.`calendario_id`, ca.`usuario_id`, ca.`fecha_inicio`, ca.`fecha_fin`, ca.`activo`,
            c.`nombre` AS calendario_nombre, c.`tipo` AS calendario_tipo,
-           u.`nombre_usuario`, u.`email_usuario`, u.`anio_residencia`, u.`becad_`, u.`admin`
+           u.`nombre_usuario`, u.`email_usuario`, u.`anio_residencia`, u.`admin`, u.`staff_`, u.`intern_`, u.`becad_`, u.`becad_otro`
     FROM `calendario_asignaciones` ca
     INNER JOIN `calendarios_app` c ON c.`id` = ca.`calendario_id`
     INNER JOIN `usuarios_dolor` u ON u.`ID` = ca.`usuario_id`
@@ -502,7 +501,6 @@ require('head.php');
                                 <label class="admin-form-label">Grupo</label>
                                 <select class="form-select admin-select" id="asignar_grupo_usuario">
                                     <option value="becados">Becados</option>
-                                    <option value="internos">Internos</option>
                                     <option value="becados_pasantes">Becados Pasantes</option>
                                     <option value="staff">Staff</option>
                                     <option value="individual">Individual</option>
@@ -575,7 +573,6 @@ require('head.php');
                     <select class="form-select admin-select" id="filtro_asignaciones_grupo">
                         <option value="todos">Todos</option>
                         <option value="becados">Becados</option>
-                        <option value="internos">Internos</option>
                         <option value="becados_pasantes">Becados Pasantes</option>
                         <option value="staff">Staff</option>
                         <option value="individual">Individual</option>
