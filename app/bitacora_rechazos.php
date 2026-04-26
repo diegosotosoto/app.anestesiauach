@@ -189,23 +189,28 @@
             <?php
               $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 
-              $con_users="SELECT `autor_b`,`staff_b`, COUNT(`staff_b`) AS `cantidad`
-                          FROM `bitacora_proced`
-                          WHERE `autor_b` = '$autor_b' AND `aprobado_staff_b` = 3
-                          GROUP BY `staff_b`";
+              $con_users="SELECT bp.`autor_b`, bp.`staff_b`, COUNT(bp.`staff_b`) AS `cantidad`, u.`nombre_usuario` AS `staff_nombre`
+                          FROM `bitacora_proced` bp
+                          LEFT JOIN `usuarios_dolor` u
+                            ON u.`email_usuario` = bp.`staff_b`
+                          WHERE bp.`autor_b` = '$autor_b' AND bp.`aprobado_staff_b` = 3
+                          GROUP BY bp.`autor_b`, bp.`staff_b`, u.`nombre_usuario`";
 
               $tab_users=$conexion->query($con_users);
 
               if ($tab_users->num_rows > 0) {
                 $i=0;
                 while ($row = $tab_users->fetch_assoc()) {
+                  $staff_label = !empty($row["staff_nombre"]) ? app_h_text($row["staff_nombre"]) : htmlspecialchars($row["staff_b"], ENT_QUOTES, 'UTF-8');
+                  $staff_email = htmlspecialchars($row["staff_b"], ENT_QUOTES, 'UTF-8');
                   echo "<form id='gest".$i."' action='bitacora_rechazos_detalle.php' method='post'>
-                          <input type='hidden' name='nombre_staff' value='".$row["staff_b"]."'/>
+                          <input type='hidden' name='staff_email' value='".$staff_email."'/>
                           <a href='#' onclick='envioForm".$i."(); return false;' class='rechazo-item not-overlay'>
                             <div class='rechazo-row'>
                               <div>
                                 <div class='small text-muted'>Staff</div>
-                                <div class='rechazo-label'>" . $row["staff_b"] . "</div>
+                                <div class='rechazo-label'>" . $staff_label . "</div>
+                                <div class='small text-muted'>" . $staff_email . "</div>
                               </div>
                               <div class='text-end'>
                                 <div class='small text-muted'>Cantidad rechazada</div>

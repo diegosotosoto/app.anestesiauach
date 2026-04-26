@@ -115,7 +115,7 @@ require("head.php");
       </div>
 
 <?php
-$staff=$conexion->real_escape_string(function_exists('app_decode_text') ? app_decode_text($_COOKIE['hkjh41lu4l1k23jhlkj14']) : urldecode($_COOKIE['hkjh41lu4l1k23jhlkj14']));
+$staff=$conexion->real_escape_string($_COOKIE['hkjh41lu4l1k23jhlkj13']);
 
 $con_users="SELECT * FROM `bitacora_proced` WHERE `aprobado_staff_b` = '0' AND `staff_b` = '$staff' ";
 $tab_users=$conexion->query($con_users);

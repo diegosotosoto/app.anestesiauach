@@ -101,8 +101,31 @@ require("head.php");
     <div class="bitacora-shell">
 
 <?php
+function lista_bitacoras_resuelve_staff_email($conexion, $staff_raw){
+  $staff_raw = trim((string)$staff_raw);
+  if($staff_raw === ''){
+    return '';
+  }
+
+  if(filter_var($staff_raw, FILTER_VALIDATE_EMAIL)){
+    return $conexion->real_escape_string($staff_raw);
+  }
+
+  $res = $conexion->query("SELECT `nombre_usuario`, `email_usuario` FROM `usuarios_dolor` WHERE `staff_` = 1 OR `admin` = 1");
+  if($res){
+    while($fila = $res->fetch_assoc()){
+      $nombre = function_exists('app_decode_text') ? app_decode_text($fila['nombre_usuario']) : html_entity_decode($fila['nombre_usuario'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+      if(trim($nombre) === $staff_raw){
+        return $conexion->real_escape_string($fila['email_usuario']);
+      }
+    }
+  }
+
+  return '';
+}
+
 //Guarda la Bitácora
-if($_POST['rut_b']){
+if(isset($_POST['rut_b']) && $_POST['rut_b'] !== ''){
 
   $autor_b=strtolower(urldecode($_COOKIE['hkjh41lu4l1k23jhlkj13']));
   $rut_b=htmlentities(addslashes(strtoupper($_POST['rut_b'])));
@@ -124,23 +147,31 @@ if($_POST['rut_b']){
   $neuroaxial_b=htmlentities(addslashes($_POST['neuroaxial_b']));
   $regional_b=htmlentities(addslashes($_POST['regional_b']));
   $dolor_b=htmlentities(addslashes($_POST['dolor_b']));
-  $staff_b=htmlentities(addslashes($_POST['staff_b']));
+  $staff_b=lista_bitacoras_resuelve_staff_email($conexion, $_POST['staff_b'] ?? '');
   $comentarios_b=htmlentities(addslashes($_POST['comentarios_b']));
 
-  $consulta_b="INSERT INTO `bitacora_proced` (`autor_b`, `rut_b`, `ficha_b`, `edad_b`, `procedimiento_b`, `fecha_b`, `via_aerea_b`, `vad_b`, `acceso_vascular_b`, `invasivo_b`, `invasivo_eco_b`, `neuroaxial_b`, `regional_b`, `dolor_b`, `staff_b`, `comentarios_b`) VALUES ('$autor_b','$rut_b', '$ficha_b', '$edad_b', '$procedimiento_b', '$fecha_b', '$via_aerea_b', '$vad_b', '$acceso_vascular_b', '$invasivo_b', '$invasivo_eco_b', '$neuroaxial_b', '$regional_b', '$dolor_b', '$staff_b', '$comentarios_b') ";
-
-  $escribir_b=$conexion->query($consulta_b);
-
-  if($escribir_b==false){
+  if($staff_b === ''){
     echo "<div class='alert alert-danger alert-dismissible fade show'>
       <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
-      <strong>Info!</strong> Error en el Guardado. Contacta al Administrador
+      <strong>Info!</strong> Selecciona un anestesiólogo responsable válido.
     </div>";
   }else{
-    echo "<div class='alert alert-success alert-dismissible fade show'>
-      <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
-      <strong>Info!</strong> Registro Guardado.
-    </div>";
+    $consulta_b="INSERT INTO `bitacora_proced` (`autor_b`, `rut_b`, `ficha_b`, `edad_b`, `procedimiento_b`, `fecha_b`, `via_aerea_b`, `vad_b`, `acceso_vascular_b`, `invasivo_b`, `invasivo_eco_b`, `neuroaxial_b`, `regional_b`, `dolor_b`, `staff_b`, `comentarios_b`) VALUES ('$autor_b','$rut_b', '$ficha_b', '$edad_b', '$procedimiento_b', '$fecha_b', '$via_aerea_b', '$vad_b', '$acceso_vascular_b', '$invasivo_b', '$invasivo_eco_b', '$neuroaxial_b', '$regional_b', '$dolor_b', '$staff_b', '$comentarios_b') ";
+
+    $escribir_b=$conexion->query($consulta_b);
+
+    if($escribir_b==false){
+      error_log("lista_bitacoras insert bitacora_proced: ".$conexion->error);
+      echo "<div class='alert alert-danger alert-dismissible fade show'>
+        <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
+        <strong>Info!</strong> Error en el Guardado. Contacta al Administrador
+      </div>";
+    }else{
+      echo "<div class='alert alert-success alert-dismissible fade show'>
+        <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
+        <strong>Info!</strong> Registro Guardado.
+      </div>";
+    }
   }
 }
 ?>

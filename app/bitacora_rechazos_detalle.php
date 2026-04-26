@@ -186,12 +186,23 @@
 
 <?php
   $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
-  $staff_b=isset($_POST['nombre_staff']) ? $_POST['nombre_staff'] : '';
+  $staff_b=isset($_POST['staff_email']) ? trim($_POST['staff_email']) : (isset($_POST['nombre_staff']) ? trim($_POST['nombre_staff']) : '');
+  $staff_b=$conexion->real_escape_string($staff_b);
+  $staff_label=$staff_b;
+  if($staff_b){
+    $consulta_staff="SELECT `nombre_usuario` FROM `usuarios_dolor` WHERE `email_usuario` = '$staff_b' LIMIT 1";
+    $confirma_staff=$conexion->query($consulta_staff);
+    if($confirma_staff && $row_staff=$confirma_staff->fetch_assoc()){
+      $staff_label=app_h_text($row_staff['nombre_usuario']);
+    }else{
+      $staff_label=htmlspecialchars($staff_b, ENT_QUOTES, 'UTF-8');
+    }
+  }
 
   if($staff_b){
     echo "<div class='bitacora-card'>
             <div class='bitacora-card-header'>
-              <h5 class='mb-1 fw-bold'>Rechazos asociados a ".$staff_b."</h5>
+              <h5 class='mb-1 fw-bold'>Rechazos asociados a ".$staff_label."</h5>
             </div>
           </div>";
   }
