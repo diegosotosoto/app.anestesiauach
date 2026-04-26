@@ -147,10 +147,8 @@ if ($usuario_id_nav > 0) {
 |
 */
 
-if (isset($_COOKIE['hkjh41lu4l1k23jhlkj14']) && trim($_COOKIE['hkjh41lu4l1k23jhlkj14']) !== '') {
-    $nombre_staff_cookie = function_exists('app_decode_text')
-        ? trim(app_decode_text($_COOKIE['hkjh41lu4l1k23jhlkj14']))
-        : trim(urldecode($_COOKIE['hkjh41lu4l1k23jhlkj14']));
+if (isset($_COOKIE['hkjh41lu4l1k23jhlkj13']) && trim($_COOKIE['hkjh41lu4l1k23jhlkj13']) !== '') {
+    $staff_email_cookie = trim($_COOKIE['hkjh41lu4l1k23jhlkj13']);
 
     // Pendientes en bitácora de residentes / becados generales
     $pendientes_bitacora_b = 0;
@@ -163,7 +161,7 @@ if (isset($_COOKIE['hkjh41lu4l1k23jhlkj14']) && trim($_COOKIE['hkjh41lu4l1k23jhl
     $stmt_pend_b = $conexion->prepare($sql_pend_b);
 
     if ($stmt_pend_b) {
-        $stmt_pend_b->bind_param("s", $nombre_staff_cookie);
+        $stmt_pend_b->bind_param("s", $staff_email_cookie);
         $stmt_pend_b->execute();
 
         if (method_exists($stmt_pend_b, 'get_result')) {
@@ -192,7 +190,7 @@ if (isset($_COOKIE['hkjh41lu4l1k23jhlkj14']) && trim($_COOKIE['hkjh41lu4l1k23jhl
     $stmt_pend_i = $conexion->prepare($sql_pend_i);
 
     if ($stmt_pend_i) {
-        $stmt_pend_i->bind_param("s", $nombre_staff_cookie);
+        $stmt_pend_i->bind_param("s", $staff_email_cookie);
         $stmt_pend_i->execute();
 
         if (method_exists($stmt_pend_i, 'get_result')) {
@@ -215,7 +213,7 @@ if (isset($_COOKIE['hkjh41lu4l1k23jhlkj14']) && trim($_COOKIE['hkjh41lu4l1k23jhl
 
     if ($pendientes_bitacora_b > 0) {
         $notificaciones_sistema[] = [
-            'destinatario_id' => 'auto_bitacora_b_' . md5($nombre_staff_cookie),
+            'destinatario_id' => 'auto_bitacora_b_' . md5($staff_email_cookie),
             'leida' => 0,
             'notificacion_id' => 0,
             'titulo' => 'Bitácora pendiente de Aprobación',
@@ -230,7 +228,7 @@ if (isset($_COOKIE['hkjh41lu4l1k23jhlkj14']) && trim($_COOKIE['hkjh41lu4l1k23jhl
 
     if ($pendientes_bitacora_i > 0) {
         $notificaciones_sistema[] = [
-            'destinatario_id' => 'auto_bitacora_i_' . md5($nombre_staff_cookie),
+            'destinatario_id' => 'auto_bitacora_i_' . md5($staff_email_cookie),
             'leida' => 0,
             'notificacion_id' => 0,
             'titulo' => 'Bitácora pendiente de Aprobación',

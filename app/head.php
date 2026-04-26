@@ -1017,6 +1017,7 @@ if ($is_apuntes_context) {
 #offcanvasExampleLabel .list-group-item-action > i.text-primary{background:#3587ff!important;}
 #offcanvasExampleLabel .list-group-item-action > i.text-success{background:#29a85b!important;}
 #offcanvasExampleLabel .list-group-item-action > i[style*="#44B2FF"]{background:#44B2FF!important;}
+#offcanvasExampleLabel .list-group-item-action > i[style*="#3587ff"]{background:var(--app-blue)!important;}
 #offcanvasExampleLabel .list-group-item-action > i[style*="#CE2E2E"]{background:#CE2E2E!important;}
 #offcanvasExampleLabel .list-group-item-action > i[style*="#FFD700"]{background:#FFD700!important;}
 #offcanvasExampleLabel .list-group-item-action > i[style*="#FF5A00"]{background:#FF5A00!important;}
@@ -1054,6 +1055,63 @@ if ($is_apuntes_context) {
   }
 }
 
+
+/* Corrección campana notificaciones: mismo tamaño/color que los íconos del menú */
+.btn-icon-topbar,
+.notif-dropdown-wrap .btn-icon-topbar,
+.sidebar-wa-user-card .btn-icon-topbar{
+  width:46px!important;
+  height:46px!important;
+  min-width:46px!important;
+  min-height:46px!important;
+  max-width:46px!important;
+  max-height:46px!important;
+  padding:0!important;
+  border-radius:999px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex:0 0 46px!important;
+  background:var(--app-blue)!important;
+  border:0!important;
+  color:#ffffff!important;
+  box-shadow:0 6px 16px rgba(39,69,143,.14)!important;
+}
+
+.btn-icon-topbar i,
+.notif-dropdown-wrap .btn-icon-topbar i,
+.sidebar-wa-user-card .btn-icon-topbar i{
+  color:#ffffff!important;
+  font-size:1.15rem!important;
+  line-height:1!important;
+  margin:0!important;
+  padding:0!important;
+}
+
+.btn-icon-topbar:hover,
+.btn-icon-topbar:focus,
+.btn-icon-topbar:active{
+  background:var(--app-blue)!important;
+  color:#ffffff!important;
+  filter:brightness(1.04);
+}
+
+#notif-badge{
+  background:#dc3545!important;
+  color:#ffffff!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  min-width:20px;
+  height:20px;
+  padding:0 6px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  font-size:.72rem!important;
+  font-weight:800!important;
+  line-height:1!important;
+}
 </style>
 <body>
 
@@ -1153,7 +1211,7 @@ if ($is_apuntes_context) {
                       <?php
                         if(isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
                           $check_usuario=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
-                          $nombre_usuario=$conexion->real_escape_string(app_decode_text($_COOKIE['hkjh41lu4l1k23jhlkj14']));
+                          $staff_email=$conexion->real_escape_string($check_usuario);
                           $con_users_b="SELECT `admin`, `staff_`, `intern_`, `becad_`, `becad_otro` FROM `usuarios_dolor` WHERE `email_usuario` = '$check_usuario'";
                           $users_b=$conexion->query($con_users_b);
                           $usuario=$users_b ? $users_b->fetch_assoc() : null;
@@ -1162,11 +1220,11 @@ if ($is_apuntes_context) {
                           $escribe_badge = "";
 
                           if($usuario && ($usuario['admin']==1 || $usuario['staff_']==1)){
-                            $query_badge="SELECT `staff_b` FROM `bitacora_proced` WHERE `staff_b` = '$nombre_usuario' AND `aprobado_staff_b` = '0'";
+                            $query_badge="SELECT `staff_b` FROM `bitacora_proced` WHERE `staff_b` = '$staff_email' AND `aprobado_staff_b` = '0'";
                             $consutal_badge=$conexion->query($query_badge);
                             $badge = $consutal_badge ? mysqli_num_rows($consutal_badge) : 0;
 
-                            $query_badge2="SELECT `staff_i` FROM `bitacora_internos` WHERE `staff_i` = '$nombre_usuario' AND `aprobado_staff_i` = '0'";
+                            $query_badge2="SELECT `staff_i` FROM `bitacora_internos` WHERE `staff_i` = '$staff_email' AND `aprobado_staff_i` = '0'";
                             $consutal_badge2=$conexion->query($query_badge2);
                             $badge2 = $consutal_badge2 ? mysqli_num_rows($consutal_badge2) : 0;
 
@@ -1184,6 +1242,12 @@ if ($is_apuntes_context) {
                           echo "<div class='list-group'>
                             <a href='".app_path('apuntes.php')."' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-calculator ps-2 pe-3 fs-3' style='color: #FFD700'></i>Cálculos y Apuntes</a>
                           </div>";
+
+                          if($usuario && ((int)$usuario['becad_'] === 1 || (int)$usuario['becad_otro'] === 1)){
+                            echo "<div class='list-group'>
+                              <a href='".app_path('calendario.php')."' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-calendar-days ps-2 pe-3 fs-3' style='color: #3587ff'></i>Calendarios</a>
+                            </div>";
+                          }
 
                           echo "<div class='list-group'>
                             <a href='".app_path('vista_epa.php')."' class='list-group-item list-group-item-action fs-6 text-break'><i class='fa-solid fa-clipboard ps-2 pe-3 fs-3' style='color: #FF5A00'></i>E. Preanestésica</a>
@@ -1210,7 +1274,7 @@ if ($is_apuntes_context) {
                               $query_badge3="SELECT `verified` FROM `usuarios_dolor` WHERE `verified` = '0'";
                               $consutal_badge3=$conexion->query($query_badge3);
                               $badge3 = $consutal_badge3 ? mysqli_num_rows($consutal_badge3) : 0;
-                              $escribe_badge3="<span class='badge text-bg-danger'>".$badge3."</span>";
+                              $escribe_badge3 = $badge3 > 0 ? "<span class='badge text-bg-danger'>".$badge3."</span>" : "";
 
                               echo "
                                 <form id='gest_users' action='".app_path('gestion_usuarios.php')."' method='post'><input type='hidden' name='email_user_ad' value='$email_user'/>
@@ -1258,6 +1322,15 @@ if ($is_apuntes_context) {
                                 </form>
                                 <script>function envioForm5(){document.getElementById('admin_notificaciones').submit();}</script>
                               ";            
+
+                              echo "
+                                <form id='admin_calendarios' action='".app_path('admin_calendarios.php')."' method='post'><input type='hidden' name='email_user_ad' value='$email_user'/>
+                                  <div class='list-group'>
+                                    <a href='#' onclick='envioForm7()' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-calendar-check ps-2 pe-3 fs-3 text-primary'></i>Admin Calendario</a>
+                                  </div>
+                                </form>
+                                <script>function envioForm7(){document.getElementById('admin_calendarios').submit();}</script>
+                              ";
 
                               echo "
                                 <form id='admin_exportar_bitacoras' action='".app_path('admin_exportar_bitacoras.php')."' method='post'><input type='hidden' name='email_user_ad' value='$email_user'/>
@@ -1369,6 +1442,8 @@ document.addEventListener('click', function(e){
   const destinatarioId = item.dataset.destinatarioId;
   if(!destinatarioId) return;
 
+  if (item.dataset.esSistema === '1') return;
+
   const body = new URLSearchParams();
   body.append('destinatario_id', destinatarioId);
 
@@ -1393,6 +1468,24 @@ document.addEventListener('click', function(e){
 <script>
 const notifAjaxUrl = '<?= app_path('notificacion_accion_ajax.php') ?>';
 
+document.addEventListener('click', function(e) {
+  const hideBtn = e.target.closest('.notif-hide-local-btn');
+  if (!hideBtn) return;
+
+  e.preventDefault();
+  e.stopPropagation();
+
+  const item = e.target.closest('.notif-item');
+  if (!item) return;
+
+  item.remove();
+
+  const badge = document.getElementById('notif-badge');
+  const currentTotal = badge ? parseInt(badge.textContent, 10) || 0 : 0;
+  actualizarBadgeNotificaciones(Math.max(0, currentTotal - 1));
+  asegurarEstadoVacioNotificaciones();
+});
+
 document.addEventListener('click', async function(e) {
   const readBtn = e.target.closest('.notif-read-btn');
   if (!readBtn) return;
@@ -1405,6 +1498,15 @@ document.addEventListener('click', async function(e) {
 
   const destinatarioId = item.dataset.destinatarioId;
   if (!destinatarioId) return;
+
+  if (item.dataset.esSistema === '1') {
+    item.remove();
+    const badge = document.getElementById('notif-badge');
+    const currentTotal = badge ? parseInt(badge.textContent, 10) || 0 : 0;
+    actualizarBadgeNotificaciones(Math.max(0, currentTotal - 1));
+    asegurarEstadoVacioNotificaciones();
+    return;
+  }
 
   try {
     const body = new URLSearchParams();
@@ -1453,6 +1555,8 @@ document.addEventListener('click', function(e) {
 
   const destinatarioId = item.dataset.destinatarioId;
   if (!destinatarioId) return;
+
+  if (item.dataset.esSistema === '1') return;
 
   const body = new URLSearchParams();
   body.append('destinatario_id', destinatarioId);
