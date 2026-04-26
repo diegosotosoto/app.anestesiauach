@@ -979,6 +979,81 @@ if ($is_apuntes_context) {
   color:#7a5300;
   border-color:#c6921f;
 }
+
+
+/* Sidebar estilo WhatsApp iPhone */
+.offcanvas-body .container{padding-left:0!important;padding-right:0!important;}
+#offcanvasExampleLabel,#offcanvasExampleLabel .list-group,#offcanvasExampleLabel ul.list-group,#offcanvasExampleLabel .row{width:100%;margin-left:0!important;margin-right:0!important;padding-left:0!important;padding-right:0!important;}
+#offcanvasExampleLabel .row>*{padding-left:0!important;padding-right:0!important;}
+.sidebar-wa-user-card{width:calc(100% + 10px);margin:0 0 14px -5px;padding:14px 14px 14px 12px;border:0;border-radius:20px;background:linear-gradient(180deg,#eaf6ff 0%,#d7ecff 100%);box-shadow:0 8px 22px rgba(39,69,143,.12);color:var(--app-navy)!important;}
+.sidebar-wa-user-card h6{margin:0 0 2px 0!important;font-weight:800!important;color:var(--app-navy)!important;font-size:1rem;line-height:1.2;}
+.sidebar-wa-user-card .text-black-50{color:rgba(39,69,143,.68)!important;font-size:.82rem!important;line-height:1.25;}
+.sidebar-wa-user-card i.fa-user-doctor{width:46px;height:46px;min-width:46px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;background:#29a85b;color:#fff!important;font-size:1.25rem!important;padding:0!important;margin:0 14px 0 0!important;}
+#offcanvasExampleLabel>hr,#offcanvasExampleLabel hr{display:none;}
+#offcanvasExampleLabel .list-group-item-action{position:relative;display:flex!important;align-items:center!important;width:100%!important;min-height:62px;margin:0!important;padding:8px 12px 8px 6px!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:transparent!important;color:#111827!important;text-align:left!important;font-weight:650;line-height:1.2;gap:0;}
+#offcanvasExampleLabel .list-group-item-action::after{content:"";position:absolute;left:68px;right:0;bottom:0;height:1px;background:rgba(53,135,255,.28);}
+#offcanvasExampleLabel .list-group-item-action:hover,#offcanvasExampleLabel .list-group-item-action:focus{transform:none!important;background:rgba(234,246,255,.68)!important;box-shadow:none!important;color:#111827!important;}
+#offcanvasExampleLabel .list-group-item-action>i{width:46px!important;height:46px!important;min-width:46px!important;border-radius:999px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;padding:0!important;margin:0 16px 0 0!important;font-size:1.15rem!important;line-height:1!important;box-shadow:0 6px 16px rgba(39,69,143,.14);}
+#offcanvasExampleLabel .list-group-item-action .badge{margin-left:auto!important;min-width:24px;height:24px;padding:0 7px!important;border-radius:999px!important;display:inline-flex;align-items:center;justify-content:center;background:var(--app-blue)!important;color:#fff!important;font-size:.78rem;font-weight:800;line-height:1;}
+#offcanvasExampleLabel .list-group-item-action .text-bg-danger{background:var(--app-blue)!important;color:#fff!important;}
+#offcanvasExampleLabel ul.list-group.pt-2{padding-top:4px!important;}
+#offcanvasExampleLabel ul.list-group.pt-5{padding-top:18px!important;}
+@media (min-width:576px){.offcanvas-start{background:#fff!important}.offcanvas-body{padding-left:10px!important;padding-right:10px!important;}}
+@media (max-width:575.98px){.offcanvas-start{background:#fff!important}.offcanvas-body{padding-left:12px!important;padding-right:12px!important;}}
+
+
+/* Fix contraste sidebar WhatsApp */
+#offcanvasExampleLabel .list-group-item-action,
+#offcanvasExampleLabel .list-group-item-action:visited,
+#offcanvasExampleLabel .list-group-item-action:hover,
+#offcanvasExampleLabel .list-group-item-action:focus{
+  color:#111827!important;
+  background:transparent!important;
+}
+#offcanvasExampleLabel .list-group-item-action > i{
+  color:#fff!important;
+  opacity:1!important;
+}
+#offcanvasExampleLabel .list-group-item-action > i.text-primary{background:#3587ff!important;}
+#offcanvasExampleLabel .list-group-item-action > i.text-success{background:#29a85b!important;}
+#offcanvasExampleLabel .list-group-item-action > i[style*="#44B2FF"]{background:#44B2FF!important;}
+#offcanvasExampleLabel .list-group-item-action > i[style*="#CE2E2E"]{background:#CE2E2E!important;}
+#offcanvasExampleLabel .list-group-item-action > i[style*="#FFD700"]{background:#FFD700!important;}
+#offcanvasExampleLabel .list-group-item-action > i[style*="#FF5A00"]{background:#FF5A00!important;}
+#offcanvasExampleLabel .list-group-item-action > i[style*="#6405d0"]{background:#6405d0!important;}
+#offcanvasExampleLabel .list-group-item-action > i[style*="#29A09B"]{background:#29A09B!important;}
+#offcanvasExampleLabel .list-group-item-action > i[style*="#D9027D"]{background:#D9027D!important;}
+#offcanvasExampleLabel .list-group-item-action > i[style*="#FF6347"]{background:#FF6347!important;}
+
+
+/* Ajustes finales solicitados: aire móvil + contraste desktop */
+@media (max-width:575.98px){
+  .sidebar-wa-user-card{
+    width:calc(100% - 24px)!important;
+    margin:0 12px 16px 12px!important;
+    padding-left:18px!important;
+    padding-right:18px!important;
+  }
+}
+
+@media (min-width:576px){
+  #offcanvasExampleLabel .list-group-item-action,
+  #offcanvasExampleLabel .list-group-item-action:visited,
+  #offcanvasExampleLabel .list-group-item-action:hover,
+  #offcanvasExampleLabel .list-group-item-action:focus{
+    color:#ffffff!important;
+  }
+
+  #offcanvasExampleLabel .list-group-item-action:hover,
+  #offcanvasExampleLabel .list-group-item-action:focus{
+    background:rgba(255,255,255,.08)!important;
+  }
+
+  #offcanvasExampleLabel .list-group-item-action::after{
+    background:rgba(106,184,255,.38)!important;
+  }
+}
+
 </style>
 <body>
 
@@ -1029,7 +1104,7 @@ if ($is_apuntes_context) {
 
 
 <?php if(isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])): ?>
-  <div class="list-group-item list-group-item-action fs-5">
+  <div class="sidebar-wa-user-card">
     <div class="d-flex align-items-center justify-content-between gap-2">
 
       <div class="d-flex align-items-center flex-grow-1 min-w-0">
@@ -1103,7 +1178,7 @@ if ($is_apuntes_context) {
                           }
 
                           echo "<div class='list-group'>
-                            <a href='".app_path('bitacora.php')."' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-clipboard ps-2 pe-3 fs-3' style='color: #CE2E2E'></i>Bitácora ". $escribe_badge ."</a>
+                            <a href='".app_path('bitacora.php')."' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-clipboard ps-2 pe-3 fs-3' style='color: #CE2E2E'></i>Bitácora". $escribe_badge ."</a>
                           </div>";
 
                           echo "<div class='list-group'>
@@ -1252,6 +1327,40 @@ function ubicarWidgetNotificaciones() {
 
 ubicarWidgetNotificaciones();
 window.addEventListener('resize', ubicarWidgetNotificaciones);
+
+
+function aplicarEstiloWhatsappSidebar(){
+  const fallbackPorIcono = [
+    ['fa-house', '#44B2FF'], ['fa-clipboard', '#CE2E2E'], ['fa-calculator', '#FFD700'],
+    ['fa-phone', '#6405d0'], ['fa-envelope', '#29A09B'], ['fa-users', '#3587ff'],
+    ['fa-bed', '#3587ff'], ['fa-bell', '#3587ff'], ['fa-file-export', '#3587ff'],
+    ['fa-chalkboard-user', '#D9027D'], ['fa-circle-question', '#FF6347'],
+    ['fa-door-open', '#29a85b'], ['fa-right-to-bracket', '#44B2FF']
+  ];
+
+  const esDesktopSidebar = window.matchMedia('(min-width: 576px)').matches;
+  const colorTextoSidebar = esDesktopSidebar ? '#ffffff' : '#111827';
+
+  document.querySelectorAll('#offcanvasExampleLabel .list-group-item-action').forEach(function(item){
+    item.style.setProperty('color', colorTextoSidebar, 'important');
+    item.style.setProperty('background-color', 'transparent', 'important');
+  });
+
+  document.querySelectorAll('#offcanvasExampleLabel .list-group-item-action > i').forEach(function(icon){
+    let color = icon.getAttribute('data-wa-color') || icon.style.color || '';
+    if (!color || color === 'inherit' || color === 'initial') {
+      const match = fallbackPorIcono.find(function(pair){ return icon.classList.contains(pair[0]); });
+      color = match ? match[1] : '#3587ff';
+    }
+    icon.setAttribute('data-wa-color', color);
+    icon.style.setProperty('background-color', color, 'important');
+    icon.style.setProperty('color', '#ffffff', 'important');
+  });
+}
+
+aplicarEstiloWhatsappSidebar();
+document.addEventListener('DOMContentLoaded', aplicarEstiloWhatsappSidebar);
+window.addEventListener('resize', aplicarEstiloWhatsappSidebar);
 
 document.addEventListener('click', function(e){
   const item = e.target.closest('.notif-item[data-destinatario-id]');
