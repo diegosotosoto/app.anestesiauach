@@ -1243,11 +1243,9 @@ if ($is_apuntes_context) {
                             <a href='".app_path('apuntes.php')."' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-calculator ps-2 pe-3 fs-3' style='color: #FFD700'></i>Cálculos y Apuntes</a>
                           </div>";
 
-                          if($usuario && ((int)$usuario['becad_'] === 1 || (int)$usuario['becad_otro'] === 1)){
                             echo "<div class='list-group'>
                               <a href='".app_path('calendario.php')."' class='list-group-item list-group-item-action fs-6'><i class='fa-solid fa-calendar-days ps-2 pe-3 fs-3' style='color: #3587ff'></i>Calendarios</a>
                             </div>";
-                          }
 
                           echo "<div class='list-group'>
                             <a href='".app_path('vista_epa.php')."' class='list-group-item list-group-item-action fs-6 text-break'><i class='fa-solid fa-clipboard ps-2 pe-3 fs-3' style='color: #FF5A00'></i>E. Preanestésica</a>
