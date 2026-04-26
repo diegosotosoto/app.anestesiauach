@@ -148,7 +148,9 @@ if ($usuario_id_nav > 0) {
 */
 
 if (isset($_COOKIE['hkjh41lu4l1k23jhlkj14']) && trim($_COOKIE['hkjh41lu4l1k23jhlkj14']) !== '') {
-    $nombre_staff_cookie = trim(urldecode($_COOKIE['hkjh41lu4l1k23jhlkj14']));
+    $nombre_staff_cookie = function_exists('app_decode_text')
+        ? trim(app_decode_text($_COOKIE['hkjh41lu4l1k23jhlkj14']))
+        : trim(urldecode($_COOKIE['hkjh41lu4l1k23jhlkj14']));
 
     // Pendientes en bitácora de residentes / becados generales
     $pendientes_bitacora_b = 0;

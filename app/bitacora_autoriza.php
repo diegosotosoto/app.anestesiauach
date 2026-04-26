@@ -200,7 +200,8 @@ if(!empty($_POST['bitacora_autoriza'])){
 
   if(!empty($_POST['comentarios_b_a'])){
     $comentario_b_a = $conexion->real_escape_string($_POST['comentarios_b_a']);
-    $feedback_b = $_COOKIE['hkjh41lu4l1k23jhlkj14'].": ".$comentario_b_a;
+    $nombre_feedback = $conexion->real_escape_string(app_decode_text($_COOKIE['hkjh41lu4l1k23jhlkj14']));
+    $feedback_b = $nombre_feedback.": ".$comentario_b_a;
     $consulta_fb="UPDATE `bitacora_proced` SET `feedback_b`= '$feedback_b' WHERE `id_b`='$id_b'";
     $escribir_fb=$conexion->query($consulta_fb);
   }
@@ -224,7 +225,8 @@ if(!empty($_POST['bitacora_autoriza_i'])){
 
   if(!empty($_POST['comentarios_i_a'])){
     $comentario_i_a = $conexion->real_escape_string($_POST['comentarios_i_a']);
-    $feedback_i = $_COOKIE['hkjh41lu4l1k23jhlkj14'].": ".$comentario_i_a;
+    $nombre_feedback = $conexion->real_escape_string(app_decode_text($_COOKIE['hkjh41lu4l1k23jhlkj14']));
+    $feedback_i = $nombre_feedback.": ".$comentario_i_a;
     $consulta_fbi="UPDATE `bitacora_internos` SET `feedback_i`= '$feedback_i' WHERE `id_i`='$id_i'";
     $escribir_fbi=$conexion->query($consulta_fbi);
   }
@@ -296,7 +298,7 @@ while($row_user=$tab_users->fetch_assoc()){
   echo "<form action='bitacora_autoriza.php' method='post' class='bitacora-entry-card'>";
   echo "<div class='bitacora-entry-header'>";
   echo "<div class='d-flex justify-content-between align-items-start gap-3 flex-wrap'>";
-  echo "<div><div class='small text-muted'>Becado</div><h5 class='mb-1'>".$rows['nombre_usuario']."</h5></div>";
+  echo "<div><div class='small text-muted'>Becado</div><h5 class='mb-1'>".app_h_text($rows['nombre_usuario'])."</h5></div>";
   echo "<div class='text-md-end'><div>".$row_user['fecha_b']."</div><div><a class='text-decoration-none' href='https://www.hbvaldivia.cl/core/farmacia/receta/0/".$row_user['rut_b']."' target='_blank'>".$row_user['rut_b']."</a></div><div><a class='text-decoration-none' href='https://www.hbvaldivia.cl/core/farmacia/receta/1/".$row_user['ficha_b']."' target='_blank'>".$row_user['ficha_b']."</a></div></div>";
   echo "</div></div>";
 
@@ -388,7 +390,7 @@ while($row_int=$tab_internos->fetch_assoc()){
   echo "<form action='bitacora_autoriza.php' method='post' class='bitacora-entry-card'>";
   echo "<div class='bitacora-entry-header bitacora-entry-header-danger'>";
   echo "<div class='d-flex justify-content-between align-items-start gap-3 flex-wrap'>";
-  echo "<div><div class='small text-muted'>Interno</div><h5 class='mb-1'>".$rows2['nombre_usuario']."</h5></div>";
+  echo "<div><div class='small text-muted'>Interno</div><h5 class='mb-1'>".app_h_text($rows2['nombre_usuario'])."</h5></div>";
   echo "<div class='text-md-end'><div>".$row_int['fecha_i']."</div><div><a class='text-decoration-none' href='https://www.hbvaldivia.cl/core/farmacia/receta/0/".$row_int['rut_i']."' target='_blank'>".$row_int['rut_i']."</a></div><div><a class='text-decoration-none' href='https://www.hbvaldivia.cl/core/farmacia/receta/1/".$row_int['ficha_i']."' target='_blank'>".$row_int['ficha_i']."</a></div></div>";
   echo "</div></div>";
 

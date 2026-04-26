@@ -455,7 +455,7 @@ if($tab_users){
 
         <div id="mytable">
             <?php foreach($usuarios as $i => $row_user){
-                $user = (string)$row_user['nombre_usuario'];
+                $user = function_exists('app_decode_text') ? app_decode_text($row_user['nombre_usuario']) : (string)$row_user['nombre_usuario'];
                 $email = (string)$row_user['email_usuario'];
                 $link_minicex = (string)$row_user['link_minicex'];
                 $anio_residencia = isset($row_user['anio_residencia']) ? (int)$row_user['anio_residencia'] : 0;

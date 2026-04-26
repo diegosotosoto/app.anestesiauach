@@ -115,7 +115,7 @@ require("head.php");
       </div>
 
 <?php
-$staff=$_COOKIE['hkjh41lu4l1k23jhlkj14'];
+$staff=$conexion->real_escape_string(function_exists('app_decode_text') ? app_decode_text($_COOKIE['hkjh41lu4l1k23jhlkj14']) : urldecode($_COOKIE['hkjh41lu4l1k23jhlkj14']));
 
 $con_users="SELECT * FROM `bitacora_proced` WHERE `aprobado_staff_b` = '0' AND `staff_b` = '$staff' ";
 $tab_users=$conexion->query($con_users);
@@ -141,7 +141,7 @@ while($row_user=$tab_users->fetch_assoc()){
   echo "<form action='bitacora_autoriza.php' method='post' class='bitacora-entry-card'>";
   echo "<div class='bitacora-entry-header'>";
   echo "<div class='d-flex justify-content-between align-items-start gap-3 flex-wrap'>";
-  echo "<div><div class='small text-muted'>Becad@</div><h5 class='mb-1'>".$rows['nombre_usuario']."</h5></div>";
+  echo "<div><div class='small text-muted'>Becad@</div><h5 class='mb-1'>".app_h_text($rows['nombre_usuario'])."</h5></div>";
   echo "<div class='text-md-end'><div>".$row_user['fecha_b']."</div><div>".$row_user['rut_b']."</div><div>".$row_user['ficha_b']."</div></div>";
   echo "</div></div>";
 
@@ -189,7 +189,7 @@ while($row_int=$tab_internos->fetch_assoc()){
   echo "<form action='bitacora_autoriza.php' method='post' class='bitacora-entry-card'>";
   echo "<div class='bitacora-entry-header bitacora-entry-header-danger'>";
   echo "<div class='d-flex justify-content-between align-items-start gap-3 flex-wrap'>";
-  echo "<div><div class='small text-muted'>Becad@ / Intern@</div><h5 class='mb-1'>".$rows2['nombre_usuario']."</h5></div>";
+  echo "<div><div class='small text-muted'>Becad@ / Intern@</div><h5 class='mb-1'>".app_h_text($rows2['nombre_usuario'])."</h5></div>";
   echo "<div class='text-md-end'><div>".$row_int['fecha_i']."</div><div>".$row_int['rut_i']."</div><div>".$row_int['ficha_i']."</div></div>";
   echo "</div></div>";
 

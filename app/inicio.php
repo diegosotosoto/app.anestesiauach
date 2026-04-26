@@ -43,7 +43,7 @@
       <div class="offcanvas-body">
 
 
-            <div class="" id="offcanvasExampleLabel"><h5><?php echo $_COOKIE['hkjh41lu4l1k23jhlkj14']; ?></h5></div>
+            <div class="" id="offcanvasExampleLabel"><h5><?php echo app_h_text($_COOKIE['hkjh41lu4l1k23jhlkj14']); ?></h5></div>
 
           <div class="text-muted"><?php echo $_COOKIE['hkjh41lu4l1k23jhlkj13']; ?></div>
           <hr>
@@ -151,4 +151,3 @@
 
 </body>
 </html>
-

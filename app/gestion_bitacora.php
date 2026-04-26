@@ -36,11 +36,7 @@ function h($v){
 }
 
 function h_nombre($v){
-	return htmlspecialchars(
-		html_entity_decode((string)$v, ENT_QUOTES | ENT_HTML5, 'UTF-8'),
-		ENT_QUOTES,
-		'UTF-8'
-	);
+	return function_exists('app_h_text') ? app_h_text($v) : htmlspecialchars(html_entity_decode((string)$v, ENT_QUOTES | ENT_HTML5, 'UTF-8'), ENT_QUOTES, 'UTF-8');
 }
 
 $mensaje = "";

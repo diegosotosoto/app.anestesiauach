@@ -70,11 +70,7 @@ function h($v){
 }
 
 function h_usuario($v){
-    return htmlspecialchars(
-        html_entity_decode((string)$v, ENT_QUOTES | ENT_HTML5, 'UTF-8'),
-        ENT_QUOTES,
-        'UTF-8'
-    );
+    return function_exists('app_h_text') ? app_h_text($v) : htmlspecialchars(html_entity_decode((string)$v, ENT_QUOTES | ENT_HTML5, 'UTF-8'), ENT_QUOTES, 'UTF-8');
 }
 
 function datetime_local_to_sql($value){
@@ -1074,7 +1070,7 @@ if($res_listado){
                         <div id="usuarioResultados" class="usuario-resultados mt-2">
                             <?php foreach($usuarios as $u){ ?>
                                 <?php
-                                    $nombre_usuario_limpio = html_entity_decode((string)$u['nombre_usuario'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                                    $nombre_usuario_limpio = function_exists('app_decode_text') ? app_decode_text($u['nombre_usuario']) : html_entity_decode((string)$u['nombre_usuario'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
                                     $email_usuario_limpio = (string)$u['email_usuario'];
                                 ?>
                                 <button
@@ -1230,7 +1226,7 @@ if($res_listado){
                         <div id="usuarioEliminacionResultados" class="usuario-resultados mt-2">
                             <?php foreach($usuarios as $u){ ?>
                                 <?php
-                                    $nombre_usuario_limpio = html_entity_decode((string)$u['nombre_usuario'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                                    $nombre_usuario_limpio = function_exists('app_decode_text') ? app_decode_text($u['nombre_usuario']) : html_entity_decode((string)$u['nombre_usuario'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
                                     $email_usuario_limpio = (string)$u['email_usuario'];
                                 ?>
                                 <button

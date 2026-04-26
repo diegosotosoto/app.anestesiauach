@@ -191,7 +191,7 @@ require("head.php");
                   $users_b=$conexion->query($con_users_b);
 
                   while ($usuari=$users_b->fetch_assoc()) {
-                    echo "<option value='".$usuari['email_usuario']."'>".$usuari['nombre_usuario']."</option>";
+                    echo "<option value='".htmlspecialchars($usuari['email_usuario'], ENT_QUOTES, 'UTF-8')."'>".app_h_text($usuari['nombre_usuario'])."</option>";
                   }
                 ?>
               </select>
@@ -213,7 +213,7 @@ require("head.php");
                   $users_b=$conexion->query($con_users_b);
 
                   while ($usuari=$users_b->fetch_assoc()) {
-                    echo "<option value='".$usuari['email_usuario']."'>".$usuari['nombre_usuario']."</option>";
+                    echo "<option value='".htmlspecialchars($usuari['email_usuario'], ENT_QUOTES, 'UTF-8')."'>".app_h_text($usuari['nombre_usuario'])."</option>";
                   }
                 ?>
               </select>

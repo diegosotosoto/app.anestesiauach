@@ -29,6 +29,7 @@ function app_nav_url($path) {
 }
 
 require($app_root_dir . "/conectar.php");
+require_once($app_root_dir . "/app_text_helpers.php");
 
 $conexion = new mysqli($db_host, $db_usuario, $db_contra, $db_nombre);
 
@@ -37,23 +38,7 @@ $conexion->set_charset("utf8mb4");
 require($app_root_dir . "/notificaciones_head.php");
 
 function app_head_safe_text($value) {
-  $texto = urldecode((string)$value);
-
-  for ($i = 0; $i < 3; $i++) {
-    $decodificado = html_entity_decode($texto, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-
-    if ($decodificado === $texto) {
-      break;
-    }
-
-    $texto = $decodificado;
-  }
-
-  return htmlspecialchars(
-    $texto,
-    ENT_QUOTES,
-    'UTF-8'
-  );
+  return app_h_text($value);
 }
 
 function app_head_render_notificaciones_widget($notificaciones_nav, $total_notificaciones_no_leidas) {
@@ -1093,7 +1078,7 @@ if ($is_apuntes_context) {
                       <?php
                         if(isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
                           $check_usuario=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
-                          $nombre_usuario=$_COOKIE['hkjh41lu4l1k23jhlkj14'];
+                          $nombre_usuario=$conexion->real_escape_string(app_decode_text($_COOKIE['hkjh41lu4l1k23jhlkj14']));
                           $con_users_b="SELECT `admin`, `staff_`, `intern_`, `becad_`, `becad_otro` FROM `usuarios_dolor` WHERE `email_usuario` = '$check_usuario'";
                           $users_b=$conexion->query($con_users_b);
                           $usuario=$users_b ? $users_b->fetch_assoc() : null;

@@ -39,7 +39,7 @@
       <div class="offcanvas-body">
 
 
-            <div class="" id="offcanvasExampleLabel"><h5><?php echo $_COOKIE['hkjh41lu4l1k23jhlkj14']; ?></h5></div>
+            <div class="" id="offcanvasExampleLabel"><h5><?php echo app_h_text($_COOKIE['hkjh41lu4l1k23jhlkj14']); ?></h5></div>
 
           <div class="text-muted"><?php echo $_COOKIE['hkjh41lu4l1k23jhlkj13']; ?></div>
           <hr>
@@ -147,7 +147,7 @@
 			$comentarios=htmlentities(addslashes($_POST['comentarios']));
 			$de_alta=0;
 			$fecha_creacion=date("Y-m-d H:i:s",strtotime('-4 hour'));
-			$creador=ucwords(strtolower($_COOKIE['hkjh41lu4l1k23jhlkj14']));
+			$creador=ucwords(strtolower(app_decode_text($_COOKIE['hkjh41lu4l1k23jhlkj14'])));
 
 
 			//PRIMERO BUSCA SI EL RUT EXISTE PREVIAMENTE Y ESTA ACTIVO
@@ -240,4 +240,3 @@
 
 </body>
 </html>
-

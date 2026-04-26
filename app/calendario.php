@@ -5,6 +5,7 @@ if (!isset($_COOKIE['hkjh41lu4l1k23jhlkj13']) || trim($_COOKIE['hkjh41lu4l1k23jh
 }
 
 require('conectar.php');
+require_once __DIR__ . '/app_text_helpers.php';
 require_once __DIR__ . '/google-calendar/config.php';
 
 $conexion = new mysqli($db_host, $db_usuario, $db_contra, $db_nombre);
@@ -17,11 +18,7 @@ function h($txt)
 
 function h_nombre($txt)
 {
-    return htmlspecialchars(
-        html_entity_decode((string)$txt, ENT_QUOTES | ENT_HTML5, 'UTF-8'),
-        ENT_QUOTES,
-        'UTF-8'
-    );
+    return function_exists('app_h_text') ? app_h_text($txt) : htmlspecialchars(html_entity_decode((string)$txt, ENT_QUOTES | ENT_HTML5, 'UTF-8'), ENT_QUOTES, 'UTF-8');
 }
 
 function calendar_event_start_value($event)

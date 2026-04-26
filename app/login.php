@@ -8,6 +8,7 @@
 
   //Conexión
   require("conectar.php");
+  require_once __DIR__ . "/app_text_helpers.php";
   $conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
   $conexion->set_charset("utf8");
 
@@ -32,7 +33,7 @@
 
       if($confirma_pass){
         $galletita_mail=$email_usuario_v;
-        $galletita_user=$usuario['nombre_usuario'];
+        $galletita_user=app_decode_text($usuario['nombre_usuario']);
         setcookie("hkjh41lu4l1k23jhlkj13",$galletita_mail, time()+60*60*24*30*6);
         setcookie("hkjh41lu4l1k23jhlkj14",$galletita_user, time()+60*60*24*30*6);
         header('Location: index.php');
@@ -48,7 +49,7 @@
   // registro nuevo usuario desde nueva_cuenta.php
   if(!empty($_POST['email_usuario'])){
     $email_usuario=htmlentities(addslashes($_POST['email_usuario']));
-    $nombre_usuario=htmlentities(addslashes($_POST['nombre_usuario']));
+    $nombre_usuario=$conexion->real_escape_string(app_decode_text($_POST['nombre_usuario']));
     $pass_usuario=htmlentities(addslashes($_POST['pass_usuario']));
     $pass_cifrado=password_hash($pass_usuario, PASSWORD_DEFAULT);
 

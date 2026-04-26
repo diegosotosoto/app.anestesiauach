@@ -349,11 +349,7 @@
                 <?php
 
                   function h_nombre($v){
-                    return htmlspecialchars(
-                      html_entity_decode((string)$v, ENT_QUOTES | ENT_HTML5, 'UTF-8'),
-                      ENT_QUOTES,
-                      'UTF-8'
-                    );
+                    return function_exists('app_h_text') ? app_h_text($v) : htmlspecialchars(html_entity_decode((string)$v, ENT_QUOTES | ENT_HTML5, 'UTF-8'), ENT_QUOTES, 'UTF-8');
                   }
 
                   $grupos = array(
@@ -415,7 +411,7 @@
                     $calidad_safe = htmlspecialchars($calidad, ENT_QUOTES, 'UTF-8');
 
                     $nombre_busqueda = htmlspecialchars(
-                      mb_strtolower(html_entity_decode((string)$fila['nombre_usuario'], ENT_QUOTES | ENT_HTML5, 'UTF-8'), 'UTF-8'),
+                      mb_strtolower(function_exists('app_decode_text') ? app_decode_text($fila['nombre_usuario']) : html_entity_decode((string)$fila['nombre_usuario'], ENT_QUOTES | ENT_HTML5, 'UTF-8'), 'UTF-8'),
                       ENT_QUOTES,
                       'UTF-8'
                     );

@@ -474,9 +474,10 @@ if($_POST['rut_b']){
                 $consulta_staff="SELECT `nombre_usuario`, `email_usuario` FROM `usuarios_dolor` WHERE `staff_` = '1' OR `admin` = '1' ORDER BY `nombre_usuario` ASC";
                 $busca_staff=$conexion->query($consulta_staff);
                 while($staff=$busca_staff->fetch_assoc()){
-                  $nombre_staff = htmlspecialchars(html_entity_decode($staff['nombre_usuario'], ENT_QUOTES | ENT_HTML5, 'UTF-8'), ENT_QUOTES, 'UTF-8');
+                  $nombre_staff_limpio = function_exists('app_decode_text') ? app_decode_text($staff['nombre_usuario']) : html_entity_decode($staff['nombre_usuario'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                  $nombre_staff = htmlspecialchars($nombre_staff_limpio, ENT_QUOTES, 'UTF-8');
                   $email_staff = htmlspecialchars($staff['email_usuario'], ENT_QUOTES, 'UTF-8');
-                  echo "<option value='".$email_staff."'>".$nombre_staff."</option>";
+                  echo "<option value='".htmlspecialchars($nombre_staff_limpio, ENT_QUOTES, 'UTF-8')."'>".$nombre_staff."</option>";
                 }
               ?>
             </select>
