@@ -163,8 +163,42 @@ require("head.php");
     <div class="bitacora-shell">
 
 <?php
+function bitacora_resuelve_staff_email($conexion, $staff_raw){
+  $staff_raw = trim((string)$staff_raw);
+  if($staff_raw === ''){
+    return '';
+  }
+
+  if(filter_var($staff_raw, FILTER_VALIDATE_EMAIL)){
+    $stmt = $conexion->prepare("SELECT `email_usuario` FROM `usuarios_dolor` WHERE `email_usuario` = ? AND (`staff_` = 1 OR `admin` = 1) LIMIT 1");
+    if($stmt){
+      $stmt->bind_param("s", $staff_raw);
+      $stmt->execute();
+      $res = $stmt->get_result();
+      if($fila = $res->fetch_assoc()){
+        $stmt->close();
+        return $fila['email_usuario'];
+      }
+      $stmt->close();
+    }
+  }
+
+  // Fallback para formularios antiguos abiertos antes del cambio: venian con nombre.
+  $res = $conexion->query("SELECT `nombre_usuario`, `email_usuario` FROM `usuarios_dolor` WHERE `staff_` = 1 OR `admin` = 1");
+  if($res){
+    while($fila = $res->fetch_assoc()){
+      $nombre = function_exists('app_decode_text') ? app_decode_text($fila['nombre_usuario']) : html_entity_decode($fila['nombre_usuario'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+      if(trim($nombre) === $staff_raw){
+        return $fila['email_usuario'];
+      }
+    }
+  }
+
+  return '';
+}
+
 //Guarda la Bitácora
-if($_POST['rut_i']){
+if(isset($_POST['rut_i']) && $_POST['rut_i'] !== ''){
 
   $autor_i=strtolower(urldecode($_COOKIE['hkjh41lu4l1k23jhlkj13']));
   $rut_i=htmlentities(addslashes(strtoupper($_POST['rut_i'])));
@@ -180,33 +214,45 @@ if($_POST['rut_i']){
   $vvp_i=htmlentities(addslashes($_POST['vvp_i']));
   $espinal_i=htmlentities(addslashes($_POST['espinal_i']));
   $seminario_i=htmlentities(addslashes($_POST['seminario_i']));
-  $staff_i=trim($_POST['staff_i']);
+  $staff_i=bitacora_resuelve_staff_email($conexion, $_POST['staff_i'] ?? '');
   $staff_i=$conexion->real_escape_string($staff_i);
   $comentarios_i=htmlentities(addslashes($_POST['comentarios_i']));
 
-  $confirma_bitacora_i="SELECT * FROM `bitacora_internos` WHERE `rut_i` = '$rut_i' AND `ficha_i` = '$ficha_i' AND `fecha_i` = '$fecha_i' AND `autor_i` = '$autor_i' AND `evaluacion_i` = '$evaluacion_i' AND `ventilacion_i` = '$ventilacion_i' AND `intubacion_i` = '$intubacion_i' AND `lma_i` = '$lma_i' AND `ayudas_i` = '$ayudas_i' AND `vvp_i` = '$vvp_i' AND `espinal_i` = '$espinal_i'";
-  $consulta_ci=$conexion->query($confirma_bitacora_i);
-  $respuesta_ci=mysqli_num_rows($consulta_ci);
+  if($staff_i === ''){
+    echo "<div class='alert alert-danger alert-dismissible fade show'>
+      <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
+      <strong>Info!</strong> Selecciona un anestesiólogo responsable válido.
+    </div>";
+  }else{
+    $confirma_bitacora_i="SELECT * FROM `bitacora_internos` WHERE `rut_i` = '$rut_i' AND `ficha_i` = '$ficha_i' AND `fecha_i` = '$fecha_i' AND `autor_i` = '$autor_i' AND `evaluacion_i` = '$evaluacion_i' AND `ventilacion_i` = '$ventilacion_i' AND `intubacion_i` = '$intubacion_i' AND `lma_i` = '$lma_i' AND `ayudas_i` = '$ayudas_i' AND `vvp_i` = '$vvp_i' AND `espinal_i` = '$espinal_i'";
+    $consulta_ci=$conexion->query($confirma_bitacora_i);
+    $respuesta_ci=$consulta_ci ? mysqli_num_rows($consulta_ci) : 0;
 
-  if($respuesta_ci>=1){
+    if($consulta_ci === false){
+      error_log("bitacora_internos confirma_bitacora_i: ".$conexion->error);
+    }
+
+    if($respuesta_ci>=1){
     echo "<div class='alert alert-danger alert-dismissible fade show'>
       <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
       <strong>Info!</strong> Ya existe un registro ingresado por ".$autor_i." con fecha ".$fecha_i." , para el paciente Rut :".$rut_i.". <strong>No se ha ingresado el nuevo registro</strong>
     </div>";
-  }else{
-    $consulta_i="INSERT INTO `bitacora_internos` (`autor_i`, `rut_i`, `ficha_i`, `edad_i`, `procedimiento_i`, `fecha_i`, `evaluacion_i`, `ventilacion_i`, `intubacion_i`, `lma_i`, `ayudas_i`, `vvp_i`, `espinal_i`, `seminario_i`, `staff_i`, `comentarios_i`) VALUES ('$autor_i','$rut_i', '$ficha_i', '$edad_i', '$procedimiento_i', '$fecha_i', '$evaluacion_i', '$ventilacion_i', '$intubacion_i', '$lma_i', '$ayudas_i', '$vvp_i', '$espinal_i', '$seminario_i', '$staff_i', '$comentarios_i') ";
-    $escribir_i=$conexion->query($consulta_i);
-
-    if($escribir_i==false){
-      echo "<div class='alert alert-danger alert-dismissible fade show'>
-        <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
-        <strong>Info!</strong> Error en el Guardado. Contacta al Administrador
-      </div>";
     }else{
-      echo "<div class='alert alert-success alert-dismissible fade show'>
-        <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
-        <strong>Info!</strong> Registro Guardado.
-      </div>";
+      $consulta_i="INSERT INTO `bitacora_internos` (`autor_i`, `rut_i`, `ficha_i`, `edad_i`, `procedimiento_i`, `fecha_i`, `evaluacion_i`, `ventilacion_i`, `intubacion_i`, `lma_i`, `ayudas_i`, `vvp_i`, `espinal_i`, `seminario_i`, `staff_i`, `comentarios_i`) VALUES ('$autor_i','$rut_i', '$ficha_i', '$edad_i', '$procedimiento_i', '$fecha_i', '$evaluacion_i', '$ventilacion_i', '$intubacion_i', '$lma_i', '$ayudas_i', '$vvp_i', '$espinal_i', '$seminario_i', '$staff_i', '$comentarios_i') ";
+      $escribir_i=$conexion->query($consulta_i);
+
+      if($escribir_i==false){
+        error_log("bitacora_internos insert bitacora_internos: ".$conexion->error);
+        echo "<div class='alert alert-danger alert-dismissible fade show'>
+          <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
+          <strong>Info!</strong> Error en el Guardado. Contacta al Administrador
+        </div>";
+      }else{
+        echo "<div class='alert alert-success alert-dismissible fade show'>
+          <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
+          <strong>Info!</strong> Registro Guardado.
+        </div>";
+      }
     }
   }
 }
@@ -427,7 +473,7 @@ if($_POST['rut_i']){
                     $nombre_staff_limpio = function_exists('app_decode_text') ? app_decode_text($staff['nombre_usuario']) : html_entity_decode($staff['nombre_usuario'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
                     $nombre_staff = htmlspecialchars($nombre_staff_limpio, ENT_QUOTES, 'UTF-8');
                     $email_staff = htmlspecialchars($staff['email_usuario'], ENT_QUOTES, 'UTF-8');
-                    echo "<option value='".htmlspecialchars($nombre_staff_limpio, ENT_QUOTES, 'UTF-8')."'>".$nombre_staff."</option>";
+                    echo "<option value='".$email_staff."'>".$nombre_staff."</option>";
                   }
                 ?>
               </select>

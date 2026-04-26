@@ -175,8 +175,42 @@ require("head.php");
     <div class="bitacora-shell">
 
 <?php
+function bitacora_resuelve_staff_email($conexion, $staff_raw){
+  $staff_raw = trim((string)$staff_raw);
+  if($staff_raw === ''){
+    return '';
+  }
+
+  if(filter_var($staff_raw, FILTER_VALIDATE_EMAIL)){
+    $stmt = $conexion->prepare("SELECT `email_usuario` FROM `usuarios_dolor` WHERE `email_usuario` = ? AND (`staff_` = 1 OR `admin` = 1) LIMIT 1");
+    if($stmt){
+      $stmt->bind_param("s", $staff_raw);
+      $stmt->execute();
+      $res = $stmt->get_result();
+      if($fila = $res->fetch_assoc()){
+        $stmt->close();
+        return $fila['email_usuario'];
+      }
+      $stmt->close();
+    }
+  }
+
+  // Fallback para formularios antiguos abiertos antes del cambio: venian con nombre.
+  $res = $conexion->query("SELECT `nombre_usuario`, `email_usuario` FROM `usuarios_dolor` WHERE `staff_` = 1 OR `admin` = 1");
+  if($res){
+    while($fila = $res->fetch_assoc()){
+      $nombre = function_exists('app_decode_text') ? app_decode_text($fila['nombre_usuario']) : html_entity_decode($fila['nombre_usuario'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+      if(trim($nombre) === $staff_raw){
+        return $fila['email_usuario'];
+      }
+    }
+  }
+
+  return '';
+}
+
 //Guarda la Bitácora
-if($_POST['rut_b']){
+if(isset($_POST['rut_b']) && $_POST['rut_b'] !== ''){
 
   $autor_b=strtolower(urldecode($_COOKIE['hkjh41lu4l1k23jhlkj13']));
   $rut_b=htmlentities(addslashes(strtoupper($_POST['rut_b'])));
@@ -199,33 +233,45 @@ if($_POST['rut_b']){
   $neuroaxial_b=htmlentities(addslashes($_POST['neuroaxial_b']));
   $regional_b=htmlentities(addslashes($_POST['regional_b']));
   $dolor_b=htmlentities(addslashes($_POST['dolor_b']));
-  $staff_b=trim($_POST['staff_b']);
+  $staff_b=bitacora_resuelve_staff_email($conexion, $_POST['staff_b'] ?? '');
   $staff_b=$conexion->real_escape_string($staff_b);
   $comentarios_b=htmlentities(addslashes($_POST['comentarios_b']));
 
-  $confirma_bitacora_b="SELECT * FROM `bitacora_proced` WHERE `rut_b` = '$rut_b' AND `ficha_b` = '$ficha_b' AND `fecha_b` = '$fecha_b' AND `autor_b` = '$autor_b' AND `via_aerea_b` = '$via_aerea_b' AND `vad_b` = '$vad_b' AND `acceso_vascular_b` = '$acceso_vascular_b' AND `invasivo_b` = '$invasivo_b' AND `cvc_b` = '$cvc_b' AND `neuroaxial_b` = '$neuroaxial_b' AND `regional_b` = '$regional_b'";
-  $consulta_cb=$conexion->query($confirma_bitacora_b);
-  $respuesta_cb=mysqli_num_rows($consulta_cb);
+  if($staff_b === ''){
+    echo "<div class='alert alert-danger alert-dismissible fade show'>
+      <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
+      <strong>Info!</strong> Selecciona un anestesiólogo responsable válido.
+    </div>";
+  }else{
+    $confirma_bitacora_b="SELECT * FROM `bitacora_proced` WHERE `rut_b` = '$rut_b' AND `ficha_b` = '$ficha_b' AND `fecha_b` = '$fecha_b' AND `autor_b` = '$autor_b' AND `via_aerea_b` = '$via_aerea_b' AND `vad_b` = '$vad_b' AND `acceso_vascular_b` = '$acceso_vascular_b' AND `invasivo_b` = '$invasivo_b' AND `cvc_b` = '$cvc_b' AND `neuroaxial_b` = '$neuroaxial_b' AND `regional_b` = '$regional_b'";
+    $consulta_cb=$conexion->query($confirma_bitacora_b);
+    $respuesta_cb=$consulta_cb ? mysqli_num_rows($consulta_cb) : 0;
 
-  if($respuesta_cb>=1){
+    if($consulta_cb === false){
+      error_log("bitacora_ingreso confirma_bitacora_b: ".$conexion->error);
+    }
+
+    if($respuesta_cb>=1){
     echo "<div class='alert alert-danger alert-dismissible fade show'>
       <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
       <strong>Info!</strong> Ya existe un registro ingresado por ".$autor_b." con fecha ".$fecha_b.", para el paciente Rut: ".$rut_b.". <strong>No se ha ingresado el nuevo registro.</strong>
     </div>";
-  }else{
-    $consulta_b="INSERT INTO `bitacora_proced` (`autor_b`, `rut_b`, `ficha_b`, `edad_b`, `procedimiento_b`, `fecha_b`, `via_aerea_b`, `vad_b`, `acceso_vascular_b`, `invasivo_b`, `invasivo_eco_b`, `neuroaxial_b`, `regional_b`, `dolor_b`, `staff_b`, `comentarios_b`, `cvc_b`) VALUES ('$autor_b','$rut_b', '$ficha_b', '$edad_b', '$procedimiento_b', '$fecha_b', '$via_aerea_b', '$vad_b', '$acceso_vascular_b', '$invasivo_b', '$invasivo_eco_b', '$neuroaxial_b', '$regional_b', '$dolor_b', '$staff_b', '$comentarios_b', '$cvc_b') ";
-    $escribir_b=$conexion->query($consulta_b);
-
-    if($escribir_b==false){
-      echo "<div class='alert alert-danger alert-dismissible fade show'>
-        <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
-        <strong>Info!</strong> Error en el guardado. Contacta al administrador.
-      </div>";
     }else{
-      echo "<div class='alert alert-success alert-dismissible fade show'>
-        <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
-        <strong>Info!</strong> Registro guardado.
-      </div>";
+      $consulta_b="INSERT INTO `bitacora_proced` (`autor_b`, `rut_b`, `ficha_b`, `edad_b`, `procedimiento_b`, `fecha_b`, `via_aerea_b`, `vad_b`, `acceso_vascular_b`, `invasivo_b`, `invasivo_eco_b`, `neuroaxial_b`, `regional_b`, `dolor_b`, `staff_b`, `comentarios_b`, `cvc_b`) VALUES ('$autor_b','$rut_b', '$ficha_b', '$edad_b', '$procedimiento_b', '$fecha_b', '$via_aerea_b', '$vad_b', '$acceso_vascular_b', '$invasivo_b', '$invasivo_eco_b', '$neuroaxial_b', '$regional_b', '$dolor_b', '$staff_b', '$comentarios_b', '$cvc_b') ";
+      $escribir_b=$conexion->query($consulta_b);
+
+      if($escribir_b==false){
+        error_log("bitacora_ingreso insert bitacora_proced: ".$conexion->error);
+        echo "<div class='alert alert-danger alert-dismissible fade show'>
+          <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
+          <strong>Info!</strong> Error en el guardado. Contacta al administrador.
+        </div>";
+      }else{
+        echo "<div class='alert alert-success alert-dismissible fade show'>
+          <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
+          <strong>Info!</strong> Registro guardado.
+        </div>";
+      }
     }
   }
 }
@@ -477,7 +523,7 @@ if($_POST['rut_b']){
                   $nombre_staff_limpio = function_exists('app_decode_text') ? app_decode_text($staff['nombre_usuario']) : html_entity_decode($staff['nombre_usuario'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
                   $nombre_staff = htmlspecialchars($nombre_staff_limpio, ENT_QUOTES, 'UTF-8');
                   $email_staff = htmlspecialchars($staff['email_usuario'], ENT_QUOTES, 'UTF-8');
-                  echo "<option value='".htmlspecialchars($nombre_staff_limpio, ENT_QUOTES, 'UTF-8')."'>".$nombre_staff."</option>";
+                  echo "<option value='".$email_staff."'>".$nombre_staff."</option>";
                 }
               ?>
             </select>
