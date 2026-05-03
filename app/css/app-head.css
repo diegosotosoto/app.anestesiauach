@@ -1042,7 +1042,7 @@ background:var(--app-gradient) !important;
   }
 
   .app-shell-left .navbar > .container-fluid{
-    padding-bottom:0!important;
+    padding-bottom:14px!important;
     margin-bottom:0!important;
   }
 
