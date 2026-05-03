@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "Dilución de Fármacos";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "Referencia de diluciones y concentraciones habituales en anestesia, organizada por categorías para revisión rápida en pabellón.";
@@ -64,7 +64,7 @@ $colorCards = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=1">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=1"></script>
 
 <style>
@@ -73,32 +73,16 @@ require("../head.php");
 .dil-group-head{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:.75rem;}
 .dil-group-title{font-size:1rem;font-weight:800;color:var(--note-text);margin:0;}
 .dil-chip{display:inline-flex;align-items:center;gap:.4rem;border-radius:999px;padding:.28rem .6rem;background:#f2f4f7;color:#475467;font-size:.78rem;font-weight:700;}
-.dil-shell .drug-benzo{background:#f29b2f;}
-.dil-shell .drug-reversal-benzo{background-color:#f29b2f;background-size:12px 12px;background-image:repeating-linear-gradient(135deg, rgba(255,255,255,.92) 0 4px, rgba(255,255,255,0) 4px 8px);}
 .dil-table-wrap{overflow-x:visible;}
 .dil-table{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed;}
-.dil-table th,.dil-table td{padding:.75rem .7rem;border-bottom:1px solid #eef2f6;vertical-align:top;text-align:left;word-break:break-word;overflow-wrap:anywhere;}
+.dil-table th,.dil-table td{padding:.75rem .7rem;border-bottom:1px solid #eef2f6;vertical-align:middle;text-align:left;word-break:break-word;overflow-wrap:anywhere;}
 .dil-table th{font-size:.8rem;font-weight:800;color:#475467;background:#f8fafc;}
 .dil-table tr:last-child td{border-bottom:none;}
 .dil-col-drug{width:28%;}
 .dil-col-pres{width:24%;}
 .dil-col-dil{width:23%;}
 .dil-col-final{width:25%;}
-.dil-drug-cell{border-radius:.8rem;padding:.7rem .75rem;border:1px solid rgba(31,42,55,.08);}
-.dil-drug-cell .chip-copy{display:inline-block;padding:.12rem .38rem;border-radius:.45rem;background:rgba(255,255,255,.5);}
-.dil-drug-name{font-weight:800;color:var(--note-text);line-height:1.2;margin-bottom:.1rem;}
-.dil-drug-tag{font-size:.8rem;color:#374151;line-height:1.25;}
 .dil-color-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;}
-.dil-color-card{border-radius:1rem;padding:1rem;border:1px solid var(--note-line);position:relative;overflow:hidden;}
-.dil-color-card .copy{
-  display:inline-block;
-  padding:.28rem .6rem;
-  border-radius:.7rem;
-  background:rgba(255,255,255,.68);
-  backdrop-filter:blur(1px);
-}
-.dil-color-card .title{font-weight:800;color:var(--note-text);line-height:1.2;margin-bottom:.15rem;}
-.dil-color-card .sub{font-size:.9rem;color:#374151;line-height:1.35;}
 @media (max-width:768px){
   .dil-table th,.dil-table td{padding:.6rem .45rem;font-size:.88rem;}
   .dil-col-drug{width:36%;}
@@ -110,20 +94,8 @@ require("../head.php");
 @media (max-width:360px){
   .dil-color-grid{grid-template-columns:1fr;}
 }
-.dil-shell .drug-inductor-propofol{background:#ece243;}
-.dil-shell .drug-benzo{background:#f29b2f;}
-.dil-shell .drug-reversal-benzo{
-  background-color:#f29b2f;
-  background-size:12px 12px;
-  background-image:repeating-linear-gradient(135deg, rgba(255,255,255,.92) 0 4px, rgba(255,255,255,0) 4px 8px);
-}
-@media (max-width:360px){
-  .dil-color-grid{grid-template-columns:1fr;}
-}
-.dil-color-card:not([class*="drug-"]):not(.drug-benzo):not(.drug-reversal-benzo):not(.drug-inductor-propofol){
-  background:#fff;
-}
 </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
@@ -187,10 +159,10 @@ require("../head.php");
                   <?php foreach($rows as $row){ ?>
                     <tr>
                       <td>
-                        <div class="dil-drug-cell drug-<?php echo $row['clase']; ?>">
-                          <div class="chip-copy">
-                            <div class="dil-drug-name"><?php echo $row['droga']; ?></div>
-                            <div class="dil-drug-tag"><?php echo $row['etiqueta']; ?></div>
+                        <div class="drug-label drug-<?php echo $row['clase']; ?>">
+                          <div class="drug-label-content">
+                            <div class="drug-label-title"><?php echo $row['droga']; ?></div>
+                            <div class="drug-label-subtitle"><?php echo $row['etiqueta']; ?></div>
                           </div>
                         </div>
                       </td>
@@ -212,10 +184,10 @@ require("../head.php");
           </div>
           <div class="dil-color-grid">
             <?php foreach($colorCards as $card){ ?>
-              <div class="dil-color-card <?php echo $card['clase']; ?>">
-                <div class="copy">
-                  <div class="title"><?php echo $card['titulo']; ?></div>
-                  <div class="sub"><?php echo $card['sub']; ?></div>
+              <div class="drug-card <?php echo $card['clase']; ?>">
+                <div class="drug-label-content">
+                  <div class="drug-label-title"><?php echo $card['titulo']; ?></div>
+                  <div class="drug-label-subtitle"><?php echo $card['sub']; ?></div>
                 </div>
               </div>
             <?php } ?>

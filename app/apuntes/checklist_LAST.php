@@ -11,46 +11,20 @@ $referencias = array(
   "El-Boghdadly K, Chin KJ. Local anesthetic systemic toxicity: continuing professional development. Can J Anaesth. 2016;63(3):330–349."
 );
 
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' style='width:50px; height:40px; --bs-border-opacity: .1;' type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation'> ? </button>";
+$boton_navbar = "<button class='app-nav-action' type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=2">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=2"></script>
 
 <style>
   .last-shell{max-width:980px;margin:0 auto;}
-  .last-section-card{background:#fff;border:1px solid var(--note-line);border-radius:1.25rem;box-shadow:var(--note-shadow);overflow:hidden;margin-bottom:1rem;}
-
-
-  .last-checklist-section{background:#fff;border:1px solid var(--note-line);border-radius:1.1rem;overflow:hidden;margin-bottom:1rem;}
-  .last-checklist-head{padding:1rem 1rem .95rem 1rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;cursor:pointer;}
-  .last-checklist-title{font-size:1.03rem;font-weight:800;color:var(--note-text);line-height:1.2;margin:0;}
-  .last-checklist-help{font-size:.9rem;color:var(--note-muted);line-height:1.4;margin:.2rem 0 0 0;}
-  .last-checklist-chevron{flex:0 0 auto;color:var(--note-muted);font-size:1rem;transition:transform .18s ease;}
-  .last-checklist-section.is-collapsed .last-checklist-chevron{transform:rotate(-90deg);}
-  .last-checklist-body{padding:0 1rem 1rem 1rem;border-top:1px solid #e9eef5;}
-  .last-checklist-section.is-collapsed .last-checklist-body{display:none;}
-
-  .last-checklist-list{display:grid;gap:.75rem;}
-  .last-check-item{display:flex;align-items:flex-start;gap:.8rem;padding:.9rem .95rem;border:1px solid var(--note-line);border-radius:1rem;background:#fff;}
-  .last-check-item.is-done{background:#f4fbf7;border-color:#cfe8d9;}
-  .last-check-input{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;}
-  .last-check-mark{flex:0 0 auto;width:24px;height:24px;border-radius:999px;border:2px solid #b9c3d0;display:flex;align-items:center;justify-content:center;margin-top:.1rem;background:#fff;color:#fff;}
-  .last-check-item.is-done .last-check-mark{background:#2f9e62;border-color:#2f9e62;}
-  .last-check-copy{min-width:0;flex:1;}
-  .last-check-title{font-size:.96rem;font-weight:800;color:var(--note-text);line-height:1.25;margin:0 0 .12rem 0;}
-  .last-check-note{font-size:.88rem;color:var(--note-muted);line-height:1.4;margin:0;}
-
-  .last-emphasis-ok{background:#edf8f7;border:1px solid #cfe8e6;border-radius:1rem;padding:1rem;}
-  .last-emphasis-warn{background:#fff9e8;border:1px solid #ecd798;border-radius:1rem;padding:1rem;}
-  .last-emphasis-danger{background:#fff5f3;border:1px solid #efc4be;border-radius:1rem;padding:1rem;}
+  .last-section-card{background:var(--note-card);border:1px solid var(--note-line);border-radius:1.25rem;box-shadow:var(--note-shadow);overflow:hidden;margin-bottom:1rem;}
 
   .last-lipid-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.85rem;}
-  .last-record-box{background:var(--note-brand-soft);border:1px solid var(--note-brand-soft-border);border-radius:1rem;padding:1rem;}
-  .last-record-output{width:100%;min-height:170px;border:1px solid #d0d5dd;border-radius:.9rem;padding:.85rem .95rem;background:#fff;color:#101828;font-size:.95rem;line-height:1.4;resize:vertical;}
 
   .note-hero-emergency{background:linear-gradient(135deg,#8f1f32,#b52d45);}
   .note-hero-emergency .note-badge{background:rgba(255,255,255,.92);color:#6f1524;}
@@ -58,16 +32,13 @@ require("../head.php");
   @media (max-width:768px){
     .last-lipid-grid{grid-template-columns:1fr;}
   }
-  @media (max-width:420px){
-    .last-progress-actions{flex-direction:column;}
-    .last-toolbar-btn{width:100%;}
-  }
 </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
     <div class="container-fluid px-0 px-md-2">
-      <div class="last-shell px-1 px-md-0 py-0  ">
+      <div class="last-shell">
 
         <div class="note-hero note-hero-emergency">
           <div class="note-hero-kicker">APP CLÍNICA · CHECKLIST DE URGENCIA</div>
@@ -164,7 +135,7 @@ require("../head.php");
             <i class="fa-solid fa-chevron-down last-checklist-chevron"></i>
           </div>
           <div class="last-checklist-body">
-            <div class="last-emphasis-ok mb-3">
+            <div class="note-success mb-3">
               <div class="fw-semibold mb-1">Nota operativa</div>
               <div class="small-note mb-0">El orden exacto y el método de infusión no son lo principal. El mensaje práctico es no retrasar el uso de emulsión lipídica cuando el cuadro lo justifica.</div>
             </div>
@@ -180,8 +151,14 @@ require("../head.php");
               <div class="note-input-group">
                 <label class="note-label">Acciones rápidas</label>
                 <div class="note-choice-grid">
-                  <button type="button" id="calcDoseBtn" class="note-checklist-btn"><i class="fa-solid fa-calculator"></i> Calcular</button>
-                  <button type="button" id="fillDemoBtn" class="note-checklist-btn"><i class="fa-solid fa-vial"></i> Ejemplo 70 kg</button>
+                  <button type="button" id="calcDoseBtn" class="note-action-btn-sm note-action-btn-primary">
+                    <i class="fa-solid fa-calculator"></i>
+                    <span><span class="note-action-btn-title">Calcular</span><span class="note-action-btn-sub">Basado en el peso ingresado</span></span>
+                  </button>
+                  <button type="button" id="fillDemoBtn" class="note-action-btn-sm">
+                    <i class="fa-solid fa-vial"></i>
+                    <span><span class="note-action-btn-title">Ejemplo 70 kg</span><span class="note-action-btn-sub">Llenar con valores de referencia</span></span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -209,12 +186,12 @@ require("../head.php");
               </div>
             </div>
 
-            <div class="last-emphasis-warn mb-3">
+            <div class="note-warning mb-3">
               <div class="fw-semibold mb-1">Si el paciente sigue inestable</div>
-              <ul class="mb-0 small-note">
-                <li>Repetir el bolo si el contexto clínico lo exige.</li>
-                <li>Duplicar la velocidad de infusión si persiste compromiso cardiovascular grave.</li>
-              </ul>
+              <div class="note-chip-list mt-2">
+                <span class="note-chip note-chip-warn">Repetir el bolo si el contexto clínico lo exige.</span>
+                <span class="note-chip note-chip-warn">Duplicar la velocidad de infusión si persiste compromiso cardiovascular grave.</span>
+              </div>
             </div>
 
             <div class="last-checklist-list">
@@ -246,7 +223,7 @@ require("../head.php");
             <i class="fa-solid fa-chevron-down last-checklist-chevron"></i>
           </div>
           <div class="last-checklist-body">
-            <div class="last-emphasis-danger mb-3">
+            <div class="note-danger mb-3">
               <div class="fw-semibold mb-1">Objetivo</div>
               <div class="small-note mb-0">Control temprano de vía aérea y convulsión. Priorizar benzodiazepinas. Si sólo hay propofol disponible, usarlo en dosis pequeñas y tituladas con cautela.</div>
             </div>
@@ -274,7 +251,7 @@ require("../head.php");
               </label>
             </div>
 
-            <div class="last-emphasis-warn">
+            <div class="note-warning">
               <div class="fw-semibold mb-2">Dosis orientativas de benzodiazepinas</div>
               <div id="seizureDoseEmpty" class="small-note mb-0">Ingresa un peso válido en la sección de emulsión lipídica para calcular midazolam y lorazepam.</div>
               <div id="seizureDoseBox" class="d-none">
@@ -309,23 +286,23 @@ require("../head.php");
             <i class="fa-solid fa-chevron-down last-checklist-chevron"></i>
           </div>
           <div class="last-checklist-body">
-            <div class="note-grid mb-3">
-              <div class="last-emphasis-ok">
+            <div class="note-chip-grid mb-3">
+              <div class="note-success">
                 <div class="fw-semibold mb-2">Preferir</div>
-                <ul class="mb-0 small-note">
-                  <li>Epinefrina en dosis menores a las habituales.</li>
-                  <li>Comenzar con ≤ 1 mcg/kg si es necesaria.</li>
-                  <li>Amiodarona si aparecen arritmias ventriculares.</li>
-                </ul>
+                <div class="note-chip-list">
+                  <span class="note-chip note-chip-safe">Epinefrina en dosis menores a las habituales.</span>
+                  <span class="note-chip note-chip-safe">Comenzar con ≤ 1 mcg/kg si es necesaria.</span>
+                  <span class="note-chip note-chip-safe">Amiodarona si aparecen arritmias ventriculares.</span>
+                </div>
               </div>
-              <div class="last-emphasis-danger">
+              <div class="note-danger">
                 <div class="fw-semibold mb-2">Evitar</div>
-                <ul class="mb-0 small-note">
-                  <li>Anestésicos locales adicionales.</li>
-                  <li>Beta-bloqueadores.</li>
-                  <li>Bloqueadores de canales de calcio.</li>
-                  <li>Vasopresina.</li>
-                </ul>
+                <div class="note-chip-list">
+                  <span class="note-chip note-chip-danger">Anestésicos locales adicionales.</span>
+                  <span class="note-chip note-chip-danger">Beta-bloqueadores.</span>
+                  <span class="note-chip note-chip-danger">Bloqueadores de canales de calcio.</span>
+                  <span class="note-chip note-chip-danger">Vasopresina.</span>
+                </div>
               </div>
             </div>
 
@@ -371,13 +348,13 @@ require("../head.php");
               </label>
             </div>
 
-            <div class="last-emphasis-ok">
+            <div class="note-success">
               <div class="fw-semibold mb-2">Observación posterior una vez estable</div>
-              <ul class="mb-0 small-note">
-                <li>2 horas después de convulsión.</li>
-                <li>4–6 horas después de inestabilidad cardiovascular.</li>
-                <li>Más tiempo según contexto, especialmente tras paro cardíaco.</li>
-              </ul>
+              <div class="note-chip-list mt-2">
+                <span class="note-chip note-chip-safe">2 horas después de convulsión.</span>
+                <span class="note-chip note-chip-safe">4–6 horas después de inestabilidad cardiovascular.</span>
+                <span class="note-chip note-chip-safe">Más tiempo según contexto, especialmente tras paro cardíaco.</span>
+              </div>
             </div>
           </div>
         </div>
@@ -409,14 +386,14 @@ require("../head.php");
               <textarea id="notesBox" rows="5" class="note-text-input" placeholder="Ej: bloqueo periférico, síntomas iniciales, convulsión, bolo lipídico iniciado, respuesta hemodinámica..."></textarea>
             </div>
 
-            <div class="last-record-box">
-              <div class="note-card-title mb-2">Resumen exportable</div>
-              <textarea id="recordOutput" class="last-record-output" readonly></textarea>
-              <div class="last-progress-actions mt-3">
-                <button type="button" id="copySummaryBtn" class="last-toolbar-btn"><i class="fa-solid fa-copy"></i> Copiar resumen</button>
-                <button type="button" id="downloadTxtBtn" class="last-toolbar-btn"><i class="fa-solid fa-file-arrow-down"></i> Descargar TXT</button>
+            <div class="iv-record-box">
+              <div class="note-card-title mb-2">Registro resumido</div>
+              <textarea id="recordOutput" class="iv-record-output"></textarea>
+              <div class="note-checklist-toolbar mt-2">
+                <button type="button" id="copySummaryBtn" class="btn note-checklist-btn"><i class="fa-solid fa-copy me-1"></i> Copiar</button>
+                <button type="button" id="downloadTxtBtn" class="btn note-checklist-btn"><i class="fa-solid fa-file-arrow-down me-1"></i> Descargar TXT</button>
               </div>
-              <div id="copyFeedback" class="small text-success mt-2 d-none">Resumen copiado al portapapeles.</div>
+              <div id="copyFeedback" class="small-note mt-2 note-hidden">Resumen copiado al portapapeles.</div>
             </div>
           </div>
         </div>
@@ -426,27 +403,28 @@ require("../head.php");
           <div class="small-note mb-0">Esta herramienta organiza acciones y cálculos orientativos, pero no reemplaza el juicio clínico, la monitorización ni los protocolos institucionales vigentes.</div>
         </div>
 
-        <div class="teaching-wrap">
-          <div class="teaching-title">Perlas docentes</div>
-          <div class="teaching-main">Qué hacer y qué evitar en LAST</div>
+        <div class="note-teaching-wrap mt-3">
+          <div class="note-teaching-title">Perlas docentes</div>
+          <div class="note-teaching-main">Qué hacer y qué evitar en LAST</div>
 
-          <div class="teaching-card">
-            <div class="fw-semibold mb-2">Qué hacer</div>
-            <ul class="mb-0 small-note">
-              <li>Reconocer temprano síntomas neurológicos y cardiovasculares.</li>
-              <li>Oxigenar y ventilar bien para evitar acidosis e hipercapnia.</li>
-              <li>Administrar emulsión lipídica precozmente si el cuadro lo sugiere.</li>
-              <li>Registrar tiempo, intervenciones y respuesta clínica.</li>
-            </ul>
-          </div>
-
-          <div class="teaching-card">
-            <div class="fw-semibold mb-2">Qué evitar</div>
-            <ul class="mb-0 small-note">
-              <li>Seguir ACLS estándar sin adaptar la estrategia a LAST.</li>
-              <li>Retrasar la emulsión lipídica esperando confirmación absoluta.</li>
-              <li>Usar vasopresina, beta-bloqueadores o calcioantagonistas como si fuera un paro convencional.</li>
-            </ul>
+          <div class="note-chip-grid mt-2">
+            <div class="note-success">
+              <div class="fw-semibold mb-2">Qué hacer</div>
+              <div class="note-chip-list">
+                <span class="note-chip note-chip-safe">Reconocer temprano síntomas neurológicos y cardiovasculares.</span>
+                <span class="note-chip note-chip-safe">Oxigenar y ventilar bien para evitar acidosis e hipercapnia.</span>
+                <span class="note-chip note-chip-safe">Administrar emulsión lipídica precozmente si el cuadro lo sugiere.</span>
+                <span class="note-chip note-chip-safe">Registrar tiempo, intervenciones y respuesta clínica.</span>
+              </div>
+            </div>
+            <div class="note-danger">
+              <div class="fw-semibold mb-2">Qué evitar</div>
+              <div class="note-chip-list">
+                <span class="note-chip note-chip-danger">Seguir ACLS estándar sin adaptar la estrategia a LAST.</span>
+                <span class="note-chip note-chip-danger">Retrasar la emulsión lipídica esperando confirmación absoluta.</span>
+                <span class="note-chip note-chip-danger">Usar vasopresina, beta-bloqueadores o calcioantagonistas como si fuera un paro convencional.</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -630,7 +608,7 @@ function renderDose(weight){
     document.getElementById('notesBox').value = '';
     clearDoseOutputs();
     renderSeizureDose(null);
-    copyFeedback.classList.add('d-none');
+    copyFeedback.classList.add('note-hidden');
     updateProgress();
     window.scrollTo({top:0,behavior:'smooth'});
   });
@@ -638,7 +616,7 @@ function renderDose(weight){
   document.getElementById('copySummaryBtn').addEventListener('click', async function(){
     try {
       await navigator.clipboard.writeText(buildSummary());
-      copyFeedback.classList.remove('d-none');
+      copyFeedback.classList.remove('note-hidden');
     } catch (e) {
       alert('No se pudo copiar automáticamente. Usa descargar TXT.');
     }

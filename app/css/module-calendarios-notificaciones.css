@@ -1,0 +1,22 @@
+/* Modulo Calendarios/Notificaciones */
+.calendar-card,
+.notif-dropdown,
+.notif-dropdown-header,
+.notif-dropdown-body,
+.notif-item{
+  background:var(--app-card);
+  color:var(--app-text);
+  border-color:var(--app-border);
+  background-image:none;
+}
+
+body.theme-dark .calendar-card,
+body.theme-dark .notif-dropdown,
+body.theme-dark .notif-dropdown-header,
+body.theme-dark .notif-dropdown-body,
+body.theme-dark .notif-item{
+  background:var(--app-card) !important;
+  color:var(--app-text) !important;
+  border-color:var(--app-border) !important;
+  background-image:none !important;
+}

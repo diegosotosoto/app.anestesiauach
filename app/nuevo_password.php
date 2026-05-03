@@ -49,9 +49,9 @@
   }
 
   //Variables
-  $boton_toggler="<button class='navbar-toggler shadow-sm' type='button' data-bs-toggle='offcanvas' data-bs-target='#offcanvasNavbar' aria-controls='offcanvasNavbar' style='width:50px; height:40px; --bs-border-opacity: .1;'><i class='fa-solid fa-bars' style='color:white'></i></button>";
-  $titulo_navbar="<span class='fs-5 ms-3 ps-1 pe-1 me-3' style='color:white'><img class='pe-2' src='images/austral.png' style='width: 48px' />Anestesia <small class='ps-0 opacity-50' style='font-size: 16px'> UACH</small></span>";
-  $boton_navbar="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:50px; height:40px; --bs-border-opacity: .1;' href='acerca_de.php'><i class='fa-solid fa-question'></i></a>";
+  $boton_toggler="<button class='navbar-toggler app-nav-toggle' type='button' data-bs-toggle='offcanvas' data-bs-target='#offcanvasNavbar' aria-controls='offcanvasNavbar'><i class='fa-solid fa-bars'></i></button>";
+  $titulo_navbar="<div class='app-navbar-brand app-navbar-brand-compact'><img src='images/austral.png' alt='Universidad Austral de Chile' />Anestesia <small>UACh</small></div>";
+  $boton_navbar="<a class='d-sm-block d-sm-none app-nav-action' href='acerca_de.php' aria-label='Acerca de'><i class='fa-solid fa-question'></i></a>";
 
   //Carga Head de la página
   require("head.php");
@@ -60,134 +60,8 @@
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
     <div class="container-fluid px-0 px-md-2">
-      <div class="login-shell">
-
-        <style>
-          .password-shell{
-            max-width: 980px;
-            margin: 0 auto;
-          }
-
-          .password-grid{
-            display:grid;
-            grid-template-columns: minmax(280px, 420px) minmax(320px, 520px);
-            gap: 1rem;
-            align-items: stretch;
-          }
-
-          .password-hero,
-          .password-card{
-            border:0;
-            border-radius:1.25rem;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-            overflow:hidden;
-          }
-
-          .password-hero{
-            background:var(--app-gradient) !important;
-            color:#fff;
-            padding:1.4rem 1.35rem;
-            display:flex;
-            flex-direction:column;
-            justify-content:space-between;
-          }
-
-          .password-hero h1{
-            color:#fff;
-            font-weight:700;
-          }
-
-          .password-pill{
-            display:inline-block;
-            padding:.25rem .6rem;
-            border-radius:999px;
-            font-size:.8rem;
-            font-weight:600;
-            background:rgba(255,255,255,.16);
-            color:#fff;
-            width:max-content;
-          }
-
-          .password-hero-list{
-            display:grid;
-            gap:.7rem;
-            margin-top:1rem;
-          }
-
-          .password-hero-item{
-            display:flex;
-            gap:.75rem;
-            align-items:flex-start;
-            background:rgba(255,255,255,.10);
-            border:1px solid rgba(255,255,255,.12);
-            border-radius:1rem;
-            padding:.9rem 1rem;
-          }
-
-          .password-card{
-            background:#fff;
-          }
-
-          .password-card-body{
-            padding:1.35rem 1.2rem 1.35rem 1.2rem;
-          }
-
-          .password-section-title{
-            font-size:.82rem;
-            text-transform:uppercase;
-            letter-spacing:.05em;
-            color:#667085;
-            margin-bottom:.7rem;
-            text-align:center;
-          }
-
-          .password-input{
-            min-height:54px;
-            border-radius:1rem;
-            border:1px solid #dfe7f2;
-          }
-
-          .password-addon{
-            border-radius:0 1rem 1rem 0 !important;
-          }
-
-          .password-helper{
-            color:#6b7280;
-            font-size:.95rem;
-            line-height:1.55;
-            text-align:center;
-          }
-
-          .password-submit{
-            border-radius:1rem;
-            padding:.85rem 1.1rem;
-            font-weight:600;
-            box-shadow:0 8px 24px rgba(0,0,0,.06);
-          }
-
-          @media (max-width: 991px){
-            .password-grid{
-              grid-template-columns:1fr;
-            }
-          }
-
-          @media (max-width: 549px){
-            .password-hero,
-            .password-card{
-              border-radius:1rem;
-            }
-
-            .password-hero{
-              padding:1.1rem 1rem;
-            }
-
-            .password-card-body{
-              padding:1.1rem 1rem;
-            }
-          }
-        </style>
-
-        <div class="password-shell">
+      <div class="apuntes-shell">
+        <div class="login-shell">
 
           <?php
             if(!empty($alerta_login)){
@@ -195,58 +69,68 @@
             }
           ?>
 
-          <form class="needs-validation" action="nuevo_password.php" method="post" novalidate autocomplete="off">
-            <div class="password-grid">
 
-              <div class="password-hero">
+        <div class="about-card about-welcome-card mb-3">
+
+          <div class="about-welcome-body">
+            <div class="about-section-title text-center">Recuperación</div>
+
+            <h2 class="about-welcome-title">
+              Recuperación de Contraseña
+            </h2>
+
+            <div class="about-title-line"></div>
+
+            <p class="about-welcome-text">
+              Ingresa tu correo electrónico y te enviaremos un mensaje con instrucciones para recuperar el acceso.
+            </p>
+
+            <div class="about-feature-grid">
+
+              <div class="about-feature-card">
+                <i class="fa-solid fa-envelope"></i>
                 <div>
-                  <div class="small opacity-75 mb-2">APP clínica • recuperación de acceso</div>
-                  <span class="password-pill mb-3">Contraseña</span>
-                  <h1 class="h3 mb-3">¿Olvidaste tu contraseña? <i class="fa-solid fa-key ps-2"></i></h1>
-                  <div class="text-white-50">Ingresa tu correo electrónico y te enviaremos un mensaje con instrucciones para recuperar el acceso.</div>
-                </div>
-
-                <div class="password-hero-list">
-                  <div class="password-hero-item">
-                    <i class="fa-solid fa-envelope pt-1"></i>
-                    <div>La recuperación se realiza mediante correo electrónico.</div>
-                  </div>
-                  <div class="password-hero-item">
-                    <i class="fa-solid fa-shield-halved pt-1"></i>
-                    <div>Solo cuentas validadas y activas dentro del sistema pueden solicitar recuperación.</div>
-                  </div>
-                  <div class="password-hero-item">
-                    <i class="fa-solid fa-user-check pt-1"></i>
-                    <div>Si tienes problemas, contacta a un administrador del programa.</div>
-                  </div>
+                  <strong>Correo registrado</strong>
+                  <span>Enviaremos un correo a tu email registrado</span>
                 </div>
               </div>
 
-              <div class="password-card">
-                <div class="password-card-body">
-                  <div class="password-section-title">Recuperación</div>
+              <div class="about-feature-card">
+                <i class="fa-solid fa-key"></i>
+                <div>
+                  <strong>Contraseña</strong>
+                  <span>tendrás algunos minutos para crear una nueva contraseña</span>
+                </div>
+              </div>
 
-                  <div class="password-helper mb-4">
-                    Por favor, ingresa tu correo electrónico y te enviaremos un mail con la información necesaria.
-                  </div>
+            </div>
 
-                  <div class="mb-3">
+          </div>
+        </div>
+
+
+          <form class="needs-validation" action="nuevo_password.php" method="post" novalidate autocomplete="off">
+            <section class="about-card login-panel-card mb-3">
+              <div class="login-card-body">
+
+                <div class="login-form-box">
+
+                  <div class="mb-3 auth-full auth-field-narrow">
                     <label class="form-label text-muted">E-Mail</label>
                     <div class="input-group">
-                      <input type="email" name="email_usuario_r" class="form-control password-input" required>
-                      <span class="input-group-text bg-primary text-white password-addon"><i class="fa fa-envelope"></i></span>
+                      <input type="email" name="email_usuario_r" class="form-control login-input" required>
+                      <span class="input-group-text app-input-addon login-addon"><i class="fa fa-envelope"></i></span>
                     </div>
                   </div>
 
-                  <div class="pt-3">
-                    <button type="submit" name="registro" class="btn btn-primary btn-lg password-submit">
+                  <div class="pt-3 text-center auth-full">
+                    <button type="submit" name="registro" class="btn btn-app-primary login-submit">
                       <i class="fa-solid fa-paper-plane pe-2"></i>Enviar
                     </button>
                   </div>
                 </div>
               </div>
-
-            </div>
+            </section>
           </form>
 
           <script>

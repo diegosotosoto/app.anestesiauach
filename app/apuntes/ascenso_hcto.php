@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "Transfusión de CE en alícuotas";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "Calculadora docente para estimar volumen de concentrado eritrocitario necesario para alcanzar un hematocrito objetivo y el ascenso esperado tras transfundir una alícuota, especialmente útil en pediatría.";
@@ -17,7 +17,7 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=2">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=2"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
@@ -228,6 +228,7 @@ require("../head.php");
             }
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · HEMOTERAPIA · PEDIATRÍA</div>
@@ -377,25 +378,27 @@ require("../head.php");
           </div>
         </div>
 
-        <div class="note-summary-box mb-3">
-          <div class="note-summary-box-title">Resumen</div>
-          <div id="summaryNarrative" class="note-summary-box-text">Ingresa peso y hematocritos para estimar volumen requerido. Ingresa alícuota para estimar ascenso.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item">
-              <div class="note-summary-k">Paciente / VSE</div>
-              <div id="summaryVSE" class="note-summary-v">-</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Objetivo</div>
-              <div id="summaryTarget" class="note-summary-v">-</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">CE</div>
-              <div id="summaryCE" class="note-summary-v">Hto 55%</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Alícuota</div>
-              <div id="summaryAliquot" class="note-summary-v">-</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-card-title">Resumen</div>
+            <div id="summaryNarrative" class="note-summary-box-text mb-3">Ingresa peso y hematocritos para estimar volumen requerido. Ingresa alícuota para estimar ascenso.</div>
+            <div class="note-result-grid-2">
+              <div class="note-result-card">
+                <div class="note-result-card-label">Paciente / VSE</div>
+                <div id="summaryVSE" class="note-result-card-value">-</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Objetivo</div>
+                <div id="summaryTarget" class="note-result-card-value">-</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">CE</div>
+                <div id="summaryCE" class="note-result-card-value">Hto 55%</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Alícuota</div>
+                <div id="summaryAliquot" class="note-result-card-value">-</div>
+              </div>
             </div>
           </div>
         </div>
@@ -473,12 +476,12 @@ require("../head.php");
         <div class="note-card mb-3">
           <div class="note-card-body">
             <div class="note-section-label">Conducta práctica</div>
-            <div id="actionList" class="hcto-action-list">
-              <div class="hcto-action-item">
-                <div class="hcto-action-mark mid"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <div class="hcto-action-copy">
-                  <div class="hcto-action-title">Completa datos para calcular</div>
-                  <p class="hcto-action-note">Peso y volemia permiten estimar VSE; hematocritos y alícuota permiten estimar volumen requerido y respuesta esperada.</p>
+            <div id="actionList" class="note-warning-list">
+              <div class="note-warning-item">
+                <div class="note-warning-icon mid"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Completa datos para calcular</div>
+                  <p class="note-warning-note">Peso y volemia permiten estimar VSE; hematocritos y alícuota permiten estimar volumen requerido y respuesta esperada.</p>
                 </div>
               </div>
             </div>
@@ -571,11 +574,11 @@ require("../head.php");
 
     document.getElementById('actionList').innerHTML = items.map(function(item){
       const icon = item[0] === 'ok' ? 'fa-check' : (item[0] === 'mid' ? 'fa-triangle-exclamation' : 'fa-bolt');
-      return '<div class="hcto-action-item">' +
-        '<div class="hcto-action-mark ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
-        '<div class="hcto-action-copy">' +
-          '<div class="hcto-action-title">' + item[1] + '</div>' +
-          '<p class="hcto-action-note">' + item[2] + '</p>' +
+      return '<div class="note-warning-item">' +
+        '<div class="note-warning-icon ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
+        '<div class="note-warning-copy">' +
+          '<div class="note-warning-title">' + item[1] + '</div>' +
+          '<p class="note-warning-note">' + item[2] + '</p>' +
         '</div>' +
       '</div>';
     }).join('');

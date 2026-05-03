@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "ECG e isquemia";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "Apunte interactivo para seleccionar modalidad de monitorización ECG intraoperatoria, priorizar derivaciones según territorio/arteria de interés y recordar la correlación anatómica práctica para detección de isquemia.";
@@ -21,7 +21,7 @@ $img_coronarias  = "img_apuntes/" . rawurlencode("Coronary.jpeg");
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=1">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=1"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
@@ -162,6 +162,7 @@ require("../head.php");
             }
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · MONITORIZACIÓN INTRAOPERATORIA</div>
@@ -270,22 +271,22 @@ require("../head.php");
         <div class="note-summary-box mb-3">
           <div class="note-summary-box-title">Resumen</div>
           <div id="summaryNarrative" class="note-summary-box-text">Screening general con 3 electrodos. En anestesia, V5 modificada o DII según objetivo clínico.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item">
-              <div class="note-summary-k">Modo</div>
-              <div id="summaryMode" class="note-summary-v">3 electrodos</div>
+          <div class="note-result-grid-2 mt-2">
+            <div class="note-result-card">
+              <div class="note-result-card-label">Modo</div>
+              <div id="summaryMode" class="note-result-card-value">3 electrodos</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Territorio</div>
-              <div id="summaryTerritory" class="note-summary-v">Screening general</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Territorio</div>
+              <div id="summaryTerritory" class="note-result-card-value">Screening general</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Derivaciones sugeridas</div>
-              <div id="summaryLeads" class="note-summary-v">V5 modificada o DII</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Derivaciones sugeridas</div>
+              <div id="summaryLeads" class="note-result-card-value">V5 modificada o DII</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Sensibilidad aproximada</div>
-              <div id="summarySensitivity" class="note-summary-v">V5 ≈ 75%</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Sensibilidad aproximada</div>
+              <div id="summarySensitivity" class="note-result-card-value">V5 ≈ 75%</div>
             </div>
           </div>
         </div>

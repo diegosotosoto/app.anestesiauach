@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "Cormack-Lehane";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "La clasificación de Cormack-Lehane describe la visión laringoscópica obtenida durante la laringoscopía directa. Sirve para documentar la dificultad real de exposición glótica, orientar la planificación de futuros abordajes y registrar qué maniobras o dispositivos fueron necesarios.";
 
@@ -17,7 +17,7 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=1">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=1"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
@@ -26,14 +26,6 @@ require("../head.php");
       <div class="note-shell px-1 px-md-0 py-0">
 
 <style>
-:root{
-  --cl-grade-1:#e8f7f2;
-  --cl-grade-2a:#fff9e8;
-  --cl-grade-2b:#fff2c7;
-  --cl-grade-3:#fff0e1;
-  --cl-grade-4:#fdebec;
-}
-
 .cl-grade-grid{
   display:grid;
   grid-template-columns:repeat(5,minmax(0,1fr));
@@ -55,12 +47,6 @@ require("../head.php");
   line-height:1.1;
 }
 
-.cl-grade-1{background:var(--cl-grade-1);}
-.cl-grade-2a{background:var(--cl-grade-2a);}
-.cl-grade-2b{background:var(--cl-grade-2b);}
-.cl-grade-3{background:var(--cl-grade-3);}
-.cl-grade-4{background:var(--cl-grade-4);}
-
 .cl-main-grid{
   display:grid;
   grid-template-columns:1fr;
@@ -81,28 +67,9 @@ require("../head.php");
   object-fit:cover;
 }
 
-.cl-grade-panel{
-  border-radius:1rem;
-  padding:1rem;
-  border:1px solid transparent;
-}
-
-.cl-grade-panel.grade-1{background:#e9f8ef;border-color:#b7e4c7;}
-.cl-grade-panel.grade-2a{background:#fff8db;border-color:#f4d35e;}
-.cl-grade-panel.grade-2b{background:#fff2c7;border-color:#e9c46a;}
-.cl-grade-panel.grade-3{background:#fff0e1;border-color:#f7b267;}
-.cl-grade-panel.grade-4{background:#fdebec;border-color:#f2a7b1;}
+.cl-grade-panel{border-radius:1rem;padding:1rem;border:1px solid transparent;}
 
 .cl-meta-stack{display:grid;gap:.8rem;}
-
-.cl-grade-summary .note-summary-box-title{color:#344054;}
-.cl-grade-summary .note-summary-box-text{margin-bottom:.5rem;}
-.cl-grade-summary{border:none;box-shadow:none;}
-.cl-grade-summary.grade-1{background:#e9f8ef;border-color:transparent;}
-.cl-grade-summary.grade-2a{background:#fff8db;border-color:transparent;}
-.cl-grade-summary.grade-2b{background:#fff2c7;border-color:transparent;}
-.cl-grade-summary.grade-3{background:#fff0e1;border-color:transparent;}
-.cl-grade-summary.grade-4{background:#fdebec;border-color:transparent;}
 
 .cl-reference-grid{display:grid;gap:.75rem;}
 
@@ -120,6 +87,7 @@ require("../head.php");
   .cl-main-grid{grid-template-columns:1fr;}
 }
 </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · LARINGOSCOPÍA DIRECTA</div>
@@ -157,37 +125,32 @@ require("../head.php");
             <div class="cl-grade-grid">
               <div class="cl-grade-option">
                 <input class="note-check cl-trigger" type="radio" name="clgrade" id="cl1" value="1" checked>
-                <label class="note-option cl-grade-1" for="cl1">
-                  <span>Grado I</span>
-                  <small>Glotis completa</small>
+                <label class="note-option note-grade-1" for="cl1">
+                  <span class="clgradefill clg1"><span>Grado I</span><small>Glotis completa</small></span>
                 </label>
               </div>
               <div class="cl-grade-option">
                 <input class="note-check cl-trigger" type="radio" name="clgrade" id="cl2a" value="2a">
-                <label class="note-option cl-grade-2a" for="cl2a">
-                  <span>Grado IIa</span>
-                  <small>Visión parcial</small>
+                <label class="note-option note-grade-2" for="cl2a">
+                  <span class="clgradefill clg2"><span>Grado IIa</span><small>Visión parcial</small></span>
                 </label>
               </div>
               <div class="cl-grade-option">
                 <input class="note-check cl-trigger" type="radio" name="clgrade" id="cl2b" value="2b">
-                <label class="note-option cl-grade-2b" for="cl2b">
-                  <span>Grado IIb</span>
-                  <small>Aritenoides</small>
+                <label class="note-option note-grade-2b" for="cl2b">
+                  <span class="clgradefill clg2b"><span>Grado IIb</span><small>Aritenoides</small></span>
                 </label>
               </div>
               <div class="cl-grade-option">
                 <input class="note-check cl-trigger" type="radio" name="clgrade" id="cl3" value="3">
-                <label class="note-option cl-grade-3" for="cl3">
-                  <span>Grado III</span>
-                  <small>Solo epiglotis</small>
+                <label class="note-option note-grade-3" for="cl3">
+                  <span class="clgradefill clg3"><span>Grado III</span><small>Solo epiglotis</small></span>
                 </label>
               </div>
               <div class="cl-grade-option">
                 <input class="note-check cl-trigger" type="radio" name="clgrade" id="cl4" value="4">
-                <label class="note-option cl-grade-4" for="cl4">
-                  <span>Grado IV</span>
-                  <small>Ni glotis ni epiglotis</small>
+                <label class="note-option note-grade-4" for="cl4">
+                  <span class="clgradefill clg4"><span>Grado IV</span><small>Ni glotis ni epiglotis</small></span>
                 </label>
               </div>
             </div>
@@ -207,22 +170,22 @@ require("../head.php");
                   <div id="gradeSummaryBox" class="note-summary-box cl-grade-summary grade-1">
                     <div class="note-summary-box-title">Resumen</div>
                     <div id="summaryNarrative" class="note-summary-box-text">Cormack-Lehane I: glotis completa visible, compatible con exposición glótica favorable.</div>
-                    <div class="note-summary-grid-2">
-                      <div class="note-summary-item">
-                        <div class="note-summary-k">Grado seleccionado</div>
-                        <div id="summaryGrade" class="note-summary-v">Grado I</div>
+                    <div class="note-result-grid-2 mt-2">
+                      <div class="note-result-card">
+                        <div class="note-result-card-label">Grado seleccionado</div>
+                        <div id="summaryGrade" class="note-result-card-value">Grado I</div>
                       </div>
-                      <div class="note-summary-item">
-                        <div class="note-summary-k">Visión</div>
-                        <div id="summaryVision" class="note-summary-v">Glotis completa visible</div>
+                      <div class="note-result-card">
+                        <div class="note-result-card-label">Visión</div>
+                        <div id="summaryVision" class="note-result-card-value">Glotis completa visible</div>
                       </div>
-                      <div class="note-summary-item">
-                        <div class="note-summary-k">Lectura clínica</div>
-                        <div id="summaryMeaning" class="note-summary-v">Laringoscopía favorable</div>
+                      <div class="note-result-card">
+                        <div class="note-result-card-label">Lectura clínica</div>
+                        <div id="summaryMeaning" class="note-result-card-value">Laringoscopía favorable</div>
                       </div>
-                      <div class="note-summary-item">
-                        <div class="note-summary-k">Conducta inmediata</div>
-                        <div id="summaryAction" class="note-summary-v">Documentar el grado real y el contexto</div>
+                      <div class="note-result-card">
+                        <div class="note-result-card-label">Conducta inmediata</div>
+                        <div id="summaryAction" class="note-result-card-value">Documentar el grado real y el contexto</div>
                       </div>
                     </div>
                   </div>
@@ -240,7 +203,7 @@ require("../head.php");
         </div>
 
         <div class="note-warning mb-3">
-          <div class="note-card-title">Advertencia visible</div>
+          <div class="fw-bold mb-2">Advertencia visible</div>
           <div id="warningText">No confundas Cormack-Lehane con Mallampati. Mallampati es preoperatorio; Cormack-Lehane es una clasificación intraoperatoria durante laringoscopía.</div>
         </div>
 
@@ -248,25 +211,20 @@ require("../head.php");
           <div class="note-card-body">
             <div class="note-section-label">Resumen rápido por grados</div>
             <div class="cl-reference-grid">
-              <div class="cl-reference-card" style="background:#e9f8ef;border-color:#b7e4c7;">
-                <b>Grado I</b>
-                Se visualiza la glotis completa.
+              <div class="cl-reference-card note-grade-card-1">
+                <div class="clgradecardfill clg1"><b>Grado I</b><span>Se visualiza la glotis completa.</span></div>
               </div>
-              <div class="cl-reference-card" style="background:#fff8db;border-color:#f4d35e;">
-                <b>Grado IIa</b>
-                Se visualiza parte de la glotis, habitualmente su porción posterior.
+              <div class="cl-reference-card note-grade-card-2">
+                <div class="clgradecardfill clg2"><b>Grado IIa</b><span>Se visualiza parte de la glotis, habitualmente su porción posterior.</span></div>
               </div>
-              <div class="cl-reference-card" style="background:#fff2c7;border-color:#e9c46a;">
-                <b>Grado IIb</b>
-                Se observan solo aritenoides o una mínima porción posterior de la glotis.
+              <div class="cl-reference-card note-grade-card-2b">
+                <div class="clgradecardfill clg2b"><b>Grado IIb</b><span>Se observan solo aritenoides o una mínima porción posterior de la glotis.</span></div>
               </div>
-              <div class="cl-reference-card" style="background:#fff0e1;border-color:#f7b267;">
-                <b>Grado III</b>
-                No se ve la glotis; solo se observa la epiglotis.
+              <div class="cl-reference-card note-grade-card-3">
+                <div class="clgradecardfill clg3"><b>Grado III</b><span>No se ve la glotis; solo se observa la epiglotis.</span></div>
               </div>
-              <div class="cl-reference-card" style="background:#fdebec;border-color:#f2a7b1;">
-                <b>Grado IV</b>
-                No se observa ni glotis ni epiglotis.
+              <div class="cl-reference-card note-grade-card-4">
+                <div class="clgradecardfill clg4"><b>Grado IV</b><span>No se observa ni glotis ni epiglotis.</span></div>
               </div>
             </div>
           </div>

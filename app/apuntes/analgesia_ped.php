@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "Analgesia EV Pediátrica";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "Apunte interactivo para analgesia endovenosa perioperatoria pediátrica. Permite seleccionar peso, rango etáreo, grupo farmacológico, modo de uso y fármaco para obtener dosis orientativas, interpretación clínica y advertencias de seguridad.";
@@ -18,7 +18,7 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=2">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=2"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
@@ -184,10 +184,10 @@ require("../head.php");
             margin-bottom:0;
           }
 
-          .analg-drug-option.drug-opioid{background:var(--drug-opioid);}
-          .analg-drug-option.drug-local{background:var(--drug-local);}
-          .analg-drug-option.drug-inductor{background:var(--drug-inductor);}
-          .analg-drug-option.drug-other{background:var(--drug-other);}
+          /* drug buttons use standardized drug-card classes from clinical-note-system.css */
+          .analg-drug-grid > label{display:flex;}
+          .analg-drug-grid .drug-card{height:100%;width:100%;align-items:center;justify-content:flex-start;text-align:left;}
+          .analg-input:checked + .drug-card{box-shadow:0 0 0 3px rgba(47,128,237,.3), 0 4px 12px rgba(15,23,42,.15);transform:translateY(-1px);}
 
           @media (max-width:768px){
             .analg-choice-grid.analg-grid-3,
@@ -206,6 +206,7 @@ require("../head.php");
             }
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · ANALGESIA PEDIÁTRICA · EV</div>
@@ -349,25 +350,27 @@ require("../head.php");
           </div>
         </div>
 
-        <div class="note-summary-box mb-3">
-          <div class="note-summary-box-title">Resumen</div>
-          <div id="summaryNarrative" class="note-summary-box-text">Ingresa peso y selecciona edad, grupo, modo y fármaco para calcular dosis orientativa.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item">
-              <div class="note-summary-k">Paciente</div>
-              <div id="summaryPatient" class="note-summary-v">-</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Fármaco</div>
-              <div id="summaryDrug" class="note-summary-v">Paracetamol</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Modo</div>
-              <div id="summaryMode" class="note-summary-v">Bolo</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Clase</div>
-              <div id="summaryClass" class="note-summary-v">No opioide</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-card-title">Resumen</div>
+            <div id="summaryNarrative" class="note-summary-box-text mb-3">Ingresa peso y selecciona edad, grupo, modo y fármaco para calcular dosis orientativa.</div>
+            <div class="note-result-grid-2">
+              <div class="note-result-card">
+                <div class="note-result-card-label">Paciente</div>
+                <div id="summaryPatient" class="note-result-card-value">-</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Fármaco</div>
+                <div id="summaryDrug" class="note-result-card-value">Paracetamol</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Modo</div>
+                <div id="summaryMode" class="note-result-card-value">Bolo</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Clase</div>
+                <div id="summaryClass" class="note-result-card-value">No opioide</div>
+              </div>
             </div>
           </div>
         </div>
@@ -428,12 +431,12 @@ require("../head.php");
         <div class="note-card mb-3">
           <div class="note-card-body">
             <div class="note-section-label">Conducta práctica</div>
-            <div id="actionList" class="analg-action-list">
-              <div class="analg-action-item">
-                <div class="analg-action-mark mid"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <div class="analg-action-copy">
-                  <div class="analg-action-title">Completa datos para calcular</div>
-                  <p class="analg-action-note">La dosis depende de peso, edad, fármaco, modo y monitorización disponible.</p>
+            <div id="actionList" class="note-warning-list">
+              <div class="note-warning-item">
+                <div class="note-warning-icon mid"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Completa datos para calcular</div>
+                  <p class="note-warning-note">La dosis depende de peso, edad, fármaco, modo y monitorización disponible.</p>
                 </div>
               </div>
             </div>
@@ -610,10 +613,11 @@ require("../head.php");
       const id = 'drug_' + key;
       return '<label>' +
         '<input class="analg-input note-trigger" type="radio" name="farmaco" id="' + id + '" value="' + key + '"' + (index === 0 ? ' checked' : '') + '>' +
-        '<div class="analg-option analg-drug-option ' + drugClassToCss(drug.clase) + '">' +
-          '<i class="fa-solid fa-vial"></i>' +
-          '<div class="analg-option-title">' + drug.nombre + '</div>' +
-          '<div class="analg-option-sub">' + groupText(grupo) + '</div>' +
+        '<div class="drug-card ' + drugClassToCss(drug.clase) + '">' +
+          '<div class="drug-label-content">' +
+            '<div class="drug-label-title"><i class="fa-solid fa-vial pe-2"></i>' + drug.nombre + '</div>' +
+            '<div class="drug-label-subtitle">' + groupText(grupo) + '</div>' +
+          '</div>' +
         '</div>' +
       '</label>';
     }).join('');
@@ -652,11 +656,11 @@ require("../head.php");
 
     document.getElementById('actionList').innerHTML = items.map(function(item){
       const icon = item[0] === 'ok' ? 'fa-check' : (item[0] === 'mid' ? 'fa-triangle-exclamation' : 'fa-bolt');
-      return '<div class="analg-action-item">' +
-        '<div class="analg-action-mark ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
-        '<div class="analg-action-copy">' +
-          '<div class="analg-action-title">' + item[1] + '</div>' +
-          '<p class="analg-action-note">' + item[2] + '</p>' +
+      return '<div class="note-warning-item">' +
+        '<div class="note-warning-icon ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
+        '<div class="note-warning-copy">' +
+          '<div class="note-warning-title">' + item[1] + '</div>' +
+          '<p class="note-warning-note">' + item[2] + '</p>' +
         '</div>' +
       '</div>';
     }).join('');
@@ -684,6 +688,8 @@ require("../head.php");
     const drug = farmacoKey ? DRUGS[grupo][farmacoKey] : null;
 
     setText('summaryPatient', (peso && peso > 0 ? fmt(peso,2) + ' kg' : '-') + ' · ' + ageText(edad));
+    const drugLabelEl = document.getElementById('summaryDrugLabel');
+    if(drugLabelEl && drug){ drugLabelEl.className = 'drug-label ' + (drugClassToCss(drug.clase) || 'drug-other'); }
     setText('summaryDrug', drug ? drug.nombre : '-');
     setText('summaryMode', modeText(modo));
     setText('summaryClass', groupText(grupo));

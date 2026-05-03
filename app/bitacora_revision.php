@@ -25,7 +25,7 @@ if($usuario['admin']==1){
 }
 
 //VARIABLES
-$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler="<a class='d-sm-block d-sm-none admin-back-btn' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar="<span class='text-white'>Bitácora</span>";
 $boton_navbar="<a></a>";
 
@@ -34,119 +34,6 @@ require("head.php");
 ?>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
-
-<style>
-  .bitacora-shell{
-    max-width:980px;
-    margin:0 auto;
-  }
-
-  .bitacora-topbar{
-    background:linear-gradient(135deg, #27458f, #3559b7);
-    color:#fff;
-    border-radius:1.25rem;
-    box-shadow:0 8px 24px rgba(0,0,0,.06);
-    padding:1.15rem 1.25rem;
-    margin-bottom:1rem;
-  }
-
-  .bitacora-topbar h1{
-    color:#fff;
-  }
-
-  .subtle{
-    font-size:.92rem;
-  }
-
-  .pill{
-    display:inline-block;
-    padding:.25rem .6rem;
-    border-radius:999px;
-    font-size:.8rem;
-    font-weight:600;
-  }
-
-  .bitacora-tabs{
-    margin-bottom:1rem;
-  }
-
-  .bitacora-tabs .nav-link{
-    border-radius:.85rem;
-    margin-right:.5rem;
-    color:#3559b7;
-  }
-
-  .bitacora-tabs .nav-link.active{
-    background:#3559b7;
-    color:#fff;
-    border-color:#3559b7;
-  }
-
-  .bitacora-tabs span.nav-link{
-    display:block;
-    cursor:default;
-  }
-
-  .bitacora-section-card,
-  .bitacora-entry-card{
-    border:0;
-    border-radius:1rem;
-    box-shadow:0 8px 24px rgba(0,0,0,.06);
-    background:#fff;
-  }
-
-  .bitacora-section-card{
-    margin-bottom:1rem;
-  }
-
-  .bitacora-section-header{
-    background:linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);
-    border-bottom:1px solid #e9eef5;
-    padding:1rem 1.1rem;
-    border-radius:1rem 1rem 0 0;
-  }
-
-  .bitacora-entry-card{
-    margin-bottom:1rem;
-    overflow:hidden;
-  }
-
-  .bitacora-entry-body{
-    padding:1.1rem 1.1rem 1.2rem 1.1rem;
-  }
-
-  .bitacora-field-label{
-    font-size:.82rem;
-    text-transform:uppercase;
-    letter-spacing:.05em;
-    color:#667085;
-    margin-bottom:.55rem;
-  }
-
-  .bitacora-select{
-    min-height:52px;
-    border-radius:.95rem;
-    border:1px solid #dfe7f2;
-  }
-
-  .bitacora-action{
-    border-radius:.95rem;
-    font-weight:600;
-    padding:.8rem 1rem;
-    min-width:120px;
-  }
-
-  @media (max-width: 767px){
-    .bitacora-inline{
-      display:grid !important;
-      gap:.8rem;
-    }
-
-    .bitacora-action{
-      width:100%;
-    }
-  }
-</style>
 
 <div class="apunte-surface">
   <div class="container-fluid px-0 px-md-2">
@@ -172,13 +59,6 @@ require("head.php");
         </li>
       </ul>
 
-      <div class="bitacora-section-card">
-        <div class="bitacora-section-header">
-          <h4 class="mb-1 fw-bold">Revisar Bitácora</h4>
-          <div class="text-black-50" style="font-size:14px">Accede a la revisión individual de becados, internos y pasantes.</div>
-        </div>
-      </div>
-
       <div class="bitacora-entry-card">
         <div class="bitacora-entry-body">
           <form action='bitacora_estadistica.php' method='post'>
@@ -195,7 +75,7 @@ require("head.php");
                   }
                 ?>
               </select>
-              <button class='btn btn-primary bitacora-action' type='submit' name='editar'>Revisar</button>
+              <button class='btn btn-app-primary bitacora-action' type='submit' name='editar'>Revisar</button>
             </div>
           </form>
         </div>
@@ -217,7 +97,7 @@ require("head.php");
                   }
                 ?>
               </select>
-              <button class='btn btn-primary bitacora-action' type='submit' name='editar'>Revisar</button>
+              <button class='btn btn-app-primary bitacora-action' type='submit' name='editar'>Revisar</button>
             </div>
           </form>
         </div>

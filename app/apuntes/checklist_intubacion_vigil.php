@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "Checklist intubación vigil";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' style='width:50px; height:40px; --bs-border-opacity: .1;' type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation'> ? </button>";
+$boton_navbar = "<button class='app-nav-action' type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "Checklist interactivo para preparación y ejecución de intubación vigil. Ordena preparación del paciente, equipo, procedimiento y verificación final, incorporando un cálculo orientativo del tope total de lidocaína.";
@@ -29,41 +29,18 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=20260416-3">
-<script src="js/clinical-note-system.js?v=20260416-1"></script>
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
+<script src="js/clinical-note-system.js?v=<?= @filemtime($app_root_dir . '/apuntes/js/clinical-note-system.js') ?: time() ?>"></script>
 
 <style>
   .last-shell{max-width:980px;margin:0 auto;}
-  .last-checklist-section{background:#fff;border:1px solid var(--note-line);border-radius:1.1rem;overflow:hidden;margin-bottom:1rem;}
-  .last-checklist-head{padding:1rem 1rem .95rem 1rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;cursor:pointer;}
-  .last-checklist-title{font-size:1.03rem;font-weight:800;color:var(--note-text);line-height:1.2;margin:0;}
-  .last-checklist-help{font-size:.9rem;color:var(--note-muted);line-height:1.4;margin:.2rem 0 0 0;}
-  .last-checklist-chevron{flex:0 0 auto;color:var(--note-muted);font-size:1rem;transition:transform .18s ease;}
-  .last-checklist-section.is-collapsed .last-checklist-chevron{transform:rotate(-90deg);}
-  .last-checklist-body{padding:0 1rem 1rem 1rem;border-top:1px solid #e9eef5;}
-  .last-checklist-section.is-collapsed .last-checklist-body{display:none;}
-
-  .last-checklist-list{display:grid;gap:.75rem;}
-  .last-check-item{display:flex;align-items:flex-start;gap:.8rem;padding:.9rem .95rem;border:1px solid var(--note-line);border-radius:1rem;background:#fff;cursor:pointer;}
-  .last-check-item.is-done{background:#f4fbf7;border-color:#cfe8d9;}
-  .last-check-input{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;}
-  .last-check-mark{flex:0 0 auto;width:24px;height:24px;border-radius:999px;border:2px solid #b9c3d0;display:flex;align-items:center;justify-content:center;margin-top:.1rem;background:#fff;color:#fff;}
-  .last-check-item.is-done .last-check-mark{background:#2f9e62;border-color:#2f9e62;}
-  .last-check-copy{min-width:0;flex:1;}
-  .last-check-title{font-size:.96rem;font-weight:800;color:var(--note-text);line-height:1.25;margin:0 0 .12rem 0;}
-  .last-check-note{font-size:.88rem;color:var(--note-muted);line-height:1.4;margin:0;}
-
-  .iv-subtle-card{background:#fff;border:1px solid var(--note-line);border-radius:1rem;padding:1rem;}
-  .iv-record-box{background:var(--note-brand-soft);border:1px solid var(--note-brand-soft-border);border-radius:1rem;padding:1rem;}
-  .iv-record-output{width:100%;min-height:170px;border:1px solid #d0d5dd;border-radius:.9rem;padding:.85rem .95rem;background:#fff;color:#101828;font-size:.95rem;line-height:1.4;resize:vertical;}
+  .iv-subtle-card{background:var(--note-card);border:1px solid var(--note-line);border-radius:1rem;padding:1rem;}
   .iv-inline-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;}
-  .iv-summary-box .note-summary-item{padding:.72rem .85rem;}
-  .iv-summary-box .note-summary-v{line-height:1.15;}
-  .iv-warning-inline{background:#fff9e8;border:1px solid #ecd798;border-radius:1rem;padding:1rem;}
-  @media (max-width:768px){
-    .iv-inline-grid{grid-template-columns:1fr;}
-  }
+  .iv-warning-inline{background:var(--note-warning-bg);border:1px solid var(--note-warning-border);border-radius:1rem;padding:1rem;}
+  .last-shell .standard-note-button{min-height:80px !important;}
+  @media (max-width:768px){.iv-inline-grid{grid-template-columns:1fr;}}
 </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
@@ -99,11 +76,11 @@ require("../head.php");
               <div class="note-choice-grid">
                 <div>
                   <input class="note-check route-check" type="radio" name="route" id="routeOral" value="Oral" checked>
-                  <label class="note-option" for="routeOral"><i class="fa-solid fa-mouth"></i> Oral<small>Fibro o Ambuscope</small></label>
+                  <label class="note-option standard-note-button" for="routeOral"><i class="fa-solid fa-mouth"></i> Oral<small>Fibro o Ambuscope</small></label>
                 </div>
                 <div>
                   <input class="note-check route-check" type="radio" name="route" id="routeNasal" value="Nasal">
-                  <label class="note-option" for="routeNasal"><i class="fa-solid fa-nose"></i> Nasal<small>Vasoconstrictor + preparación nasal</small></label>
+                  <label class="note-option standard-note-button" for="routeNasal"><i class="fa-solid fa-nose"></i> Nasal<small>Vasoconstrictor + preparación</small></label>
                 </div>
               </div>
             </div>
@@ -121,22 +98,22 @@ require("../head.php");
         <div class="note-summary-box iv-summary-box mb-3">
           <div class="note-summary-box-title">Resumen</div>
           <div id="summaryNarrative" class="note-summary-box-text">Selecciona la ruta principal y, si lo deseas, agrega el peso para calcular un tope orientativo de lidocaína total.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item">
-              <div class="note-summary-k">Ruta</div>
-              <div id="summaryRoute" class="note-summary-v">Oral</div>
+          <div class="note-result-grid-2">
+            <div class="note-result-card">
+              <div class="note-result-card-label">Ruta</div>
+              <div id="summaryRoute" class="note-result-card-value">Oral</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Dispositivo</div>
-              <div id="summaryDevice" class="note-summary-v">Fibro / Ambuscope</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Dispositivo</div>
+              <div id="summaryDevice" class="note-result-card-value">Fibro / Ambuscope</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Peso usado</div>
-              <div id="summaryWeight" class="note-summary-v">No ingresado</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Peso usado</div>
+              <div id="summaryWeight" class="note-result-card-value">No ingresado</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Lidocaína total orientativa</div>
-              <div id="summaryLidoMax" class="note-summary-v">-</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Lidocaína total orientativa</div>
+              <div id="summaryLidoMax" class="note-result-card-value">-</div>
             </div>
           </div>
         </div>
@@ -161,10 +138,10 @@ require("../head.php");
         <div class="last-checklist-section" data-section="1">
           <div class="last-checklist-head">
             <div>
-              <h3 class="last-checklist-title">1. Preparación del paciente</h3>
-              <p class="last-checklist-help">Consentimiento, evaluación, educación y condiciones iniciales antes de montar la técnica.</p>
+              <div class="last-checklist-title">1. Preparación del paciente</div>
+              <div class="last-checklist-help">Consentimiento, evaluación, educación y condiciones iniciales antes de montar la técnica.</div>
             </div>
-            <i class="fa-solid fa-chevron-down last-checklist-chevron"></i>
+            <div class="last-checklist-chevron"><i class="fa-solid fa-chevron-down"></i></div>
           </div>
           <div class="last-checklist-body">
             <div class="last-checklist-list">
@@ -179,10 +156,10 @@ require("../head.php");
         <div class="last-checklist-section" data-section="2">
           <div class="last-checklist-head">
             <div>
-              <h3 class="last-checklist-title">2. Preparación del material y del pabellón</h3>
-              <p class="last-checklist-help">Material principal, oxigenación, succión, plan alternativo y ergonomía del procedimiento.</p>
+              <div class="last-checklist-title">2. Preparación del material y del pabellón</div>
+              <div class="last-checklist-help">Material principal, oxigenación, succión, plan alternativo y ergonomía del procedimiento.</div>
             </div>
-            <i class="fa-solid fa-chevron-down last-checklist-chevron"></i>
+            <div class="last-checklist-chevron"><i class="fa-solid fa-chevron-down"></i></div>
           </div>
           <div class="last-checklist-body">
             <div class="last-checklist-list">
@@ -199,10 +176,10 @@ require("../head.php");
         <div class="last-checklist-section" data-section="3">
           <div class="last-checklist-head">
             <div>
-              <h3 class="last-checklist-title">3. Justo antes de comenzar</h3>
-              <p class="last-checklist-help">Últimos pasos que ordenan el inicio del procedimiento.</p>
+              <div class="last-checklist-title">3. Justo antes de comenzar</div>
+              <div class="last-checklist-help">Últimos pasos que ordenan el inicio del procedimiento.</div>
             </div>
-            <i class="fa-solid fa-chevron-down last-checklist-chevron"></i>
+            <div class="last-checklist-chevron"><i class="fa-solid fa-chevron-down"></i></div>
           </div>
           <div class="last-checklist-body">
             <div class="last-checklist-list">
@@ -218,10 +195,10 @@ require("../head.php");
         <div class="last-checklist-section" data-section="4">
           <div class="last-checklist-head">
             <div>
-              <h3 class="last-checklist-title">4. Durante el procedimiento</h3>
-              <p class="last-checklist-help">Secuencia técnica y recordatorios que ayudan a no perder el orden.</p>
+              <div class="last-checklist-title">4. Durante el procedimiento</div>
+              <div class="last-checklist-help">Secuencia técnica y recordatorios que ayudan a no perder el orden.</div>
             </div>
-            <i class="fa-solid fa-chevron-down last-checklist-chevron"></i>
+            <div class="last-checklist-chevron"><i class="fa-solid fa-chevron-down"></i></div>
           </div>
           <div class="last-checklist-body">
             <div class="last-checklist-list">
@@ -238,10 +215,10 @@ require("../head.php");
         <div class="last-checklist-section" data-section="5">
           <div class="last-checklist-head">
             <div>
-              <h3 class="last-checklist-title">5. Post procedimiento</h3>
-              <p class="last-checklist-help">Confirmación, inducción y cierre seguro del procedimiento.</p>
+              <div class="last-checklist-title">5. Post procedimiento</div>
+              <div class="last-checklist-help">Confirmación, inducción y cierre seguro del procedimiento.</div>
             </div>
-            <i class="fa-solid fa-chevron-down last-checklist-chevron"></i>
+            <div class="last-checklist-chevron"><i class="fa-solid fa-chevron-down"></i></div>
           </div>
           <div class="last-checklist-body">
             <div class="last-checklist-list">
@@ -315,10 +292,27 @@ require("../head.php");
 
 <script>
 (function(){
-  const CNS = window.ClinicalNoteSystem;
-  if (CNS) {
-    CNS.bindSelectionSync('.route-check');
+  const CNS = window.ClinicalNoteSystem || {};
+
+  function toggleSection(section, force){
+    const shouldCollapse = typeof force === 'boolean' ? force : !section.classList.contains('is-collapsed');
+    section.classList.toggle('is-collapsed', shouldCollapse);
   }
+
+  document.querySelectorAll('.last-checklist-head').forEach(function(head){
+    head.addEventListener('click', function(){
+      const section = head.closest('.last-checklist-section');
+      if(section) toggleSection(section);
+    });
+  });
+
+  document.getElementById('expandAllBtn').addEventListener('click', function(){
+    document.querySelectorAll('.last-checklist-section').forEach(function(s){ toggleSection(s, false); });
+  });
+
+  document.getElementById('collapseAllBtn').addEventListener('click', function(){
+    document.querySelectorAll('.last-checklist-section').forEach(function(s){ toggleSection(s, true); });
+  });
 
   const checks = Array.from(document.querySelectorAll('.task-check'));
   const progressBar = document.getElementById('progressBar');
@@ -361,24 +355,12 @@ require("../head.php");
     updateRecordOutput();
   }
 
-  function toggleSection(section, force){
-    const shouldCollapse = typeof force === 'boolean' ? force : !section.classList.contains('is-collapsed');
-    section.classList.toggle('is-collapsed', shouldCollapse);
-  }
-
-  document.querySelectorAll('.last-checklist-head').forEach(function(head){
-    head.addEventListener('click', function(){
-      const section = head.closest('.last-checklist-section');
-      if(section) toggleSection(section);
-    });
-  });
-
   document.getElementById('expandAllBtn').addEventListener('click', function(){
-    document.querySelectorAll('.last-checklist-section').forEach(section => toggleSection(section, false));
+    if(CNS.expandAllChecklistSections) CNS.expandAllChecklistSections();
   });
 
   document.getElementById('collapseAllBtn').addEventListener('click', function(){
-    document.querySelectorAll('.last-checklist-section').forEach(section => toggleSection(section, true));
+    if(CNS.collapseAllChecklistSections) CNS.collapseAllChecklistSections();
   });
 
   function updateSummary(){

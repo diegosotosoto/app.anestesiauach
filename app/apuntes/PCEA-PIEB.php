@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "PIEB / PCEA";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "Apunte interactivo para preparación y programación de analgesia epidural obstétrica en modalidad PIEB/PCEA. Calcula la receta de preparación para una solución de bupivacaína 0,0625% + fentanyl 2 mcg/mL y muestra parámetros habituales de programación.";
@@ -18,7 +18,7 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=2">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=2"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
@@ -210,18 +210,7 @@ require("../head.php");
             color:var(--note-muted);
           }
 
-          .pieb-drug-chip{
-            display:inline-block;
-            padding:.22rem .48rem;
-            border-radius:.6rem;
-            font-weight:800;
-            border:1px solid rgba(31,42,55,.12);
-            line-height:1.1;
-            color:#111827;
-          }
-
-          .pieb-drug-local{background:var(--drug-local);}
-          .pieb-drug-opioid{background:var(--drug-opioid);}
+          .mt-1{margin-top:.25rem;}
 
           .pieb-recipe-box{
             background:#edf8f7;
@@ -237,6 +226,7 @@ require("../head.php");
             }
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · ANALGESIA OBSTÉTRICA · EPIDURAL</div>
@@ -288,34 +278,37 @@ require("../head.php");
               </div>
             </div>
 
+            <div class="note-section-label">Fármacos a utilizar</div>
             <div class="note-summary-grid-2 mb-0">
 
-                <div class="note-summary-v"><span class="pieb-drug-chip pieb-drug-local py-2">Bupi/Levobupivacaína 0,5%</span></div>
-                <div class="note-summary-v"><span class="pieb-drug-chip pieb-drug-opioid py-3">Fentanyl 50 mcg/mL</span></div>
+                <div class="note-summary-v"><span class="drug-card drug-local"><span class="drug-label-content"><span class="drug-label-title">Bupi/Levobupivacaína 0,5%</span></span></span></div>
+                <div class="note-summary-v"><span class="drug-card drug-opioid"><span class="drug-label-content"><span class="drug-label-title">Fentanyl 50 mcg/mL</span></span></span></div>
 
             </div>
           </div>
         </div>
 
-        <div class="note-summary-box mb-3">
-          <div class="note-summary-box-title">Resumen</div>
-          <div id="summaryNarrative" class="note-summary-box-text">Ingresa volumen final y concentración final deseada de fentanyl.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item">
-              <div class="note-summary-k">Volumen final</div>
-              <div id="summaryVolume" class="note-summary-v">-</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Bupivacaína final</div>
-              <div id="summaryBupi" class="note-summary-v">0,0625%</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Fentanyl final</div>
-              <div id="summaryFent" class="note-summary-v">-</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Programación</div>
-              <div id="summaryProgram" class="note-summary-v">0 · 9/10 · 45/60</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-card-title">Resumen</div>
+            <div id="summaryNarrative" class="note-summary-box-text mb-3">Ingresa volumen final y concentración final deseada de fentanyl.</div>
+            <div class="note-result-grid-2">
+              <div class="note-result-card">
+                <div class="note-result-card-label">Volumen final</div>
+                <div id="summaryVolume" class="note-result-card-value">-</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Bupivacaína</div>
+                <div id="summaryBupiConc" class="note-result-card-value">0,0625%</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Fentanyl</div>
+                <div id="summaryFentConc" class="note-result-card-value">-</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Programación</div>
+                <div id="summaryProgram" class="note-result-card-value">0 · 9/10 · 45/60</div>
+              </div>
             </div>
           </div>
         </div>
@@ -403,26 +396,26 @@ require("../head.php");
         <div class="note-card mb-3">
           <div class="note-card-body">
             <div class="note-section-label">Lectura clínica</div>
-            <div class="pieb-action-list">
-              <div class="pieb-action-item">
-                <div class="pieb-action-mark ok"><i class="fa-solid fa-droplet"></i></div>
-                <div>
-                  <div class="pieb-action-title">PIEB distribuye volumen de forma intermitente</div>
-                  <p class="pieb-action-note">El beneficio práctico no es solo usar menos droga: los bolos intermitentes favorecen distribución epidural más homogénea.</p>
+            <div class="note-warning-list">
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-check"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">PIEB distribuye volumen de forma intermitente</div>
+                  <p class="note-warning-note">El beneficio práctico no es solo usar menos droga: los bolos intermitentes favorecen distribución epidural más homogénea.</p>
                 </div>
               </div>
-              <div class="pieb-action-item">
-                <div class="pieb-action-mark mid"><i class="fa-solid fa-person-pregnant"></i></div>
-                <div>
-                  <div class="pieb-action-title">Evaluar bloqueo motor y analgesia por etapa del trabajo de parto</div>
-                  <p class="pieb-action-note">Más concentración no siempre mejora analgesia y puede aumentar bloqueo motor; el volumen y el patrón de administración importan.</p>
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-check"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Evaluar bloqueo motor y analgesia por etapa del trabajo de parto</div>
+                  <p class="note-warning-note">Más concentración no siempre mejora analgesia y puede aumentar bloqueo motor; el volumen y el patrón de administración importan.</p>
                 </div>
               </div>
-              <div class="pieb-action-item">
-                <div class="pieb-action-mark high"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <div>
-                  <div class="pieb-action-title">No confundir receta con orden automática</div>
-                  <p class="pieb-action-note">Ajustar a respuesta clínica, altura del bloqueo, dolor irruptivo, lateralización, hipotensión, prurito y protocolo local.</p>
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-check"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">No confundir receta con orden automática</div>
+                  <p class="note-warning-note">Ajustar a respuesta clínica, altura del bloqueo, dolor irruptivo, lateralización, hipotensión, prurito y protocolo local.</p>
                 </div>
               </div>
             </div>
@@ -477,6 +470,8 @@ require("../head.php");
     if(!finalVolume || finalVolume <= 0 || !fentFinal || fentFinal <= 0 || !bupiStock || bupiStock <= 0){
       setText('summaryNarrative', 'Ingresa volumen final y concentraciones disponibles para calcular la preparación.');
       setText('summaryVolume', '-');
+      setText('summaryBupiConc', '-');
+      setText('summaryFentConc', '-');
       setText('bupiResult', '-');
       setText('bupiNote', 'Dato incompleto.');
       setText('fentResult', '-');
@@ -503,8 +498,8 @@ require("../head.php");
 
     setText('summaryNarrative', 'Solución final ' + fmt(finalVolume,0) + ' mL: bupivacaína 0,0625% + fentanyl 2 mcg/mL. Retirar ' + fmt(removeMl,1) + ' mL y reponer con los aditivos.');
     setText('summaryVolume', fmt(finalVolume,0) + ' mL');
-    setText('summaryBupi', '0,0625%');
-    setText('summaryFent', '2 mcg/mL');
+    setText('summaryBupiConc', '0,0625%');
+    setText('summaryFentConc', '2 mcg/mL');
     setText('summaryProgram', '0 · 9/10 · 45/60');
 
     setText('bupiResult', fmt(bupiMl,1) + ' mL');

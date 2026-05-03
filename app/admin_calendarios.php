@@ -293,71 +293,21 @@ if ($resAsignaciones) {
     $tablaAsignacionesExiste = false;
 }
 
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark admin-back-btn' style='--bs-border-opacity:.1;' href='index.php'><i class='fa fa-chevron-left me-1'></i>Atr&aacute;s</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white d-sm-block d-sm-none'>Calendarios</span>";
 $boton_navbar = "<a></a><a></a>";
 
 require('head.php');
 ?>
 
-<style>
-.admin-page{width:100%;max-width:1180px;margin:0 auto;padding:0 .75rem 2rem;}
-.admin-header-card,.admin-filter-card,.admin-item-card{background:#fff;border:1px solid #dbe3f0;border-radius:1.35rem;box-shadow:0 .35rem 1rem rgba(31,41,55,.05);}
-.admin-header-title{color:#1f2937;font-weight:850;margin:0;}
-.admin-header-subtitle,.admin-item-meta,.admin-help-text{color:#6b7280;}
-.admin-section-title{color:#1f2937;font-weight:850;margin:0 0 .7rem;display:flex;align-items:center;gap:.45rem;}
-.admin-form-label{color:#374151;font-size:.85rem;font-weight:800;margin-bottom:.25rem;}
-.admin-input,.admin-select{border-color:#dbe3f0;border-radius:.85rem;}
-.btn-admin-primary{background:#2f55b7;border-color:#2f55b7;color:#fff;border-radius:.85rem;font-weight:800;}
-.btn-admin-primary:hover{background:#244aa5;border-color:#244aa5;color:#fff;}
-.btn-admin-danger{background:#dc3545;border-color:#dc3545;color:#fff;border-radius:.85rem;font-weight:800;}
-.btn-admin-outline{border:1px solid #dbe3f0;color:#2f55b7;background:#fff;border-radius:.85rem;font-weight:800;}
-.admin-badge{display:inline-flex;align-items:center;border-radius:999px;padding:.25rem .6rem;font-size:.78rem;font-weight:850;}
-.admin-badge-primary{background:#eef3fb;color:#2f55b7;}
-.admin-badge-muted{background:#f3f4f6;color:#6b7280;}
-.admin-badge-success{background:#e8f6ef;color:#198754;}
-.admin-badge-warning{background:#fff8e6;color:#946200;}
-.admin-badge-purple{background:#f1e8ff;color:#6f1ed6;}
-.admin-empty-state{color:#6b7280;text-align:center;padding:2rem 1rem;}
-.admin-item-header{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start;margin-bottom:.8rem;}
-.admin-item-title{color:#1f2937;font-weight:850;}
-.admin-tabs{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem;}
-.admin-tab{border:1px solid #dbe3f0;background:#fff;color:#2f55b7;border-radius:999px;padding:.5rem .85rem;font-weight:850;text-decoration:none;}
-.admin-tab:hover{color:#244aa5;background:#eef3fb;}
-.admin-inline-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.6rem;}
-.admin-source-grid,.admin-assignment-grid{display:grid;gap:.6rem;align-items:end;grid-template-columns:minmax(160px,1.2fr) minmax(260px,2fr) minmax(150px,.9fr) 76px minmax(92px,auto);}
-.admin-assignment-grid{grid-template-columns:minmax(190px,1.4fr) minmax(180px,1.25fr) minmax(130px,.75fr) minmax(130px,.75fr) 76px minmax(92px,auto);}
-.admin-active-cell{min-width:70px;}
-.btn-admin-primary{white-space:nowrap;min-height:38px;padding-left:1rem;padding-right:1rem;}
-.admin-item-meta{word-break:break-word;overflow-wrap:anywhere;}
-.admin-user-picker{border:1px solid #dbe3f0;border-radius:1rem;background:#f8fbff;padding:.75rem;margin-bottom:.75rem;}
-.admin-user-picker-grid{display:grid;grid-template-columns:minmax(180px,.75fr) minmax(220px,1fr);gap:.65rem;align-items:end;}
-.admin-user-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:.5rem;max-height:260px;overflow:auto;padding:.25rem;margin-top:.65rem;}
-.admin-user-option{border:1px solid #dbe3f0;background:#fff;border-radius:.9rem;padding:.65rem .75rem;text-align:left;color:#1f2937;transition:.15s ease;}
-.admin-user-option:hover{border-color:#8bb8ff;background:#eef6ff;}
-.admin-user-option.is-selected{border-color:#2f55b7;background:#eef3fb;box-shadow:0 0 0 .18rem rgba(47,85,183,.16);}
-.admin-user-name{font-weight:850;line-height:1.15;}
-.admin-user-email{font-size:.82rem;color:#6b7280;overflow-wrap:anywhere;}
-.admin-user-group-badge{display:inline-flex;margin-top:.35rem;border-radius:999px;padding:.15rem .5rem;font-size:.72rem;font-weight:850;background:#eef3fb;color:#2f55b7;}
-.admin-selected-user{margin-top:.55rem;color:#198754;font-weight:800;}
-.admin-assignment-filters{display:grid;grid-template-columns:minmax(180px,.5fr) minmax(260px,1fr);gap:.65rem;align-items:end;}
-.admin-filter-summary{color:#6b7280;font-size:.9rem;margin-top:.5rem;}
-@media (max-width: 1199.98px){
-  .admin-source-grid{grid-template-columns:1fr 1fr;}
-  .admin-assignment-grid{grid-template-columns:1fr 1fr;}
-  .admin-source-grid .admin-action-cell,.admin-assignment-grid .admin-action-cell{grid-column:1 / -1;}
-}
-@media (max-width: 575.98px){.admin-item-header{flex-direction:column;}.admin-page{padding-inline:.5rem;}.admin-source-grid,.admin-assignment-grid,.admin-user-picker-grid,.admin-assignment-filters{grid-template-columns:1fr;}.admin-active-cell{min-width:0;}.btn-admin-primary{width:100%;}}
-</style>
-
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
 <main class="admin-page">
-    <div class="card admin-header-card mb-3">
-        <div class="card-body">
-            <h4 class="admin-header-title">Calendarios docentes</h4>
-            <div class="admin-header-subtitle">Administra calendarios Google, Classroom y asignaciones temporales por residente.</div>
-        </div>
-    </div>
+    <section class="app-hero app-hero-admin admin-header-card mb-3">
+        <div class="app-hero-kicker">Administración</div>
+        <h2>Calendarios docentes</h2>
+        <p>Administra calendarios Google, Classroom y asignaciones temporales por becado.</p>
+        <span class="app-hero-pill">Solo administradores</span>
+    </section>
 
     <div class="admin-tabs">
         <a class="admin-tab" href="#calendarios"><i class="fa-regular fa-calendar me-1"></i>Calendarios fuente</a>
@@ -494,7 +444,7 @@ require('head.php');
             <form method="post">
                 <input type="hidden" name="accion" value="guardar_asignacion">
                 <div class="admin-assignment-grid">
-                    <div class="admin-user-picker" style="grid-column:1 / -1;">
+                    <div class="admin-user-picker admin-grid-full">
                         <input type="hidden" name="usuario_id" id="asignar_usuario_id" required>
                         <div class="admin-user-picker-grid">
                             <div>

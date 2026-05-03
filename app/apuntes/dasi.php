@@ -2,9 +2,9 @@
 $titulo_pagina = "DASI";
 $navbar_titulo = "Apuntes";
 
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "Apunte interactivo para estimar capacidad funcional con el cuestionario DASI en español adaptado a población chilena. Permite obtener puntaje total, VO₂ estimado, METs estimados y una orientación práctica para evaluación perioperatoria, especialmente en cirugía no cardíaca.";
@@ -19,7 +19,7 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=1">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=1"></script>
 
 <style>
@@ -30,12 +30,14 @@ require("../head.php");
     background:#eef3ff;color:#3559b7;font-weight:800;font-size:.92rem;
   }
   .dasi-layout{display:grid;grid-template-columns:1.2fr .8fr;gap:1rem;}
+  .dasi-layout .note-input-group{background:transparent !important;border:none !important;padding:0 !important;}
   .dasi-question-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;}
   .dasi-question-card{
     border:1px solid var(--note-line);background:#fff;border-radius:1rem;padding:.9rem;
     box-shadow:0 4px 14px rgba(15,23,42,.04);
   }
   .dasi-question-text{font-size:.92rem;font-weight:700;color:#3559b7;line-height:1.35;margin-bottom:.7rem;}
+  body.theme-dark .dasi-question-text{color:#8bb3ff;}
   .dasi-question-points{font-size:.78rem;color:var(--note-muted);margin-bottom:.55rem;}
   .dasi-choice-inline{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem;}
   .dasi-yn-label{
@@ -72,9 +74,12 @@ require("../head.php");
     .dasi-layout{grid-template-columns:1fr;}
   }
   @media (max-width:760px){
-    .dasi-question-grid,.dasi-context-options{grid-template-columns:1fr;}
+    .dasi-question-grid{grid-template-columns:1fr;}
+    .dasi-context-options{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .dasi-context-options .choice-btn{min-height:80px;font-size:.88rem;}
   }
 </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
@@ -82,14 +87,9 @@ require("../head.php");
       <div class="dasi-shell note-shell px-1 px-md-0 py-0">
 
         <div class="note-hero mb-3">
-          <div class="d-flex justify-content-between align-items-start gap-3">
-            <div>
-              <div class="note-hero-kicker">APP CLÍNICA · EVALUACIÓN FUNCIONAL PERIOPERATORIA</div>
-              <h2>Duke Activity Status Index</h2>
-              <div class="note-hero-subtitle">Capacidad funcional estimada en METs y orientación perioperatoria práctica.</div>
-            </div>
-            <span class="dasi-badge">METs</span>
-          </div>
+          <div class="note-hero-kicker">APP CLÍNICA · EVALUACIÓN FUNCIONAL PERIOPERATORIA</div>
+          <h2>Duke Activity Status Index</h2>
+          <div class="note-hero-subtitle">Capacidad funcional estimada en METs y orientación perioperatoria práctica.</div>
         </div>
 
         <div class="info-box mb-3">
@@ -226,22 +226,22 @@ require("../head.php");
         <div class="note-summary-box mb-3">
           <div class="note-summary-box-title">B. Tarjeta resumen</div>
           <div id="summaryNarrative" class="note-summary-box-text">Complete el cuestionario para ver puntaje, VO₂ estimado, METs y lectura funcional perioperatoria.</div>
-          <div class="note-summary-grid-2 mt-3">
-            <div class="note-summary-item">
-              <div class="note-summary-k">Puntaje DASI</div>
-              <div id="sumDasi" class="note-summary-v">0</div>
+          <div class="note-result-grid-2 mt-2">
+            <div class="note-result-card">
+              <div class="note-result-card-label">Puntaje DASI</div>
+              <div id="sumDasi" class="note-result-card-value">0</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">VO₂ estimado</div>
-              <div id="sumVo2" class="note-summary-v">0 ml/kg/min</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">VO₂ estimado</div>
+              <div id="sumVo2" class="note-result-card-value">0 ml/kg/min</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">METs estimados</div>
-              <div id="sumMets" class="note-summary-v">0</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">METs estimados</div>
+              <div id="sumMets" class="note-result-card-value">0</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Capacidad funcional</div>
-              <div id="sumCategory" class="note-summary-v">No calculada</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Capacidad funcional</div>
+              <div id="sumCategory" class="note-result-card-value">No calculada</div>
             </div>
           </div>
         </div>

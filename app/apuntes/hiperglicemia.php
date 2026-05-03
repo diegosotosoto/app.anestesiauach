@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "Hiperglicemia perioperatoria";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "Resumen interactivo para manejo perioperatorio de hiperglicemia en pabellón. Integra metas glicémicas, decisión entre corrección subcutánea e infusión EV, conducta en usuarios de GLP-1 RA, ajuste de insulina y orientación postoperatoria.";
@@ -17,7 +17,7 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=<?php echo time(); ?>">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=1"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
@@ -102,48 +102,6 @@ require("../head.php");
           }
           .gly-plan-line:last-child{margin-bottom:0;}
 
-          .gly-safety-list{
-            display:grid;
-            gap:.75rem;
-          }
-          .gly-safety-item{
-            display:flex;
-            align-items:flex-start;
-            gap:.65rem;
-            border:1px solid #d9e2ef;
-            border-radius:1rem;
-            background:#fff;
-            padding:.72rem .85rem;
-          }
-          .gly-safety-mark{
-            flex:0 0 auto;
-            width:30px;
-            height:30px;
-            border-radius:999px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            color:#fff;
-            margin-top:.08rem;
-          }
-          .gly-safety-mark.ok{background:#2ea663;}
-          .gly-safety-mark.mid{background:#f4c542;}
-          .gly-safety-mark.high{background:#d92d20;}
-          .gly-safety-copy{min-width:0;flex:1;}
-          .gly-safety-title{
-            font-size:.95rem;
-            font-weight:800;
-            line-height:1.18;
-            color:var(--note-text);
-            margin-bottom:.1rem;
-          }
-          .gly-safety-note{
-            margin:0;
-            font-size:.82rem;
-            line-height:1.32;
-            color:var(--note-muted);
-          }
-
           .gly-table-wrap{overflow-x:auto;}
           .gly-table{
             width:100%;
@@ -187,20 +145,6 @@ require("../head.php");
           .gly-table th:nth-child(3),.gly-table td:nth-child(3){width:24%;}
           .gly-table th:nth-child(4),.gly-table td:nth-child(4){width:31%;}
           .gly-small{font-size:.86rem;color:var(--note-muted);line-height:1.35;}
-
-          .gly-drug-badge{
-            display:inline-block;
-            padding:.22rem .48rem;
-            border-radius:.6rem;
-            font-weight:800;
-            border:1px solid rgba(31,42,55,.12);
-            line-height:1.1;
-            color:#111827;
-            background:#fff;
-          }
-          .gly-drug-other{background:#fff;color:#111827;}
-          .gly-drug-insulin{background:#fff;color:#111827;}
-          .gly-drug-warning{background:#fff9e8;color:#111827;}
 
           .gly-section-card{
             background:#fff;
@@ -257,6 +201,7 @@ require("../head.php");
             .gly-choice-grid.gly-grid-4{grid-template-columns:1fr;}
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · METABOLISMO · DIABETES</div>
@@ -289,26 +234,26 @@ require("../head.php");
         <div class="note-card mb-3">
           <div class="note-card-body">
             <div class="note-section-label">Puntos clave</div>
-            <div class="gly-safety-list">
-              <div class="gly-safety-item">
-                <div class="gly-safety-mark ok"><i class="fa-solid fa-bullseye"></i></div>
-                <div class="gly-safety-copy">
-                  <div class="gly-safety-title">Target perioperatorio razonable</div>
-                  <p class="gly-safety-note">Usualmente 140–180 mg/dL. Evita perseguir normalidad estricta si aumenta riesgo de hipoglicemia.</p>
+            <div class="note-warning-list">
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-bullseye"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Target perioperatorio razonable</div>
+                  <p class="note-warning-note">Usualmente 140–180 mg/dL. Evita perseguir normalidad estricta si aumenta riesgo de hipoglicemia.</p>
                 </div>
               </div>
-              <div class="gly-safety-item">
-                <div class="gly-safety-mark mid"><i class="fa-solid fa-clock"></i></div>
-                <div class="gly-safety-copy">
-                  <div class="gly-safety-title">Frecuencia de control</div>
-                  <p class="gly-safety-note">SC: mínimo cada 2 h. EV: horario. Hipoglicemia: controles más frecuentes.</p>
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-clock"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Frecuencia de control</div>
+                  <p class="note-warning-note">SC: mínimo cada 2 h. EV: horario. Hipoglicemia: controles más frecuentes.</p>
                 </div>
               </div>
-              <div class="gly-safety-item">
-                <div class="gly-safety-mark high"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <div class="gly-safety-copy">
-                  <div class="gly-safety-title">SGLT2 / gliflozinas</div>
-                  <p class="gly-safety-note">Riesgo de cetoacidosis euglicémica. No descartes cetosis solo porque la glicemia no es extrema.</p>
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">SGLT2 / gliflozinas</div>
+                  <p class="note-warning-note">Riesgo de cetoacidosis euglicémica. No descartes cetosis solo porque la glicemia no es extrema.</p>
                 </div>
               </div>
             </div>
@@ -388,22 +333,22 @@ require("../head.php");
         <div class="note-summary-box mb-3">
           <div class="note-summary-box-title">Resumen</div>
           <div id="summaryNarrative" class="note-summary-box-text">Ingresa glicemia actual y contexto quirúrgico para orientar la estrategia intraoperatoria.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item">
-              <div class="note-summary-k">Glicemia</div>
-              <div id="summaryGly" class="note-summary-v">-</div>
+          <div class="note-result-grid-2 mt-2">
+            <div class="note-result-card">
+              <div class="note-result-card-label">Glicemia</div>
+              <div id="summaryGly" class="note-result-card-value">-</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Contexto</div>
-              <div id="summaryContext" class="note-summary-v">Caso estable</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Contexto</div>
+              <div id="summaryContext" class="note-result-card-value">Caso estable</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">TDD usada</div>
-              <div id="summaryTdd" class="note-summary-v">40 UI/día</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">TDD usada</div>
+              <div id="summaryTdd" class="note-result-card-value">40 UI/día</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Estrategia</div>
-              <div id="summaryStrategy" class="note-summary-v">Pendiente</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Estrategia</div>
+              <div id="summaryStrategy" class="note-result-card-value">Pendiente</div>
             </div>
           </div>
         </div>
@@ -461,31 +406,31 @@ require("../head.php");
                 </thead>
                 <tbody>
                   <tr>
-                    <td><span class="gly-drug-badge gly-drug-other">Secretagogos</span><br><span class="gly-small">Sulfonilureas / meglitinidas</span></td>
+                    <td><span class="drug-label drug-other"><span class="drug-label-content"><span class="drug-label-title">Secretagogos</span><span class="drug-label-subtitle">Sulfonilureas / meglitinidas</span></span></span></td>
                     <td>Tomar</td>
                     <td>Suspender</td>
                     <td>Suspender</td>
                   </tr>
                   <tr>
-                    <td><span class="gly-drug-badge gly-drug-warning">SGLT2</span><br><span class="gly-small">Gliflozinas</span></td>
+                    <td><span class="drug-label drug-other"><span class="drug-label-content"><span class="drug-label-title">SGLT2</span><span class="drug-label-subtitle">Gliflozinas</span></span></span></td>
                     <td>Suspender</td>
                     <td>Suspender</td>
                     <td>Suspender</td>
                   </tr>
                   <tr>
-                    <td><span class="gly-drug-badge gly-drug-other">Tiazolidinedionas</span><br><span class="gly-small">Pioglitazona</span></td>
+                    <td><span class="drug-label drug-other"><span class="drug-label-content"><span class="drug-label-title">Tiazolidinedionas</span><span class="drug-label-subtitle">Pioglitazona</span></span></span></td>
                     <td>Tomar</td>
                     <td>Tomar</td>
                     <td>Suspender</td>
                   </tr>
                   <tr>
-                    <td><span class="gly-drug-badge gly-drug-other">Metformina</span></td>
+                    <td><span class="drug-label drug-other"><span class="drug-label-content"><span class="drug-label-title">Metformina</span></span></span></td>
                     <td>Tomar*</td>
                     <td>Tomar*</td>
                     <td>Suspender</td>
                   </tr>
                   <tr>
-                    <td><span class="gly-drug-badge gly-drug-other">iDPP-4</span><br><span class="gly-small">Sitagliptina / linagliptina</span></td>
+                    <td><span class="drug-label drug-other"><span class="drug-label-content"><span class="drug-label-title">iDPP-4</span><span class="drug-label-subtitle">Sitagliptina / linagliptina</span></span></span></td>
                     <td>Tomar</td>
                     <td>Tomar</td>
                     <td>Tomar</td>
@@ -540,46 +485,46 @@ require("../head.php");
               </div>
             </div>
 
-            <div id="glp1Conduct" class="gly-safety-item mb-3">
-              <div id="glp1Mark" class="gly-safety-mark ok"><i class="fa-solid fa-check"></i></div>
-              <div class="gly-safety-copy">
-                <div id="glp1ConductTitle" class="gly-safety-title">Conducta GLP-1 RA</div>
-                <p id="glp1ConductText" class="gly-safety-note">Si no hay síntomas significativos, puede continuarse GLP-1 RA en la mayoría de los pacientes. Individualizar si hay alto riesgo gastrointestinal.</p>
+            <div id="glp1Conduct" class="note-warning-item mb-3">
+              <div id="glp1Mark" class="note-warning-icon"><i class="fa-solid fa-check"></i></div>
+              <div class="note-warning-copy">
+                <div id="glp1ConductTitle" class="note-warning-title">Conducta GLP-1 RA</div>
+                <p id="glp1ConductText" class="note-warning-note">Si no hay síntomas significativos, puede continuarse GLP-1 RA en la mayoría de los pacientes. Individualizar si hay alto riesgo gastrointestinal.</p>
               </div>
             </div>
 
-            <div class="note-summary-grid-2 mb-3">
-              <div class="note-summary-item">
-                <div class="note-summary-k">Ayuno orientativo</div>
-                <div id="glp1Fasting" class="note-summary-v">4 h</div>
+            <div class="note-result-grid-2 mb-3">
+              <div class="note-result-card">
+                <div class="note-result-card-label">Ayuno orientativo</div>
+                <div id="glp1Fasting" class="note-result-card-value">4 h</div>
               </div>
-              <div class="note-summary-item">
-                <div class="note-summary-k">Resumen</div>
-                <div id="glp1Summary" class="note-summary-v">Líquidos claros bajos en HC</div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Resumen</div>
+                <div id="glp1Summary" class="note-result-card-value">Líquidos claros bajos en HC</div>
               </div>
             </div>
 
             <div class="note-section-label">Usuarios de insulina</div>
-            <div class="gly-safety-list">
-              <div class="gly-safety-item">
-                <div class="gly-safety-mark mid"><i class="fa-solid fa-syringe"></i></div>
-                <div class="gly-safety-copy">
-                  <div class="gly-safety-title">Insulina basal</div>
-                  <p class="gly-safety-note">Generalmente no se suspende completamente. En DM1 siempre debe mantenerse aporte basal.</p>
+            <div class="note-warning-list">
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-syringe"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Insulina basal</div>
+                  <p class="note-warning-note">Generalmente no se suspende completamente. En DM1 siempre debe mantenerse aporte basal.</p>
                 </div>
               </div>
-              <div class="gly-safety-item">
-                <div class="gly-safety-mark ok"><i class="fa-solid fa-utensils"></i></div>
-                <div class="gly-safety-copy">
-                  <div class="gly-safety-title">Insulina prandial</div>
-                  <p class="gly-safety-note">Suspender al iniciar ayuno. Corregir según glicemia y contexto.</p>
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-utensils"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Insulina prandial</div>
+                  <p class="note-warning-note">Suspender al iniciar ayuno. Corregir según glicemia y contexto.</p>
                 </div>
               </div>
-              <div class="gly-safety-item">
-                <div class="gly-safety-mark high"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <div class="gly-safety-copy">
-                  <div class="gly-safety-title">DM1</div>
-                  <p class="gly-safety-note">Nunca dejes al paciente sin basal. El riesgo no es solo hiperglicemia, también cetosis y descompensación metabólica.</p>
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">DM1</div>
+                  <p class="note-warning-note">Nunca dejes al paciente sin basal. El riesgo no es solo hiperglicemia, también cetosis y descompensación metabólica.</p>
                 </div>
               </div>
             </div>
@@ -633,11 +578,11 @@ require("../head.php");
               </div>
             </div>
 
-            <div id="evDynamicConduct" class="gly-safety-item">
-              <div id="evDynamicMark" class="gly-safety-mark mid"><i class="fa-solid fa-clock"></i></div>
-              <div class="gly-safety-copy">
-                <div id="evDynamicConductTitle" class="gly-safety-title">Interpretación</div>
-                <p id="evDynamicConductText" class="gly-safety-note">La infusión EV se ajusta según glicemia actual y cambio respecto a medición previa.</p>
+            <div id="evDynamicConduct" class="note-warning-item">
+              <div id="evDynamicMark" class="note-warning-icon"><i class="fa-solid fa-clock"></i></div>
+              <div class="note-warning-copy">
+                <div id="evDynamicConductTitle" class="note-warning-title">Interpretación</div>
+                <p id="evDynamicConductText" class="note-warning-note">La infusión EV se ajusta según glicemia actual y cambio respecto a medición previa.</p>
               </div>
             </div>
           </div>
@@ -717,38 +662,38 @@ require("../head.php");
               </div>
             </div>
 
-            <div class="note-summary-grid-2 mb-3">
-              <div class="note-summary-item">
-                <div class="note-summary-k">Basal sugerida</div>
-                <div id="postopBasal" class="note-summary-v">-</div>
+            <div class="note-result-grid-2 mb-3">
+              <div class="note-result-card">
+                <div class="note-result-card-label">Basal sugerida</div>
+                <div id="postopBasal" class="note-result-card-value">-</div>
               </div>
-              <div class="note-summary-item">
-                <div class="note-summary-k">Prandial / corrección</div>
-                <div id="postopPrandial" class="note-summary-v">-</div>
-              </div>
-            </div>
-
-            <div id="postopConduct" class="gly-safety-item mb-3">
-              <div id="postopMark" class="gly-safety-mark mid"><i class="fa-solid fa-triangle-exclamation"></i></div>
-              <div class="gly-safety-copy">
-                <div id="postopConductTitle" class="gly-safety-title">Interpretación</div>
-                <p id="postopConductText" class="gly-safety-note">Selecciona contexto clínico para estimar esquema postoperatorio.</p>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Prandial / corrección</div>
+                <div id="postopPrandial" class="note-result-card-value">-</div>
               </div>
             </div>
 
-            <div class="gly-safety-list">
-              <div class="gly-safety-item">
-                <div class="gly-safety-mark mid"><i class="fa-solid fa-mobile-screen"></i></div>
-                <div class="gly-safety-copy">
-                  <div class="gly-safety-title">Usuarios de bomba</div>
-                  <p class="gly-safety-note">Verificar tasa basal, sitio de inserción, glicemias y posibilidad real de continuar manejo seguro en recuperación o sala.</p>
+            <div id="postopConduct" class="note-warning-item mb-3">
+              <div id="postopMark" class="note-warning-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+              <div class="note-warning-copy">
+                <div id="postopConductTitle" class="note-warning-title">Interpretación</div>
+                <p id="postopConductText" class="note-warning-note">Selecciona contexto clínico para estimar esquema postoperatorio.</p>
+              </div>
+            </div>
+
+            <div class="note-warning-list">
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-mobile-screen"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Usuarios de bomba</div>
+                  <p class="note-warning-note">Verificar tasa basal, sitio de inserción, glicemias y posibilidad real de continuar manejo seguro en recuperación o sala.</p>
                 </div>
               </div>
-              <div class="gly-safety-item">
-                <div class="gly-safety-mark ok"><i class="fa-solid fa-vial"></i></div>
-                <div class="gly-safety-copy">
-                  <div class="gly-safety-title">Control</div>
-                  <p class="gly-safety-note">Privilegiar laboratorio central si el valor capilar no cuadra con el cuadro clínico o con la hemodinamia.</p>
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-vial"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Control</div>
+                  <p class="note-warning-note">Privilegiar laboratorio central si el valor capilar no cuadra con el cuadro clínico o con la hemodinamia.</p>
                 </div>
               </div>
             </div>
@@ -799,7 +744,7 @@ require("../head.php");
     const titleEl = document.getElementById(prefix + 'Title') || document.getElementById(prefix + 'ConductTitle');
     const textEl = document.getElementById(prefix + 'Text') || document.getElementById(prefix + 'ConductText');
     if(mark){
-      mark.className = 'gly-safety-mark ' + level;
+      mark.className = 'note-warning-icon';
       mark.innerHTML = '<i class="fa-solid ' + icon + '"></i>';
     }
     if(titleEl) titleEl.textContent = title;
@@ -914,7 +859,7 @@ require("../head.php");
       evResultText.textContent = 'Ingresa glicemia actual.';
       evBolus.textContent = '-';
       evDeltaText.textContent = 'Sin dato previo.';
-      mark.className = 'gly-safety-mark mid';
+      mark.className = 'note-warning-icon';
       mark.innerHTML = '<i class="fa-solid fa-clock"></i>';
       title.textContent = 'Interpretación';
       text.textContent = 'La infusión EV se ajusta según glicemia actual y cambio respecto a medición previa.';
@@ -927,7 +872,7 @@ require("../head.php");
       evResultNum.textContent = currentBg > 180 ? fmt(round1(currentBg / 100),1) + ' U/h' : 'No iniciar';
       evResultText.textContent = currentBg > 180 ? 'Tasa inicial teórica' : 'No iniciar infusión';
       evDeltaText.textContent = 'Sin dato previo';
-      mark.className = currentBg > 180 ? 'gly-safety-mark ok' : 'gly-safety-mark mid';
+      mark.className = 'note-warning-icon';
       mark.innerHTML = currentBg > 180 ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-clock"></i>';
       title.textContent = 'Interpretación';
       text.innerHTML = currentBg > 180
@@ -979,7 +924,7 @@ require("../head.php");
       else msg = 'Suspender infusión y vigilar estrechamente la evolución de la glicemia.';
     }
 
-    mark.className = 'gly-safety-mark ' + level;
+    mark.className = 'note-warning-icon';
     mark.innerHTML = '<i class="fa-solid ' + icon + '"></i>';
     title.textContent = 'Interpretación';
     text.innerHTML = msg;
@@ -993,7 +938,7 @@ require("../head.php");
 
     if(symptoms === 'yes'){
       intakeBlock.style.display = 'none';
-      mark.className = 'gly-safety-mark high';
+      mark.className = 'note-warning-icon';
       mark.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
       document.getElementById('glp1ConductTitle').textContent = 'Riesgo aumentado';
       document.getElementById('glp1ConductText').innerHTML = 'Con náuseas severas, vómitos, distensión o mala tolerancia oral, considerar diferir cirugía electiva o manejar como estómago lleno según urgencia.';
@@ -1003,7 +948,7 @@ require("../head.php");
     }
 
     intakeBlock.style.display = 'block';
-    mark.className = 'gly-safety-mark ok';
+    mark.className = 'note-warning-icon';
     mark.innerHTML = '<i class="fa-solid fa-check"></i>';
     document.getElementById('glp1ConductTitle').textContent = 'Conducta GLP-1 RA';
     document.getElementById('glp1ConductText').innerHTML = 'Si no hay síntomas significativos, puede continuarse GLP-1 RA en la mayoría de los pacientes. Individualizar si hay fase de escalamiento de dosis o alto riesgo GI.';
@@ -1032,7 +977,7 @@ require("../head.php");
       document.getElementById('postopFactor').textContent = 'Factor usado.';
       document.getElementById('postopBasal').textContent = '-';
       document.getElementById('postopPrandial').textContent = '-';
-      document.getElementById('postopMark').className = 'gly-safety-mark mid';
+      document.getElementById('postopMark').className = 'note-warning-icon';
       document.getElementById('postopMark').innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
       document.getElementById('postopConductTitle').textContent = 'Interpretación';
       document.getElementById('postopConductText').textContent = 'Selecciona contexto clínico para estimar esquema postoperatorio.';
@@ -1047,7 +992,7 @@ require("../head.php");
     const tdd = peso * factor;
     document.getElementById('postopTDD').textContent = fmt(round1(tdd),1) + ' U/día';
     document.getElementById('postopFactor').textContent = factorLabel;
-    document.getElementById('postopMark').className = 'gly-safety-mark ok';
+    document.getElementById('postopMark').className = 'note-warning-icon';
     document.getElementById('postopMark').innerHTML = '<i class="fa-solid fa-check"></i>';
     document.getElementById('postopConductTitle').textContent = 'Conducta sugerida';
 

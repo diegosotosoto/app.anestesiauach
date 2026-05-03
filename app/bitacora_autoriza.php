@@ -25,165 +25,25 @@ if($usuario['admin']==1){
 }
 
 //VARIABLES
-$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler="<a class='d-sm-block d-sm-none admin-back-btn' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar="<span class='text-white'>Bitácora</span>";
 $boton_navbar="<a></a>";
 
 //Carga Head de la página
 require("head.php");
+
+if(!function_exists('bitacora_render_item_if_filled')){
+  function bitacora_render_item_if_filled($label, $value){
+    $value = trim((string)$value);
+    if($value === '' || $value === '-'){
+      return;
+    }
+    echo "<div class='bitacora-item'><div class='bitacora-item-label'>".app_h_text($label)."</div><div class='bitacora-item-value'>".app_h_text($value)."</div></div>";
+  }
+}
 ?>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
-
-<style>
-  .bitacora-shell{
-    max-width:980px;
-    margin:0 auto;
-  }
-
-  .bitacora-topbar{
-    background:linear-gradient(135deg, #27458f, #3559b7);
-    color:#fff;
-    border-radius:1.25rem;
-    box-shadow:0 8px 24px rgba(0,0,0,.06);
-    padding:1.15rem 1.25rem;
-    margin-bottom:1rem;
-  }
-
-  .bitacora-topbar h1{
-    color:#fff;
-  }
-
-  .subtle{
-    font-size:.92rem;
-  }
-
-  .pill{
-    display:inline-block;
-    padding:.25rem .6rem;
-    border-radius:999px;
-    font-size:.8rem;
-    font-weight:600;
-  }
-
-  .bitacora-tabs{
-    margin-bottom:1rem;
-  }
-
-  .bitacora-tabs .nav-link{
-    border-radius:.85rem;
-    margin-right:.5rem;
-    color:#3559b7;
-  }
-
-  .bitacora-tabs .nav-link.active{
-    background:#3559b7;
-    color:#fff;
-    border-color:#3559b7;
-  }
-
-  .bitacora-section-card,
-  .bitacora-entry-card{
-    border:0;
-    border-radius:1rem;
-    box-shadow:0 8px 24px rgba(0,0,0,.06);
-    background:#fff;
-  }
-
-  .bitacora-section-card{
-    margin-bottom:1rem;
-  }
-
-  .bitacora-section-header{
-    background:linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);
-    border-bottom:1px solid #e9eef5;
-    padding:1rem 1.1rem;
-    border-radius:1rem 1rem 0 0;
-  }
-
-  .bitacora-entry-card{
-    margin-bottom:1rem;
-    overflow:hidden;
-  }
-
-  .bitacora-entry-header{
-    background:#eef4ff;
-    padding:1rem 1.1rem;
-    border-bottom:1px solid #dfe7f2;
-  }
-
-  .bitacora-entry-header-danger{
-    background:#fef2f2;
-    border-bottom:1px solid #f5c2c7;
-  }
-
-  .bitacora-entry-body{
-    padding:1rem 1.1rem 1.15rem 1.1rem;
-  }
-
-  .bitacora-grid{
-    display:grid;
-    gap:.7rem;
-  }
-
-  .bitacora-item{
-    display:flex;
-    justify-content:space-between;
-    gap:1rem;
-    align-items:flex-start;
-    background:#f8fafc;
-    border:1px solid #dfe7f2;
-    border-radius:.9rem;
-    padding:.85rem 1rem;
-  }
-
-  .bitacora-item-label{
-    color:#5f6b76;
-    font-weight:500;
-  }
-
-  .bitacora-item-value{
-    color:#1f2a37;
-    font-weight:600;
-    text-align:right;
-  }
-
-  .bitacora-comments{
-    background:#f8fafc;
-    border:1px solid #dfe7f2;
-    border-radius:.9rem;
-    padding:1rem;
-    white-space:pre-wrap;
-  }
-
-  .bitacora-feedback-label{
-    font-size:.82rem;
-    text-transform:uppercase;
-    letter-spacing:.05em;
-    color:#667085;
-    margin-bottom:.55rem;
-  }
-
-  .bitacora-feedback{
-    border-radius:.9rem;
-    border:1px solid #dfe7f2;
-    resize:none;
-  }
-
-  .bitacora-actions{
-    display:flex;
-    gap:.75rem;
-    justify-content:space-between;
-    flex-wrap:wrap;
-    margin-top:1rem;
-  }
-
-  .empty-state{
-    text-align:center;
-    color:#6c757d;
-    padding:2rem 1rem;
-  }
-</style>
 
 <div class="apunte-surface">
   <div class="container-fluid px-0 px-md-2">
@@ -261,13 +121,6 @@ if(!empty($_POST['bitacora_autoriza_i'])){
         </li>
       </ul>
 
-      <div class="bitacora-section-card">
-        <div class="bitacora-section-header">
-          <h4 class="mb-1 fw-bold">Validar Bitácora</h4>
-          <div class="text-black-50" style="font-size:14px">Fichas pendientes de autorización o rechazo.</div>
-        </div>
-      </div>
-
 <?php
 $staff = $_COOKIE['hkjh41lu4l1k23jhlkj13'];
 $staff = $conexion->real_escape_string($staff);
@@ -289,7 +142,7 @@ while($row_user=$tab_users->fetch_assoc()){
   $eco = ($row_user['invasivo_eco_b']=="1") ? "Sí" : "No";
 
   $email_int=$row_user['autor_b'];
-  $consulta_int="SELECT `nombre_usuario` FROM `usuarios_dolor` WHERE `email_usuario` = '$email_int' AND `verified` = '1'";
+  $consulta_int="SELECT `nombre_usuario`, `ui_icono`, `ui_icono_color`, `admin` FROM `usuarios_dolor` WHERE `email_usuario` = '$email_int' AND `verified` = '1'";
   $confirma_int=$conexion->query($consulta_int);
   $rows = $confirma_int->fetch_assoc();
 
@@ -298,7 +151,8 @@ while($row_user=$tab_users->fetch_assoc()){
   echo "<form action='bitacora_autoriza.php' method='post' class='bitacora-entry-card'>";
   echo "<div class='bitacora-entry-header'>";
   echo "<div class='d-flex justify-content-between align-items-start gap-3 flex-wrap'>";
-  echo "<div><div class='small text-muted'>Becado</div><h5 class='mb-1'>".app_h_text($rows['nombre_usuario'])."</h5></div>";
+  $icono_autor = app_render_user_inline_icon($rows);
+  echo "<div><div class='small text-muted'>Becado</div><h5 class='mb-1'>".$icono_autor.app_h_text($rows['nombre_usuario'])."</h5></div>";
   echo "<div class='text-md-end'><div>".$row_user['fecha_b']."</div><div><a class='text-decoration-none' href='https://www.hbvaldivia.cl/core/farmacia/receta/0/".$row_user['rut_b']."' target='_blank'>".$row_user['rut_b']."</a></div><div><a class='text-decoration-none' href='https://www.hbvaldivia.cl/core/farmacia/receta/1/".$row_user['ficha_b']."' target='_blank'>".$row_user['ficha_b']."</a></div></div>";
   echo "</div></div>";
 
@@ -317,7 +171,7 @@ while($row_user=$tab_users->fetch_assoc()){
     ['P. dolor',$row_user['dolor_b']],
   ];
   foreach($items as $it){
-    echo "<div class='bitacora-item'><div class='bitacora-item-label'>{$it[0]}</div><div class='bitacora-item-value'>{$it[1]}</div></div>";
+    bitacora_render_item_if_filled($it[0], $it[1]);
   }
 
   echo "<input type='hidden' name='bitacora_autoriza' value='".$row_user['id_b']."'/>";
@@ -326,8 +180,8 @@ while($row_user=$tab_users->fetch_assoc()){
   echo "<div class='bitacora-feedback-label pt-3'>Agregar feedback</div>";
   echo "<textarea class='form-control bitacora-feedback' maxlength='200' rows='3' name='comentarios_b_a' id='comentarios_b_a'></textarea>";
   echo "<div class='bitacora-actions'>
-          <button class='btn btn-primary' type='submit' name='submit_b' value='1'>Autorizar</button>
-          <button type='button' class='btn btn-danger' data-bs-toggle='modal' data-bs-target='#".$modalId."'>Rechazar</button>
+          <button class='btn btn-app-primary' type='submit' name='submit_b' value='1'>Autorizar</button>
+          <button type='button' class='btn btn-app-danger' data-bs-toggle='modal' data-bs-target='#".$modalId."'>Rechazar</button>
         </div>";
 
   echo "</div></div>";
@@ -343,7 +197,7 @@ while($row_user=$tab_users->fetch_assoc()){
                 ¿Estás seguro de que deseas rechazar? Se notificará al becado del rechazo para su corrección.
               </div>
               <div class='modal-footer'>
-                <button type='submit' name='submit_b' value='3' class='btn btn-danger'>Sí, rechazar</button>
+                <button type='submit' name='submit_b' value='3' class='btn btn-app-danger'>Sí, rechazar</button>
               </div>
             </div>
           </div>
@@ -381,7 +235,7 @@ while($row_int=$tab_internos->fetch_assoc()){
   elseif($row_int['espinal_i']=="3"){ $espinal_i="Fallida"; } else { $espinal_i="-"; }
 
   $email_int2=$row_int['autor_i'];
-  $consulta_int2="SELECT `nombre_usuario` FROM `usuarios_dolor` WHERE `email_usuario` = '$email_int2' AND `verified` = '1'";
+  $consulta_int2="SELECT `nombre_usuario`, `ui_icono`, `ui_icono_color`, `admin` FROM `usuarios_dolor` WHERE `email_usuario` = '$email_int2' AND `verified` = '1'";
   $confirma_int2=$conexion->query($consulta_int2);
   $rows2 = $confirma_int2->fetch_assoc();
 
@@ -390,7 +244,8 @@ while($row_int=$tab_internos->fetch_assoc()){
   echo "<form action='bitacora_autoriza.php' method='post' class='bitacora-entry-card'>";
   echo "<div class='bitacora-entry-header bitacora-entry-header-danger'>";
   echo "<div class='d-flex justify-content-between align-items-start gap-3 flex-wrap'>";
-  echo "<div><div class='small text-muted'>Interno</div><h5 class='mb-1'>".app_h_text($rows2['nombre_usuario'])."</h5></div>";
+  $icono_autor2 = app_render_user_inline_icon($rows2);
+  echo "<div><div class='small text-muted'>Interno</div><h5 class='mb-1'>".$icono_autor2.app_h_text($rows2['nombre_usuario'])."</h5></div>";
   echo "<div class='text-md-end'><div>".$row_int['fecha_i']."</div><div><a class='text-decoration-none' href='https://www.hbvaldivia.cl/core/farmacia/receta/0/".$row_int['rut_i']."' target='_blank'>".$row_int['rut_i']."</a></div><div><a class='text-decoration-none' href='https://www.hbvaldivia.cl/core/farmacia/receta/1/".$row_int['ficha_i']."' target='_blank'>".$row_int['ficha_i']."</a></div></div>";
   echo "</div></div>";
 
@@ -407,7 +262,7 @@ while($row_int=$tab_internos->fetch_assoc()){
     ['Espinal / Raquídea',$espinal_i],
   ];
   foreach($items as $it){
-    echo "<div class='bitacora-item'><div class='bitacora-item-label'>{$it[0]}</div><div class='bitacora-item-value'>{$it[1]}</div></div>";
+    bitacora_render_item_if_filled($it[0], $it[1]);
   }
 
   echo "<input type='hidden' name='bitacora_autoriza_i' value='".$row_int['id_i']."'/>";
@@ -416,8 +271,8 @@ while($row_int=$tab_internos->fetch_assoc()){
   echo "<div class='bitacora-feedback-label pt-3'>Agregar feedback</div>";
   echo "<textarea class='form-control bitacora-feedback' maxlength='200' rows='3' name='comentarios_i_a' id='comentarios_i_a'></textarea>";
   echo "<div class='bitacora-actions'>
-          <button class='btn btn-primary' type='submit' name='submit_i' value='1'>Autorizar</button>
-          <button type='button' class='btn btn-danger' data-bs-toggle='modal' data-bs-target='#".$modalId."'>Rechazar</button>
+          <button class='btn btn-app-primary' type='submit' name='submit_i' value='1'>Autorizar</button>
+          <button type='button' class='btn btn-app-danger' data-bs-toggle='modal' data-bs-target='#".$modalId."'>Rechazar</button>
         </div>";
 
   echo "</div></div>";
@@ -433,7 +288,7 @@ while($row_int=$tab_internos->fetch_assoc()){
                 ¿Estás seguro de que deseas rechazar? Se notificará al interno del rechazo para su corrección.
               </div>
               <div class='modal-footer'>
-                <button type='submit' name='submit_i' value='3' class='btn btn-danger'>Sí, rechazar</button>
+                <button type='submit' name='submit_i' value='3' class='btn btn-app-danger'>Sí, rechazar</button>
               </div>
             </div>
           </div>

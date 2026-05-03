@@ -1,0 +1,55 @@
+:root{
+  --app-blue: #1f5fbf;
+  --app-blue-dark: #19376d;
+  --app-blue-soft: #dceeff;
+  --app-cyan-soft: #eaf6ff;
+  --app-bg: #f4f7fb;
+  --app-card: #ffffff;
+  --app-text: #172033;
+  --app-muted: #64748b;
+  --app-border: rgba(25, 91, 180, .18);
+  --app-success: #16a34a;
+  --app-warning: #f59e0b;
+  --app-danger: #dc2626;
+  --app-purple: #8b5cf6;
+  --app-radius-sm: 10px;
+  --app-radius-md: 16px;
+  --app-radius-lg: 22px;
+  --app-shadow: 0 8px 24px rgba(15, 23, 42, .08);
+  --app-shadow-soft: 0 4px 14px rgba(15, 23, 42, .06);
+  --app-font-scale: 1;
+}
+
+html{
+  font-size: calc(16px * var(--app-font-scale));
+}
+
+body{
+  background: var(--app-bg);
+  color: var(--app-text);
+}
+
+body.font-normal{
+  --app-font-scale: 1;
+}
+
+body.font-large{
+  --app-font-scale: 1.08;
+}
+
+body.font-xl{
+  --app-font-scale: 1.16;
+}
+
+a{
+  color: var(--app-blue);
+}
+
+:focus-visible{
+  outline: 3px solid rgba(31, 95, 191, .42);
+  outline-offset: 3px;
+}
+
+.app-visually-muted{
+  color: var(--app-muted);
+}

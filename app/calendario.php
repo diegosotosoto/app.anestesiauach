@@ -242,166 +242,24 @@ usort($eventos, function ($a, $b) {
     return calendar_event_ts($a) <=> calendar_event_ts($b);
 });
 
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='--bs-border-opacity:.1;' href='index.php'><i class='fa fa-chevron-left me-1'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white d-sm-block d-sm-none'>Calendario</span>";
 $boton_navbar = "<a></a><a></a>";
 
 require('head.php');
 ?>
 
-<style>
-.calendar-shell{
-    width:100%;
-    max-width:1120px;
-    margin:0 auto;
-    padding:0 .75rem 2rem;
-}
-.calendar-hero,
-.calendar-card{
-    background:#fff;
-    border:1px solid #dbe3f0;
-    border-radius:22px;
-    box-shadow:0 .45rem 1.2rem rgba(31,41,55,.06);
-}
-.calendar-hero{
-    background:linear-gradient(135deg, #27458f 0%, #3f5bd1 55%, #5f8df0 100%);
-    border-color:rgba(255,255,255,.18);
-    color:#fff;
-    padding:1.25rem;
-    margin-bottom:1rem;
-}
-.calendar-kicker{
-    color:rgba(255,255,255,.86);
-    font-weight:800;
-    font-size:.78rem;
-    text-transform:uppercase;
-    letter-spacing:.04em;
-}
-.calendar-title{
-    color:#fff;
-    font-weight:850;
-    margin:.2rem 0;
-}
-.calendar-subtitle{
-    color:rgba(255,255,255,.82);
-    max-width:720px;
-    margin:0 auto;
-}
-.calendar-card{
-    padding:1rem;
-    margin-bottom:1rem;
-}
-.calendar-filter-row{
-    display:flex;
-    flex-wrap:wrap;
-    gap:.5rem;
-}
-.calendar-chip{
-    border:1px solid #dbe3f0;
-    background:#f8fafc;
-    color:#374151;
-    border-radius:999px;
-    padding:.45rem .75rem;
-    font-weight:700;
-    font-size:.9rem;
-}
-.calendar-chip.is-active{
-    background:#315bc5;
-    border-color:#315bc5;
-    color:#fff;
-}
-.calendar-event{
-    position:relative;
-    display:flex;
-    gap:.85rem;
-    align-items:stretch;
-    border:1px solid #dbe3f0;
-    border-radius:18px;
-    padding:.95rem 1rem;
-    background:#fff;
-    margin-bottom:.75rem;
-    box-shadow:0 8px 22px rgba(15,23,42,.05);
-}
-.calendar-event-color{
-    width:7px;
-    min-width:7px;
-    border-radius:999px;
-    background:#315bc5;
-}
-.calendar-event-main{
-    flex:1;
-    min-width:0;
-}
-.calendar-event-date{
-    color:#315bc5;
-    font-size:.9rem;
-    font-weight:850;
-}
-.calendar-event-title{
-    color:#172033;
-    font-weight:850;
-    font-size:1.05rem;
-    margin:.15rem 0;
-}
-.calendar-event-meta{
-    color:#64748b;
-    font-size:.9rem;
-}
-.calendar-badge{
-    display:inline-flex;
-    align-items:center;
-    border-radius:999px;
-    padding:.24rem .6rem;
-    font-size:.78rem;
-    font-weight:850;
-    background:#eef3fb;
-    color:#315bc5;
-    white-space:nowrap;
-}
-.calendar-badge-dot{
-    display:inline-block;
-    width:.55rem;
-    height:.55rem;
-    border-radius:999px;
-    margin-right:.35rem;
-}
-.calendar-empty{
-    text-align:center;
-    color:#6b7280;
-    padding:2rem 1rem;
-}
-.calendar-warning{
-    background:#fff8e6;
-    border:1px solid #fde3a4;
-    color:#805700;
-    border-radius:18px;
-    padding:1rem;
-    margin-bottom:1rem;
-}
-.calendar-admin-note{
-    background:#eef3fb;
-    border:1px solid #dbe3f0;
-    color:#244aa5;
-    border-radius:18px;
-    padding:1rem;
-    margin-bottom:1rem;
-}
-@media (max-width: 575.98px){
-    .calendar-shell{padding-left:.65rem;padding-right:.65rem;}
-    .calendar-hero{padding:1rem;border-radius:20px;}
-    .calendar-card{padding:.85rem;border-radius:20px;}
-    .calendar-event{padding:.85rem;gap:.75rem;}
-    .calendar-badge{margin-top:.35rem;}
-}
-</style>
-
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
 <main class="calendar-shell">
-    <section class="calendar-hero text-center">
-        <div class="calendar-kicker">Actividades docentes</div>
-        <h2 class="calendar-title">Calendario académico</h2>
-        <div class="calendar-subtitle">
-            Eventos generales<?php if ($esBecado && in_array($anioResidencia, array('1', '2', '3'), true)) { ?>, actividades R<?= (int)$anioResidencia ?><?php } ?> y calendarios asignados temporalmente para <?= h_nombre($usuario['nombre_usuario']) ?>.
+    <section class="app-hero app-hero-blue calendar-hero">
+        <div class="app-hero-row">
+            <div class="app-hero-body">
+                <div class="app-hero-kicker calendar-kicker">Actividades docentes</div>
+                <h2 class="calendar-title">Calendario académico</h2>
+                <p class="calendar-subtitle">
+                    Eventos generales<?php if ($esBecado && in_array($anioResidencia, array('1', '2', '3'), true)) { ?>, actividades R<?= (int)$anioResidencia ?><?php } ?> y calendarios asignados temporalmente para <?= h_nombre($usuario['nombre_usuario']) ?>.
+                </p>
+            </div>
         </div>
     </section>
 

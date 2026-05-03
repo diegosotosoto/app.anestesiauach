@@ -19,27 +19,18 @@
 	  }
 
 //VARIABLES
-		$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
-		$titulo_navbar="<span class='text-white'></span>";
-		$boton_navbar="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='nueva_epa.php'><i class='fa-solid fa-plus'></i></a>";
+			$boton_toggler="<a class='d-sm-block d-sm-none admin-back-btn' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+			$titulo_navbar="<span>EPA</span>";
+			$boton_navbar="<a class='d-sm-block d-sm-none app-nav-action' href='nueva_epa.php' aria-label='Nueva evaluación'><i class='fa-solid fa-plus'></i></a>";
 
 	//Carga Head de la página
 	require("head.php");
 
 ?>
-    <style>
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-               -webkit-appearance: none;
-                margin: 0;
-        }
- 
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
-    </style>
-
-<div class="col col-sm-9 col-xl-9"><!- Columna principal (derecha) responsive->
+	<div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
+	<div class="apunte-surface">
+	<div class="container-fluid px-0 px-md-2">
+	<div class="epa-shell">
 		
 			<ul class="list-group">
 
@@ -526,17 +517,17 @@ SET
 	<!– TABLA DE REGISTROS –>
 	<?php
 		//TITULO DE LA PAGINA
-		echo "<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'><br><h5 class='mb-1 fw-bold opacity-75'>Evaluación Preanestésica</h5>";
+			echo "<li class='list-group-item epa-section-title'><h5 class='mb-1 fw-bold opacity-75'>Evaluación Preanestésica</h5>";
 
-		//BOTON A LA IZQUIERDA DEL TITULO class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block'
-		echo "<div class='pt-1 ps-3 me-3 d-flex float-start'>
-		<a class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>
-		</div>";
+			//BOTON A LA IZQUIERDA DEL TITULO
+			echo "<div class='pt-1 ps-3 me-3 d-flex float-start'>
+			<a class='admin-back-btn d-none d-sm-inline-flex' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>
+			</div>";
 
-		//BOTÓN A LA DERECHA DEL TITULO class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block'
-		echo "<div class='pt-1 ps-3 me-3 d-flex float-end'>
-		<a class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block' style='width:100px; height:40px; --bs-border-opacity: .1;' href='nueva_epa.php'><i class='fa-solid fa-plus pe-2'></i>Nueva</a>
-		</div>";
+			//BOTÓN A LA DERECHA DEL TITULO
+			echo "<div class='pt-1 ps-3 me-3 d-flex float-end'>
+			<a class='btn btn-app-primary pain-action-btn d-none d-sm-inline-flex' href='nueva_epa.php'><i class='fa-solid fa-plus pe-2'></i>Nueva</a>
+			</div>";
 
 		//SUBTITULO
 		echo "<div class='mb-1'></div>";
@@ -550,26 +541,25 @@ SET
 
 
 
-	<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><div><img class='btn-imagen me-3' src='images/IMG_3977.PNG'/>Nueva Evaluación Preanestésica</div></li>
-		<li class='list-group-item  bg-light'>
+		<li class='list-group-item epa-section-title'><div><img class='btn-imagen me-3' src='images/IMG_3977.PNG'/>Nueva Evaluación Preanestésica</div></li>
+			<li class='list-group-item epa-card text-center'>
 
-			    <div class="col text-center my-3 ps-0 pe-0">
-			      	<a href="nueva_epa.php" class="btn shadow btn-danger bg-opacity-25 rounded-3 border-0" style="height: 150px;width: 150px; background-color: #CE2E2E; background-image: linear-gradient(62deg, #FF5A00 25%, #FD904C 83%, #FFDBBD 100%);
-					"> <i class="fa-solid fa-clipboard fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Nueva Evaluación</div></a>
-			    </div>
+				    <div class="col text-center my-3 ps-0 pe-0">
+				      	<a href="nueva_epa.php" class="btn btn-app-primary epa-action-tile"> <i class="fa-solid fa-clipboard fa-2xl"></i><div class="text-center ps-2 pe-2">Nueva Evaluación</div></a>
+				    </div>
 
 		</li>	
 
 	<form class="needs-validation" name="form_busq_epa" id="form_busq_epa" method="post" action="vista_epa.php" novalidate>
 
-	<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><div><img class='btn-imagen me-3' src='images/IMG_3977.PNG'/>Búscar Evaluaciones Guardadas</div></li>
-	<li class='list-group-item  bg-light'>
+		<li class='list-group-item epa-section-title'><div><img class='btn-imagen me-3' src='images/IMG_3977.PNG'/>Búscar Evaluaciones Guardadas</div></li>
+		<li class='list-group-item epa-card'>
 		<div class="row pb-3">
 			<div class="col py-2">
 					<div class='d-flex justify-content-between pt-3'><div class='text-muted'>Rut (sin puntos ej: 12345678-9)</div><div class='fw-lighter text-muted'><small>Requerido(*)</small></div></div>
 					<div class="input-group">
 					<input type="text" class="form-control" oninput='checkRut(this)' name="rut_busc" id="rut_busc">
-					<span class='input-group-text p-0' id='basic-addon2'><button class="btn btn-primary btn-md" type="submit">Buscar</button></span>
+						<span class='input-group-text epa-input-action' id='basic-addon2'><button class="btn btn-app-primary btn-md" type="submit">Buscar</button></span>
 				</div>
 			</div>
 		</div>
@@ -578,13 +568,13 @@ SET
 
 	<form class="needs-validation" name="form_busqficha_epa" id="form_busqficha_epa" method="post" action="vista_epa.php" novalidate>
 
-	<li class='list-group-item  bg-light'>
+		<li class='list-group-item epa-card'>
 		<div class="row pb-3">
 			<div class="col py-2">
 					<div class='d-flex justify-content-between pt-3'><div class='text-muted'>Ficha</div><div class='fw-lighter text-muted'><small>Requerido(*)</small></div></div>
 					<div class="input-group">
 					<input type="text" class="form-control" name="ficha_busc" id="ficha_busc">
-					<span class='input-group-text p-0' id='basic-addon2'><button class="btn btn-primary btn-md" type="submit">Buscar</button></span>
+						<span class='input-group-text epa-input-action' id='basic-addon2'><button class="btn btn-app-primary btn-md" type="submit">Buscar</button></span>
 				</div>
 			</div>
 		</div>
@@ -657,6 +647,10 @@ if($_POST['ficha_busc']){ //si existe registro enviado mediante post
 
 ?>
 
+</ul>
+</div>
+</div>
+</div>
 </div>
 <script>
 function checkRut(rut) {

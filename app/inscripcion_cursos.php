@@ -7,7 +7,7 @@
 
 	  //Variables
 
-		$boton_toggler="<a class='btn btn-lg shadow-sm border-light d-sm-block d-sm-none' style='; --bs-border-opacity: .1;' href='index.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
+		$boton_toggler="<a class='d-sm-block d-sm-none admin-back-btn' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 		$titulo_navbar="<span class='text-white d-sm-block d-sm-none'>Gestión</span>";
 		$boton_navbar="<a></a><a></a>";
 
@@ -15,7 +15,10 @@
 	require("head.php");
 ?>
 
-<div class="col col-sm-9 col-xl-9"><!- Columna principal (derecha) responsive->
+<div class="col col-sm-9 col-xl-9 pb-5 app-main-col"><!- Columna principal (derecha) responsive->
+	<div class="apunte-surface">
+		<div class="container-fluid px-0 px-md-2">
+			<div class="admin-shell">
 
 <?php
 
@@ -86,9 +89,12 @@
 
 
 
-<div class='form-group text-center ms-3 pt-3 pb-3 mt-2'>
-    <input type='text' class='form-control' style='width:90%' id='search' placeholder='Buscar un Nombre...'>
+<section class="admin-card mb-3">
+<div class='admin-field'>
+    <label class="admin-label" for="search">Buscar inscrito</label>
+    <input type='text' class='admin-input' id='search' placeholder='Buscar un Nombre...'>
 </div>
+</section>
 <div class='pt-2 pb-4' id='mytable'>
 
 		<div class='row'>
@@ -112,20 +118,23 @@ $i=0;
 		}
 
 
-		echo "<ul class='list-group'><li class='list-group-item bg-secondary bg-gradient bg-opacity-10 ms-3 py-3 mb-2 ' style='font-size: min(max(14px, 1.5vw), 16px)'><form action='gestion_pacientes.php' method='post'>";
+		echo "<ul class='list-group'><li class='list-group-item admin-card mb-2'><form action='gestion_pacientes.php' method='post'>";
 		echo "<div class='col pt-2'>Nombre Paciente<input class='form-control mb-2' type='text' name='nombre_paciente' id='nombre_paciente".$i."' value='$nombre_paciente' required/></div>";
 		echo "<div class='col pt-2'>Rut <input class='form-control mb-2' type='text' name='rut' id='rut' value='$rut' required/></div>";
 		echo "<input type='hidden' name='rut_init' value='$rut'/>";
 		echo "<div class='col pt-2'>Ficha <input class='form-control mb-2' type='text' name='ficha' id='ficha' value='$ficha' required/></div>";
 		echo "<div class='col pt-2'>De Alta <input class='form-check-input' type='checkbox' name='de_alta' id='de_alta' value='1' $de_alta/></div>";
-		echo "<div class='col pt-3'><button type='submit' class='btn btn-primary' value'Submit'>OK</button></div></form></li></ul>";
+		echo "<div class='col pt-3'><button type='submit' class='btn btn-app-primary' value'Submit'>OK</button></div></form></li></ul>";
 	$i++;
 	}
 
 ?>
 
 				</div>
-			</div>			
+			</div>
+			</div>
+		</div>
+	</div>
 		</div>
 
 	

@@ -20,29 +20,18 @@
  
 //VARIABLES
 	  	$ID_epa = $_POST['ID_epa'];
-		$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
-		$titulo_navbar="<span class='text-white'></span>";
-		$boton_navbar="<button class='btn pull-right btn-primary shadow-sm border-light' style='; --bs-border-opacity: .1;' type='submit' form='epa_edit' value='Submit'><div class='text-white'><i class='fa-solid fa-pen py-1 px-3'></i></div></button>";
+			$boton_toggler="<a class='d-sm-block d-sm-none admin-back-btn' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+			$titulo_navbar="<span>EPA</span>";
+			$boton_navbar="<button class='btn btn-app-primary navbar-save-btn' type='submit' form='epa_edit' value='Submit' aria-label='Editar evaluación'><i class='fa-solid fa-pen'></i></button>";
 
 	//Carga Head de la página
 	require("head.php");
 
 ?>
-    <style>
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-               -webkit-appearance: none;
-                margin: 0;
-        }
- 
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
-    </style>
-
-
-
-<div class="col col-sm-9 col-xl-9"><!- Columna principal (derecha) responsive->
+	<div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
+	<div class="apunte-surface">
+	<div class="container-fluid px-0 px-md-2">
+	<div class="epa-shell">
 <form class="needs-validation" name="epa_edit" id="epa_edit" method="post" action="editar_epa.php" novalidate>		
 			<ul class="list-group">
 
@@ -52,18 +41,18 @@
 
 
 		//TITULO DE LA PAGINA
-		echo "<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'><br><h5 class='mb-1 fw-bold opacity-75'>Evaluación Preanestésica</h5>";
+			echo "<li class='list-group-item epa-section-title'><h5 class='mb-1 fw-bold opacity-75'>Evaluación Preanestésica</h5>";
 
-		//BOTON A LA IZQUIERDA DEL TITULO class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block'
-		echo "<div class='pt-1 ps-3 me-3 d-flex float-start'>
-		<a class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>
-		</div>";
+			//BOTON A LA IZQUIERDA DEL TITULO
+			echo "<div class='pt-1 ps-3 me-3 d-flex float-start'>
+			<a class='admin-back-btn d-none d-sm-inline-flex' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>
+			</div>";
 
-		//BOTÓN A LA DERECHA DEL TITULO class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block'
-		echo "<span class='float-end'>
-		<input type='hidden' name='ID_epa' value='".$ID_epa."'/>
-		<button class='btn btn-primary shadow-sm border-light d-none d-sm-block' style='; --bs-border-opacity: .1;' type='submit' form='epa_edit' value='Submit'><div class='text-white'><i class='fa-solid fa-pen pe-2'></i>Editar</div></button>
-		</span>";
+			//BOTÓN A LA DERECHA DEL TITULO
+			echo "<span class='float-end'>
+			<input type='hidden' name='ID_epa' value='".$ID_epa."'/>
+			<button class='btn btn-app-primary pain-action-btn d-none d-sm-inline-flex' type='submit' form='epa_edit' value='Submit'><i class='fa-solid fa-pen pe-2'></i>Editar</button>
+			</span>";
 
 		//SUBTITULO
 		echo "<div class='mb-1'></div>";
@@ -84,10 +73,10 @@ $show_accordion = "show"; // show / ""
 
 
 
-$boton_final = "<span class='float-end pe-3 pb-5'>
-		<button class='btn pull-right btn-primary shadow-sm border-light' style='; --bs-border-opacity: .1;' type='submit' form='epa_edit' value='Submit'><div class='text-white'>
-		<i class='fa-solid fa-pen pe-2'></i>Editar Evaluación</div></button>
-		</span>";
+	$boton_final = "<span class='float-end pe-3 pb-5'>
+			<button class='btn btn-app-primary pain-action-btn' type='submit' form='epa_edit' value='Submit'>
+			<i class='fa-solid fa-pen pe-2'></i>Editar Evaluación</button>
+			</span>";
 
 
 
@@ -303,9 +292,13 @@ list($hemoc,$analgesia_po,$upc,$consent)=$arr_solicitudes2;
 
 
 
-	?>
+		?>
 
 
+	</div>
+	</div>
+	</div>
+	</div>
 
 
 
@@ -324,4 +317,3 @@ list($hemoc,$analgesia_po,$upc,$consent)=$arr_solicitudes2;
 		require("footer.php");
 
 	?>
-

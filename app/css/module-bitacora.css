@@ -1,0 +1,20 @@
+/* Modulo Bitacora */
+.bitacora-card,
+.bitacora-section-card,
+.bitacora-entry-card,
+.bitacora-summary-card,
+.bitacora-chart-card{
+  background:var(--app-card);
+  color:var(--app-text);
+  border-color:var(--app-border);
+}
+
+body.theme-dark .bitacora-card,
+body.theme-dark .bitacora-section-card,
+body.theme-dark .bitacora-entry-card,
+body.theme-dark .bitacora-summary-card,
+body.theme-dark .bitacora-chart-card{
+  background:var(--app-card) !important;
+  color:var(--app-text) !important;
+  border-color:var(--app-border) !important;
+}

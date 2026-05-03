@@ -1,153 +1,20 @@
 <?php
 
   //Variables
-  $boton_toggler="<button class='navbar-toggler shadow-sm' type='button' data-bs-toggle='offcanvas' data-bs-target='#offcanvasNavbar' aria-controls='offcanvasNavbar' style='width:50px; height:40px; --bs-border-opacity: .1;'><i class='fa-solid fa-bars' style='color:white'></i></button>";
-  $titulo_navbar="<span class='fs-5 ms-3 ps-1 pe-1 me-3' style='color:white'><img class='pe-2' src='images/austral.png' style='width: 48px' />Anestesia <small class='ps-0 opacity-50' style='font-size: 16px'> UACH</small></span>";
-  $boton_navbar="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:50px; height:40px; --bs-border-opacity: .1;' href='acerca_de.php'><i class='fa-solid fa-question'></i></a>";
+  $boton_toggler="<button class='navbar-toggler app-nav-toggle' type='button' data-bs-toggle='offcanvas' data-bs-target='#offcanvasNavbar' aria-controls='offcanvasNavbar'><i class='fa-solid fa-bars'></i></button>";
+  $titulo_navbar="<div class='app-navbar-brand app-navbar-brand-compact'><img src='images/austral.png' alt='Universidad Austral de Chile' />Anestesia <small>UACh</small></div>";
+  $boton_navbar="<a class='d-sm-block d-sm-none app-nav-action' href='acerca_de.php' aria-label='Acerca de'><i class='fa-solid fa-question'></i></a>";
 
   //Carga Head de la página
   require("head.php");
 ?>
 <script type="text/javascript" src="js/not_reload.js"></script>
 
-<style type="text/css">
-  input.texto-seguro{
-    -webkit-text-security: disc;
-    -moz-text-security: disc;
-    text-security: disc;
-  }
-
-  .reset-shell{
-    max-width: 980px;
-    margin: 0 auto;
-  }
-
-  .reset-grid{
-    display:grid;
-    grid-template-columns: minmax(280px, 420px) minmax(320px, 560px);
-    gap: 1rem;
-    align-items: stretch;
-  }
-
-  .reset-hero,
-  .reset-card{
-    border:0;
-    border-radius:1.25rem;
-    box-shadow:0 8px 24px rgba(0,0,0,.06);
-    overflow:hidden;
-  }
-
-  .reset-hero{
-    background:var(--app-gradient) !important;
-    color:#fff;
-    padding:1.4rem 1.35rem;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
-  }
-
-  .reset-hero h1{
-    color:#fff;
-    font-weight:700;
-  }
-
-  .reset-pill{
-    display:inline-block;
-    padding:.25rem .6rem;
-    border-radius:999px;
-    font-size:.8rem;
-    font-weight:600;
-    background:rgba(255,255,255,.16);
-    color:#fff;
-    width:max-content;
-  }
-
-  .reset-hero-list{
-    display:grid;
-    gap:.7rem;
-    margin-top:1rem;
-  }
-
-  .reset-hero-item{
-    display:flex;
-    gap:.75rem;
-    align-items:flex-start;
-    background:rgba(255,255,255,.10);
-    border:1px solid rgba(255,255,255,.12);
-    border-radius:1rem;
-    padding:.9rem 1rem;
-  }
-
-  .reset-card{
-    background:#fff;
-  }
-
-  .reset-card-body{
-    padding:1.35rem 1.2rem 1.35rem 1.2rem;
-  }
-
-  .reset-section-title{
-    font-size:.82rem;
-    text-transform:uppercase;
-    letter-spacing:.05em;
-    color:#667085;
-    margin-bottom:.7rem;
-    text-align:center;
-  }
-
-  .reset-input{
-    min-height:54px;
-    border-radius:1rem;
-    border:1px solid #dfe7f2;
-  }
-
-  .reset-addon{
-    border-radius:0 1rem 1rem 0 !important;
-  }
-
-  .reset-toggle{
-    border-radius:0 !important;
-  }
-
-  .reset-helper{
-    color:#6b7280;
-    font-size:.9rem;
-    line-height:1.5;
-  }
-
-  .reset-submit{
-    border-radius:1rem;
-    padding:.85rem 1.1rem;
-    font-weight:600;
-    box-shadow:0 8px 24px rgba(0,0,0,.06);
-  }
-
-  @media (max-width: 991px){
-    .reset-grid{
-      grid-template-columns:1fr;
-    }
-  }
-
-  @media (max-width: 549px){
-    .reset-hero,
-    .reset-card{
-      border-radius:1rem;
-    }
-
-    .reset-hero{
-      padding:1.1rem 1rem;
-    }
-
-    .reset-card-body{
-      padding:1.1rem 1rem;
-    }
-  }
-</style>
-
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
     <div class="container-fluid px-0 px-md-2">
-      <div class="reset-shell">
+      <div class="apuntes-shell">
+        <div class="login-shell">
 
 <?php
 if (!empty($_POST['email_usuario_rec'])) {
@@ -197,126 +64,91 @@ if (!empty($_POST['email_usuario_rec'])) {
 ?>
 
         <form class="needs-validation" action="password_reset.php" method="post" novalidate autocomplete="off" oninput='pass_usuario2.setCustomValidity(pass_usuario2.value != pass_usuario.value ? "Passwords do not match." : "")'>
-          <input type="hidden" name="email_usuario_rec" value="<?php echo $email_usuario_rec; ?>">
+          <input type="hidden" name="email_usuario_rec" value="<?php echo htmlspecialchars($email_usuario_rec); ?>">
 
-          <div class="reset-grid">
+          <section class="about-card login-panel-card mb-3">
+            <div class="login-card-body">
+              <div class="login-section-title">Nueva contraseña</div>
 
-            <div class="reset-hero">
-              <div>
-                <div class="small opacity-75 mb-2">APP clínica • restablecimiento seguro</div>
-                <span class="reset-pill mb-3">Nueva contraseña</span>
-                <h1 class="h3 mb-3">Restablecer acceso <i class="fa-solid fa-key ps-2"></i></h1>
-                <div class="text-white-50">Crea una nueva contraseña para la cuenta asociada al correo indicado.</div>
-              </div>
-
-              <div class="reset-hero-list">
-                <div class="reset-hero-item">
-                  <i class="fa-solid fa-envelope pt-1"></i>
-                  <div><?php echo $email_usuario_rec; ?></div>
+              <div class="login-form-box">
+                <div class="auth-helper auth-full">
+                  Crea una nueva contraseña para <?php echo htmlspecialchars($email_usuario_rec); ?>. El enlace es temporal.
                 </div>
-                <div class="reset-hero-item">
-                  <i class="fa-solid fa-shield-halved pt-1"></i>
-                  <div>El enlace es temporal. Define una nueva clave segura antes de que expire.</div>
-                </div>
-                <div class="reset-hero-item">
-                  <i class="fa-solid fa-lock pt-1"></i>
-                  <div>Tu nueva contraseña debe incluir mayúscula, número y símbolo.</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="reset-card">
-              <div class="reset-card-body">
-                <div class="reset-section-title">Nueva contraseña</div>
 
                 <div class="mb-3">
                   <label class="form-label text-muted">Contraseña</label>
                   <div class="input-group mb-2">
-                    <input type="password" name="pass_usuario" id="pass_usuario" class="form-control reset-input" required pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*_=+\-?]).{8,12}$" aria-describedby="button-addon2">
-                    <button class="btn btn-outline-secondary border-secondary border-opacity-25 reset-toggle" type="button" id="button-addon2" onclick="mostrar()"><i id="icono" class="fa-solid fa-eye"></i></button>
-                    <span class="input-group-text bg-primary text-white reset-addon"><i class="fa fa-key"></i></span>
+                    <input type="password" name="pass_usuario" id="pass_usuario" class="form-control login-input" required pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*_=+\-?]).{8,12}$" aria-describedby="button-addon2">
+                    <button class="btn login-toggle" type="button" id="button-addon2" onclick="mostrar()"><i id="icono" class="fa-solid fa-eye"></i></button>
+                    <span class="input-group-text app-input-addon login-addon"><i class="fa fa-key"></i></span>
                   </div>
                 </div>
 
                 <div class="mb-3">
                   <label class="form-label text-muted">Repetir contraseña</label>
                   <div class="input-group mb-2">
-                    <input type="password" name="pass_usuario2" id="pass_usuario2" class="form-control reset-input" required aria-describedby="button-addon">
-                    <button class="btn btn-outline-secondary border-secondary border-opacity-25 reset-toggle" type="button" id="button-addon" onclick="mostrar2()"><i id="icono2" class="fa-solid fa-eye"></i></button>
-                    <span class="input-group-text bg-primary text-white reset-addon"><i class="fa fa-key"></i></span>
+                    <input type="password" name="pass_usuario2" id="pass_usuario2" class="form-control login-input" required aria-describedby="button-addon">
+                    <button class="btn login-toggle" type="button" id="button-addon" onclick="mostrar2()"><i id="icono2" class="fa-solid fa-eye"></i></button>
+                    <span class="input-group-text app-input-addon login-addon"><i class="fa fa-key"></i></span>
                     <div class="invalid-feedback pt-0">Las contraseñas deben coincidir...</div>
                   </div>
                 </div>
 
-                <div class="reset-helper mb-4">
+                <div class="auth-helper auth-full">
                   Contraseña de 8 a 12 caracteres, incluyendo una mayúscula, un número y un símbolo (!@#$%^&*_=+-)
                 </div>
 
-                <div class="pt-2">
-                  <button type="submit" name="registro" class="btn btn-primary btn-lg reset-submit">
+                <div class="pt-3 text-center auth-full">
+                  <button type="submit" name="registro" class="btn btn-app-primary login-submit">
                     <i class="fa-solid fa-check-to-slot pe-2"></i>Guardar nueva contraseña
                   </button>
                 </div>
 
               </div>
             </div>
-
-          </div>
+          </section>
         </form>
 
 <?php
     } else {
 ?>
-        <div class="reset-grid">
-          <div class="reset-hero">
-            <div>
-              <div class="small opacity-75 mb-2">APP clínica • restablecimiento seguro</div>
-              <span class="reset-pill mb-3">Enlace expirado</span>
-              <h1 class="h3 mb-3">Enlace expirado <i class="fa-regular fa-face-dizzy ps-2"></i></h1>
-              <div class="text-white-50">El enlace para restablecer la contraseña ya no es válido.</div>
-            </div>
-          </div>
-
-          <div class="reset-card">
-            <div class="reset-card-body text-center">
-              <div class="reset-section-title">Recuperación</div>
-              <p class="reset-helper mb-4">El enlace para restablecer la contraseña ha expirado. Por favor solicita uno nuevo.</p>
-              <a class="btn btn-primary btn-lg reset-submit" href="nuevo_password.php">
+        <section class="about-card login-panel-card mb-3">
+          <div class="login-card-body">
+            <div class="login-section-title">Recuperación</div>
+            <div class="login-form-box text-center">
+              <p class="auth-helper auth-full mb-4">El enlace para restablecer la contraseña ha expirado. Por favor solicita uno nuevo.</p>
+              <div class="auth-full">
+                <a class="btn btn-app-primary login-submit" href="nuevo_password.php">
                 <i class="fa-solid fa-rotate pe-2"></i>Solicitar nuevo enlace
-              </a>
+                </a>
+              </div>
             </div>
           </div>
-        </div>
+        </section>
 <?php
     }
 
   } else {
 ?>
-      <div class="reset-grid">
-        <div class="reset-hero">
-          <div>
-            <div class="small opacity-75 mb-2">APP clínica • restablecimiento seguro</div>
-            <span class="reset-pill mb-3">Enlace inválido</span>
-            <h1 class="h3 mb-3">Enlace inválido <i class="fa-regular fa-face-dizzy ps-2"></i></h1>
-            <div class="text-white-50">No se encontró un token válido para restablecer la contraseña.</div>
-          </div>
-        </div>
-
-        <div class="reset-card">
-          <div class="reset-card-body text-center">
-            <div class="reset-section-title">Recuperación</div>
-            <p class="reset-helper mb-4">El enlace para restablecer la contraseña ha expirado o no es válido. Inténtalo nuevamente.</p>
-            <a class="btn btn-primary btn-lg reset-submit" href="nuevo_password.php">
+      <section class="about-card login-panel-card mb-3">
+        <div class="login-card-body">
+          <div class="login-section-title">Recuperación</div>
+          <div class="login-form-box text-center">
+            <p class="auth-helper auth-full mb-4">El enlace para restablecer la contraseña ha expirado o no es válido. Inténtalo nuevamente.</p>
+            <div class="auth-full">
+              <a class="btn btn-app-primary login-submit" href="nuevo_password.php">
               <i class="fa-solid fa-rotate pe-2"></i>Solicitar nuevo enlace
-            </a>
+              </a>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 <?php
   }
 }
 ?>
 
+        </div>
       </div>
     </div>
   </div>

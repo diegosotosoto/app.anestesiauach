@@ -1,16 +1,16 @@
 </div><!- DIV DEL ROW TOTAL -> 
 </div><!- DIV DEL CONTAINER TOTAL ->
 
-<footer class="bd-footer py-2 py-md-2 mt-0 bg-secondary text-start" style=' --bs-bg-opacity: 0.08;'>
-  <div class="container py-2 py-md-5 px-4 px-md-3" style="font-size: min(max(14px, 1.5vw), 16px)">
+<footer class="bd-footer app-footer py-2 py-md-2 mt-0 bg-secondary text-start">
+  <div class="container app-footer-inner py-2 py-md-5 px-4 px-md-3">
     <div class="row">
     <div class="col-lg-3 mb-0">
-        <a class="d-inline-flex align-items-center mb-2 link-dark text-decoration-none" href="<?= function_exists('app_path') ? app_path('index.php') : '/' ?>" aria-label="Bootstrap" style="font-size: min(max(14px, 1.5vw), 18px)">
-          <span class='fs-5' style='color:#22304a;'><img class='pe-2' src='<?= function_exists('app_path') ? app_path('images/austral_black.png') : 'images/austral_black.png' ?>' style='width: 48px; opacity:.72' />Anestesia <small class='ps-0 opacity-50'> UACH</small></span>
+        <a class="app-footer-brand d-inline-flex align-items-center mb-2 link-dark text-decoration-none" href="<?= function_exists('app_path') ? app_path('index.php') : '/' ?>" aria-label="Inicio App Anestesia UACH">
+          <span class='fs-5'><img class='app-footer-logo pe-2' src='<?= function_exists('app_path') ? app_path('images/austral_black.png') : 'images/austral_black.png' ?>' alt="" />Anestesia <small class='ps-0 opacity-50'> UACH</small></span>
         </a>
         <hr class="ms-0 mt-1 mb-2 me-0">
         <ul class="list-unstyled small text-muted">
-          <li class="mb-2" style="font-size: min(max(14px, 1.5vw), 16px)">Aplicación Web del Programa de Anestesiología y Reanimación de la Universidad Austral de Chile. Derechos Reservados</li>
+          <li class="mb-2">Aplicación Web del Programa de Anestesiología y Reanimación de la Universidad Austral de Chile. Derechos Reservados</li>
           <li class="mb-2 mt-2 py-3 opacity-50">Diseñado por Diego Soto S. 2022-2026</li>
         </ul>
     </div>
@@ -66,63 +66,7 @@
   </div>
 </div>
 
-<style>
-#loading-overlay{
-  position:fixed;
-  inset:0;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  background:rgba(255,255,255,.62);
-  backdrop-filter:blur(4px);
-  -webkit-backdrop-filter:blur(4px);
-  z-index:99999;
-  touch-action:none;
-}
 
-.loading-card{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:.9rem;
-  padding:1.35rem 1.4rem;
-  min-width:150px;
-  border-radius:1.2rem;
-  background:rgba(255,255,255,.92);
-  border:1px solid rgba(39,69,143,.10);
-  box-shadow:0 14px 36px rgba(31,42,55,.16);
-}
-
-.loading-logo{
-  width:72px;
-  height:72px;
-  object-fit:contain;
-  display:block;
-  user-select:none;
-  pointer-events:none;
-}
-
-.loading-spinner{
-  width:42px;
-  height:42px;
-  border:4px solid #dbe4f3;
-  border-top-color:#3559b7;
-  border-radius:50%;
-  animation:loading-spin .8s linear infinite;
-}
-
-.loading-text{
-  font-size:.95rem;
-  font-weight:700;
-  color:#27458f;
-  letter-spacing:.02em;
-}
-
-@keyframes loading-spin{
-  to{ transform:rotate(360deg); }
-}
-</style>
 
 <script>
 (function () {

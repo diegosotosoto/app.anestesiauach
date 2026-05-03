@@ -1,0 +1,3213 @@
+/* Modulo Calculos/Apuntes: capa global de unificacion visual.
+   Debe cargar despues de clinical-note-system.css y antes o despues de CSS local antiguo. */
+
+body.theme-dark{
+  --note-brand:#27458f;
+  --note-brand-2:#3559b7;
+  --note-brand-soft:#18345f;
+  --note-brand-soft-border:rgba(178,204,255,.22);
+  --note-bg:#0f172a;
+  --note-card:#172033;
+  --note-soft:#111827;
+  --note-line:rgba(178,204,255,.22);
+  --note-line-strong:rgba(178,204,255,.28);
+  --note-text:#eef4ff;
+  --note-muted:#b6c3d6;
+  --note-success-bg:#1a4a33;
+  --note-success-border:#3a9e6e;
+  --note-warning-bg:rgba(250,204,21,.12);
+  --note-warning-border:rgba(250,204,21,.45);
+  --note-warning-accent:#facc15;
+  --note-check-accent:#15803d;
+  --note-danger-bg:#3a1720;
+  --note-danger-border:#8f3f4f;
+  --note-shadow:0 8px 24px rgba(0,0,0,.28);
+  --note-selected:#3b82f6;
+}
+
+.apunte-surface,
+.note-shell,
+.last-shell,
+.hm-shell,
+.prep-shell,
+.dil-shell{
+  background:var(--note-bg, var(--app-bg)) !important;
+  color:var(--note-text, var(--app-text)) !important;
+}
+
+.note-shell :where(
+  .note-card,
+  .note-info-card,
+  .section-card,
+  .summary-card,
+  .note-summary-box,
+  .note-summary,
+  .note-results,
+  .note-result-card,
+  .note-result-row,
+  .note-interpretation,
+  .note-teaching-wrap,
+  .note-tips,
+  .info-box,
+  .info-box-content,
+  .info-box-header,
+  .formula-box,
+  .visual-formula-box,
+  .teaching-card,
+  .clinical-card,
+  .reference-card,
+  .mp-reference-card,
+  .cl-reference-card,
+  .ecg-image-card,
+  .antitrombo-search-card,
+  .antitrombo-detail-card,
+  .tdl-schema-card,
+  .last-section-card,
+  .last-record-box,
+  .teaching-wrap,
+  .teaching-card,
+  .steroid-muted-card,
+  .steroid-mini-card,
+  .abx-table-card,
+  [class*="-card"],
+  [class*="-box"],
+  [class*="-panel"],
+  [class*="-section"],
+  [class*="-block"],
+  [class*="-result"],
+  [class*="-summary"],
+  [class*="-highlight"],
+  [class*="-wrap"]
+):not(.note-hero):not(.note-hero *):not([class*="-icon"]):not([class*="-badge"]):not([class*="drug-"]):not(.note-result-card):not(.note-result-card *):not(.steroid-selector-sections):not(.note-card-title){
+  background:var(--note-card, var(--app-card)) !important;
+  color:var(--note-text, var(--app-text)) !important;
+  border-color:var(--note-line, var(--app-border)) !important;
+  background-image:none !important;
+}
+
+.last-shell :where(
+  .note-card,
+  .note-info-card,
+  .section-card,
+  .summary-card,
+  .note-summary-box,
+  .note-summary,
+  .note-results,
+  .note-result-card,
+  .note-result-row,
+  .note-interpretation,
+  .note-teaching-wrap,
+  .note-tips,
+  .info-box,
+  .info-box-content,
+  .info-box-header,
+  .formula-box,
+  .visual-formula-box,
+  .note-checklist-progress-block,
+  .last-section-card,
+  .last-record-box,
+  .note-checklist-section,
+  .note-checklist-section-head,
+  .note-checklist-section-body,
+  .last-checklist-section,
+  .last-checklist-head,
+  .last-checklist-body,
+  .last-emphasis-ok,
+  .last-emphasis-warn,
+  .last-emphasis-danger,
+  .teaching-wrap,
+  .teaching-card,
+  .hm-warning-card,
+  .hm-dantrolene-card,
+  .prep-warning-card,
+  .iv-subtle-card,
+  .iv-record-box,
+  .iv-warning-inline,
+  [class*="-card"],
+  [class*="-box"],
+  [class*="-panel"],
+  [class*="-section"],
+  [class*="-block"],
+  [class*="-result"],
+  [class*="-summary"],
+  [class*="-highlight"],
+  [class*="-wrap"]
+):not([class*="drug-"]):not(.note-result-card):not(.note-result-card *):not(.steroid-selector-sections):not(.note-card-title){
+  background:var(--note-card, var(--app-card)) !important;
+  color:var(--note-text, var(--app-text)) !important;
+  border-color:var(--note-line, var(--app-border)) !important;
+  background-image:none !important;
+}
+
+.last-shell :where(
+  .teaching-wrap,
+  .teaching-card
+){
+  background:var(--note-card, var(--app-card)) !important;
+  color:var(--note-text, var(--app-text)) !important;
+  border-color:var(--note-line, var(--app-border)) !important;
+  background-image:none !important;
+}
+
+.note-shell :where(
+  .note-summary-item,
+  .note-option,
+  .choice-option,
+  .score-option,
+  .factor-option,
+  .ecg-option,
+  .analg-option,
+  .hcto-option,
+  .tdl-option,
+  .esc-option,
+  .reg-option,
+  .result-row,
+  .note-question-block,
+  .note-checklist-item,
+  .last-check-item,
+  .antitrombo-mobile-row,
+  [class*="-option"],
+  [class*="-item"],
+  [class*="-row"]
+):not([class*="-mark"]):not([class*="-icon"]):not([class*="-badge"]):not(.is-done):not(.note-mobile-detail-row):not(.note-checklist-item-copy):not(.note-checklist-item-title):not(.note-checklist-item-note):not(.note-checklist-item-input:checked + .note-checklist-item):not(.flacc-option):not(.flacc-option-text):not(.flacc-option-points):not(.note-input-group):not(.ob-scalar-pill):not(.esc-tbw):not(.esc-bmi):not(.esc-ibw):not(.esc-ffm):not(.esc-abw):not(.esc-pk):not(.esc-bsa):not(.esc-option-title):not(.esc-option-sub){
+  background:var(--note-soft, #ffffff) !important;
+  color:var(--note-text, var(--app-text)) !important;
+  border-color:var(--note-line, var(--app-border)) !important;
+  background-image:none !important;
+}
+
+.note-shell .cl-grade-option .note-option.note-grade-1{background:#e9f8ef !important;}
+.note-shell .cl-grade-option .note-option.note-grade-2{background:#fff8db !important;}
+.note-shell .cl-grade-option .note-option.note-grade-2b{background:#fff2c7 !important;}
+.note-shell .cl-grade-option .note-option.note-grade-3{background:#fff4e5 !important;}
+.note-shell .cl-grade-option .note-option.note-grade-4{background:#fdecec !important;}
+
+body.theme-dark .note-shell .cl-grade-option .note-option.note-grade-1{background:#e9f8ef !important;}
+body.theme-dark .note-shell .cl-grade-option .note-option.note-grade-2{background:#fff8db !important;}
+body.theme-dark .note-shell .cl-grade-option .note-option.note-grade-2b{background:#fff2c7 !important;}
+body.theme-dark .note-shell .cl-grade-option .note-option.note-grade-3{background:#fff4e5 !important;}
+body.theme-dark .note-shell .cl-grade-option .note-option.note-grade-4{background:#fdecec !important;}
+body.ui-nocturno .note-shell .cl-grade-option .note-option.note-grade-1{background:#e9f8ef !important;}
+body.ui-nocturno .note-shell .cl-grade-option .note-option.note-grade-2{background:#fff8db !important;}
+body.ui-nocturno .note-shell .cl-grade-option .note-option.note-grade-2b{background:#fff2c7 !important;}
+body.ui-nocturno .note-shell .cl-grade-option .note-option.note-grade-3{background:#fff4e5 !important;}
+body.ui-nocturno .note-shell .cl-grade-option .note-option.note-grade-4{background:#fdecec !important;}
+
+.last-shell :where(
+  .last-check-item,
+  .last-record-output,
+  .note-checklist-item,
+  .note-summary-item,
+  .note-option,
+  .choice-option,
+  .score-option,
+  .factor-option,
+  .result-row,
+  [class*="-item"],
+  [class*="-row"],
+  [class*="-option"]
+):not([class*="-mark"]):not([class*="-icon"]):not([class*="-badge"]):not(.is-done):not(.note-mobile-detail-row):not(.note-checklist-item-copy):not(.note-checklist-item-title):not(.note-checklist-item-note):not(.note-checklist-item-input:checked + .note-checklist-item):not(.flacc-option):not(.flacc-option-text):not(.flacc-option-points):not(.esc-option-title):not(.esc-option-sub){
+  background:var(--note-soft, #ffffff) !important;
+  color:var(--note-text, var(--app-text)) !important;
+  border-color:var(--note-line, var(--app-border)) !important;
+  background-image:none !important;
+}
+.note-shell .note-summary-grid-2 .note-summary-item,
+.last-shell .note-summary-grid-2 .note-summary-item{
+  background:var(--note-brand-soft) !important;
+  border-color:var(--note-brand-soft-border) !important;
+}
+.note-shell .result-row,
+.last-shell .result-row,
+.note-shell.ped-shell .result-row,
+.note-shell .result-left,
+.last-shell .result-left,
+.note-shell.ped-shell .result-left{
+  background:transparent !important;
+}
+body.theme-dark .note-shell .note-summary-grid-2 .note-summary-item,
+body.theme-dark .last-shell .note-summary-grid-2 .note-summary-item,
+body.ui-nocturno .note-shell .note-summary-grid-2 .note-summary-item,
+body.ui-nocturno .last-shell .note-summary-grid-2 .note-summary-item{
+  background:rgba(53,89,183,.32) !important;
+  border-color:rgba(53,89,183,.55) !important;
+}
+
+.last-shell .last-check-item.is-done,
+.note-shell .last-check-item.is-done,
+.note-shell .note-checklist-item.is-done{
+  background:var(--note-success-bg) !important;
+  border-color:var(--note-success-border) !important;
+}
+.last-shell .last-check-item.is-done .last-check-mark,
+.note-shell .last-check-item.is-done .last-check-mark,
+.note-shell .note-checklist-item.is-done .note-checklist-item-mark{
+  background:#2f9e62 !important;
+  border-color:#2f9e62 !important;
+  color:#fff !important;
+}
+
+.last-shell :where(
+  .last-check-mark,
+  input[type="checkbox"],
+  input[type="radio"],
+  .form-check-input,
+  [class*="-mark"]
+):not([class*="-icon"]):not(.note-checklist-item-mark){
+  background:var(--note-card, #ffffff) !important;
+  color:transparent !important;
+  border-color:var(--note-line-strong, var(--app-border)) !important;
+  box-shadow:none !important;
+  background-image:none !important;
+}
+
+.last-shell :where(
+  .note-checklist-progress-badge,
+  #lastProgressBadge,
+  #progressText
+){
+  background:var(--note-brand-soft, var(--app-blue-soft)) !important;
+  color:var(--note-brand, var(--app-blue)) !important;
+  border-color:var(--note-brand-soft-border, var(--app-border)) !important;
+  background-image:none !important;
+}
+
+.note-hero,
+.note-hero-emergency,
+.note-checklist-progress-bar{
+  background:var(--note-brand, var(--app-blue)) !important;
+  background-image:none !important;
+}
+
+.note-hero-emergency{
+  background:#8f1f32 !important;
+}
+
+.note-shell :where(
+  input,
+  select,
+  textarea,
+  .form-control,
+  .form-select,
+  .note-input,
+  .note-select,
+  .note-textarea
+){
+  background:var(--note-card, #ffffff) !important;
+  color:var(--note-text, var(--app-text)) !important;
+  border-color:var(--note-line, var(--app-border)) !important;
+}
+
+.note-input-unit,
+.input-unit,
+.note-shell [class*="unit"]{
+  background:var(--note-brand-soft, var(--app-blue-soft)) !important;
+  color:var(--note-brand, var(--app-blue)) !important;
+  border-color:var(--note-brand-soft-border, var(--app-border)) !important;
+}
+
+.note-interpretation{
+  background:var(--note-brand-soft, var(--app-blue-soft)) !important;
+  color:var(--note-text, var(--app-text)) !important;
+  border-color:var(--note-brand-soft-border, var(--app-border)) !important;
+  background-image:none !important;
+}
+
+.note-interpretation-main,
+.note-interpretation :where([class*="-main"], [class*="-value"], strong, b){
+  color:var(--note-text, var(--app-text)) !important;
+}
+
+.note-interpretation-soft,
+.note-interpretation-label,
+.note-interpretation :where([class*="-soft"], [class*="-label"], p, li){
+  color:var(--note-muted, var(--app-muted)) !important;
+}
+
+.note-shell :where(
+  [class*="-plan-line"],
+  [class*="-other-risk"],
+  [class*="-dose-item"],
+  [class*="-dose-inner"],
+  [class*="-question-card"],
+  [class*="-context-block"]
+){
+  background:var(--note-soft, #ffffff) !important;
+  color:var(--note-text, var(--app-text)) !important;
+  border-color:var(--note-line, var(--app-border)) !important;
+  background-image:none !important;
+}
+
+.dil-table-wrap,
+.dil-group-card,
+.dil-color-card{
+  background:var(--note-card, var(--app-card)) !important;
+  color:var(--note-text, var(--app-text)) !important;
+  border-color:var(--note-line, var(--app-border)) !important;
+  background-image:none !important;
+}
+
+.dil-table th{
+  background:var(--note-brand-soft, var(--app-blue-soft)) !important;
+  color:var(--note-brand, var(--app-blue)) !important;
+  border-color:var(--note-line, var(--app-border)) !important;
+}
+
+.dil-table td{
+  color:var(--note-text, var(--app-text)) !important;
+  border-color:var(--note-line, var(--app-border)) !important;
+}
+
+/* Drug label styles now standardized in clinical-note-system.css */
+/* Use .drug-label and .drug-card components with .drug-{category} classes */
+
+.dil-chip{
+  background:rgba(255,255,255,.78) !important;
+  color:#111827 !important;
+  border:1px solid rgba(15,23,42,.12) !important;
+}
+
+.note-checklist-progress-block,
+.note-checklist-section,
+.note-checklist-section-head,
+.note-checklist-section-body,
+.last-checklist-section,
+.last-checklist-head,
+.last-checklist-body{
+  background:var(--note-card, var(--app-card)) !important;
+  color:var(--note-text, var(--app-text)) !important;
+  border-color:var(--note-line, var(--app-border)) !important;
+}
+
+.note-checklist-progress-track{
+  background:var(--note-soft, #edf0f5) !important;
+  border:1px solid var(--note-line, var(--app-border)) !important;
+}
+
+.note-checklist-progress-badge{
+  background:var(--note-brand-soft, var(--app-blue-soft)) !important;
+  color:var(--note-brand, var(--app-blue)) !important;
+  border:1px solid var(--note-brand-soft-border, var(--app-border)) !important;
+}
+
+.note-checklist-btn{
+  background:var(--note-card, #ffffff) !important;
+  color:var(--note-text, var(--app-text)) !important;
+  border-color:var(--note-line, var(--app-border)) !important;
+}
+
+.note-checklist-btn:hover,
+.note-checklist-btn:focus{
+  background:var(--note-brand-soft, var(--app-blue-soft)) !important;
+  color:var(--note-brand, var(--app-blue)) !important;
+}
+
+.note-checklist-btn-danger{
+  color:var(--note-danger-border, var(--app-danger)) !important;
+  border-color:var(--note-danger-border, var(--app-danger)) !important;
+}
+
+.note-checklist-btn-danger:hover,
+.note-checklist-btn-danger:focus{
+  background:var(--note-danger-bg, #fff5f3) !important;
+  color:var(--note-danger-border, var(--app-danger)) !important;
+}
+
+.note-shell :where(
+  input[type="checkbox"],
+  input[type="radio"],
+  .form-check-input,
+  .note-checklist-item-mark,
+  .last-check-mark,
+  .asa-checkmark,
+  .caprini-mark,
+  .lee-checkmark,
+  [class*="-mark"]
+):not([class*="-icon"]):not(.apfel-option-mark):not(.dasi-yn-icon):not(.lee-action-mark):not(.last-check-item.is-done *):not(.note-checklist-item.is-done *):not(.note-checklist-item-input:checked + .note-checklist-item *){
+  background:var(--note-card, #ffffff) !important;
+  color:transparent !important;
+  border-color:var(--note-line-strong, var(--app-border)) !important;
+  box-shadow:none !important;
+  background-image:none !important;
+}
+
+.note-shell :where(
+  input[type="checkbox"]:checked,
+  input[type="radio"]:checked,
+  .form-check-input:checked
+){
+  background:var(--note-selected, var(--app-blue)) !important;
+  border-color:var(--note-selected, var(--app-blue)) !important;
+}
+
+.note-checklist-item.is-done,
+.last-check-item.is-done{
+  background:var(--note-success-bg, #ecfdf3) !important;
+  border-color:var(--note-success-border, #b7e4c7) !important;
+}
+
+.note-checklist-item.is-done .note-checklist-item-mark,
+.last-check-item.is-done .last-check-mark{
+  background:var(--app-success, #16a34a) !important;
+  border-color:var(--app-success, #16a34a) !important;
+  color:#ffffff !important;
+}
+
+.asa-input:checked + .asa-option .asa-checkmark,
+.caprini-input:checked + .caprini-card .caprini-mark,
+.lee-factor-input:checked + .lee-factor-card .lee-checkmark{
+  background:var(--app-success, #16a34a) !important;
+  border-color:var(--app-success, #16a34a) !important;
+  color:#ffffff !important;
+}
+
+.apfel-option-mark,
+.dasi-yn-yes .dasi-yn-icon{
+  background:#eaf7ef !important;
+  color:#15803d !important;
+  border-color:#b7e2c4 !important;
+}
+
+.apfel-option-mark.no,
+.dasi-yn-no .dasi-yn-icon{
+  background:#fff1f1 !important;
+  color:#dc2626 !important;
+  border-color:#f2b8b5 !important;
+}
+
+.apfel-option-input:checked + .apfel-option .apfel-option-mark,
+.choice-check:checked + .dasi-yn-yes .dasi-yn-icon{
+  background:#16a34a !important;
+  color:#ffffff !important;
+  border-color:#16a34a !important;
+}
+
+.apfel-option-input:checked + .apfel-option .apfel-option-mark.no,
+.choice-check:checked + .dasi-yn-no .dasi-yn-icon{
+  background:#dc2626 !important;
+  color:#ffffff !important;
+  border-color:#dc2626 !important;
+}
+
+.lee-action-mark{
+  color:#ffffff !important;
+}
+
+.lee-action-mark.ok{background:#16a34a !important;}
+.lee-action-mark.mid{background:#f59e0b !important;color:#111827 !important;}
+.lee-action-mark.high{background:#dc2626 !important;}
+
+.note-shell :where(
+  .note-check:checked + .note-option,
+  .choice-check:checked + .choice-btn,
+  .choice-radio:checked + .choice-btn,
+  .factor-check:checked + .factor-btn,
+  .factor-radio:checked + .factor-btn,
+  .caprini-radio:checked + .factor-btn,
+  .note-option-input:checked + .note-option,
+  .apfel-option-input:checked + .apfel-option,
+  .ecg-option-input:checked + .ecg-option,
+  .analg-option-input:checked + .analg-option,
+  .hcto-option-input:checked + .hcto-option,
+  .tdl-option-input:checked + .tdl-option,
+  .esc-option-input:checked + .esc-option,
+  .reg-option-input:checked + .reg-option
+){
+  background:var(--note-brand-soft, var(--app-blue-soft)) !important;
+  border-color:var(--note-selected, var(--app-blue)) !important;
+  color:var(--note-text, var(--app-text)) !important;
+  box-shadow:0 0 0 3px rgba(59,130,246,.18) !important;
+}
+
+.drug-reversal-opioid,
+.drug-reversal-local,
+.drug-reversal-inductor,
+.drug-reversal-neuromuscular,
+.drug-reversal-vasoactive,
+.drug-reversal-atropine,
+.drug-reversal-other,
+[class*="drug-reversal"],
+.cat-reversal,
+.ob-cat-option.cat-reversal{
+  background-image:none !important;
+  border-style:double !important;
+}
+
+body.theme-dark .note-shell,
+body.theme-dark .apunte-surface,
+body.theme-dark .last-shell,
+body.theme-dark .hm-shell,
+body.theme-dark .prep-shell,
+body.theme-dark .dil-shell,
+body.ui-nocturno .note-shell,
+body.ui-nocturno .apunte-surface,
+body.ui-nocturno .last-shell,
+body.ui-nocturno .hm-shell,
+body.ui-nocturno .prep-shell,
+body.ui-nocturno .dil-shell{
+  background:var(--note-bg) !important;
+  color:var(--note-text) !important;
+}
+
+body.theme-dark .note-shell :where(
+  .note-card,
+  .note-info-card,
+  .section-card,
+  .summary-card,
+  .note-summary-box,
+  .note-summary,
+  .note-results,
+  .note-result-card,
+  .note-result-row,
+  .note-interpretation,
+  .note-teaching-wrap,
+  .note-tips,
+  .info-box,
+  .info-box-content,
+  .info-box-header,
+  .formula-box,
+  .visual-formula-box,
+  .teaching-card,
+  .clinical-card,
+  .reference-card,
+  .mp-reference-card,
+  .cl-reference-card,
+  .ecg-image-card,
+  .antitrombo-search-card,
+  .antitrombo-detail-card,
+  .tdl-schema-card,
+  .last-section-card,
+  .last-record-box,
+  .steroid-muted-card,
+  .steroid-mini-card,
+  .abx-table-card,
+  [class*="-card"],
+  [class*="-box"],
+  [class*="-panel"],
+  [class*="-section"],
+  [class*="-block"],
+  [class*="-result"],
+  [class*="-summary"],
+  [class*="-highlight"],
+  [class*="-wrap"]
+):not(.note-hero):not(.note-hero *):not([class*="-icon"]):not([class*="-badge"]):not([class*="drug-"]):not(.note-result-card):not(.note-result-card *):not(.steroid-selector-sections):not(.note-card-title){
+  background:var(--note-card) !important;
+  color:var(--note-text) !important;
+  border-color:var(--note-line) !important;
+  background-image:none !important;
+}
+
+body.theme-dark .last-shell :where(
+  .note-card,
+  .note-info-card,
+  .section-card,
+  .summary-card,
+  .note-summary-box,
+  .note-summary,
+  .note-results,
+  .note-result-card,
+  .note-result-row,
+  .note-interpretation,
+  .note-teaching-wrap,
+  .note-tips,
+  .info-box,
+  .info-box-content,
+  .info-box-header,
+  .formula-box,
+  .visual-formula-box,
+  .note-checklist-progress-block,
+  .last-section-card,
+  .last-record-box,
+  .teaching-wrap,
+  .teaching-card,
+  .note-checklist-section,
+  .note-checklist-section-head,
+  .note-checklist-section-body,
+  .last-checklist-section,
+  .last-checklist-head,
+  .last-checklist-body,
+  .last-emphasis-ok,
+  .last-emphasis-warn,
+  .last-emphasis-danger,
+  .hm-warning-card,
+  .hm-dantrolene-card,
+  .prep-warning-card,
+  .iv-subtle-card,
+  .iv-record-box,
+  .iv-warning-inline,
+  [class*="-card"],
+  [class*="-box"],
+  [class*="-panel"],
+  [class*="-section"],
+  [class*="-block"],
+  [class*="-result"],
+  [class*="-summary"],
+  [class*="-highlight"],
+  [class*="-wrap"]
+):not([class*="drug-"]):not(.note-result-card):not(.note-result-card *):not(.steroid-selector-sections):not(.note-card-title){
+  background:var(--note-card) !important;
+  color:var(--note-text) !important;
+  border-color:var(--note-line) !important;
+  background-image:none !important;
+}
+
+body.theme-dark .last-shell :where(
+  .teaching-wrap,
+  .teaching-card
+){
+  background:var(--note-card) !important;
+  color:var(--note-text) !important;
+  border-color:var(--note-line) !important;
+  background-image:none !important;
+}
+
+body.theme-dark .note-shell :where(
+  .note-summary-item,
+  .note-option,
+  .choice-option,
+  .score-option,
+  .factor-option,
+  .ecg-option,
+  .analg-option,
+  .hcto-option,
+  .tdl-option,
+  .esc-option,
+  .reg-option,
+  .result-row,
+  .note-question-block,
+  .note-checklist-item,
+  .last-check-item,
+  .antitrombo-mobile-row,
+  [class*="-option"],
+  [class*="-item"],
+  [class*="-row"]
+):not([class*="-mark"]):not([class*="-icon"]):not([class*="-badge"]):not(.is-done):not(.note-mobile-detail-row):not(.note-checklist-item-copy):not(.note-checklist-item-title):not(.note-checklist-item-note):not(.note-checklist-item-input:checked + .note-checklist-item):not(.flacc-option):not(.flacc-option-text):not(.flacc-option-points):not(.note-input-group):not(.ob-scalar-pill):not(.esc-tbw):not(.esc-bmi):not(.esc-ibw):not(.esc-ffm):not(.esc-abw):not(.esc-pk):not(.esc-bsa){
+  background:var(--note-soft) !important;
+  color:var(--note-text) !important;
+  border-color:var(--note-line) !important;
+  background-image:none !important;
+}
+
+body.theme-dark .last-shell :where(
+  .last-check-item,
+  .last-record-output,
+  .note-checklist-item,
+  .note-summary-item,
+  .note-option,
+  .choice-option,
+  .score-option,
+  .factor-option,
+  .result-row,
+  [class*="-item"],
+  [class*="-row"],
+  [class*="-option"]
+):not([class*="-mark"]):not([class*="-icon"]):not([class*="-badge"]):not(.is-done):not(.note-mobile-detail-row):not(.note-checklist-item-copy):not(.note-checklist-item-title):not(.note-checklist-item-note):not(.note-checklist-item-input:checked + .note-checklist-item):not(.flacc-option):not(.flacc-option-text):not(.flacc-option-points):not(.ob-scalar-pill):not(.esc-tbw):not(.esc-bmi):not(.esc-ibw):not(.esc-ffm):not(.esc-abw):not(.esc-pk):not(.esc-bsa):not(.esc-option-title):not(.esc-option-sub){
+  background:var(--note-soft) !important;
+  color:var(--note-text) !important;
+  border-color:var(--note-line) !important;
+  background-image:none !important;
+}
+
+body.theme-dark .note-shell .note-summary-grid-2 .note-summary-item,
+body.theme-dark .last-shell .note-summary-grid-2 .note-summary-item,
+body.ui-nocturno .note-shell .note-summary-grid-2 .note-summary-item,
+body.ui-nocturno .last-shell .note-summary-grid-2 .note-summary-item{
+  background:rgba(53,89,183,.32) !important;
+  border-color:rgba(53,89,183,.55) !important;
+}
+body.theme-dark .note-shell .result-row,
+body.theme-dark .last-shell .result-row,
+body.theme-dark .note-shell.ped-shell .result-row,
+body.theme-dark .note-shell .result-left,
+body.theme-dark .last-shell .result-left,
+body.theme-dark .note-shell.ped-shell .result-left,
+body.ui-nocturno .note-shell .result-row,
+body.ui-nocturno .last-shell .result-row,
+body.ui-nocturno .note-shell.ped-shell .result-row,
+body.ui-nocturno .note-shell .result-left,
+body.ui-nocturno .last-shell .result-left,
+body.ui-nocturno .note-shell.ped-shell .result-left{
+  background:transparent !important;
+}
+
+body.theme-dark .last-shell :where(
+  .note-checklist-progress-badge,
+  #lastProgressBadge,
+  #progressText
+){
+  background:#18345f !important;
+  color:#dbeafe !important;
+  border-color:rgba(147,197,253,.36) !important;
+  background-image:none !important;
+}
+
+body.theme-dark .note-shell :where(
+  .asa-plan-line,
+    .asa-emergency-option,
+  .asa-option,
+  .apfel-option,
+  .apfel-question-card,
+  .dasi-question-card,
+  .dasi-context-block,
+  .dasi-yn-label,
+  .dasi-main-result,
+  .dasi-summary-box,
+  .caprini-group,
+  .caprini-card,
+  .caprini-plan-line,
+  .lee-factor-card,
+  .lee-action-item,
+  .lee-plan-line,
+  .apfel-plan-line,
+  .apfel-other-risk,
+  .apfel-dose-item,
+  .apfel-dose-inner
+){
+  background:var(--note-soft) !important;
+  color:var(--note-text) !important;
+  border-color:var(--note-line) !important;
+  background-image:none !important;
+}
+
+body.theme-dark .note-shell :where(
+  input,
+  select,
+  textarea,
+  .form-control,
+  .form-select,
+  .note-input,
+  .note-select,
+  .note-textarea
+){
+  background:#0f172a !important;
+  color:#f8fafc !important;
+  border-color:var(--note-line) !important;
+}
+
+body.theme-dark .note-input-unit,
+body.theme-dark .input-unit,
+body.theme-dark .note-shell [class*="unit"]{
+  background:#1e293b !important;
+  color:#dbeafe !important;
+  border-color:var(--note-line) !important;
+}
+
+body.theme-dark .note-interpretation{
+  background:#172033 !important;
+  color:var(--note-text) !important;
+  border-color:var(--note-line) !important;
+  background-image:none !important;
+}
+
+body.theme-dark .note-interpretation-main,
+body.theme-dark .note-interpretation :where([class*="-main"], [class*="-value"], strong, b){
+  color:var(--note-text) !important;
+}
+
+body.theme-dark .note-interpretation-soft,
+body.theme-dark .note-interpretation-label,
+body.theme-dark .note-interpretation :where([class*="-soft"], [class*="-label"], p, li){
+  color:var(--note-muted) !important;
+}
+
+body.theme-dark .note-shell :where(
+  [class*="-plan-line"],
+  [class*="-other-risk"],
+  [class*="-dose-item"],
+  [class*="-dose-inner"],
+  [class*="-question-card"],
+  [class*="-context-block"]
+){
+  background:#111827 !important;
+  color:var(--note-text) !important;
+  border-color:var(--note-line) !important;
+  background-image:none !important;
+}
+
+body.theme-dark .dil-table-wrap,
+body.theme-dark .dil-group-card,
+body.theme-dark .dil-color-card{
+  background:#172033 !important;
+  color:var(--note-text) !important;
+  border-color:var(--note-line) !important;
+  background-image:none !important;
+}
+
+body.theme-dark .dil-table th{
+  background:#18345f !important;
+  color:#dbeafe !important;
+  border-color:var(--note-line) !important;
+}
+
+body.theme-dark .dil-table td{
+  color:var(--note-text) !important;
+  border-color:var(--note-line) !important;
+}
+
+/* Drug label dark mode styles now standardized in clinical-note-system.css */
+/* Contrast box (.drug-label-content) stays 90% white in ALL modes for readability */
+
+body.theme-dark .dil-chip{
+  background:rgba(15,23,42,.76) !important;
+  color:#eef4ff !important;
+  border:1px solid rgba(178,204,255,.22) !important;
+}
+
+body.theme-dark .note-checklist-progress-block,
+body.theme-dark .note-checklist-section,
+body.theme-dark .note-checklist-section-head,
+body.theme-dark .note-checklist-section-body,
+body.theme-dark .last-checklist-section,
+body.theme-dark .last-checklist-head,
+body.theme-dark .last-checklist-body{
+  background:var(--note-card) !important;
+  color:var(--note-text) !important;
+  border-color:var(--note-line) !important;
+}
+
+body.theme-dark .note-checklist-progress-track{
+  background:#0f172a !important;
+  border-color:var(--note-line) !important;
+}
+
+body.theme-dark .note-checklist-progress-badge{
+  background:#18345f !important;
+  color:#dbeafe !important;
+  border-color:rgba(147,197,253,.36) !important;
+}
+
+body.theme-dark .note-checklist-btn{
+  background:#172033 !important;
+  color:#eef4ff !important;
+  border-color:var(--note-line) !important;
+}
+
+body.theme-dark .note-checklist-btn:hover,
+body.theme-dark .note-checklist-btn:focus{
+  background:#18345f !important;
+  color:#ffffff !important;
+}
+
+body.theme-dark .note-checklist-btn-danger{
+  background:#3a1720 !important;
+  color:#fecdd3 !important;
+  border-color:#8f3f4f !important;
+}
+
+body.theme-dark .note-shell :where(
+  input[type="checkbox"],
+  input[type="radio"],
+  .form-check-input,
+  .note-checklist-item-mark,
+  .last-check-mark,
+  .asa-checkmark,
+  .caprini-mark,
+  .lee-checkmark,
+  [class*="-mark"]
+):not([class*="-icon"]):not(.apfel-option-mark):not(.dasi-yn-icon):not(.lee-action-mark):not(.last-check-item.is-done *):not(.note-checklist-item.is-done *){
+  background:#0f172a !important;
+  color:transparent !important;
+  border-color:#64748b !important;
+}
+
+body.theme-dark .last-shell :where(
+  .last-check-mark,
+  input[type="checkbox"],
+  input[type="radio"],
+  .form-check-input,
+  [class*="-mark"]
+):not([class*="-icon"]):not(.note-checklist-item-mark){
+  background:#0f172a !important;
+  color:transparent !important;
+  border-color:#64748b !important;
+  box-shadow:none !important;
+  background-image:none !important;
+}
+
+body.theme-dark .last-check-item.is-done .last-check-mark,
+body.theme-dark .note-shell .last-check-item.is-done .last-check-mark,
+body.theme-dark .note-shell .note-checklist-item.is-done .note-checklist-item-mark,
+body.theme-dark .last-shell .note-checklist-item.is-done .note-checklist-item-mark,
+body.theme-dark .last-shell input[type="checkbox"]:checked,
+body.theme-dark .last-shell input[type="radio"]:checked,
+body.theme-dark .last-shell .form-check-input:checked{
+  background:#16a34a !important;
+  border-color:#16a34a !important;
+  color:#ffffff !important;
+}
+
+body.theme-dark .last-shell :where(
+  .small-note,
+  .last-check-note,
+  .last-checklist-help,
+  .note-checklist-progress-title,
+  .note-teaching-main,
+  .teaching-main,
+  p,
+  li,
+  [class*="-sub"],
+  [class*="-help"],
+  [class*="-note"],
+  [class*="-label"]
+){
+  color:var(--note-muted) !important;
+}
+
+body.theme-dark .last-shell :where(
+  .note-card-title,
+  .note-teaching-title,
+  .teaching-title,
+  .last-check-title,
+  .last-checklist-title,
+  [class*="-title"],
+  [class*="-heading"],
+  [class*="-value"],
+  strong,
+  b
+){
+  color:var(--note-text) !important;
+}
+
+body.theme-dark .note-shell :where(
+  .asa-checkmark,
+  .caprini-mark,
+  .lee-checkmark
+){
+  background:#0f172a !important;
+  color:transparent !important;
+  border-color:#64748b !important;
+  box-shadow:none !important;
+  background-image:none !important;
+}
+
+body.theme-dark .note-shell :where(
+  .asa-input:checked + .asa-option .asa-checkmark,
+  .caprini-input:checked + .caprini-card .caprini-mark,
+  .lee-factor-input:checked + .lee-factor-card .lee-checkmark
+){
+  background:#16a34a !important;
+  color:#ffffff !important;
+  border-color:#16a34a !important;
+}
+
+body.theme-dark .note-shell :where(.apfel-option-mark, .dasi-yn-yes .dasi-yn-icon){
+  background:#14532d !important;
+  color:#dcfce7 !important;
+  border-color:#22c55e !important;
+}
+
+body.theme-dark .note-shell :where(.apfel-option-mark.no, .dasi-yn-no .dasi-yn-icon){
+  background:#4c0519 !important;
+  color:#ffe4e6 !important;
+  border-color:#fb7185 !important;
+}
+
+body.theme-dark .note-shell :where(
+  .apfel-option-input:checked + .apfel-option .apfel-option-mark,
+  .choice-check:checked + .dasi-yn-yes .dasi-yn-icon
+){
+  background:#16a34a !important;
+  color:#ffffff !important;
+  border-color:#16a34a !important;
+}
+
+body.theme-dark .note-shell :where(
+  .apfel-option-input:checked + .apfel-option .apfel-option-mark.no,
+  .choice-check:checked + .dasi-yn-no .dasi-yn-icon
+){
+  background:#dc2626 !important;
+  color:#ffffff !important;
+  border-color:#dc2626 !important;
+}
+
+body.theme-dark .note-shell :where(.lee-action-mark){
+  color:#ffffff !important;
+}
+
+body.theme-dark .note-shell :where(.lee-action-mark.ok){background:#16a34a !important;}
+body.theme-dark .note-shell :where(.lee-action-mark.mid){background:#f59e0b !important;color:#111827 !important;}
+body.theme-dark .note-shell :where(.lee-action-mark.high){background:#dc2626 !important;}
+
+body.theme-dark .note-checklist-item.is-done,
+body.theme-dark .last-check-item.is-done{
+  background:var(--note-success-bg) !important;
+  border-color:var(--note-success-border) !important;
+}
+
+body.theme-dark .note-checklist-item.is-done .note-checklist-item-mark,
+body.theme-dark .last-check-item.is-done .last-check-mark{
+  background:#16a34a !important;
+  color:#ffffff !important;
+  border-color:#16a34a !important;
+}
+
+body.theme-dark .note-shell :where(
+  .note-section-label,
+  .note-muted,
+  .note-footer,
+  .small-note,
+  .note-result-card-label,
+  .note-result-card-note,
+  .note-summary-k,
+  .last-check-note,
+  .last-checklist-help,
+  [class*="-sub"],
+  [class*="-help"],
+  [class*="-note"],
+  [class*="-label"],
+  p,
+  li
+){
+  color:var(--note-muted) !important;
+}
+
+body.theme-dark .last-shell :where(
+  .teaching-title,
+  .teaching-main,
+  .teaching-card,
+  .teaching-card *,
+  .fw-semibold
+){
+  color:var(--note-text) !important;
+}
+
+body.theme-dark .last-shell :where(
+  .teaching-card li,
+  .teaching-card p
+){
+  color:var(--note-muted) !important;
+}
+
+body.theme-dark .note-shell :where(
+  .note-card-title,
+  .note-label,
+  .note-summary-v,
+  .note-summary-text,
+  .note-result-card-value,
+  .last-check-title,
+  .last-checklist-title,
+  [class*="-title"],
+  [class*="-heading"],
+  [class*="-value"],
+  strong,
+  b
+){
+  color:var(--note-text) !important;
+}
+
+body.theme-dark .note-shell :where(.note-warning, .warn-box, [class*="-warn"], [class*="-iso"]){
+  background:var(--note-warning-bg) !important;
+  border-color:var(--note-warning-border) !important;
+}
+
+.note-shell .note-card-title,
+.last-shell .note-card-title,
+.note-shell .prep-warning-title,
+.last-shell .prep-warning-title{
+  background:transparent !important;
+  background-image:none !important;
+}
+
+body.theme-dark .note-shell :where(.note-danger, .danger-box, [class*="-danger"], [class*="-critical"]){
+  background:var(--note-danger-bg) !important;
+  border-color:var(--note-danger-border) !important;
+}
+
+body.theme-dark .note-shell :where(.note-success, .good-box, [class*="-ok"], [class*="-safe"]){
+  background:var(--note-success-bg) !important;
+  border-color:var(--note-success-border) !important;
+}
+
+body.theme-dark :where(
+  .score-mid,
+  .chip-warn,
+  .last-emphasis-warn,
+  .asa-bg-2,
+  .asa-bg-3,
+  .gcs-option-mid,
+  .gcs-l1,
+  .gcs-management-mid,
+  .flacc-l2,
+  .flacc-management-mid,
+  .hk-mid,
+  .hna-iso,
+  .gas-content-espeso,
+  .cal-drug-maint,
+){
+  background:var(--note-warning-bg) !important;
+  border-color:var(--note-warning-border) !important;
+  color:var(--note-text) !important;
+}
+
+body.theme-dark :where(
+  .score-zero,
+  .chip-no,
+  .last-emphasis-danger,
+  .asa-bg-4,
+  .asa-bg-5,
+  .asa-bg-6,
+  .gcs-option-bad,
+  .gcs-management-high,
+  .flacc-management-high,
+  .hk-high,
+  .hk-critical,
+  .gas-content-solido,
+  .cal-drug-critical
+){
+  background:var(--note-danger-bg) !important;
+  border-color:var(--note-danger-border) !important;
+  color:var(--note-text) !important;
+}
+
+body.theme-dark :where(
+  .score-low,
+  .last-emphasis-ok,
+  .asa-bg-1,
+  .gcs-option-good
+){
+  background:var(--note-success-bg) !important;
+  border-color:var(--note-success-border) !important;
+  color:var(--note-text) !important;
+}
+
+body.theme-dark :where(.cl-grade-1, .cl-grade-panel.grade-1, .cl-grade-summary.grade-1, .mp-grade-panel.grade-1){
+  background:#14532d !important;
+  border-color:#22c55e !important;
+  color:#dcfce7 !important;
+}
+
+body.theme-dark :where(.cl-grade-2a, .cl-grade-panel.grade-2a, .cl-grade-summary.grade-2a, .mp-grade-panel.grade-2){
+  background:#3f3412 !important;
+  border-color:#facc15 !important;
+  color:#fef9c3 !important;
+}
+
+body.theme-dark :where(.cl-grade-2b, .cl-grade-panel.grade-2b, .cl-grade-summary.grade-2b){
+  background:#4a3211 !important;
+  border-color:#f59e0b !important;
+  color:#ffedd5 !important;
+}
+
+body.theme-dark :where(.cl-grade-3, .cl-grade-panel.grade-3, .cl-grade-summary.grade-3, .mp-grade-panel.grade-3){
+  background:#4a250b !important;
+  border-color:#fb923c !important;
+  color:#fed7aa !important;
+}
+
+body.theme-dark :where(.cl-grade-4, .cl-grade-panel.grade-4, .cl-grade-summary.grade-4, .mp-grade-panel.grade-4){
+  background:#4c0519 !important;
+  border-color:#fb7185 !important;
+  color:#ffe4e6 !important;
+}
+
+body.theme-dark :where(.cl-grade-1, .cl-grade-2a, .cl-grade-2b, .cl-grade-3, .cl-grade-4, .cl-grade-panel, .cl-grade-summary, .mp-grade-panel) *{
+  color:inherit !important;
+}
+
+/* Drug colors - ISO anesthesia standard (same in light and dark mode) */
+/* Drug background colors - ISO anesthesia standard (same in light and dark mode) */
+body.theme-dark :where(.drug-opioid, .dil-shell .drug-opioid, .drug-label.drug-opioid, .drug-card.drug-opioid){background:#8fd3ff !important;}
+body.theme-dark :where(.drug-local, .dil-shell .drug-local, .drug-label.drug-local, .drug-card.drug-local){background:#d1d5db !important;}
+body.theme-dark :where(.drug-inductor, .drug-inductor-propofol, .dil-shell .drug-inductor, .dil-shell .drug-inductor-propofol, .drug-label.drug-inductor, .drug-card.drug-inductor, .drug-label.drug-inductor-propofol, .drug-card.drug-inductor-propofol){background:#facc15 !important;}
+body.theme-dark :where(.drug-benzo, .dil-shell .drug-benzo, .drug-label.drug-benzo, .drug-card.drug-benzo){background:#f59e0b !important;}
+body.theme-dark :where(.drug-neuromuscular, .dil-shell .drug-neuromuscular, .drug-label.drug-neuromuscular, .drug-card.drug-neuromuscular){background:#ef4444 !important;}
+body.theme-dark :where(.drug-vasoactive, .dil-shell .drug-vasoactive, .drug-label.drug-vasoactive, .drug-card.drug-vasoactive){background:#c4b5fd !important;}
+body.theme-dark :where(.drug-atropine, .dil-shell .drug-atropine, .drug-label.drug-atropine, .drug-card.drug-atropine){background:#86efac !important;}
+body.theme-dark :where(.drug-other, .dil-shell .drug-other, .drug-label.drug-other, .drug-card.drug-other){background:#f8fafc !important;}
+body.theme-dark :where(.drug-reversal, .drug-label.drug-reversal, .drug-card.drug-reversal){background:#ff6b7a !important;}
+
+/* Reversal agent specific backgrounds */
+body.theme-dark :where(.drug-reversal-opioid, .drug-label.drug-reversal-opioid, .drug-card.drug-reversal-opioid){background-color:#8fd3ff !important;}
+body.theme-dark :where(.drug-reversal-local, .drug-label.drug-reversal-local, .drug-card.drug-reversal-local){background-color:#d1d5db !important;}
+body.theme-dark :where(.drug-reversal-inductor, .drug-reversal-benzo, .drug-label.drug-reversal-inductor, .drug-card.drug-reversal-inductor, .drug-label.drug-reversal-benzo, .drug-card.drug-reversal-benzo){background-color:#facc15 !important;}
+body.theme-dark :where(.drug-reversal-neuromuscular, .drug-label.drug-reversal-neuromuscular, .drug-card.drug-reversal-neuromuscular){background-color:#ef4444 !important;}
+body.theme-dark :where(.drug-reversal-vasoactive, .drug-label.drug-reversal-vasoactive, .drug-card.drug-reversal-vasoactive){background-color:#c4b5fd !important;}
+body.theme-dark :where(.drug-reversal-atropine, .drug-label.drug-reversal-atropine, .drug-card.drug-reversal-atropine){background-color:#86efac !important;}
+
+/* Reversal agents with striped pattern */
+body.theme-dark :where(.drug-label, .drug-card)[class*="drug-reversal"] {
+  background-size:12px 12px !important;
+  background-image:repeating-linear-gradient(135deg, rgba(255,255,255,.9) 0 4px, rgba(255,255,255,0) 4px 8px) !important;
+  border-style:double !important;
+  border-width:3px !important;
+}
+
+/* Drug label content contrast box - 50% white, never changes in dark mode */
+body.theme-dark .drug-label-content,
+body.theme-dark .drug-label-prefix{
+  background:rgba(255,255,255,0.50) !important;
+  border-color:rgba(0,0,0,0.10) !important;
+}
+
+body.theme-dark .drug-label-title{
+  color:#111827 !important;
+}
+
+body.theme-dark .drug-label-subtitle{
+  color:#374151 !important;
+}
+
+/* Legacy styles for backwards compatibility */
+body.theme-dark :where(.dil-drug-cell, .dil-color-card){
+  border-color:rgba(15,23,42,.26) !important;
+}
+
+body.theme-dark :where(.dil-drug-cell .chip-copy, .dil-color-card .copy){
+  background:rgba(255,255,255,.64) !important;
+  color:#111827 !important;
+}
+
+/* Cobertura fina para apuntes con CSS local antiguo.
+   Estas reglas viven aqui para no seguir parchando cada nota por separado. */
+body.theme-dark .note-shell :where(
+  table,
+  .table,
+  [class*="-table"]
+){
+  background:#172033 !important;
+  color:var(--note-text) !important;
+  border-color:var(--note-line) !important;
+  background-image:none !important;
+}
+
+body.theme-dark .note-shell :where(
+  thead,
+  table thead,
+  .table thead,
+  [class*="-table"] thead
+){
+  background:#18345f !important;
+  color:#eef4ff !important;
+}
+
+body.theme-dark .note-shell :where(
+  th,
+  table th,
+  .table th,
+  [class*="-table"] th
+){
+  background:#254b95 !important;
+  color:#ffffff !important;
+  border-color:rgba(219,234,254,.36) !important;
+}
+
+body.theme-dark .note-shell :where(
+  td,
+  table td,
+  .table td,
+  [class*="-table"] td
+){
+  background:#172033 !important;
+  color:#eef4ff !important;
+  border-color:rgba(219,234,254,.24) !important;
+}
+
+body.theme-dark .note-shell :where(table td *, [class*="-table"] td *):not(.dil-drug-cell):not(.dil-drug-cell *):not([class*="drug-"]):not([class*="badge"]){
+  color:inherit !important;
+}
+
+body.theme-dark .note-shell :where(
+  .ped-shell .section-card,
+  .ped-shell .section-inner,
+  .ped-shell .control-box,
+  .ped-shell .summary-chip,
+  .ped-shell .stack-card,
+  .ped-shell .callout,
+  .ped-shell .tip-card,
+  .ped-shell .result-row,
+  .ped-shell .result-left,
+  .ped-shell .result-name-tag,
+  .ped-shell .result-value-wrap,
+  .ped-shell .mini-note,
+  .ped-shell .note-warning,
+  .gly-section-card,
+  .gly-section-content,
+  .gly-plan-line,
+  .gly-option,
+  .fluid-safety-item,
+  .fluid-option,
+  .aall-summary-box,
+  .aall-summary-box .note-summary-item,
+  .aall-description,
+  .antitrombo-search-card,
+  .antitrombo-detail-card,
+  .antitrombo-mobile-row,
+  .antitrombo-mobile-item,
+  .pieb-recipe-box,
+  .pieb-option,
+  .pieb-step,
+  .pieb-program-card,
+    .lee-factor-card,
+  .lee-action-item,
+  .lee-plan-line
+){
+  background:#172033 !important;
+  color:var(--note-text) !important;
+  border-color:var(--note-line) !important;
+  background-image:none !important;
+}
+
+body.theme-dark .note-shell :where(
+  .ped-shell .control-box,
+  .ped-shell .result-row,
+  .ped-shell .callout,
+  .ped-shell .tip-card,
+  .ped-shell .result-value-wrap,
+  .gly-plan-line,
+  .gly-option,
+  .fluid-safety-item,
+  .fluid-option,
+  .aall-summary-box .note-summary-item,
+  .antitrombo-mobile-row,
+  .antitrombo-mobile-item,
+  .pieb-option,
+  .pieb-step,
+  .pieb-program-card,
+    .lee-factor-card,
+  .lee-action-item,
+  .lee-plan-line
+){
+  background:#111827 !important;
+}
+.note-shell.ped-shell .result-row,
+.note-shell.ped-shell .result-left{
+  background:transparent !important;
+}
+body.theme-dark .note-shell.ped-shell .result-row,
+body.theme-dark .note-shell.ped-shell .result-left,
+body.ui-nocturno .note-shell.ped-shell .result-row,
+body.ui-nocturno .note-shell.ped-shell .result-left{
+  background:transparent !important;
+}
+body.theme-dark .asa-result-low,
+body.ui-nocturno .asa-result-low{
+  background:rgba(47,158,98,.2) !important;
+  border-color:rgba(47,158,98,.4) !important;
+}
+body.theme-dark .asa-result-mid,
+body.ui-nocturno .asa-result-mid{
+  background:rgba(217,119,6,.2) !important;
+  border-color:rgba(217,119,6,.4) !important;
+}
+body.theme-dark .asa-result-high,
+body.ui-nocturno .asa-result-high{
+  background:rgba(220,38,38,.2) !important;
+  border-color:rgba(220,38,38,.4) !important;
+}
+body.theme-dark .asa-result-critical,
+body.ui-nocturno .asa-result-critical{
+  background:rgba(153,27,27,.25) !important;
+  border-color:rgba(153,27,27,.5) !important;
+}
+
+body.theme-dark .note-shell :where(
+  .ped-shell .input-clean,
+  .ped-shell .unit-btn,
+  .ped-shell .input-group-text,
+  .gly-table-wrap,
+  .gly-table,
+  .pieb-table-wrap,
+  .pieb-table,
+  .antitrombo-search-input
+){
+  background:#0f172a !important;
+  color:#f8fafc !important;
+  border-color:var(--note-line) !important;
+}
+
+body.theme-dark .note-shell :where(
+  .ped-shell .section-title,
+  .ped-shell .field-label,
+  .ped-shell .result-name,
+  .ped-shell .result-name-tag,
+  .ped-shell .callout strong,
+  .ped-shell .tip-title,
+  .ped-shell .summary-v,
+  .gly-option-title,
+  .gly-section-title,
+  .fluid-option-title,
+  .fluid-safety-title,
+  .aall-summary-text,
+  .aall-description .note-card-title,
+    .antitrombo-mobile-value,
+  .pieb-step-title,
+  .pieb-option-title,
+  .pieb-program-value,
+  .lee-factor-title,
+  .lee-action-title
+){
+  color:var(--note-text) !important;
+}
+
+body.theme-dark .note-shell :where(
+  .ped-shell .section-subtle,
+  .ped-shell .result-note,
+  .ped-shell .callout,
+  .ped-shell .tip-card,
+  .ped-shell .tip-card li,
+  .ped-shell .summary-k,
+  .ped-shell .summary-s,
+  .gly-option-sub,
+  .gly-section-sub,
+  .gly-small,
+  .fluid-option-sub,
+  .fluid-safety-note,
+    .antitrombo-mobile-label,
+  .antitrombo-mobile-value.is-empty,
+  .pieb-step-note,
+  .pieb-option-sub,
+  .pieb-program-note,
+  .lee-factor-note,
+  .lee-action-note
+){
+  color:var(--note-muted) !important;
+}
+
+body.theme-dark .note-shell :where(
+  .note-tag,
+  .antitrombo-group-tag,
+  .pieb-drug-chip
+){
+  background:#dbeafe !important;
+  color:#111827 !important;
+  border-color:rgba(147,197,253,.62) !important;
+  background-image:none !important;
+}
+
+
+body.theme-dark .note-shell :where(.fluid-safety-mark.ok){
+  background:#16a34a !important;
+  color:#ffffff !important;
+}
+
+body.theme-dark .note-shell :where(.fluid-safety-mark){
+  background:#f59e0b !important;
+  color:#111827 !important;
+}
+
+body.theme-dark .note-shell :where(.pieb-step-num){
+  background:#2563eb !important;
+  color:#ffffff !important;
+}
+
+body.theme-dark .note-shell :where(.aall-highlight){
+  background:#18345f !important;
+  border-color:rgba(147,197,253,.34) !important;
+}
+
+.note-shell :where(.ob-scalar-pill.is-tbw){background:#eaf2ff !important;border-color:#c2d8ff !important;}
+.note-shell :where(.ob-scalar-pill.is-ibw){background:#eaf7fb !important;border-color:#b8e0f0 !important;}
+.note-shell :where(.ob-scalar-pill.is-ffm){background:#eaf8ef !important;border-color:#b8e0c8 !important;}
+.note-shell :where(.ob-scalar-pill.is-abw){background:#fff0e1 !important;border-color:#ffd4a8 !important;}
+.note-shell :where(.ob-scalar-pill.is-pk){background:#f1edff !important;border-color:#d4c8ff !important;}
+
+body.theme-dark .note-shell :where(.ob-scalar-pill.is-tbw){background:#1a3a5c !important;border-color:#2d5a8a !important;}
+body.theme-dark .note-shell :where(.ob-scalar-pill.is-ibw){background:#1a4a5c !important;border-color:#2d7a9a !important;}
+body.theme-dark .note-shell :where(.ob-scalar-pill.is-ffm){background:#1a4d3a !important;border-color:#2d8a6a !important;}
+body.theme-dark .note-shell :where(.ob-scalar-pill.is-abw){background:#5c3a1a !important;border-color:#8a5a2d !important;}
+body.theme-dark .note-shell :where(.ob-scalar-pill.is-pk){background:#3a1a5c !important;border-color:#5a2d8a !important;}
+
+body.theme-dark .note-shell :where(.aall-description #drugInfo){
+  color:var(--note-muted) !important;
+}
+
+/* Familias restantes de notas estandarizadas. */
+body.theme-dark .note-shell :where(
+  .note-summary-chip,
+  .score-domain,
+  .note-result-row,
+  .dpp-question,
+  .dpp-main-result,
+  .dasi-question-card,
+  .dasi-context-block,
+  .dasi-main-result,
+  .dasi-summary-box,
+  .ob-main-card,
+  .ob-quick-card,
+  .ob-table-wrap,
+  .ob-cat-option,
+  .epi-option,
+  .epi-plan-line,
+    .epi-table-wrap,
+  .gas-option,
+  .gas-plan-line,
+  .gas-action-item,
+  .cal-option,
+  .cal-plan-line,
+  .cal-drug-card,
+  .hk-option,
+  .hk-plan-line,
+    .hna-option,
+  .hna-plan-line,
+  .hna-action-item,
+  .vfg-option,
+  .vfg-plan-line,
+  .vfg-action-item,
+  .tdl-option,
+  .tdl-plan-line,
+  .tdl-action-item,
+  .esc-plan-line,
+  .vent-option,
+  .vent-plan-line,
+    .peri-option,
+  .peri-plan-line,
+    .reg-option,
+  .reg-plan-line,
+  .reg-action-item,
+  .analg-option,
+  .analg-plan-line,
+  .analg-action-item,
+  .hcto-option,
+  .hcto-plan-line,
+  .hcto-action-item,
+  .gcs-management-card,
+  .flacc-management-card,
+  .mp-reference-card,
+  .cl-reference-card,
+  .steroid-muted-card,
+  .steroid-mini-card,
+  .steroid-highlight,
+  .steroid-fludro,
+  .abx-table-card,
+  .iv-subtle-card,
+  .iv-warning-inline,
+  .hm-warning-card,
+  .hm-dantrolene-card,
+  .prep-warning-card,
+  .prep-dantrolene-card,
+  .last-emphasis-ok,
+  .last-emphasis-warn,
+  .last-emphasis-danger
+){
+  background:#172033 !important;
+  color:var(--note-text) !important;
+  border-color:var(--note-line) !important;
+  background-image:none !important;
+}
+
+body.theme-dark .note-shell :where(
+  .note-summary-chip,
+  .score-domain,
+  .note-result-row,
+  .dpp-question,
+  .dasi-question-card,
+  .dasi-context-block,
+  .ob-quick-card,
+  .ob-cat-option,
+  .ob-drug-option,
+  .epi-option,
+  .epi-plan-line,
+    .gas-option,
+  .gas-plan-line,
+  .gas-action-item,
+  .cal-option,
+  .cal-plan-line,
+  .cal-drug-card,
+  .hk-option,
+  .hk-plan-line,
+    .hna-option,
+  .hna-plan-line,
+  .hna-action-item,
+  .vfg-option,
+  .vfg-plan-line,
+  .vfg-action-item,
+  .tdl-option,
+  .tdl-plan-line,
+  .tdl-action-item,
+  .esc-plan-line,
+  .vent-option,
+  .vent-plan-line,
+    .peri-option,
+  .peri-plan-line,
+    .reg-option,
+  .reg-plan-line,
+  .reg-action-item,
+  .analg-option,
+  .analg-plan-line,
+  .analg-action-item,
+  .hcto-option,
+  .hcto-plan-line,
+  .hcto-action-item,
+  .iv-subtle-card
+){
+  background:#111827 !important;
+}
+
+body.theme-dark .note-shell :where(
+  .dpp-question-title,
+  .dpp-main-value,
+  .dasi-question-title,
+  .dasi-main-value,
+  .ob-main-value,
+  .ob-quick-title,
+  .epi-option-title,
+  .gas-action-title,
+    .hna-action-title,
+  .vfg-action-title,
+  .tdl-action-title,
+  .reg-action-title,
+  .analg-action-title,
+  .hcto-action-title,
+  .score-domain-title,
+  .note-result-main
+){
+  color:var(--note-text) !important;
+}
+
+body.theme-dark .note-shell :where(
+  .dpp-question-sub,
+  .dpp-main-note,
+  .dasi-question-note,
+  .dasi-context-note,
+  .ob-main-note,
+  .ob-quick-note,
+  .epi-option-sub,
+  .gas-action-note,
+    .hna-action-note,
+  .vfg-action-note,
+  .tdl-action-note,
+  .reg-action-note,
+  .analg-action-note,
+  .hcto-action-note,
+  .note-result-secondary,
+  .note-summary-chip
+){
+  color:var(--note-muted) !important;
+}
+
+body.theme-dark .note-shell :where(
+  .score-zero,
+  .chip-no,
+  .asa-bg-4,
+  .asa-bg-5,
+  .asa-bg-6,
+  .gcs-option-bad,
+  .gcs-management-high,
+  .flacc-management-high,
+  .hk-high,
+  .hk-critical,
+  .gas-content-solido,
+  .cal-drug-critical,
+  .last-emphasis-danger,
+  .prep-chip-danger
+){
+  background:var(--note-danger-bg) !important;
+  border-color:var(--note-danger-border) !important;
+  color:var(--note-text) !important;
+}
+
+body.theme-dark .note-shell :where(
+  .score-mid,
+  .chip-warn,
+  .asa-bg-2,
+  .asa-bg-3,
+  .gcs-option-mid,
+  .gcs-l1,
+  .gcs-management-mid,
+  .flacc-l2,
+  .flacc-management-mid,
+  .hk-mid,
+  .hna-iso,
+  .gas-content-espeso,
+  .cal-drug-maint,
+  .last-emphasis-warn,
+  .steroid-fludro,
+  .esc-yellow,
+  .esc-orange
+){
+  background:var(--note-warning-bg) !important;
+  border-color:var(--note-warning-border) !important;
+  color:var(--note-text) !important;
+}
+
+body.theme-dark .note-shell :where(
+  .score-low,
+  .chip-ok,
+  .asa-bg-1,
+  .gcs-option-good,
+  .last-emphasis-ok,
+  .prep-chip-safe
+){
+  background:var(--note-success-bg) !important;
+  border-color:var(--note-success-border) !important;
+  color:var(--note-text) !important;
+}
+
+body.theme-dark .note-shell :where(
+  .ob-tag-yellow,
+  .ob-tag-blue,
+  .ob-tag-red,
+  .ob-tag-orange,
+  .ob-tag-green,
+  .ob-tag-purple,
+  .ob-tag-gray,
+  .dil-chip,
+  .lee-factor-pill,
+  .note-summary-chip
+){
+  border-color:var(--note-line) !important;
+  background:#18345f !important;
+  color:#dbeafe !important;
+  background-image:none !important;
+}
+
+body.theme-dark .note-shell :where(
+  .iv-record-output,
+  .last-record-output,
+  .note-checklist-record-box
+){
+  background:#0f172a !important;
+  color:#f8fafc !important;
+  border-color:var(--note-line) !important;
+}
+
+body.theme-dark .note-shell :where(
+  .gas-action-mark.ok,
+    .hna-action-mark.ok,
+  .vfg-action-mark.ok,
+  .tdl-action-mark.ok,
+  .reg-action-mark.ok,
+  .analg-action-mark.ok,
+  .hcto-action-mark.ok
+){
+  background:#16a34a !important;
+  color:#ffffff !important;
+}
+
+body.theme-dark .note-shell :where(
+  .gas-action-mark.mid,
+    .hna-action-mark.mid,
+  .vfg-action-mark.mid,
+  .tdl-action-mark.mid,
+  .reg-action-mark.mid,
+  .analg-action-mark.mid,
+  .hcto-action-mark.mid
+){
+  background:#f59e0b !important;
+  color:#111827 !important;
+}
+
+body.theme-dark .note-shell :where(
+  .gas-action-mark.high,
+    .hna-action-mark.high,
+  .vfg-action-mark.high,
+  .tdl-action-mark.high,
+  .reg-action-mark.high,
+  .analg-action-mark.high,
+  .hcto-action-mark.high
+){
+  background:#dc2626 !important;
+  color:#ffffff !important;
+}
+
+/* Estandar farmacologico global.
+   Debe quedar al final: las etiquetas de farmacos no heredan colores de cards,
+   tablas ni modo nocturno. */
+.note-shell :where(
+  .drug-opioid,
+  .dil-shell .drug-opioid,
+  .ped-shell .drug-opioid
+){
+  background:#8fd3ff !important;
+  color:#0f172a !important;
+  border-color:#4fb3e8 !important;
+  background-image:none !important;
+}
+
+.note-shell :where(
+  .drug-local,
+  .dil-shell .drug-local,
+  .ped-shell .drug-local
+){
+  background:#d1d5db !important;
+  color:#111827 !important;
+  border-color:#9ca3af !important;
+  background-image:none !important;
+}
+
+.note-shell :where(
+  .drug-inductor,
+  .drug-inductor-propofol,
+  .drug-benzo,
+  .dil-shell .drug-inductor,
+  .dil-shell .drug-inductor-propofol,
+  .dil-shell .drug-benzo,
+  .ped-shell .drug-inductor,
+  .ped-shell .drug-benzo
+){
+  background:#facc15 !important;
+  color:#111827 !important;
+  border-color:#d6a900 !important;
+  background-image:none !important;
+}
+
+.note-shell :where(
+  .drug-neuromuscular,
+  .dil-shell .drug-neuromuscular,
+  .ped-shell .drug-neuromuscular
+){
+  background:#ef4444 !important;
+  color:#ffffff !important;
+  border-color:#b91c1c !important;
+  background-image:none !important;
+}
+
+.note-shell :where(
+  .drug-vasoactive,
+  .dil-shell .drug-vasoactive,
+  .ped-shell .drug-vasoactive
+){
+  background:#c4b5fd !important;
+  color:#111827 !important;
+  border-color:#8b5cf6 !important;
+  background-image:none !important;
+}
+
+.note-shell :where(
+  .drug-atropine,
+  .dil-shell .drug-atropine,
+  .ped-shell .drug-atropine
+){
+  background:#86efac !important;
+  color:#111827 !important;
+  border-color:#22c55e !important;
+  background-image:none !important;
+}
+
+.note-shell :where(
+  .drug-other,
+  .dil-shell .drug-other,
+  .ped-shell .drug-other,
+    .cal-drug,
+  .cal-drug-critical,
+  .cal-drug-maint,
+  .peri-drug-chip,
+){
+  background:#f8fafc !important;
+  color:#111827 !important;
+  border-color:#cbd5e1 !important;
+  background-image:none !important;
+}
+
+.note-shell :where(
+  .drug-reversal-opioid,
+  .dil-shell .drug-reversal-opioid,
+  .ped-shell .drug-reversal-opioid
+){
+  background-color:#8fd3ff !important;
+  color:#0f172a !important;
+  border-color:#4fb3e8 !important;
+}
+
+.note-shell :where(
+  .drug-reversal-local,
+  .dil-shell .drug-reversal-local,
+  .ped-shell .drug-reversal-local
+){
+  background-color:#d1d5db !important;
+  color:#111827 !important;
+  border-color:#9ca3af !important;
+}
+
+.note-shell :where(
+  .drug-reversal-inductor,
+  .drug-reversal-benzo,
+  .dil-shell .drug-reversal-inductor,
+  .dil-shell .drug-reversal-benzo,
+  .ped-shell .drug-reversal-inductor,
+  .ped-shell .drug-reversal-benzo
+){
+  background-color:#facc15 !important;
+  color:#111827 !important;
+  border-color:#d6a900 !important;
+}
+
+.note-shell :where(
+  .drug-reversal-neuromuscular,
+  .dil-shell .drug-reversal-neuromuscular,
+  .ped-shell .drug-reversal-neuromuscular
+){
+  background-color:#ef4444 !important;
+  color:#ffffff !important;
+  border-color:#b91c1c !important;
+}
+
+.note-shell :where(
+  .drug-reversal-vasoactive,
+  .dil-shell .drug-reversal-vasoactive,
+  .ped-shell .drug-reversal-vasoactive
+){
+  background-color:#c4b5fd !important;
+  color:#111827 !important;
+  border-color:#8b5cf6 !important;
+}
+
+.note-shell :where(
+  .drug-reversal-atropine,
+  .dil-shell .drug-reversal-atropine,
+  .ped-shell .drug-reversal-atropine
+){
+  background-color:#86efac !important;
+  color:#111827 !important;
+  border-color:#22c55e !important;
+}
+
+.note-shell :where(
+  .drug-reversal-other,
+  .dil-shell .drug-reversal-other,
+  .ped-shell .drug-reversal-other
+){
+  background-color:#f8fafc !important;
+  color:#111827 !important;
+  border-color:#cbd5e1 !important;
+}
+
+.note-shell :where(
+  .drug-reversal-opioid,
+  .drug-reversal-local,
+  .drug-reversal-inductor,
+  .drug-reversal-benzo,
+  .drug-reversal-neuromuscular,
+  .drug-reversal-vasoactive,
+  .drug-reversal-atropine,
+  .drug-reversal-other
+){
+  background-size:12px 12px !important;
+  background-image:repeating-linear-gradient(135deg, rgba(255,255,255,.9) 0 4px, rgba(255,255,255,0) 4px 8px) !important;
+  border-style:solid !important;
+}
+
+.note-shell :where(
+  .pieb-drug-local,
+  .epi-bupi,
+  .epi-levo,
+  .epi-ropi,
+  .epi-lido,
+  .aall-local,
+  .reg-option.drug-local
+){
+  background:#d1d5db !important;
+  color:#111827 !important;
+  border-color:#9ca3af !important;
+  background-image:none !important;
+}
+
+.note-shell :where(
+  .pieb-drug-opioid,
+  .epi-fenta
+){
+  background:#8fd3ff !important;
+  color:#0f172a !important;
+  border-color:#4fb3e8 !important;
+  background-image:none !important;
+}
+
+.note-shell :where(.epi-epi){
+  background:#c4b5fd !important;
+  color:#111827 !important;
+  border-color:#8b5cf6 !important;
+  background-image:none !important;
+}
+
+.note-shell :where(
+  .result-name-tag,
+    .cal-drug,
+  .peri-drug-chip,
+  .pieb-drug-chip,
+  .epi-bupi,
+  .epi-levo,
+  .epi-ropi,
+  .epi-lido,
+  .epi-fenta,
+  .epi-epi,
+  .dil-drug-cell,
+  .dil-color-card
+){
+  border-radius:.72rem !important;
+  padding:.42rem .62rem !important;
+  line-height:1.15 !important;
+  box-shadow:none !important;
+}
+
+.note-shell :where(.dil-drug-cell .chip-copy, .dil-color-card .copy){
+  background:transparent !important;
+  color:inherit !important;
+  border:0 !important;
+  padding:0 !important;
+  backdrop-filter:none !important;
+}
+
+.note-shell :where(.dil-drug-name, .dil-color-card .title){
+  color:inherit !important;
+}
+
+.note-shell :where(.dil-drug-tag, .dil-color-card .sub){
+  color:inherit !important;
+  opacity:.82;
+}
+
+.note-shell :where(.drug-line, .drug-sub, .note-drug-title, .note-drug-sub, .note-option[class*="drug-"] small, [class*="drug-"] small){
+  color:inherit !important;
+}
+
+.note-shell :where(.drug-sub, .note-drug-sub, .note-option[class*="drug-"] small, [class*="drug-"] small){
+  opacity:.82;
+}
+
+.note-shell.ped-shell .result-row:has(.result-name-tag[class*="drug-"]){
+  border-width:1px !important;
+  padding:.68rem .75rem !important;
+}
+
+.note-shell.ped-shell .stack-card:has(.result-name-tag[class*="drug-"]){
+  background:transparent !important;
+  border:0 !important;
+  padding:0 !important;
+}
+
+.note-shell.ped-shell .result-row:has(.result-name-tag[class*="drug-"]) .result-name-tag{
+  display:inline-flex !important;
+  align-items:center !important;
+  max-width:100% !important;
+}
+
+.note-shell.ped-shell .stack-card{
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  padding:0 !important;
+}
+
+.note-shell.ped-shell .results-grid{
+  gap:.75rem !important;
+}
+
+.note-shell.ped-shell .result-row{
+  border-width:1px !important;
+  box-shadow:none !important;
+}
+
+body.theme-dark .note-shell :where(
+  .drug-opioid,
+  .drug-local,
+  .drug-inductor,
+  .drug-inductor-propofol,
+  .drug-benzo,
+  .drug-neuromuscular,
+  .drug-vasoactive,
+  .drug-atropine,
+  .drug-other,
+    [class*="drug-reversal"]
+){
+  text-shadow:none !important;
+}
+
+.note-shell :where(.note-checklist-record, .last-record-box, .iv-record-box){
+  background:var(--note-card, #ffffff) !important;
+  color:var(--note-text, #172033) !important;
+  border:1px solid var(--note-line, rgba(25,91,180,.18)) !important;
+  border-radius:1rem !important;
+  padding:1rem !important;
+  box-shadow:var(--note-shadow, 0 8px 24px rgba(15,23,42,.08)) !important;
+  background-image:none !important;
+}
+
+.note-shell :where(
+  .iv-record-output,
+  .last-record-output,
+  .note-checklist-record-box
+){
+  width:100% !important;
+  min-height:170px !important;
+  border:1px solid var(--note-line, #d0d5dd) !important;
+  border-radius:.9rem !important;
+  padding:.85rem .95rem !important;
+  background:var(--note-soft, #f8fbff) !important;
+  color:var(--note-text, #172033) !important;
+  font-size:.95rem !important;
+  line-height:1.4 !important;
+  resize:vertical !important;
+}
+
+body.theme-dark .note-shell :where(.note-checklist-record, .last-record-box, .iv-record-box){
+  background:#172033 !important;
+  color:var(--note-text) !important;
+  border:1px solid var(--note-line) !important;
+  border-radius:1rem !important;
+  padding:1rem !important;
+  background-image:none !important;
+}
+
+body.theme-dark .note-shell :where(.hm-record-label, .prep-record-label){
+  color:var(--note-muted) !important;
+}
+
+body.theme-dark .note-shell :where(
+  .iv-record-output,
+  .last-record-output,
+  .note-checklist-record-box
+){
+  background:#0f172a !important;
+  color:#f8fafc !important;
+  border-color:var(--note-line) !important;
+  border-radius:.9rem !important;
+  min-height:170px !important;
+}
+
+/* ASA usa radio oculto + tarjeta adyacente. Mantener esta regla al final:
+   debe ganar a las reglas globales de marcas/checks del modulo. */
+.note-shell label > .asa-input:checked + .asa-option > .asa-checkmark,
+.note-shell label > .asa-input:checked + .asa-option .asa-checkmark{
+  background:#16a34a !important;
+  border-color:#16a34a !important;
+  color:#ffffff !important;
+  box-shadow:none !important;
+  background-image:none !important;
+}
+
+.note-shell label > .asa-input:checked + .asa-option > .asa-checkmark i,
+.note-shell label > .asa-input:checked + .asa-option .asa-checkmark i{
+  color:#ffffff !important;
+}
+
+body.theme-dark .note-shell label > .asa-input:checked + .asa-option > .asa-checkmark,
+body.theme-dark .note-shell label > .asa-input:checked + .asa-option .asa-checkmark{
+  background:#16a34a !important;
+  border-color:#16a34a !important;
+  color:#ffffff !important;
+  box-shadow:none !important;
+  background-image:none !important;
+}
+
+/* Prioridad final para etiquetas de farmacos en modo nocturno.
+   Evita que reglas de texto/card de mayor especificidad apaguen los colores. */
+body.theme-dark .note-shell.ped-shell .result-name-tag.drug-opioid,
+body.theme-dark .note-shell .result-name-tag.drug-opioid,
+body.theme-dark .note-shell .dil-drug-cell.drug-opioid,
+body.theme-dark .note-shell .dil-color-card.drug-opioid{
+  background:#8fd3ff !important;
+  color:#0f172a !important;
+  border-color:#4fb3e8 !important;
+  background-image:none !important;
+}
+
+body.theme-dark .note-shell.ped-shell .result-name-tag.drug-local,
+body.theme-dark .note-shell .result-name-tag.drug-local,
+body.theme-dark .note-shell .dil-drug-cell.drug-local,
+body.theme-dark .note-shell .dil-color-card.drug-local{
+  background:#d1d5db !important;
+  color:#111827 !important;
+  border-color:#9ca3af !important;
+  background-image:none !important;
+}
+
+body.theme-dark .note-shell.ped-shell .result-name-tag.drug-inductor,
+body.theme-dark .note-shell.ped-shell .result-name-tag.drug-benzo,
+body.theme-dark .note-shell .result-name-tag.drug-inductor,
+body.theme-dark .note-shell .result-name-tag.drug-benzo,
+body.theme-dark .note-shell .dil-drug-cell.drug-inductor,
+body.theme-dark .note-shell .dil-drug-cell.drug-benzo,
+body.theme-dark .note-shell .dil-color-card.drug-inductor,
+body.theme-dark .note-shell .dil-color-card.drug-inductor-propofol,
+body.theme-dark .note-shell .dil-color-card.drug-benzo,
+body.theme-dark .note-shell .drug-label.drug-inductor,
+body.theme-dark .note-shell .drug-label.drug-benzo,
+body.theme-dark .note-shell .drug-card.drug-inductor,
+body.theme-dark .note-shell .drug-card.drug-benzo{
+  background:#facc15 !important;
+  color:#111827 !important;
+  border-color:#d6a900 !important;
+  background-image:none !important;
+}
+
+body.theme-dark .note-shell.ped-shell .result-name-tag.drug-neuromuscular,
+body.theme-dark .note-shell .result-name-tag.drug-neuromuscular,
+body.theme-dark .note-shell .dil-drug-cell.drug-neuromuscular,
+body.theme-dark .note-shell .dil-color-card.drug-neuromuscular{
+  background:#ef4444 !important;
+  color:#ffffff !important;
+  border-color:#b91c1c !important;
+  background-image:none !important;
+}
+
+body.theme-dark .note-shell.ped-shell .result-name-tag.drug-vasoactive,
+body.theme-dark .note-shell .result-name-tag.drug-vasoactive,
+body.theme-dark .note-shell .dil-drug-cell.drug-vasoactive,
+body.theme-dark .note-shell .dil-color-card.drug-vasoactive{
+  background:#c4b5fd !important;
+  color:#111827 !important;
+  border-color:#8b5cf6 !important;
+  background-image:none !important;
+}
+
+body.theme-dark .note-shell.ped-shell .result-name-tag.drug-atropine,
+body.theme-dark .note-shell .result-name-tag.drug-atropine,
+body.theme-dark .note-shell .dil-drug-cell.drug-atropine,
+body.theme-dark .note-shell .dil-color-card.drug-atropine{
+  background:#86efac !important;
+  color:#111827 !important;
+  border-color:#22c55e !important;
+  background-image:none !important;
+}
+
+body.theme-dark .note-shell.ped-shell .result-name-tag.drug-other,
+body.theme-dark .note-shell .result-name-tag.drug-other,
+body.theme-dark .note-shell .dil-drug-cell.drug-other,
+body.theme-dark .note-shell .dil-color-card.drug-other{
+  background:#f8fafc !important;
+  color:#111827 !important;
+  border-color:#cbd5e1 !important;
+  background-image:none !important;
+}
+
+body.theme-dark .note-shell.ped-shell .result-name-tag.drug-reversal-opioid,
+body.theme-dark .note-shell .result-name-tag.drug-reversal-opioid,
+body.theme-dark .note-shell .dil-drug-cell.drug-reversal-opioid,
+body.theme-dark .note-shell .dil-color-card.drug-reversal-opioid,
+body.theme-dark .note-shell .drug-label.drug-reversal-opioid,
+body.theme-dark .note-shell .drug-card.drug-reversal-opioid{
+  background-color:#8fd3ff !important;
+  border-color:#4fb3e8 !important;
+}
+
+body.theme-dark .note-shell.ped-shell .result-name-tag.drug-reversal-inductor,
+body.theme-dark .note-shell.ped-shell .result-name-tag.drug-reversal-benzo,
+body.theme-dark .note-shell .result-name-tag.drug-reversal-inductor,
+body.theme-dark .note-shell .result-name-tag.drug-reversal-benzo,
+body.theme-dark .note-shell .dil-drug-cell.drug-reversal-inductor,
+body.theme-dark .note-shell .dil-drug-cell.drug-reversal-benzo,
+body.theme-dark .note-shell .dil-color-card.drug-reversal-inductor,
+body.theme-dark .note-shell .dil-color-card.drug-reversal-benzo,
+body.theme-dark .note-shell .drug-label.drug-reversal-inductor,
+body.theme-dark .note-shell .drug-label.drug-reversal-benzo,
+body.theme-dark .note-shell .drug-card.drug-reversal-inductor,
+body.theme-dark .note-shell .drug-card.drug-reversal-benzo{
+  background-color:#facc15 !important;
+  border-color:#d6a900 !important;
+}
+
+body.theme-dark .note-shell :is(.result-name-tag, .dil-drug-cell, .dil-color-card, .drug-label, .drug-card)[class*="drug-reversal"]{
+  background-size:12px 12px !important;
+  background-image:repeating-linear-gradient(135deg, rgba(255,255,255,.9) 0 4px, rgba(255,255,255,0) 4px 8px) !important;
+  border-style:double !important;
+  border-width:3px !important;
+}
+
+/* Estandar final de etiquetas de farmacos.
+   dilucion_farmacos.php es la referencia: fondo de clase + recuadro interno blanco
+   translucido + titulo negro + subtitulo opcional. Este patron no cambia en modo noche. */
+.note-shell :is(
+  .drug-opioid,
+  .drug-opioids,
+  .pieb-drug-opioid,
+  .epi-fenta
+){
+  --drug-label-bg:#8fd3ff;
+  --drug-label-border:#4fb3e8;
+}
+
+.note-shell :is(
+  .drug-local,
+  .pieb-drug-local,
+  .epi-bupi,
+  .epi-levo,
+  .epi-ropi,
+  .epi-lido,
+  .aall-local,
+  .reg-option.drug-local
+){
+  --drug-label-bg:#d1d5db;
+  --drug-label-border:#9ca3af;
+}
+
+.note-shell :is(
+  .drug-inductor,
+  .drug-inductor-propofol,
+  .drug-benzo,
+  .drug-hypnotics
+){
+  --drug-label-bg:#facc15;
+  --drug-label-border:#d6a900;
+}
+
+.note-shell :is(
+  .drug-neuromuscular,
+  .drug-nmb
+){
+  --drug-label-bg:#ef4444;
+  --drug-label-border:#b91c1c;
+}
+
+.note-shell :is(
+  .drug-vasoactive,
+  .epi-epi
+){
+  --drug-label-bg:#c4b5fd;
+  --drug-label-border:#8b5cf6;
+}
+
+.note-shell :is(.drug-atropine){
+  --drug-label-bg:#86efac;
+  --drug-label-border:#22c55e;
+}
+
+.note-shell :is(
+  .drug-other,
+    .cal-drug,
+  .cal-drug-critical,
+  .cal-drug-maint,
+  .peri-drug-chip
+){
+  --drug-label-bg:#f8fafc;
+  --drug-label-border:#cbd5e1;
+}
+
+.note-shell :is(
+  .drug-reversal,
+  .drug-reversal-opioid,
+  .drug-reversal-local,
+  .drug-reversal-inductor,
+  .drug-reversal-benzo,
+  .drug-reversal-neuromuscular,
+  .drug-reversal-vasoactive,
+  .drug-reversal-atropine,
+  .drug-reversal-other
+){
+  --drug-label-pattern:repeating-linear-gradient(135deg, rgba(255,255,255,.92) 0 4px, rgba(255,255,255,0) 4px 8px);
+}
+
+.note-shell :is(.drug-reversal, .drug-reversal-opioid){
+  --drug-label-bg:#8fd3ff;
+  --drug-label-border:#4fb3e8;
+}
+
+.note-shell :is(.drug-reversal-local){
+  --drug-label-bg:#d1d5db;
+  --drug-label-border:#9ca3af;
+}
+
+.note-shell :is(.drug-reversal-inductor, .drug-reversal-benzo){
+  --drug-label-bg:#facc15;
+  --drug-label-border:#d6a900;
+}
+
+.note-shell :is(.drug-reversal-neuromuscular){
+  --drug-label-bg:#ef4444;
+  --drug-label-border:#b91c1c;
+}
+
+.note-shell :is(.drug-reversal-vasoactive){
+  --drug-label-bg:#c4b5fd;
+  --drug-label-border:#8b5cf6;
+}
+
+.note-shell :is(.drug-reversal-atropine){
+  --drug-label-bg:#86efac;
+  --drug-label-border:#22c55e;
+}
+
+.note-shell :is(.drug-reversal-other){
+  --drug-label-bg:#f8fafc;
+  --drug-label-border:#cbd5e1;
+}
+
+.note-shell :is(
+  .dil-drug-cell,
+  .dil-color-card,
+  .result-name-tag,
+  .note-option[class*="drug-"],
+  .analg-drug-option[class*="drug-"],
+  .reg-option.drug-local,
+  .pieb-drug-chip,
+  .epi-drug-badge,
+  .epi-bupi,
+  .epi-levo,
+  .epi-ropi,
+  .epi-lido,
+  .epi-fenta,
+  .epi-epi,
+  .aall-local,
+    .cal-drug,
+  .peri-drug-chip
+){
+  position:relative !important;
+  overflow:hidden !important;
+  background-color:var(--drug-label-bg, #f8fafc) !important;
+  background-image:var(--drug-label-pattern, none) !important;
+  border:1px solid var(--drug-label-border, #cbd5e1) !important;
+  color:#111827 !important;
+  border-radius:.9rem !important;
+  box-shadow:none !important;
+  text-shadow:none !important;
+}
+
+.note-shell :is(
+  .dil-drug-cell .chip-copy,
+  .dil-color-card .copy
+){
+  display:inline-block !important;
+  width:auto !important;
+  max-width:100% !important;
+  background:rgba(255,255,255,.9) !important;
+  color:#111827 !important;
+  border:0 !important;
+  border-radius:.62rem !important;
+  padding:.28rem .55rem !important;
+  backdrop-filter:none !important;
+  -webkit-backdrop-filter:none !important;
+}
+
+.note-shell :is(
+  .result-name-tag,
+  .note-option[class*="drug-"],
+  .analg-drug-option[class*="drug-"],
+  .reg-option.drug-local,
+  .pieb-drug-chip,
+  .epi-drug-badge,
+  .epi-bupi,
+  .epi-levo,
+  .epi-ropi,
+  .epi-lido,
+  .epi-fenta,
+  .epi-epi,
+  .aall-local,
+    .cal-drug,
+  .peri-drug-chip
+){
+  padding:.62rem .72rem !important;
+}
+
+.note-shell :is(
+  .result-name-tag,
+  .note-option[class*="drug-"],
+  .analg-drug-option[class*="drug-"],
+  .reg-option.drug-local,
+  .pieb-drug-chip,
+  .epi-drug-badge,
+  .epi-bupi,
+  .epi-levo,
+  .epi-ropi,
+  .epi-lido,
+  .epi-fenta,
+  .epi-epi,
+  .aall-local,
+    .cal-drug,
+  .peri-drug-chip
+)::before{
+  content:"" !important;
+  position:absolute !important;
+  inset:.26rem !important;
+  border-radius:.62rem !important;
+  background:rgba(255,255,255,.9) !important;
+  pointer-events:none !important;
+  z-index:0 !important;
+}
+
+.note-shell :is(
+  .result-name-tag,
+  .note-option[class*="drug-"],
+  .analg-drug-option[class*="drug-"],
+  .reg-option.drug-local,
+  .pieb-drug-chip,
+  .epi-drug-badge,
+  .epi-bupi,
+  .epi-levo,
+  .epi-ropi,
+  .epi-lido,
+  .epi-fenta,
+  .epi-epi,
+  .aall-local,
+    .cal-drug,
+  .peri-drug-chip
+) > *,
+.note-shell :is(
+  .result-name-tag,
+  .note-option[class*="drug-"],
+  .analg-drug-option[class*="drug-"],
+  .reg-option.drug-local,
+  .pieb-drug-chip,
+  .epi-drug-badge,
+  .epi-bupi,
+  .epi-levo,
+  .epi-ropi,
+  .epi-lido,
+  .epi-fenta,
+  .epi-epi,
+  .aall-local,
+    .cal-drug,
+  .peri-drug-chip
+){
+  position:relative !important;
+  z-index:1 !important;
+}
+
+.note-shell :is(
+  .dil-drug-name,
+  .dil-color-card .title,
+  .drug-line,
+  .note-drug-title
+){
+  color:#111827 !important;
+  font-weight:800 !important;
+  line-height:1.16 !important;
+  text-shadow:none !important;
+}
+
+body.theme-dark .note-shell :is(
+  .dil-drug-name,
+  .dil-color-card .title,
+  .drug-line,
+  .note-drug-title
+){
+  color:var(--note-text) !important;
+}
+
+.note-shell :is(
+  .dil-drug-tag,
+  .dil-color-card .sub,
+  .drug-sub,
+  .note-drug-sub,
+  .note-option[class*="drug-"] small,
+  [class*="drug-"] small
+){
+  color:#111827 !important;
+  opacity:.78 !important;
+  font-weight:600 !important;
+  line-height:1.25 !important;
+  text-shadow:none !important;
+}
+
+.note-shell :is(.note-option[class*="drug-"] .drug-line, .note-option[class*="drug-"] .drug-sub){
+  display:inline-block !important;
+  background:rgba(255,255,255,.9) !important;
+  border-radius:.55rem !important;
+  padding:.14rem .42rem !important;
+}
+
+body.theme-dark .note-shell :is(
+  .dil-drug-cell,
+  .dil-color-card,
+  .result-name-tag,
+  .note-option[class*="drug-"],
+  .analg-drug-option[class*="drug-"],
+  .reg-option.drug-local,
+  .pieb-drug-chip,
+  .epi-drug-badge,
+  .epi-bupi,
+  .epi-levo,
+  .epi-ropi,
+  .epi-lido,
+  .epi-fenta,
+  .epi-epi,
+  .aall-local,
+    .cal-drug,
+  .peri-drug-chip
+){
+  background-color:var(--drug-label-bg, #f8fafc) !important;
+  background-image:var(--drug-label-pattern, none) !important;
+  border-color:var(--drug-label-border, #cbd5e1) !important;
+  color:#111827 !important;
+}
+
+body.theme-dark .note-shell :is(
+  .dil-drug-cell .chip-copy,
+  .dil-color-card .copy,
+  .note-option[class*="drug-"] .drug-line,
+  .note-option[class*="drug-"] .drug-sub
+){
+  background:rgba(255,255,255,.9) !important;
+  color:#111827 !important;
+}
+
+.note-shell .note-warning-list{
+  background:transparent !important;
+  background-color:transparent !important;
+  background-image:none !important;
+  border-color:transparent !important;
+  display:grid;
+  gap:.75rem;
+}
+
+.note-shell .note-warning-item{
+  background:var(--note-soft) !important;
+  border-color:var(--note-warning-border) !important;
+  color:var(--note-text) !important;
+  display:flex;
+  align-items:flex-start;
+  gap:.8rem;
+  border-style:solid;
+  border-width:1px;
+  border-radius:1rem;
+  padding:.95rem 1rem;
+}
+
+.note-shell .note-warning-icon{
+  background:var(--note-check-accent) !important;
+  border-color:var(--note-check-accent) !important;
+  color:#ffffff !important;
+  box-shadow:none !important;
+  flex:0 0 auto;
+  width:34px;
+  height:34px;
+  border-radius:999px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-top:.08rem;
+}
+
+.note-shell .note-warning-icon i{
+  color:#ffffff !important;
+}
+
+.note-shell .note-warning-copy,
+.note-shell .note-warning-title,
+.note-shell .note-warning-note{
+  background:transparent !important;
+  background-image:none !important;
+  border-color:transparent !important;
+}
+
+.note-shell .note-warning-copy{
+  min-width:0;
+  flex:1;
+}
+
+.note-shell .note-warning-title{
+  font-size:1rem;
+  font-weight:800;
+  line-height:1.22;
+  color:var(--note-text) !important;
+  margin-bottom:.15rem;
+  text-align:left;
+}
+
+.note-shell .note-warning-note{
+  margin:0;
+  font-size:.9rem;
+  line-height:1.4;
+  color:var(--note-muted) !important;
+  text-align:left;
+}
+
+body.theme-dark .note-shell .note-warning-list,
+body.ui-nocturno .note-shell .note-warning-list{
+  background:transparent !important;
+  background-color:transparent !important;
+  background-image:none !important;
+  border-color:transparent !important;
+}
+
+body.theme-dark .note-shell .note-warning-item,
+body.ui-nocturno .note-shell .note-warning-item{
+  background:var(--note-soft) !important;
+  border-color:var(--note-line) !important;
+}
+
+body.theme-dark .note-shell .note-warning-icon,
+body.ui-nocturno .note-shell .note-warning-icon{
+  background:#14532d !important;
+  border-color:#22c55e !important;
+  color:#ffffff !important;
+}
+
+body.theme-dark .note-shell .note-warning-icon i,
+body.ui-nocturno .note-shell .note-warning-icon i{
+  color:#ffffff !important;
+}
+
+body.theme-dark .note-shell .note-warning-copy,
+body.theme-dark .note-shell .note-warning-title,
+body.theme-dark .note-shell .note-warning-note,
+body.ui-nocturno .note-shell .note-warning-copy,
+body.ui-nocturno .note-shell .note-warning-title,
+body.ui-nocturno .note-shell .note-warning-note{
+  background:transparent !important;
+  background-color:transparent !important;
+  background-image:none !important;
+  border-color:transparent !important;
+}
+
+.note-shell .cl-grade-option .note-option.note-grade-1{background:#e9f8ef !important;background-color:#e9f8ef !important;border-color:#b7ddc3 !important;}
+.note-shell .cl-grade-option .note-option.note-grade-2{background:#fff8db !important;background-color:#fff8db !important;border-color:#ead38a !important;}
+.note-shell .cl-grade-option .note-option.note-grade-2b{background:#fff2c7 !important;background-color:#fff2c7 !important;border-color:#e3be69 !important;}
+.note-shell .cl-grade-option .note-option.note-grade-3{background:#fff4e5 !important;background-color:#fff4e5 !important;border-color:#fdba74 !important;}
+.note-shell .cl-grade-option .note-option.note-grade-4{background:#fdecec !important;background-color:#fdecec !important;border-color:#fca5a5 !important;}
+.note-shell .cl-grade-option .note-option{padding:0 !important;overflow:hidden;}
+.note-shell .clgradefill{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  min-height:68px;
+  padding:.55rem .5rem;
+  color:#1f2a37;
+}
+.note-shell .clgradefill small{color:#667085 !important;}
+.note-shell .cl-reference-card{padding:0 !important;overflow:hidden;}
+.note-shell .clgradecardfill{
+  display:flex;
+  flex-direction:column;
+  gap:.15rem;
+  width:100%;
+  padding:.9rem 1rem;
+  color:#1f2a37;
+}
+.note-shell .clgradecardfill b{display:block;margin-bottom:.15rem;}
+.note-shell .clg1{background:#e9f8ef;}
+.note-shell .clg2{background:#fff8db;}
+.note-shell .clg2b{background:#fff2c7;}
+.note-shell .clg3{background:#fff4e5;}
+.note-shell .clg4{background:#fdecec;}
+.note-shell .note-grade-card-1{background:#e9f8ef !important;background-color:#e9f8ef !important;border-color:#b7ddc3 !important;}
+.note-shell .note-grade-card-2{background:#fff8db !important;background-color:#fff8db !important;border-color:#ead38a !important;}
+.note-shell .note-grade-card-2b{background:#fff2c7 !important;background-color:#fff2c7 !important;border-color:#e3be69 !important;}
+.note-shell .note-grade-card-3{background:#fff4e5 !important;background-color:#fff4e5 !important;border-color:#fdba74 !important;}
+.note-shell .note-grade-card-4{background:#fdecec !important;background-color:#fdecec !important;border-color:#fca5a5 !important;}
+body.theme-dark .note-shell .clg1,
+body.ui-nocturno .note-shell .clg1{background:rgba(47,158,98,.28);}
+body.theme-dark .note-shell .clg2,
+body.ui-nocturno .note-shell .clg2{background:rgba(234,179,8,.28);}
+body.theme-dark .note-shell .clg2b,
+body.ui-nocturno .note-shell .clg2b{background:rgba(234,179,8,.34);}
+body.theme-dark .note-shell .clg3,
+body.ui-nocturno .note-shell .clg3{background:rgba(249,115,22,.32);}
+body.theme-dark .note-shell .clg4,
+body.ui-nocturno .note-shell .clg4{background:rgba(239,68,68,.32);}
+body.theme-dark .note-shell .note-grade-card-1,
+body.ui-nocturno .note-shell .note-grade-card-1{background:rgba(47,158,98,.28) !important;background-color:rgba(47,158,98,.28) !important;}
+body.theme-dark .note-shell .note-grade-card-2,
+body.ui-nocturno .note-shell .note-grade-card-2{background:rgba(234,179,8,.28) !important;background-color:rgba(234,179,8,.28) !important;}
+body.theme-dark .note-shell .note-grade-card-2b,
+body.ui-nocturno .note-shell .note-grade-card-2b{background:rgba(234,179,8,.34) !important;background-color:rgba(234,179,8,.34) !important;}
+body.theme-dark .note-shell .note-grade-card-3,
+body.ui-nocturno .note-shell .note-grade-card-3{background:rgba(249,115,22,.32) !important;background-color:rgba(249,115,22,.32) !important;}
+body.theme-dark .note-shell .note-grade-card-4,
+body.ui-nocturno .note-shell .note-grade-card-4{background:rgba(239,68,68,.32) !important;background-color:rgba(239,68,68,.32) !important;}
+body.theme-dark .note-shell .clgradefill,
+body.theme-dark .note-shell .clgradecardfill,
+body.ui-nocturno .note-shell .clgradefill,
+body.ui-nocturno .note-shell .clgradecardfill{color:#e5e7eb;}
+body.theme-dark .note-shell .clgradefill small,
+body.ui-nocturno .note-shell .clgradefill small{color:#cbd5e1 !important;}
+
+body.theme-dark .note-shell .cl-reference-card.note-grade-card-1,
+body.ui-nocturno .note-shell .cl-reference-card.note-grade-card-1{background:rgba(47,158,98,.28) !important;background-color:rgba(47,158,98,.28) !important;border-color:#2f9e62 !important;}
+body.theme-dark .note-shell .cl-reference-card.note-grade-card-2,
+body.ui-nocturno .note-shell .cl-reference-card.note-grade-card-2{background:rgba(234,179,8,.28) !important;background-color:rgba(234,179,8,.28) !important;border-color:#eab308 !important;}
+body.theme-dark .note-shell .cl-reference-card.note-grade-card-2b,
+body.ui-nocturno .note-shell .cl-reference-card.note-grade-card-2b{background:rgba(234,179,8,.34) !important;background-color:rgba(234,179,8,.34) !important;border-color:#eab308 !important;}
+body.theme-dark .note-shell .cl-reference-card.note-grade-card-3,
+body.ui-nocturno .note-shell .cl-reference-card.note-grade-card-3{background:rgba(249,115,22,.32) !important;background-color:rgba(249,115,22,.32) !important;border-color:#f97316 !important;}
+body.theme-dark .note-shell .cl-reference-card.note-grade-card-4,
+body.ui-nocturno .note-shell .cl-reference-card.note-grade-card-4{background:rgba(239,68,68,.32) !important;background-color:rgba(239,68,68,.32) !important;border-color:#ef4444 !important;}
+
+.note-shell .mp-grade-option .note-option.note-grade-1,
+.note-shell .mp-grade-panel.grade-1{background:#e9f8ef !important;background-color:#e9f8ef !important;border-color:#b7ddc3 !important;}
+.note-shell .mp-grade-option .note-option.note-grade-2,
+.note-shell .mp-grade-panel.grade-2{background:#fff8db !important;background-color:#fff8db !important;border-color:#ead38a !important;}
+.note-shell .mp-grade-option .note-option.note-grade-3,
+.note-shell .mp-grade-panel.grade-3{background:#fff4e5 !important;background-color:#fff4e5 !important;border-color:#fdba74 !important;}
+.note-shell .mp-grade-option .note-option.note-grade-4,
+.note-shell .mp-grade-panel.grade-4{background:#fdecec !important;background-color:#fdecec !important;border-color:#fca5a5 !important;}
+.note-shell .mp-grade-option .note-option{padding:0 !important;overflow:hidden;}
+
+.note-shell .mp-reference-card{
+  padding:.9rem 1rem !important;
+  border-radius:1rem !important;
+}
+
+.note-shell.mallampati-shell .cl-reference-card{
+  padding:0 !important;
+  border-radius:1rem !important;
+  border:1px solid var(--note-line, var(--app-border)) !important;
+  overflow:hidden !important;
+}
+
+.note-shell.mallampati-shell .clgradecardfill{
+  padding:.75rem .85rem !important;
+}
+
+.note-shell.mallampati-shell .cl-reference-grid{
+  display:grid !important;
+  grid-template-columns:1fr !important;
+  gap:.75rem !important;
+}
+
+body.theme-dark .note-shell .note-card-title,
+body.ui-nocturno .note-shell .note-card-title{
+  background:transparent !important;
+  background-color:transparent !important;
+}
+
+body.theme-dark .note-shell .mp-grade-option .note-option.note-grade-1,
+body.ui-nocturno .note-shell .mp-grade-option .note-option.note-grade-1,
+body.theme-dark .note-shell .mp-grade-panel.grade-1,
+body.ui-nocturno .note-shell .mp-grade-panel.grade-1{background:rgba(47,158,98,.28) !important;background-color:rgba(47,158,98,.28) !important;border-color:#2f9e62 !important;}
+body.theme-dark .note-shell .mp-grade-option .note-option.note-grade-2,
+body.ui-nocturno .note-shell .mp-grade-option .note-option.note-grade-2,
+body.theme-dark .note-shell .mp-grade-panel.grade-2,
+body.ui-nocturno .note-shell .mp-grade-panel.grade-2{background:rgba(234,179,8,.28) !important;background-color:rgba(234,179,8,.28) !important;border-color:#eab308 !important;}
+body.theme-dark .note-shell .mp-grade-option .note-option.note-grade-3,
+body.ui-nocturno .note-shell .mp-grade-option .note-option.note-grade-3,
+body.theme-dark .note-shell .mp-grade-panel.grade-3,
+body.ui-nocturno .note-shell .mp-grade-panel.grade-3{background:rgba(249,115,22,.32) !important;background-color:rgba(249,115,22,.32) !important;border-color:#f97316 !important;}
+body.theme-dark .note-shell .mp-grade-option .note-option.note-grade-4,
+body.ui-nocturno .note-shell .mp-grade-option .note-option.note-grade-4,
+body.theme-dark .note-shell .mp-grade-panel.grade-4,
+body.ui-nocturno .note-shell .mp-grade-panel.grade-4{background:rgba(239,68,68,.32) !important;background-color:rgba(239,68,68,.32) !important;border-color:#ef4444 !important;}
+
+.note-shell .apfel-option-input:not(:checked) + .apfel-option .apfel-option-mark i{display:none;}
+.note-shell .apfel-option-input:not(:checked) + .apfel-option .apfel-option-mark{
+  background:transparent !important;
+  color:transparent !important;
+}
+
+.note-shell .choice-check:not(:checked) + .dasi-yn-label .dasi-yn-icon i,
+.note-shell .eberhart-option-input:not(:checked) + .eberhart-option .eberhart-option-mark i{display:none;}
+.note-shell .choice-check:not(:checked) + .dasi-yn-label .dasi-yn-icon,
+.note-shell .eberhart-option-input:not(:checked) + .eberhart-option .eberhart-option-mark{
+  background:transparent !important;
+  color:transparent !important;
+}
+.note-shell label .eberhart-option-input:not(:checked) + .eberhart-option .eberhart-option-mark i{display:none !important;}
+.note-shell label .eberhart-option-input:not(:checked) + .eberhart-option .eberhart-option-mark{
+  background:transparent !important;
+  background-color:transparent !important;
+  color:transparent !important;
+}
+
+.note-shell .note-check:checked + .drug-card .drug-label-content{
+  background:rgba(47,128,237,.12) !important;
+  background-color:rgba(47,128,237,.12) !important;
+}
+
+.note-shell .steroid-selector-options .note-option{
+  min-height:56px !important;
+}
+
+.note-shell.steroid-shell .note-input-group{
+  background:transparent !important;
+  background-color:transparent !important;
+  border:none !important;
+}
+
+.note-shell.steroid-shell .steroid-selector-sections{
+  background:transparent !important;
+  background-color:transparent !important;
+  border:none !important;
+}
+
+.note-shell.steroid-shell .steroid-selector-sections .note-label,
+.note-shell.steroid-shell .note-input-group .note-label{
+  background:transparent !important;
+  background-color:transparent !important;
+  border:none !important;
+}
+
+.note-result-card .drug-label-title{
+  font-size:1.05rem !important;
+  line-height:1.2 !important;
+}
+
+.note-result-card .drug-label{
+  min-height:56px !important;
+}
+
+.note-shell.steroid-shell .steroid-fludro{
+  background:rgba(254,243,199,.4) !important;
+  background-color:rgba(254,243,199,.4) !important;
+  border-color:#fde68a !important;
+}
+
+.note-shell .note-mobile-detail-row{
+  background:transparent !important;
+  background-color:transparent !important;
+}
+
+.note-shell .note-mobile-detail-card,
+.note-shell .note-mobile-detail{
+  background:var(--note-card, var(--app-card)) !important;
+  background-color:var(--note-card, var(--app-card)) !important;
+  border:1px solid var(--note-line, var(--app-border)) !important;
+  border-radius:1rem !important;
+}
+
+.note-shell label .note-checklist-item-input:checked + .note-checklist-item{
+  background:var(--note-selected-soft, rgba(47,128,237,.08)) !important;
+  background-color:var(--note-selected-soft, rgba(47,128,237,.08)) !important;
+  border:2px solid var(--note-selected, #2f80ed) !important;
+}
+
+.note-shell label .note-checklist-item-input:checked + .note-checklist-item .note-checklist-item-mark,
+body.theme-dark .note-shell label .note-checklist-item-input:checked + .note-checklist-item .note-checklist-item-mark,
+body.ui-nocturno .note-shell label .note-checklist-item-input:checked + .note-checklist-item .note-checklist-item-mark{
+  background:#22c55e !important;
+  background-color:#22c55e !important;
+  border-color:#22c55e !important;
+  color:#fff !important;
+}
+
+.note-shell label .note-checklist-item-input:checked + .note-checklist-item .note-checklist-item-mark i,
+body.theme-dark .note-shell label .note-checklist-item-input:checked + .note-checklist-item .note-checklist-item-mark i,
+body.ui-nocturno .note-shell label .note-checklist-item-input:checked + .note-checklist-item .note-checklist-item-mark i{
+  display:inline-block !important;
+  color:#fff !important;
+}
+
+body.theme-dark .note-shell label .note-checklist-item-input:checked + .note-checklist-item .note-checklist-item-copy,
+body.theme-dark .note-shell label .note-checklist-item-input:checked + .note-checklist-item .note-checklist-item-title,
+body.theme-dark .note-shell label .note-checklist-item-input:checked + .note-checklist-item .note-checklist-item-note,
+body.ui-nocturno .note-shell label .note-checklist-item-input:checked + .note-checklist-item .note-checklist-item-copy,
+body.ui-nocturno .note-shell label .note-checklist-item-input:checked + .note-checklist-item .note-checklist-item-title,
+body.ui-nocturno .note-shell label .note-checklist-item-input:checked + .note-checklist-item .note-checklist-item-note{
+  background:transparent !important;
+  background-color:transparent !important;
+}
+
+.note-shell .lee-factor-list label .note-checklist-item-input.lee-check:checked + .note-checklist-item .note-checklist-item-mark,
+body.theme-dark .note-shell .lee-factor-list label .note-checklist-item-input.lee-check:checked + .note-checklist-item .note-checklist-item-mark,
+body.ui-nocturno .note-shell .lee-factor-list label .note-checklist-item-input.lee-check:checked + .note-checklist-item .note-checklist-item-mark{
+  background:#22c55e !important;
+  background-color:#22c55e !important;
+  background-image:none !important;
+  border-color:#22c55e !important;
+  box-shadow:none !important;
+  color:#fff !important;
+}
+
+.note-shell .lee-factor-list label .note-checklist-item-input.lee-check:checked + .note-checklist-item .note-checklist-item-mark i,
+body.theme-dark .note-shell .lee-factor-list label .note-checklist-item-input.lee-check:checked + .note-checklist-item .note-checklist-item-mark i,
+body.ui-nocturno .note-shell .lee-factor-list label .note-checklist-item-input.lee-check:checked + .note-checklist-item .note-checklist-item-mark i{
+  color:#fff !important;
+  display:inline-block !important;
+}
+
+body.theme-dark .note-shell .lee-factor-list label .note-checklist-item-input.lee-check:checked + .note-checklist-item .note-checklist-item-copy,
+body.theme-dark .note-shell .lee-factor-list label .note-checklist-item-input.lee-check:checked + .note-checklist-item .note-checklist-item-title,
+body.theme-dark .note-shell .lee-factor-list label .note-checklist-item-input.lee-check:checked + .note-checklist-item .note-checklist-item-note,
+body.ui-nocturno .note-shell .lee-factor-list label .note-checklist-item-input.lee-check:checked + .note-checklist-item .note-checklist-item-copy,
+body.ui-nocturno .note-shell .lee-factor-list label .note-checklist-item-input.lee-check:checked + .note-checklist-item .note-checklist-item-title,
+body.ui-nocturno .note-shell .lee-factor-list label .note-checklist-item-input.lee-check:checked + .note-checklist-item .note-checklist-item-note{
+  background:transparent !important;
+  background-color:transparent !important;
+  background-image:none !important;
+}
+
+.note-shell input.lee-check[type="checkbox"]:checked + div.note-checklist-item > div.note-checklist-item-mark,
+body.theme-dark .note-shell input.lee-check[type="checkbox"]:checked + div.note-checklist-item > div.note-checklist-item-mark,
+body.ui-nocturno .note-shell input.lee-check[type="checkbox"]:checked + div.note-checklist-item > div.note-checklist-item-mark{
+  background:#22c55e !important;
+  background-color:#22c55e !important;
+  background-image:none !important;
+  border-color:#22c55e !important;
+  color:#ffffff !important;
+}
+
+.note-shell input.lee-check[type="checkbox"]:checked + div.note-checklist-item > div.note-checklist-item-mark i,
+body.theme-dark .note-shell input.lee-check[type="checkbox"]:checked + div.note-checklist-item > div.note-checklist-item-mark i,
+body.ui-nocturno .note-shell input.lee-check[type="checkbox"]:checked + div.note-checklist-item > div.note-checklist-item-mark i{
+  color:#ffffff !important;
+  display:inline-block !important;
+}
+
+body.theme-dark .note-shell input.lee-check[type="checkbox"]:checked + div.note-checklist-item > div.note-checklist-item-copy,
+body.theme-dark .note-shell input.lee-check[type="checkbox"]:checked + div.note-checklist-item > div.note-checklist-item-copy .note-checklist-item-title,
+body.theme-dark .note-shell input.lee-check[type="checkbox"]:checked + div.note-checklist-item > div.note-checklist-item-copy .note-checklist-item-note,
+body.ui-nocturno .note-shell input.lee-check[type="checkbox"]:checked + div.note-checklist-item > div.note-checklist-item-copy,
+body.ui-nocturno .note-shell input.lee-check[type="checkbox"]:checked + div.note-checklist-item > div.note-checklist-item-copy .note-checklist-item-title,
+body.ui-nocturno .note-shell input.lee-check[type="checkbox"]:checked + div.note-checklist-item > div.note-checklist-item-copy .note-checklist-item-note{
+  background:transparent !important;
+  background-color:transparent !important;
+  background-image:none !important;
+}
+
+.note-shell .lee-risk-low,
+.note-shell .lee-risk-mid,
+.note-shell .lee-risk-high{
+  background:transparent !important;
+  background-color:transparent !important;
+}
+
+body.theme-dark .note-shell .lee-risk-low{
+  background:rgba(34,197,94,.08) !important;
+  background-color:rgba(34,197,94,.08) !important;
+  border-color:rgba(34,197,94,.3) !important;
+}
+
+body.theme-dark .note-shell .lee-risk-mid{
+  background:rgba(251,191,36,.08) !important;
+  background-color:rgba(251,191,36,.08) !important;
+  border-color:rgba(251,191,36,.3) !important;
+}
+
+body.theme-dark .note-shell .lee-risk-high{
+  background:rgba(239,68,68,.08) !important;
+  background-color:rgba(239,68,68,.08) !important;
+  border-color:rgba(239,68,68,.3) !important;
+}
+
+.note-shell .note-checklist-pill,
+.note-shell .note-checklist-pill.active{
+  background:transparent !important;
+  background-color:transparent !important;
+}
+
+body.theme-dark .note-shell .note-checklist-pill,
+body.theme-dark .note-shell .note-checklist-pill.active{
+  background:rgba(47,128,237,.12) !important;
+  background-color:rgba(47,128,237,.12) !important;
+  border-color:rgba(47,128,237,.3) !important;
+  color:var(--note-text, var(--app-text)) !important;
+}
+
+.flacc-domain-card{
+  background:#fff;
+  border:1px solid var(--note-line);
+  border-radius:1rem;
+  padding:1rem;
+  margin-bottom:1rem;
+}
+
+.flacc-domain-head{
+  display:flex;
+  align-items:center;
+  gap:.65rem;
+  margin-bottom:.85rem;
+}
+
+.flacc-domain-icon{
+  color:#3559b7;
+  font-size:1.05rem;
+  width:1.2rem;
+  text-align:center;
+  flex:0 0 auto;
+}
+
+.flacc-domain-title{
+  font-size:1rem;
+  font-weight:800;
+  line-height:1.3;
+  color:var(--note-text);
+  margin:0;
+}
+
+.flacc-score-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:.75rem;
+}
+
+.flacc-option-input{
+  position:absolute;
+  opacity:0;
+  pointer-events:none;
+}
+
+.flacc-option{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  min-height:68px;
+  border:2px solid var(--note-line);
+  border-radius:.9rem;
+  padding:.62rem .8rem;
+  cursor:pointer;
+  transition:.15s ease;
+  box-shadow:0 3px 10px rgba(15,23,42,.04);
+  gap:.12rem;
+}
+
+.flacc-option-0{background:#e9f8ef !important;}
+.flacc-option-1{background:#fff8db !important;}
+.flacc-option-2{background:#fdecec !important;}
+
+body.theme-dark .flacc-option.flacc-option-0,
+body.ui-nocturno .flacc-option.flacc-option-0{background:rgba(47,158,98,.28) !important;}
+body.theme-dark .flacc-option.flacc-option-1,
+body.ui-nocturno .flacc-option.flacc-option-1{background:rgba(234,179,8,.28) !important;}
+body.theme-dark .flacc-option.flacc-option-2,
+body.ui-nocturno .flacc-option.flacc-option-2{background:rgba(239,68,68,.32) !important;}
+
+.note-shell.aldrete-shell .flacc-option-0{background:#fdecec !important;}
+.note-shell.aldrete-shell .flacc-option-1{background:#fff8db !important;}
+.note-shell.aldrete-shell .flacc-option-2{background:#e9f8ef !important;}
+
+body.theme-dark .note-shell.aldrete-shell .flacc-option.flacc-option-0,
+body.ui-nocturno .note-shell.aldrete-shell .flacc-option.flacc-option-0{background:rgba(239,68,68,.32) !important;}
+body.theme-dark .note-shell.aldrete-shell .flacc-option.flacc-option-1,
+body.ui-nocturno .note-shell.aldrete-shell .flacc-option.flacc-option-1{background:rgba(234,179,8,.28) !important;}
+body.theme-dark .note-shell.aldrete-shell .flacc-option.flacc-option-2,
+body.ui-nocturno .note-shell.aldrete-shell .flacc-option.flacc-option-2{background:rgba(47,158,98,.28) !important;}
+
+.flacc-option-input:checked + .flacc-option{
+  box-shadow:0 0 0 3px rgba(47,128,237,.14), 0 8px 18px rgba(15,23,42,.10);
+  border:4px solid var(--note-selected);
+  transform:translateY(-1px);
+}
+
+.note-shell .flacc-option .flacc-option-text{
+  font-size:.86rem;
+  line-height:1.22;
+  color:var(--note-text);
+  margin:0;
+  font-weight:700;
+  background:transparent !important;
+}
+
+.note-shell .flacc-option .flacc-option-points{
+  font-size:1.05rem;
+  font-weight:900;
+  line-height:1;
+  color:#3559b7;
+  background:transparent !important;
+}
+
+/* Escalares.php scalar option colors - high specificity to override blanket rules */
+body .note-shell .esc-scalar-grid .esc-tbw{background:#eaf2ff !important;border-color:#c2d8ff !important;}
+body .note-shell .esc-scalar-grid .esc-bmi{background:#fff8db !important;border-color:#edd57a !important;}
+body .note-shell .esc-scalar-grid .esc-ibw{background:#eaf7fb !important;border-color:#b8e0f0 !important;}
+body .note-shell .esc-scalar-grid .esc-ffm{background:#eaf8ef !important;border-color:#b8e0c8 !important;}
+body .note-shell .esc-scalar-grid .esc-abw{background:#fff0e1 !important;border-color:#ffd4a8 !important;}
+body .note-shell .esc-scalar-grid .esc-pk{background:#f1edff !important;border-color:#d4c8ff !important;}
+body .note-shell .esc-scalar-grid .esc-bsa{background:#f5f7fb !important;border-color:#d9e0ea !important;}
+body .note-shell .esc-overview-grid .esc-tbw{background:#eaf2ff !important;border-color:#c2d8ff !important;}
+body .note-shell .esc-overview-grid .esc-bmi{background:#fff8db !important;border-color:#edd57a !important;}
+body .note-shell .esc-overview-grid .esc-ibw{background:#eaf7fb !important;border-color:#b8e0f0 !important;}
+body .note-shell .esc-overview-grid .esc-ffm{background:#eaf8ef !important;border-color:#b8e0c8 !important;}
+body .note-shell .esc-overview-grid .esc-abw{background:#fff0e1 !important;border-color:#ffd4a8 !important;}
+body .note-shell .esc-overview-grid .esc-pk{background:#f1edff !important;border-color:#d4c8ff !important;}
+body .note-shell .esc-overview-grid .esc-bsa{background:#f5f7fb !important;border-color:#d9e0ea !important;}
+body .note-shell .esc-choice-title,
+body .note-shell .esc-choice-sub{background:transparent !important;background-image:none !important;border-color:transparent !important;}
+body.theme-dark .note-shell .esc-scalar-grid .esc-tbw{background:#1a3a5c !important;border-color:#2d5a8a !important;}
+body.theme-dark .note-shell .esc-scalar-grid .esc-bmi{background:#5c501a !important;border-color:#8a7a2d !important;}
+body.theme-dark .note-shell .esc-scalar-grid .esc-ibw{background:#1a4a5c !important;border-color:#2d7a9a !important;}
+body.theme-dark .note-shell .esc-scalar-grid .esc-ffm{background:#1a4d3a !important;border-color:#2d8a6a !important;}
+body.theme-dark .note-shell .esc-scalar-grid .esc-abw{background:#5c3a1a !important;border-color:#8a5a2d !important;}
+body.theme-dark .note-shell .esc-scalar-grid .esc-pk{background:#3a1a5c !important;border-color:#5a2d8a !important;}
+body.theme-dark .note-shell .esc-scalar-grid .esc-bsa{background:#3a3a3a !important;border-color:#5a5a5a !important;}
+body.theme-dark .note-shell .esc-overview-grid .esc-tbw{background:#1a3a5c !important;border-color:#2d5a8a !important;}
+body.theme-dark .note-shell .esc-overview-grid .esc-bmi{background:#5c501a !important;border-color:#8a7a2d !important;}
+body.theme-dark .note-shell .esc-overview-grid .esc-ibw{background:#1a4a5c !important;border-color:#2d7a9a !important;}
+body.theme-dark .note-shell .esc-overview-grid .esc-ffm{background:#1a4d3a !important;border-color:#2d8a6a !important;}
+body.theme-dark .note-shell .esc-overview-grid .esc-abw{background:#5c3a1a !important;border-color:#8a5a2d !important;}
+body.theme-dark .note-shell .esc-overview-grid .esc-pk{background:#3a1a5c !important;border-color:#5a2d8a !important;}
+body.theme-dark .note-shell .esc-overview-grid .esc-bsa{background:#3a3a3a !important;border-color:#5a5a5a !important;}
+body.ui-nocturno .note-shell .esc-scalar-grid .esc-tbw{background:#1a3a5c !important;border-color:#2d5a8a !important;}
+body.ui-nocturno .note-shell .esc-scalar-grid .esc-bmi{background:#5c501a !important;border-color:#8a7a2d !important;}
+body.ui-nocturno .note-shell .esc-scalar-grid .esc-ibw{background:#1a4a5c !important;border-color:#2d7a9a !important;}
+body.ui-nocturno .note-shell .esc-scalar-grid .esc-ffm{background:#1a4d3a !important;border-color:#2d8a6a !important;}
+body.ui-nocturno .note-shell .esc-scalar-grid .esc-abw{background:#5c3a1a !important;border-color:#8a5a2d !important;}
+body.ui-nocturno .note-shell .esc-scalar-grid .esc-pk{background:#3a1a5c !important;border-color:#5a2d8a !important;}
+body.ui-nocturno .note-shell .esc-scalar-grid .esc-bsa{background:#3a3a3a !important;border-color:#5a5a5a !important;}
+body.ui-nocturno .note-shell .esc-overview-grid .esc-tbw{background:#1a3a5c !important;border-color:#2d5a8a !important;}
+body.ui-nocturno .note-shell .esc-overview-grid .esc-bmi{background:#5c501a !important;border-color:#8a7a2d !important;}
+body.ui-nocturno .note-shell .esc-overview-grid .esc-ibw{background:#1a4a5c !important;border-color:#2d7a9a !important;}
+body.ui-nocturno .note-shell .esc-overview-grid .esc-ffm{background:#1a4d3a !important;border-color:#2d8a6a !important;}
+body.ui-nocturno .note-shell .esc-overview-grid .esc-abw{background:#5c3a1a !important;border-color:#8a5a2d !important;}
+body.ui-nocturno .note-shell .esc-overview-grid .esc-pk{background:#3a1a5c !important;border-color:#5a2d8a !important;}
+body.ui-nocturno .note-shell .esc-overview-grid .esc-bsa{background:#3a3a3a !important;border-color:#5a5a5a !important;}

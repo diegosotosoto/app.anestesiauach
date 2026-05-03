@@ -24,7 +24,7 @@ if($usuario['admin']==1){
 }
 
 //VARIABLES
-$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler="<a class='d-sm-block d-sm-none admin-back-btn' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar="<span class='text-white'>Bitácora</span>";
 $boton_navbar="<a></a>";
 
@@ -32,56 +32,6 @@ require("head.php");
 ?>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
-
-<style>
-  .bitacora-shell{max-width:980px;margin:0 auto;}
-  .bitacora-topbar{
-    background:linear-gradient(135deg, #27458f, #3559b7);
-    color:#fff;border-radius:1.25rem;box-shadow:0 8px 24px rgba(0,0,0,.06);
-    padding:1.15rem 1.25rem;margin-bottom:1rem;
-  }
-  .bitacora-topbar h1{color:#fff;}
-  .subtle{font-size:.92rem;}
-  .pill{display:inline-block;padding:.25rem .6rem;border-radius:999px;font-size:.8rem;font-weight:600;}
-  .bitacora-tabs{margin-bottom:1rem;}
-  .bitacora-tabs .nav-link{border-radius:.85rem;margin-right:.5rem;color:#3559b7;}
-  .bitacora-tabs .nav-link.active{background:#3559b7;color:#fff;border-color:#3559b7;}
-  .bitacora-tabs span.nav-link{display:block;cursor:default;}
-  .bitacora-section-card,.bitacora-entry-card{
-    border:0;border-radius:1rem;box-shadow:0 8px 24px rgba(0,0,0,.06);background:#fff;
-  }
-  .bitacora-section-card{margin-bottom:1rem;}
-  .bitacora-section-header{
-    background:linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);
-    border-bottom:1px solid #e9eef5;padding:1rem 1.1rem;border-radius:1rem 1rem 0 0;
-  }
-  .bitacora-entry-card{margin-bottom:1rem;overflow:hidden;}
-  .bitacora-entry-header{
-    background:#eef4ff;padding:1rem 1.1rem;border-bottom:1px solid #dfe7f2;
-  }
-  .bitacora-entry-header-danger{
-    background:#fef2f2;border-bottom:1px solid #f5c2c7;
-  }
-  .bitacora-entry-body{padding:1rem 1.1rem 1.15rem 1.1rem;}
-  .bitacora-grid{display:grid;gap:.7rem;}
-  .bitacora-item{
-    display:flex;justify-content:space-between;gap:1rem;align-items:flex-start;
-    background:#f8fafc;border:1px solid #dfe7f2;border-radius:.9rem;padding:.85rem 1rem;
-  }
-  .bitacora-item-label{color:#5f6b76;font-weight:500;}
-  .bitacora-item-value{color:#1f2a37;font-weight:600;text-align:right;}
-  .bitacora-comments{
-    background:#f8fafc;border:1px solid #dfe7f2;border-radius:.9rem;padding:1rem;white-space:pre-wrap;
-  }
-  .bitacora-feedback-label{
-    font-size:.82rem;text-transform:uppercase;letter-spacing:.05em;color:#667085;margin-bottom:.55rem;
-  }
-  .bitacora-feedback{
-    border-radius:.9rem;border:1px solid #dfe7f2;resize:none;
-  }
-  .bitacora-actions{display:flex;gap:.75rem;justify-content:flex-end;flex-wrap:wrap;margin-top:1rem;}
-  .empty-state{text-align:center;color:#6c757d;padding:2rem 1rem;}
-</style>
 
 <div class="apunte-surface">
   <div class="container-fluid px-0 px-md-2">
@@ -110,7 +60,7 @@ require("head.php");
       <div class="bitacora-section-card">
         <div class="bitacora-section-header">
           <h4 class="mb-1 fw-bold">Resumen Bitácoras</h4>
-          <div class="text-black-50" style="font-size:14px">Registros aún no validados por el staff actual.</div>
+          <div class="text-black-50 bitacora-muted-small">Registros aún no validados por el staff actual.</div>
         </div>
       </div>
 
@@ -167,7 +117,7 @@ while($row_user=$tab_users->fetch_assoc()){
   echo "<div class='bitacora-comments'>".$row_user['comentarios_b']."</div>";
   echo "<div class='bitacora-feedback-label pt-3'>Agregar feedback</div>";
   echo "<textarea class='form-control bitacora-feedback' maxlength='200' rows='3' name='comentarios_b_a' id='comentarios_b_a'></textarea>";
-  echo "<div class='bitacora-actions'><button class='btn btn-primary' type='submit'>Autorizar</button></div>";
+  echo "<div class='bitacora-actions'><button class='btn btn-app-primary' type='submit'>Autorizar</button></div>";
   echo "</div></div></form>";
 }
 
@@ -213,7 +163,7 @@ while($row_int=$tab_internos->fetch_assoc()){
   echo "<div class='bitacora-comments'>".$row_int['comentarios_i']."</div>";
   echo "<div class='bitacora-feedback-label pt-3'>Agregar feedback</div>";
   echo "<textarea class='form-control bitacora-feedback' maxlength='200' rows='3' name='comentarios_i_a' id='comentarios_i_a'></textarea>";
-  echo "<div class='bitacora-actions'><button class='btn btn-primary' type='submit'>Autorizar</button></div>";
+  echo "<div class='bitacora-actions'><button class='btn btn-app-primary' type='submit'>Autorizar</button></div>";
   echo "</div></div></form>";
 }
 ?>

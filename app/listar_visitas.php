@@ -23,9 +23,9 @@
 
 
 	$formulario=htmlentities(addslashes($_POST['lista_v']));
-	//ENVIA EL POST VISTA CON LA VARIABLE FORMULARIO PARA CANCELAR
-		$boton_toggler="<form method='post' action='vista_paciente.php'><button class='btn d-sm-block d-sm-none shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' type='submit' name='vista' value='$formulario'><div class='text-white'><i class='d-sm-block d-sm-none fa fa-chevron-left'></i>Atrás</div></button></form>";
-		$titulo_navbar="<p class='d-sm-block d-sm-none text-white'></p>";
+		//ENVIA EL POST VISTA CON LA VARIABLE FORMULARIO PARA CANCELAR
+			$boton_toggler="<form method='post' action='vista_paciente.php'><button class='d-sm-block d-sm-none admin-back-btn' type='submit' name='vista' value='$formulario'><i class='fa fa-chevron-left'></i>Atrás</button></form>";
+			$titulo_navbar="<span>Visitas</span>";
 
 		$boton_navbar="<a class='navbar-brand mr-auto ms-5 d-sm-block d-sm-none' href='#'' role='button'></a>";
 
@@ -36,9 +36,12 @@
 	?>
 
 
-<div class="col col-sm-9 col-xl-9 pb-5"><!- Columna principal (derecha) responsive->
+	<div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
+	<div class="apunte-surface">
+	<div class="container-fluid px-0 px-md-2">
+	<div class="pain-shell">
 
-			<ul class="list-group">
+			<div class="patient-summary-stack">
 
 
 
@@ -50,34 +53,18 @@
 
 	$nombre_visit=$busqueda_a->fetch_assoc();
 
-
-		//TITULO DE LA PAGINA
-		echo "<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'><br><h5 class='mb-1 fw-bold'> Visitas de Dolor</h5>";
-
-
-		//BOTON A LA IZQUIERDA DEL TITULO class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block'
-		echo "<div class='pt-1 ps-3 me-3 d-flex float-start'>
-		<form method='post' action='vista_paciente.php'><button class='btn float-start btn-primary shadow-sm border-light d-none d-sm-block' style='width:80px; height:40px; --bs-border-opacity: .1;' type='submit' name='vista' value='$formulario'><div class='text-white'><i class='d-sm-block d-sm-none fa fa-chevron-left'></i>Atrás</div></button></form>
-		</div>";
-
-		//BOTÓN A LA DERECHA DEL TITULO class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block'
-		echo "<div class='pt-1 ps-3 pe-3 me-3 d-flex float-end'>
-		<a>&nbsp;</a><a>&nbsp;</a>
-		</div>";
-
-
-		//SUBTITULO
-		echo "<div class='mb-1 float-none'>".$nombre_visit['nombre_paciente_v']."</div>";
-		echo "<div class='mb-1'></div></li>";
+	echo "<section class='pain-card'>";
+	echo "<div class='pain-card-header'>";
+	echo "<div><h3>Visitas de Dolor</h3>";
+	if(isset($nombre_visit['nombre_paciente_v']) && trim((string)$nombre_visit['nombre_paciente_v']) !== ''){
+		echo "<p>".app_h_text($nombre_visit['nombre_paciente_v'])."</p>";
+	}
+	echo "</div>";
+	echo "<form method='post' action='vista_paciente.php'><button class='admin-back-btn d-none d-sm-inline-flex' type='submit' name='vista' value='".app_h_text($formulario)."'><i class='fa fa-chevron-left'></i>Atrás</button></form>";
+	echo "</div>";
 	?>
 
-			</ul>
-
-
-
-<div class="row text-center ps-2 pt-5">
-
-		<div class="list-group">
+		<div class="pain-list-host">
 
 	<?php 
 
@@ -90,13 +77,17 @@
 		$phpdate = strtotime( $fila['fecha_v'] );
 		$fecha = date( 'd-m-y H:i', $phpdate );
 
-				echo "<form action='vista_visitas.php' method='post'><button class='list-group-item list-group-item-action' type='submit' value='Submit'><input type='hidden' name='fecha_v' id='fecha_v' value='".$fila['fecha_v']."'><input type='hidden' name='rut_v' id='rut_v' value='".$fila['rut_v']."'><h5 class='mb-1'>".$fecha."</h5><small class='text-black-50'>".$fila['editor_v']."</small></button></form>";
+			echo "<form action='vista_visitas.php' method='post'><button class='bitacora-entry-card w-100 text-start border-0' type='submit' value='Submit'><input type='hidden' name='fecha_v' id='fecha_v' value='".app_h_text($fila['fecha_v'])."'><input type='hidden' name='rut_v' id='rut_v' value='".app_h_text($fila['rut_v'])."'><div class='bitacora-entry-body'><h5 class='mb-1'>".app_h_text($fecha)."</h5><small class='text-black-50'>".app_h_text($fila['editor_v'])."</small></div></button></form>";
 
 	} 
 
 	?>
 
-		</div>
+	</div>
+	</section>
+	</div>
+	</div>
+	</div>
 
 </div>
 </div>

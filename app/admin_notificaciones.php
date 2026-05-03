@@ -7,6 +7,12 @@ if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
 
 // Conexión
 require("conectar.php");
+
+$smtp_config_path = __DIR__ . '/secure_config/smtp_config.php';
+if(file_exists($smtp_config_path)){
+    require_once($smtp_config_path);
+}
+
 $conexion = new mysqli($db_host, $db_usuario, $db_contra, $db_nombre);
 $conexion->set_charset("utf8mb4");
 
@@ -58,7 +64,7 @@ if(!$usuario_actual || (int)$usuario_actual['admin'] !== 1){
 $usuario_id_actual = (int)$usuario_actual['ID'];
 
 // Variables navbar
-$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler="<a class='d-sm-block d-sm-none admin-back-btn' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white d-sm-block d-sm-none'>Notificaciones</span>";
 $boton_navbar = "<a></a><a></a>";
 
@@ -165,6 +171,36 @@ function app_notificaciones_cargar_phpmailer(){
     return $cargado;
 }
 
+function app_notificaciones_smtp_config_valida(){
+    if(!defined('APP_SMTP_HOST') || trim((string)APP_SMTP_HOST) === ''){
+        return false;
+    }
+
+    if(!defined('APP_SMTP_USER') || trim((string)APP_SMTP_USER) === ''){
+        return false;
+    }
+
+    if(!defined('APP_SMTP_PASS') || trim((string)APP_SMTP_PASS) === ''){
+        return false;
+    }
+
+    return APP_SMTP_PASS !== 'AQUI_VA_LA_PASSWORD_REAL';
+}
+
+function app_notificaciones_error_correo_seguro($error_info, $exception_message){
+    $detalle = trim((string)$error_info . ' ' . (string)$exception_message);
+
+    if(stripos($detalle, 'authenticate') !== false || stripos($detalle, 'authentication') !== false || stripos($detalle, '535') !== false){
+        return 'No se pudo autenticar con el servidor SMTP. Revisa usuario y contraseña en secure_config/smtp_config.php.';
+    }
+
+    if(stripos($detalle, 'connect') !== false){
+        return 'No se pudo conectar con el servidor de correo.';
+    }
+
+    return 'No se pudo enviar el correo. La notificación interna sí puede quedar registrada.';
+}
+
 function enviar_correo_notificacion_app($destinatarios, $titulo, $mensaje_notif, $url_destino, $remitente_email, $remitente_nombre){
     if(empty($destinatarios)){
         return ['ok' => false, 'enviados' => 0, 'error' => 'No hay destinatarios con correo válido.'];
@@ -219,22 +255,17 @@ function enviar_correo_notificacion_app($destinatarios, $titulo, $mensaje_notif,
     $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
 
     try{
-        /*
-         * Configuración opcional SMTP:
-         * Puedes definir estas constantes en conectar.php o en un archivo de configuración cargado antes:
-         * APP_SMTP_HOST, APP_SMTP_USER, APP_SMTP_PASS, APP_SMTP_PORT, APP_SMTP_SECURE.
-         * Si APP_SMTP_HOST no existe, PHPMailer usará mail() del servidor.
-         */
-        if(defined('APP_SMTP_HOST') && APP_SMTP_HOST !== ''){
+        $mail->SMTPDebug = 0;
+        $mail->Debugoutput = function($str, $level){
+            error_log('PHPMailer admin_notificaciones.php debug [' . $level . ']: ' . $str);
+        };
+
+        if(app_notificaciones_smtp_config_valida()){
             $mail->isSMTP();
             $mail->Host = APP_SMTP_HOST;
-            $mail->SMTPAuth = defined('APP_SMTP_USER') && APP_SMTP_USER !== '';
-
-            if($mail->SMTPAuth){
-                $mail->Username = APP_SMTP_USER;
-                $mail->Password = defined('APP_SMTP_PASS') ? APP_SMTP_PASS : '';
-            }
-
+            $mail->SMTPAuth = true;
+            $mail->Username = APP_SMTP_USER;
+            $mail->Password = APP_SMTP_PASS;
             $mail->Port = defined('APP_SMTP_PORT') ? (int)APP_SMTP_PORT : 587;
 
             if(defined('APP_SMTP_SECURE') && APP_SMTP_SECURE !== ''){
@@ -249,15 +280,15 @@ function enviar_correo_notificacion_app($destinatarios, $titulo, $mensaje_notif,
 
         /*
          * El From debe ser una cuenta autorizada por el servidor/dominio de la app.
-         * Define APP_MAIL_FROM_EMAIL y APP_MAIL_FROM_NAME en conectar.php si quieres cambiarla.
+         * El admin queda como Reply-To para que las respuestas lleguen a quien envió.
          */
         $cuenta_autorizada_email = (defined('APP_MAIL_FROM_EMAIL') && APP_MAIL_FROM_EMAIL !== '')
             ? APP_MAIL_FROM_EMAIL
-            : 'notificaciones@anestesiauach.cl';
+            : ((defined('APP_SMTP_FROM_EMAIL') && APP_SMTP_FROM_EMAIL !== '') ? APP_SMTP_FROM_EMAIL : 'administrador@anestesiauach.cl');
 
         $cuenta_autorizada_nombre = (defined('APP_MAIL_FROM_NAME') && APP_MAIL_FROM_NAME !== '')
             ? APP_MAIL_FROM_NAME
-            : 'App Anestesua UACh';
+            : ((defined('APP_SMTP_FROM_NAME') && APP_SMTP_FROM_NAME !== '') ? APP_SMTP_FROM_NAME : 'Anestesia UACh');
 
         $mail->setFrom($cuenta_autorizada_email, $cuenta_autorizada_nombre);
         $mail->addReplyTo($remitente_email, $remitente_nombre);
@@ -276,16 +307,16 @@ function enviar_correo_notificacion_app($destinatarios, $titulo, $mensaje_notif,
         }
 
         $mail->isHTML(true);
-        $mail->Subject = '[App Anestesua UACh] ' . $titulo_limpio;
-        $mail->Body = "\n            <div style='font-family:Arial,Helvetica,sans-serif; color:#1f2937; line-height:1.5; max-width:680px;'>\n                <div style='border:1px solid #e5e7eb; border-radius:14px; overflow:hidden;'>\n                    <div style='background:#0d6efd; color:#ffffff; padding:16px 18px;'>\n                        <h2 style='margin:0; font-size:20px;'>App Anestesua UACh</h2>\n                    </div>\n                    <div style='padding:18px;'>\n                        <h3 style='margin-top:0; color:#111827;'>{$titulo_html}</h3>\n                        <p>{$mensaje_html}</p>\n                        {$body_url}\n                        <hr style='border:none; border-top:1px solid #e5e7eb; margin:22px 0;'>\n                        <p style='font-size:13px; color:#6b7280; margin:0;'>\n                            Este correo fue enviado desde App Anestesua UACh por {$remitente_html}.<br>\n                            También quedó registrado como notificación interna en la aplicación.\n                        </p>\n                    </div>\n                </div>\n            </div>\n        ";
-        $mail->AltBody = "App Anestesua UACh\n\n" . $titulo_limpio . "\n\n" . $mensaje_limpio . $alt_url . "\n\nEste correo fue enviado desde una cuenta autorizada de App Anestesua UACh. Autor/remitente del mensaje: " . $remitente_nombre . " <" . $remitente_email . ">. Si respondes este correo, la respuesta será dirigida a ese remitente.";
+        $mail->Subject = '[App Anestesia UACh] ' . $titulo_limpio;
+        $mail->Body = "\n            <div style='font-family:Arial,Helvetica,sans-serif; color:#1f2937; line-height:1.5; max-width:680px;'>\n                <div style='border:1px solid #e5e7eb; border-radius:14px; overflow:hidden;'>\n                    <div style='background:#0d6efd; color:#ffffff; padding:16px 18px;'>\n                        <h2 style='margin:0; font-size:20px;'>App Anestesia UACh</h2>\n                    </div>\n                    <div style='padding:18px;'>\n                        <h3 style='margin-top:0; color:#111827;'>{$titulo_html}</h3>\n                        <p>{$mensaje_html}</p>\n                        {$body_url}\n                        <hr style='border:none; border-top:1px solid #e5e7eb; margin:22px 0;'>\n                        <p style='font-size:13px; color:#6b7280; margin:0;'>\n                            Este correo fue enviado desde App Anestesia UACh por {$remitente_html}.<br>\n                            También quedó registrado como notificación interna en la aplicación.\n                        </p>\n                    </div>\n                </div>\n            </div>\n        ";
+        $mail->AltBody = "App Anestesia UACh\n\n" . $titulo_limpio . "\n\n" . $mensaje_limpio . $alt_url . "\n\nEste correo fue enviado desde una cuenta autorizada de App Anestesia UACh. Autor/remitente del mensaje: " . $remitente_nombre . " <" . $remitente_email . ">. Si respondes este correo, la respuesta será dirigida a ese remitente.";
         $mail->send();
 
         return ['ok' => true, 'enviados' => count($mail->getToAddresses()), 'error' => ''];
 
     }catch(Throwable $e){
         error_log('Error PHPMailer admin_notificaciones.php: ' . $mail->ErrorInfo . ' | ' . $e->getMessage());
-        return ['ok' => false, 'enviados' => 0, 'error' => $mail->ErrorInfo ?: $e->getMessage()];
+        return ['ok' => false, 'enviados' => 0, 'error' => app_notificaciones_error_correo_seguro($mail->ErrorInfo, $e->getMessage())];
     }
 }
 
@@ -789,205 +820,8 @@ if($res_listado){
 }
 ?>
 
-<style>
-.admin-card{
-    background:#f8fafc;
-    border:1px solid #e5e7eb;
-    border-radius:14px;
-    padding:16px;
-    margin-bottom:14px;
-}
-
-.admin-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:16px;
-    align-items:start;
-}
-
-.admin-full{
-    grid-column:1 / -1;
-}
-
-.admin-label{
-    display:block;
-    font-weight:700;
-    margin-bottom:6px;
-}
-
-.admin-input, .admin-select, .admin-textarea{
-    width:100%;
-    box-sizing:border-box;
-    padding:11px 12px;
-    border:1px solid #d1d5db;
-    border-radius:10px;
-    font-size:14px;
-    max-width:100%;
-}
-
-.admin-textarea{
-    min-height:120px;
-    resize:vertical;
-}
-
-.admin-actions{
-    margin-top:18px;
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-}
-
-.badge-notif{
-    display:inline-block;
-    padding:.25rem .55rem;
-    border-radius:999px;
-    font-size:.78rem;
-    font-weight:700;
-    margin-right:6px;
-}
-
-.badge-info{ background:#dbeafe; color:#1d4ed8; }
-.badge-warning{ background:#fef3c7; color:#92400e; }
-.badge-success{ background:#dcfce7; color:#166534; }
-.badge-urgent{ background:#fee2e2; color:#b91c1c; }
-.badge-pub{ background:#dcfce7; color:#166534; }
-.badge-nopub{ background:#e5e7eb; color:#374151; }
-
-.admin-muted{ color:#6b7280; }
-.hidden{ display:none; }
-
-.admin-btn-inline{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
-    margin-top:12px;
-}
-
-.usuario-resultados{
-    max-height:260px;
-    overflow-y:auto;
-    border:1px solid #d1d5db;
-    border-radius:12px;
-    background:#fff;
-}
-
-.usuario-resultado-item{
-    display:block;
-    width:100%;
-    text-align:left;
-    padding:10px 12px;
-    border:0;
-    border-bottom:1px solid #edf1f5;
-    background:#fff;
-    font-size:14px;
-    color:#1f2937;
-    cursor:pointer;
-}
-
-.usuario-resultado-item:last-child{
-    border-bottom:0;
-}
-
-.usuario-resultado-item:hover,
-.usuario-resultado-item.activo{
-    background:#eef4ff;
-}
-
-.usuario-resultado-item.oculto{
-    display:none;
-}
-
-.icon-picker-grid{
-    display:grid;
-    grid-template-columns:repeat(6, minmax(0, 1fr));
-    gap:10px;
-}
-
-.icon-picker-btn{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    height:54px;
-    width:100%;
-    border:1px solid #d1d5db;
-    border-radius:12px;
-    background:#fff;
-    font-size:22px;
-    color:#334155;
-    cursor:pointer;
-    transition:.15s ease;
-    padding:0;
-}
-
-.icon-picker-btn:hover{
-    background:#eef4ff;
-    border-color:#93c5fd;
-    color:#1d4ed8;
-}
-
-.icon-picker-btn.activo{
-    background:#dbeafe;
-    border-color:#3b82f6;
-    color:#1d4ed8;
-    box-shadow:0 0 0 2px rgba(59,130,246,.12);
-}
-
-@media (max-width: 991.98px){
-    .admin-grid{
-        grid-template-columns:1fr;
-    }
-
-    .admin-full{
-        grid-column:auto;
-    }
-
-    .admin-card{
-        padding:14px;
-    }
-
-    .admin-input, .admin-select, .admin-textarea{
-        font-size:16px;
-    }
-
-    .icon-picker-grid{
-        grid-template-columns:repeat(4, minmax(0, 1fr));
-    }
-
-    .icon-picker-btn{
-        height:56px;
-        font-size:24px;
-    }
-}
-
-@media (max-width: 575.98px){
-    .admin-card{
-        padding:12px;
-        border-radius:12px;
-    }
-
-    .admin-grid{
-        gap:14px;
-    }
-
-    .icon-picker-grid{
-        grid-template-columns:repeat(4, minmax(0, 1fr));
-        gap:8px;
-    }
-
-    .icon-picker-btn{
-        height:52px;
-        font-size:22px;
-        border-radius:10px;
-    }
-
-    .usuario-resultados{
-        max-height:220px;
-    }
-}
-</style>
-
-<div class="col col-sm-9 col-xl-9">
-    <div class="container-fluid pt-3 pb-4">
+<div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
+    <main class="admin-page">
 
         <?php if($mensaje != ""){ ?>
             <div class='alert alert-success alert-dismissible fade show'>
@@ -1003,8 +837,15 @@ if($res_listado){
             </div>
         <?php } ?>
 
+        <section class="app-hero app-hero-admin admin-header-card mb-3">
+            <div class="app-hero-kicker">Administración</div>
+            <h2>Administrador de Notificaciones</h2>
+            <p>Crea, publica, filtra y elimina notificaciones internas de la app.</p>
+            <span class="app-hero-pill">Solo administradores</span>
+        </section>
+
         <div class="admin-card">
-            <h3 class="mb-2">Administrador de Notificaciones</h3>
+            <h3 class="mb-2">Crear notificación</h3>
             <div class="admin-muted mb-3">
                 Usuario actual: <strong><?= h_usuario($usuario_actual['nombre_usuario']) ?></strong> (<?= h($usuario_actual['email_usuario']) ?>)
             </div>
@@ -1065,7 +906,7 @@ if($res_listado){
                             autocomplete="off"
                         >
 
-                        <div id="usuarioSeleccionado" class="admin-muted mt-2" style="display:none;"></div>
+                        <div id="usuarioSeleccionado" class="admin-muted mt-2 hidden"></div>
 
                         <div id="usuarioResultados" class="usuario-resultados mt-2">
                             <?php foreach($usuarios as $u){ ?>
@@ -1180,13 +1021,13 @@ if($res_listado){
                             </label>
                         </div>
                         <div class="admin-muted mt-1">
-                            El correo usará como remitente al usuario logueado: <?= h($usuario_actual['email_usuario']) ?>
+                            El correo se enviará desde la cuenta autorizada de la app y usará al usuario logueado como Reply-To: <?= h($usuario_actual['email_usuario']) ?>
                         </div>
                     </div>
                 </div>
 
                 <div class="admin-actions">
-                    <button class="btn btn-primary" type="submit">Crear notificación</button>
+                    <button class="btn btn-app-primary" type="submit">Crear notificación</button>
                 </div>
             </form>
         </div>
@@ -1221,7 +1062,7 @@ if($res_listado){
                             autocomplete="off"
                         >
 
-                        <div id="usuarioEliminacionSeleccionado" class="admin-muted mt-2" style="display:none;"></div>
+                        <div id="usuarioEliminacionSeleccionado" class="admin-muted mt-2 hidden"></div>
 
                         <div id="usuarioEliminacionResultados" class="usuario-resultados mt-2">
                             <?php foreach($usuarios as $u){ ?>
@@ -1267,7 +1108,7 @@ if($res_listado){
                 </div>
 
                 <div class="admin-actions">
-                    <button class="btn btn-danger" type="submit">Eliminar notificaciones filtradas</button>
+                    <button class="btn btn-app-danger" type="submit">Eliminar notificaciones filtradas</button>
                 </div>
             </form>
         </div>
@@ -1304,7 +1145,7 @@ if($res_listado){
                         </span>
                     </div>
 
-                    <div class="mb-2" style="white-space:pre-wrap;"><?= h($n['mensaje']) ?></div>
+                    <div class="mb-2 admin-prewrap"><?= h($n['mensaje']) ?></div>
 
                     <div class="admin-muted">
                         <strong>Alcance:</strong> <?= h($n['alcance']) ?><br>
@@ -1343,7 +1184,7 @@ if($res_listado){
                         <form method="post" class="d-inline">
                             <input type="hidden" name="accion_admin" value="toggle_publicada">
                             <input type="hidden" name="notificacion_id" value="<?= (int)$n['id'] ?>">
-                            <button type="submit" class="btn btn-warning">
+                            <button type="submit" class="btn btn-app-secondary">
                                 <?= ((int)$n['publicada'] === 1 ? 'Despublicar' : 'Publicar') ?>
                             </button>
                         </form>
@@ -1351,14 +1192,14 @@ if($res_listado){
                         <form method="post" class="d-inline" onsubmit="return confirm('¿Seguro que deseas eliminar esta notificación?');">
                             <input type="hidden" name="accion_admin" value="eliminar">
                             <input type="hidden" name="notificacion_id" value="<?= (int)$n['id'] ?>">
-                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                            <button type="submit" class="btn btn-app-danger">Eliminar</button>
                         </form>
                     </div>
                 </div>
             <?php } ?>
         </div>
 
-    </div>
+    </main>
 </div>
 
 <script>
@@ -1418,7 +1259,7 @@ function limpiarSeleccionUsuarioEliminacion() {
     if (!usuarioEliminacionHidden || !usuarioEliminacionSeleccionado) return;
 
     usuarioEliminacionHidden.value = 0;
-    usuarioEliminacionSeleccionado.style.display = 'none';
+    usuarioEliminacionSeleccionado.classList.add('hidden');
     usuarioEliminacionSeleccionado.textContent = '';
 
     if (usuarioEliminacionResultados) {
@@ -1527,7 +1368,7 @@ if (usuarioEliminacionResultados) {
 
         if (usuarioEliminacionSeleccionado) {
             usuarioEliminacionSeleccionado.textContent = 'Seleccionado: ' + label;
-            usuarioEliminacionSeleccionado.style.display = 'block';
+            usuarioEliminacionSeleccionado.classList.remove('hidden');
         }
 
         usuarioEliminacionResultados.querySelectorAll('.usuario-eliminacion-item').forEach(btn => {
@@ -1597,7 +1438,7 @@ const usuarioSeleccionado = document.getElementById('usuarioSeleccionado');
 function limpiarSeleccionUsuario() {
     if (!usuarioIdHidden || !usuarioSeleccionado) return;
     usuarioIdHidden.value = 0;
-    usuarioSeleccionado.style.display = 'none';
+    usuarioSeleccionado.classList.add('hidden');
     usuarioSeleccionado.textContent = '';
 }
 
@@ -1645,7 +1486,7 @@ if (usuarioResultados) {
 
         if (usuarioSeleccionado) {
             usuarioSeleccionado.textContent = 'Seleccionado: ' + label;
-            usuarioSeleccionado.style.display = 'block';
+            usuarioSeleccionado.classList.remove('hidden');
         }
 
         usuarioResultados.querySelectorAll('.usuario-resultado-item').forEach(btn => {

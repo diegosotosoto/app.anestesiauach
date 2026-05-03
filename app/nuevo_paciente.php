@@ -23,53 +23,49 @@
 
 //VARIABLES
 	
-		$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='hoja_dolor.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
-		$titulo_navbar="<span class='text-white'>Nuevo</span>";
-		$boton_navbar="<button class='btn shadow-sm border-light' style='; --bs-border-opacity: .1;' type='submit' form='form_ingreso' value='Submit'><div class='text-white'>Agregar</div></button>";
+		$boton_toggler="<a class='d-sm-block d-sm-none admin-back-btn' href='hoja_dolor.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+		$titulo_navbar="<span>Nuevo</span>";
+		$boton_navbar="<button class='btn btn-app-primary navbar-save-btn' type='submit' form='form_ingreso' value='Submit'>Agregar</button>";
 
 	//Carga Head de la página
 	require("head.php");
 
 ?>
 
-<div class="col col-sm-9 col-xl-9 pb-5"><!- Columna principal (derecha) responsive->
+<div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
+<div class="apunte-surface">
+<div class="container-fluid px-0 px-md-2">
+<div class="pain-shell">
 
 
 	<form class="needs-validation" name="form_ingreso" id="form_ingreso" method="post" action="index.php" novalidate>
 <!-  NAVBAR  ->	
 
 
-			<ul class="list-group">
+			<div>
 
 
 
-	<?php
-		//TITULO DE LA PAGINA
-		echo "<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'><br><h5 class='mb-1 fw-bold'> Nuevo Paciente</h5>";
-
-
-		//BOTON A LA IZQUIERDA DEL TITULO class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block'
-		echo "<div class='pt-1 ps-3 me-3 d-flex float-start'>
-		<a class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block' style='width:80px; height:40px; --bs-border-opacity: .1;' href='hoja_dolor.php'><i class='fa fa-chevron-left'></i>Atrás</a>
-		</div>";
-
-		//BOTÓN A LA DERECHA DEL TITULO class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block'
-		echo "<span class='float-end'>
-		<div class='pt-1 ps-3 me-3 d-flex justify-content-end'>
-		<button class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block' style='; --bs-border-opacity: .1;' type='submit' form='form_ingreso' value='Submit'><div class='text-white'>Agregar</div></button>
+	<section class="app-hero app-hero-blue">
+		<div class="app-hero-row">
+			<div class="app-hero-body">
+				<div class="app-hero-kicker">APP clínica • dolor agudo</div>
+				<h2>Nuevo Paciente</h2>
+				<p>Ingreso de paciente para seguimiento de dolor agudo.</p>
+			</div>
 		</div>
-		</span>";
+	</section>
 
-		//SUBTITULO
-		echo "<div class='mb-1'></div>";
-		echo "<div class='mb-1'></div></li>";
-	?>
+	<div class="pain-actions d-none d-sm-flex justify-content-between">
+		<a class="admin-back-btn" href="hoja_dolor.php"><i class="fa fa-chevron-left"></i>Atrás</a>
+		<button class="btn btn-app-primary pain-action-btn" type="submit" form="form_ingreso" value="Submit">Agregar</button>
+	</div>
 
-			</ul>
+			</div>
 
 
 		<!– TABLA DE REGISTROS –>
-				<div class='container'>
+				<div class='pain-form-card'>
 				<div class='row'>	
 
 				<div class='col'>
@@ -262,7 +258,7 @@
 					</div>
 
 					<div class='col'>
-			    <div class='text-muted pt-4'>Comentarios</div><textarea class="form-control mb-2" style="resize: none;" maxlength="250" rows="5" name="comentarios" id="comentarios"></textarea>
+		    <div class='text-muted pt-4'>Comentarios</div><textarea class="form-control mb-2 pain-textarea" maxlength="250" rows="5" name="comentarios" id="comentarios"></textarea>
 			  </div>
 </div>
 </div>
@@ -270,12 +266,15 @@
 
 
 
-		<div class="pt-3 ps-3 me-3 d-flex justify-content-end">
-		<button class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block' style='; --bs-border-opacity: .1;' type='submit' form='form_ingreso' value='Submit'><div class='text-white'>Agregar Paciente</div></button>
+		<div class="pain-actions">
+		<button class='btn btn-app-primary pain-action-btn' type='submit' form='form_ingreso' value='Submit'>Agregar Paciente</button>
 		</div>
 
 		</form>
 
+</div>
+</div>
+</div>
 </div>
 
 <!- chequear que no haya otro ingresado antes -> 
@@ -424,5 +423,3 @@ function checkRut(rut) {
 
 
 <!-  FOOTER  ->
-
-

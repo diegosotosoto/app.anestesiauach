@@ -28,7 +28,7 @@ $email_usuario_cookie = trim($_COOKIE['hkjh41lu4l1k23jhlkj13']);
 
 $sql_usuario = "SELECT ID
 
-                FROM anestes1_hoja_dolor.usuarios_dolor
+                FROM usuarios_dolor
 
                 WHERE email_usuario = ?
 
@@ -98,7 +98,7 @@ if ($nota_id <= 0) {
 
 }
 
-$sql_toggle = "INSERT INTO anestes1_hoja_dolor.usuario_notas (
+$sql_toggle = "INSERT INTO usuario_notas (
 
                     usuario_id,
 
@@ -156,7 +156,7 @@ $stmt_toggle->close();
 
 $sql_estado = "SELECT es_favorita
 
-               FROM anestes1_hoja_dolor.usuario_notas
+               FROM usuario_notas
 
                WHERE usuario_id = ?
 

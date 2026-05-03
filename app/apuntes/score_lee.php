@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "Índice de Riesgo Cardíaco Revisado";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "El Índice de Riesgo Cardíaco Revisado de Lee, también conocido como RCRI, estima riesgo de complicaciones cardíacas mayores en cirugía no cardíaca usando seis variables clínicas simples. Es útil para estratificar riesgo y orientar evaluación perioperatoria adicional.";
@@ -17,7 +17,7 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=2">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=2"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
@@ -29,73 +29,6 @@ require("../head.php");
           .lee-factor-list{
             display:grid;
             gap:.75rem;
-          }
-
-          .lee-factor-input{
-            position:absolute;
-            opacity:0;
-            pointer-events:none;
-          }
-
-          .lee-factor-card{
-            display:flex;
-            align-items:flex-start;
-            gap:.75rem;
-            border:2px solid var(--note-line);
-            background:#fff;
-            border-radius:1rem;
-            padding:.85rem .95rem;
-            cursor:pointer;
-            transition:.15s ease;
-            box-shadow:0 3px 10px rgba(15,23,42,.04);
-          }
-
-          .lee-factor-input:checked + .lee-factor-card{
-            background:#f4fbf7;
-            border-color:#b7e2c4;
-            box-shadow:0 0 0 3px rgba(46,166,99,.13), 0 8px 18px rgba(15,23,42,.10);
-            transform:translateY(-1px);
-          }
-
-          .lee-checkmark{
-            flex:0 0 auto;
-            width:30px;
-            height:30px;
-            border-radius:999px;
-            border:2px solid #c9d3df;
-            background:#fff;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            color:#fff;
-            margin-top:.05rem;
-            transition:.15s ease;
-          }
-
-          .lee-factor-input:checked + .lee-factor-card .lee-checkmark{
-            background:#2ea663;
-            border-color:#2ea663;
-            color:#fff;
-          }
-
-          .lee-factor-copy{
-            min-width:0;
-            flex:1;
-          }
-
-          .lee-factor-title{
-            font-size:.96rem;
-            font-weight:800;
-            line-height:1.22;
-            color:var(--note-text);
-            margin-bottom:.1rem;
-          }
-
-          .lee-factor-note{
-            margin:0;
-            font-size:.84rem;
-            line-height:1.35;
-            color:var(--note-muted);
           }
 
           .lee-risk-low{
@@ -113,55 +46,7 @@ require("../head.php");
             border-color:#efc0bd !important;
           }
 
-          .lee-action-list{
-            display:grid;
-            gap:.75rem;
-          }
-
-          .lee-action-item{
-            display:flex;
-            align-items:flex-start;
-            gap:.65rem;
-            border:1px solid #d9e2ef;
-            border-radius:1rem;
-            background:#fff;
-            padding:.75rem .85rem;
-          }
-
-          .lee-action-mark{
-            flex:0 0 auto;
-            width:30px;
-            height:30px;
-            border-radius:999px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            color:#fff;
-            margin-top:.08rem;
-          }
-
-          .lee-action-mark.ok{background:#2ea663;}
-          .lee-action-mark.mid{background:#f4c542;}
-          .lee-action-mark.high{background:#d92d20;}
-
-          .lee-action-copy{min-width:0;flex:1;}
-
-          .lee-action-title{
-            font-size:.95rem;
-            font-weight:800;
-            line-height:1.18;
-            color:var(--note-text);
-            margin-bottom:.1rem;
-          }
-
-          .lee-action-note{
-            margin:0;
-            font-size:.82rem;
-            line-height:1.32;
-            color:var(--note-muted);
-          }
-
-          .lee-plan-line{
+          .note-checklist-plan-line{
             padding:.75rem .85rem;
             border-radius:.9rem;
             background:#fff;
@@ -169,11 +54,11 @@ require("../head.php");
             margin-bottom:.6rem;
           }
 
-          .lee-plan-line:last-child{
+          .note-checklist-plan-line:last-child{
             margin-bottom:0;
           }
 
-          .lee-factor-pill{
+          .note-checklist-pill{
             display:inline-flex;
             align-items:center;
             gap:.35rem;
@@ -186,11 +71,12 @@ require("../head.php");
             margin:.15rem .2rem .15rem 0;
           }
 
-          .lee-factor-pill.active{
+          .note-checklist-pill.active{
             background:#eaf7ef;
             color:#1f7a4d;
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · RIESGO CARDIOVASCULAR · CIRUGÍA NO CARDÍACA</div>
@@ -226,67 +112,67 @@ require("../head.php");
 
             <div class="lee-factor-list">
               <label>
-                <input class="lee-factor-input lee-check" type="checkbox" id="cirugia" data-label="Cirugía alto riesgo">
-                <div class="lee-factor-card">
-                  <div class="lee-checkmark"><i class="fa-solid fa-check"></i></div>
-                  <div class="lee-factor-copy">
-                    <div class="lee-factor-title">Cirugía de alto riesgo</div>
-                    <p class="lee-factor-note">Intraperitoneal, intratorácica o vascular suprainguinal.</p>
+                <input class="note-checklist-item-input lee-check" type="checkbox" id="cirugia" data-label="Cirugía alto riesgo">
+                <div class="note-checklist-item">
+                  <div class="note-checklist-item-mark"><i class="fa-solid fa-check"></i></div>
+                  <div class="note-checklist-item-copy">
+                    <div class="note-checklist-item-title">Cirugía de alto riesgo</div>
+                    <p class="note-checklist-item-note">Intraperitoneal, intratorácica o vascular suprainguinal.</p>
                   </div>
                 </div>
               </label>
 
               <label>
-                <input class="lee-factor-input lee-check" type="checkbox" id="isquemica" data-label="Cardiopatía isquémica">
-                <div class="lee-factor-card">
-                  <div class="lee-checkmark"><i class="fa-solid fa-check"></i></div>
-                  <div class="lee-factor-copy">
-                    <div class="lee-factor-title">Antecedente de cardiopatía isquémica</div>
-                    <p class="lee-factor-note">IAM previo, angina, prueba positiva, uso de nitratos o Q patológica.</p>
+                <input class="note-checklist-item-input lee-check" type="checkbox" id="isquemica" data-label="Cardiopatía isquémica">
+                <div class="note-checklist-item">
+                  <div class="note-checklist-item-mark"><i class="fa-solid fa-check"></i></div>
+                  <div class="note-checklist-item-copy">
+                    <div class="note-checklist-item-title">Antecedente de cardiopatía isquémica</div>
+                    <p class="note-checklist-item-note">IAM previo, angina, prueba positiva, uso de nitratos o Q patológica.</p>
                   </div>
                 </div>
               </label>
 
               <label>
-                <input class="lee-factor-input lee-check" type="checkbox" id="icc" data-label="Insuficiencia cardíaca">
-                <div class="lee-factor-card">
-                  <div class="lee-checkmark"><i class="fa-solid fa-check"></i></div>
-                  <div class="lee-factor-copy">
-                    <div class="lee-factor-title">Antecedente de insuficiencia cardíaca</div>
-                    <p class="lee-factor-note">ICC clínica actual o previa, edema pulmonar, disnea paroxística nocturna o signos compatibles.</p>
+                <input class="note-checklist-item-input lee-check" type="checkbox" id="icc" data-label="Insuficiencia cardíaca">
+                <div class="note-checklist-item">
+                  <div class="note-checklist-item-mark"><i class="fa-solid fa-check"></i></div>
+                  <div class="note-checklist-item-copy">
+                    <div class="note-checklist-item-title">Antecedente de insuficiencia cardíaca</div>
+                    <p class="note-checklist-item-note">ICC clínica actual o previa, edema pulmonar, disnea paroxística nocturna o signos compatibles.</p>
                   </div>
                 </div>
               </label>
 
               <label>
-                <input class="lee-factor-input lee-check" type="checkbox" id="acv" data-label="ACV/AIT">
-                <div class="lee-factor-card">
-                  <div class="lee-checkmark"><i class="fa-solid fa-check"></i></div>
-                  <div class="lee-factor-copy">
-                    <div class="lee-factor-title">Antecedente de ACV o AIT</div>
-                    <p class="lee-factor-note">Historia cerebrovascular previa.</p>
+                <input class="note-checklist-item-input lee-check" type="checkbox" id="acv" data-label="ACV/AIT">
+                <div class="note-checklist-item">
+                  <div class="note-checklist-item-mark"><i class="fa-solid fa-check"></i></div>
+                  <div class="note-checklist-item-copy">
+                    <div class="note-checklist-item-title">Antecedente de ACV o AIT</div>
+                    <p class="note-checklist-item-note">Historia cerebrovascular previa.</p>
                   </div>
                 </div>
               </label>
 
               <label>
-                <input class="lee-factor-input lee-check" type="checkbox" id="insulina" data-label="Diabetes con insulina">
-                <div class="lee-factor-card">
-                  <div class="lee-checkmark"><i class="fa-solid fa-check"></i></div>
-                  <div class="lee-factor-copy">
-                    <div class="lee-factor-title">Diabetes tratada con insulina</div>
-                    <p class="lee-factor-note">Usuario de insulina en el manejo habitual.</p>
+                <input class="note-checklist-item-input lee-check" type="checkbox" id="insulina" data-label="Diabetes con insulina">
+                <div class="note-checklist-item">
+                  <div class="note-checklist-item-mark"><i class="fa-solid fa-check"></i></div>
+                  <div class="note-checklist-item-copy">
+                    <div class="note-checklist-item-title">Diabetes tratada con insulina</div>
+                    <p class="note-checklist-item-note">Usuario de insulina en el manejo habitual.</p>
                   </div>
                 </div>
               </label>
 
               <label>
-                <input class="lee-factor-input lee-check" type="checkbox" id="creatinina" data-label="Creatinina >2 mg/dL">
-                <div class="lee-factor-card">
-                  <div class="lee-checkmark"><i class="fa-solid fa-check"></i></div>
-                  <div class="lee-factor-copy">
-                    <div class="lee-factor-title">Creatinina &gt; 2,0 mg/dL</div>
-                    <p class="lee-factor-note">Disfunción renal significativa según definición original del índice.</p>
+                <input class="note-checklist-item-input lee-check" type="checkbox" id="creatinina" data-label="Creatinina >2 mg/dL">
+                <div class="note-checklist-item">
+                  <div class="note-checklist-item-mark"><i class="fa-solid fa-check"></i></div>
+                  <div class="note-checklist-item-copy">
+                    <div class="note-checklist-item-title">Creatinina &gt; 2,0 mg/dL</div>
+                    <p class="note-checklist-item-note">Disfunción renal significativa según definición original del índice.</p>
                   </div>
                 </div>
               </label>
@@ -297,22 +183,22 @@ require("../head.php");
         <div class="note-summary-box mb-3">
           <div class="note-summary-box-title">Resumen</div>
           <div id="summaryNarrative" class="note-summary-box-text">0 factores RCRI seleccionados. Riesgo estimado bajo; integrar con capacidad funcional, urgencia y magnitud quirúrgica.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item">
-              <div class="note-summary-k">Puntaje</div>
-              <div id="summaryScore" class="note-summary-v">0</div>
+          <div class="note-result-grid-2 mt-2">
+            <div class="note-result-card">
+              <div class="note-result-card-label">Puntaje</div>
+              <div id="summaryScore" class="note-result-card-value">0</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Riesgo estimado</div>
-              <div id="summaryRisk" class="note-summary-v">0,4%</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Riesgo estimado</div>
+              <div id="summaryRisk" class="note-result-card-value">0,4%</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Nivel</div>
-              <div id="summaryLevel" class="note-summary-v">Bajo</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Nivel</div>
+              <div id="summaryLevel" class="note-result-card-value">Bajo</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Factores activos</div>
-              <div id="summaryFactors" class="note-summary-v">Ninguno</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Factores activos</div>
+              <div id="summaryFactors" class="note-result-card-value">Ninguno</div>
             </div>
           </div>
         </div>
@@ -336,9 +222,9 @@ require("../head.php");
           <div id="algoExtra" class="note-interpretation-soft">Proceder con evaluación perioperatoria estándar si el contexto clínico, la cirugía y la capacidad funcional son favorables.</div>
 
           <div class="mt-3 text-start">
-            <div class="lee-plan-line"><strong>Lectura:</strong> <span id="planReading">Riesgo bajo. RCRI no sugiere por sí solo evaluación cardiovascular adicional.</span></div>
-            <div class="lee-plan-line"><strong>Qué integrar:</strong> <span id="planIntegrate">Capacidad funcional, síntomas cardiovasculares, urgencia, magnitud quirúrgica y biomarcadores si corresponden.</span></div>
-            <div class="lee-plan-line"><strong>Factores seleccionados:</strong> <span id="factorPills"><span class="lee-factor-pill">Ninguno</span></span></div>
+            <div class="note-checklist-plan-line"><strong>Lectura:</strong> <span id="planReading">Riesgo bajo. RCRI no sugiere por sí solo evaluación cardiovascular adicional.</span></div>
+            <div class="note-checklist-plan-line"><strong>Qué integrar:</strong> <span id="planIntegrate">Capacidad funcional, síntomas cardiovasculares, urgencia, magnitud quirúrgica y biomarcadores si corresponden.</span></div>
+            <div class="note-checklist-plan-line"><strong>Factores seleccionados:</strong> <span id="factorPills"><span class="note-checklist-pill">Ninguno</span></span></div>
           </div>
         </div>
 
@@ -350,12 +236,12 @@ require("../head.php");
         <div class="note-card mb-3">
           <div class="note-card-body">
             <div class="note-section-label">Conducta práctica</div>
-            <div id="actionList" class="lee-action-list">
-              <div class="lee-action-item">
-                <div class="lee-action-mark ok"><i class="fa-solid fa-check"></i></div>
-                <div class="lee-action-copy">
-                  <div class="lee-action-title">Riesgo bajo por RCRI</div>
-                  <p class="lee-action-note">Completar evaluación clínica estándar, capacidad funcional y contexto quirúrgico.</p>
+            <div id="actionList" class="note-warning-list">
+              <div class="note-warning-item">
+                <div class="note-warning-icon ok"><i class="fa-solid fa-check"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Riesgo bajo por RCRI</div>
+                  <p class="note-warning-note">Completar evaluación clínica estándar, capacidad funcional y contexto quirúrgico.</p>
                 </div>
               </div>
             </div>
@@ -471,11 +357,11 @@ require("../head.php");
 
     document.getElementById('actionList').innerHTML = items.map(function(item){
       const icon = item[0] === 'ok' ? 'fa-check' : (item[0] === 'mid' ? 'fa-triangle-exclamation' : 'fa-bolt');
-      return '<div class="lee-action-item">' +
-        '<div class="lee-action-mark ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
-        '<div class="lee-action-copy">' +
-          '<div class="lee-action-title">' + item[1] + '</div>' +
-          '<p class="lee-action-note">' + item[2] + '</p>' +
+      return '<div class="note-warning-item">' +
+        '<div class="note-warning-icon ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
+        '<div class="note-warning-copy">' +
+          '<div class="note-warning-title">' + item[1] + '</div>' +
+          '<p class="note-warning-note">' + item[2] + '</p>' +
         '</div>' +
       '</div>';
     }).join('');
@@ -484,11 +370,11 @@ require("../head.php");
   function renderPills(activeLabels){
     const box = document.getElementById('factorPills');
     if(activeLabels.length === 0){
-      box.innerHTML = '<span class="lee-factor-pill">Ninguno</span>';
+      box.innerHTML = '<span class="note-checklist-pill">Ninguno</span>';
       return;
     }
     box.innerHTML = activeLabels.map(function(label){
-      return '<span class="lee-factor-pill active"><i class="fa-solid fa-check"></i>' + label + '</span>';
+      return '<span class="note-checklist-pill active"><i class="fa-solid fa-check"></i>' + label + '</span>';
     }).join('');
   }
 

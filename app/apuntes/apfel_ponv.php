@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "Score de Apfel";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "El score de Apfel estima el riesgo basal de náuseas y vómitos postoperatorios en adultos y permite orientar una estrategia profiláctica rápida según la carga acumulada de factores de riesgo.";
@@ -16,7 +16,7 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=1">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=1"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
@@ -123,7 +123,7 @@ require("../head.php");
           }
           .apfel-dose-grid{
             display:grid;
-            grid-template-columns:1fr;
+            grid-template-columns:repeat(2,minmax(0,1fr));
             gap:1rem;
           }
           .apfel-dose-item{
@@ -168,6 +168,7 @@ require("../head.php");
             .apfel-binary-grid{grid-template-columns:1fr;}
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · NVPO ADULTO</div>
@@ -235,11 +236,23 @@ require("../head.php");
         <div class="note-summary-box mb-3">
           <div class="note-summary-box-title">Resumen</div>
           <div id="summaryNarrative" class="note-summary-box-text">0 factores de riesgo. Riesgo basal bajo.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item"><div class="note-summary-k">Factores</div><div id="summaryScore" class="note-summary-v">0</div></div>
-            <div class="note-summary-item"><div class="note-summary-k">Riesgo estimado</div><div id="summaryRisk" class="note-summary-v">10%</div></div>
-            <div class="note-summary-item"><div class="note-summary-k">Nivel</div><div id="summaryLevel" class="note-summary-v">Bajo</div></div>
-            <div class="note-summary-item"><div class="note-summary-k">Estrategia</div><div id="summaryStrategy" class="note-summary-v">Observación / sin profilaxis rutinaria</div></div>
+          <div class="note-result-grid-2 mt-2">
+            <div class="note-result-card">
+              <div class="note-result-card-label">Factores</div>
+              <div id="summaryScore" class="note-result-card-value">0</div>
+            </div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Riesgo estimado</div>
+              <div id="summaryRisk" class="note-result-card-value">10%</div>
+            </div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Nivel</div>
+              <div id="summaryLevel" class="note-result-card-value">Bajo</div>
+            </div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Estrategia</div>
+              <div id="summaryStrategy" class="note-result-card-value">Observación / sin profilaxis rutinaria</div>
+            </div>
           </div>
         </div>
 
@@ -264,26 +277,29 @@ require("../head.php");
             <div class="apfel-plan-line">Sin profilaxis rutinaria en pacientes de muy bajo riesgo.</div>
           </div>
 
-          <div class="note-card mt-3 apfel-dose-card">
+          <div class="note-card mt-3">
             <div class="note-card-title text-center">Opciones de manejo frecuentes</div>
             <div class="apfel-dose-grid">
 
-                <div class="apfel-dose-inner">
-                  <div class="apfel-dose-name">Dexametasona</div>
-                  <div class="apfel-dose-rule">Profilaxis IV habitual</div>
-                  <div class="apfel-dose-value">4 mg</div>
+                <div class="drug-card drug-other">
+                  <div class="drug-label-content">
+                    <div class="drug-label-title">Dexametasona</div>
+                    <div class="drug-label-subtitle">Profilaxis IV habitual · 4 mg</div>
+                  </div>
                 </div>
 
-                <div class="apfel-dose-inner">
-                  <div class="apfel-dose-name">Ondansetrón</div>
-                  <div class="apfel-dose-rule">Profilaxis IV habitual</div>
-                  <div class="apfel-dose-value">4 mg</div>
+                <div class="drug-card drug-other">
+                  <div class="drug-label-content">
+                    <div class="drug-label-title">Ondansetrón</div>
+                    <div class="drug-label-subtitle">Profilaxis IV habitual · 4 mg</div>
+                  </div>
                 </div>
 
-                <div class="apfel-dose-inner">
-                  <div class="apfel-dose-name">Droperidol</div>
-                  <div class="apfel-dose-rule">Profilaxis IV habitual</div>
-                  <div class="apfel-dose-value">0,625–1 mg</div>
+                <div class="drug-card drug-other">
+                  <div class="drug-label-content">
+                    <div class="drug-label-title">Droperidol</div>
+                    <div class="drug-label-subtitle">Profilaxis IV habitual · 0,625–1 mg</div>
+                  </div>
                 </div>
             </div>
           </div>

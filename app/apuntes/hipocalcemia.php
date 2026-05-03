@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "Reposición de calcio";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "Apunte interactivo para apoyo en reposición intraoperatoria de calcio. Prioriza calcio iónico, pero permite ingresar calcio total o calcio iónico en distintas unidades y muestra las equivalencias relevantes en el resumen.";
@@ -18,7 +18,7 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=2">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=2"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
@@ -91,54 +91,6 @@ require("../head.php");
             font-weight:600;
           }
 
-          .cal-action-list{
-            display:grid;
-            gap:.75rem;
-          }
-
-          .cal-action-item{
-            display:flex;
-            align-items:flex-start;
-            gap:.65rem;
-            border:1px solid #d9e2ef;
-            border-radius:1rem;
-            background:#fff;
-            padding:.75rem .85rem;
-          }
-
-          .cal-action-mark{
-            flex:0 0 auto;
-            width:30px;
-            height:30px;
-            border-radius:999px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            color:#fff;
-            margin-top:.08rem;
-          }
-
-          .cal-action-mark.ok{background:#2ea663;}
-          .cal-action-mark.mid{background:#f4c542;}
-          .cal-action-mark.high{background:#d92d20;}
-
-          .cal-action-copy{min-width:0;flex:1;}
-
-          .cal-action-title{
-            font-size:.95rem;
-            font-weight:800;
-            line-height:1.18;
-            color:var(--note-text);
-            margin-bottom:.1rem;
-          }
-
-          .cal-action-note{
-            margin:0;
-            font-size:.82rem;
-            line-height:1.32;
-            color:var(--note-muted);
-          }
-
           .cal-plan-line{
             padding:.75rem .85rem;
             border-radius:.9rem;
@@ -203,6 +155,7 @@ require("../head.php");
             }
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · ELECTROLITOS · HEMODINAMIA</div>
@@ -254,54 +207,77 @@ require("../head.php");
               </div>
             </div>
 
-            <div class="note-section-label">Tipo de medición</div>
-            <div class="cal-choice-grid cal-grid-3 mb-3">
+            <div class="note-section-label">Tipo de calcio</div>
+            <div class="cal-choice-grid mb-3">
               <label>
-                <input class="cal-option-input" type="radio" name="calciumType" value="ion_mmol" checked>
+                <input class="cal-option-input" type="radio" name="calciumTypeMain" value="ionico" checked>
                 <div class="cal-option">
                   <i class="fa-solid fa-bolt"></i>
-                  <div class="cal-option-title">Ca iónico</div>
-                  <div class="cal-option-sub">mmol/L</div>
+                  <div class="cal-option-title">Calcio Iónico</div>
+                  <div class="cal-option-sub">Prioritario intraoperatorio</div>
                 </div>
               </label>
               <label>
-                <input class="cal-option-input" type="radio" name="calciumType" value="ion_mgdl">
+                <input class="cal-option-input" type="radio" name="calciumTypeMain" value="total">
+                <div class="cal-option">
+                  <i class="fa-solid fa-vial"></i>
+                  <div class="cal-option-title">Calcio Total</div>
+                  <div class="cal-option-sub">Interpretar con albúmina</div>
+                </div>
+              </label>
+            </div>
+
+            <div class="note-section-label">Unidades de medición</div>
+            <div id="ionicoUnits" class="cal-choice-grid cal-grid-3 mb-3">
+              <label>
+                <input class="cal-option-input" type="radio" name="calciumUnit" value="mmol" checked>
                 <div class="cal-option">
                   <i class="fa-solid fa-bolt"></i>
-                  <div class="cal-option-title">Ca iónico</div>
-                  <div class="cal-option-sub">mg/dL</div>
+                  <div class="cal-option-title">mmol/L</div>
+                  <div class="cal-option-sub">Unidad estándar</div>
                 </div>
               </label>
               <label>
-                <input class="cal-option-input" type="radio" name="calciumType" value="ion_meq">
+                <input class="cal-option-input" type="radio" name="calciumUnit" value="mgdl">
                 <div class="cal-option">
                   <i class="fa-solid fa-bolt"></i>
-                  <div class="cal-option-title">Ca iónico</div>
-                  <div class="cal-option-sub">mEq/L</div>
+                  <div class="cal-option-title">mg/dL</div>
+                  <div class="cal-option-sub">Unidad clínica común</div>
                 </div>
               </label>
               <label>
-                <input class="cal-option-input" type="radio" name="calciumType" value="total_mgdl">
+                <input class="cal-option-input" type="radio" name="calciumUnit" value="meq">
+                <div class="cal-option">
+                  <i class="fa-solid fa-bolt"></i>
+                  <div class="cal-option-title">mEq/L</div>
+                  <div class="cal-option-sub">Equivalente electroquímico</div>
+                </div>
+              </label>
+            </div>
+
+            <div id="totalUnits" class="cal-choice-grid cal-grid-3 mb-3" style="display:none;">
+              <label>
+                <input class="cal-option-input" type="radio" name="calciumUnit" value="mgdl">
                 <div class="cal-option">
                   <i class="fa-solid fa-vial"></i>
-                  <div class="cal-option-title">Ca total</div>
-                  <div class="cal-option-sub">mg/dL</div>
+                  <div class="cal-option-title">mg/dL</div>
+                  <div class="cal-option-sub">Unidad estándar</div>
                 </div>
               </label>
               <label>
-                <input class="cal-option-input" type="radio" name="calciumType" value="total_mmol">
+                <input class="cal-option-input" type="radio" name="calciumUnit" value="mmol">
                 <div class="cal-option">
                   <i class="fa-solid fa-vial"></i>
-                  <div class="cal-option-title">Ca total</div>
-                  <div class="cal-option-sub">mmol/L</div>
+                  <div class="cal-option-title">mmol/L</div>
+                  <div class="cal-option-sub">Unidad internacional</div>
                 </div>
               </label>
               <label>
-                <input class="cal-option-input" type="radio" name="calciumType" value="total_meq">
+                <input class="cal-option-input" type="radio" name="calciumUnit" value="meq">
                 <div class="cal-option">
                   <i class="fa-solid fa-vial"></i>
-                  <div class="cal-option-title">Ca total</div>
-                  <div class="cal-option-sub">mEq/L</div>
+                  <div class="cal-option-title">mEq/L</div>
+                  <div class="cal-option-sub">Equivalente electroquímico</div>
                 </div>
               </label>
             </div>
@@ -416,25 +392,27 @@ require("../head.php");
           </div>
         </div>
 
-        <div class="note-summary-box mb-3">
-          <div class="note-summary-box-title">Resumen</div>
-          <div id="summaryNarrative" class="note-summary-box-text">Ingresa peso y calcio para interpretar equivalencias, severidad y reposición orientativa.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item">
-              <div class="note-summary-k">Medición ingresada</div>
-              <div id="summaryInput" class="note-summary-v">-</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Equivalencia</div>
-              <div id="summaryEquiv" class="note-summary-v">-</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Severidad</div>
-              <div id="summarySeverity" class="note-summary-v">Pendiente</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Sal / acceso</div>
-              <div id="summarySalt" class="note-summary-v">Gluconato · periférico</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-card-title">Resumen</div>
+            <div id="summaryNarrative" class="note-summary-box-text mb-3">Ingresa peso y calcio para interpretar equivalencias, severidad y reposición orientativa.</div>
+            <div class="note-result-grid-2">
+              <div class="note-result-card">
+                <div class="note-result-card-label">Medición ingresada</div>
+                <div id="summaryInput" class="note-result-card-value">-</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Equivalencia</div>
+                <div id="summaryEquiv" class="note-result-card-value">-</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Severidad</div>
+                <div id="summarySeverity" class="note-result-card-value">Pendiente</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Sal / acceso</div>
+                <div id="summarySalt" class="note-result-card-value">Gluconato · periférico</div>
+              </div>
             </div>
           </div>
         </div>
@@ -473,12 +451,12 @@ require("../head.php");
         <div class="note-card mb-3">
           <div class="note-card-body">
             <div class="note-section-label">Lectura clínica</div>
-            <div id="actionList" class="cal-action-list">
-              <div class="cal-action-item">
-                <div class="cal-action-mark mid"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <div class="cal-action-copy">
-                  <div class="cal-action-title">Completa peso y calcio</div>
-                  <p class="cal-action-note">La reposición se debe guiar por calcio iónico, contexto y repercusión clínica, no solo por calcio total.</p>
+            <div id="actionList" class="note-warning-list">
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Completa peso y calcio</div>
+                  <p class="note-warning-note">La reposición se debe guiar por calcio iónico, contexto y repercusión clínica, no solo por calcio total.</p>
                 </div>
               </div>
             </div>
@@ -488,26 +466,26 @@ require("../head.php");
         <div class="note-card mb-3">
           <div class="note-card-body">
             <div class="note-section-label">Consideraciones anestésicas y causa probable</div>
-            <div class="cal-action-list">
-              <div class="cal-action-item">
-                <div class="cal-action-mark mid"><i class="fa-solid fa-mask-ventilator"></i></div>
-                <div class="cal-action-copy">
-                  <div class="cal-action-title">Implicancias anestésicas</div>
-                  <p id="anesthText" class="cal-action-note">-</p>
+            <div class="note-warning-list">
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-mask-ventilator"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Implicancias anestésicas</div>
+                  <p id="anesthText" class="note-warning-note">-</p>
                 </div>
               </div>
-              <div class="cal-action-item">
-                <div class="cal-action-mark ok"><i class="fa-solid fa-magnifying-glass"></i></div>
-                <div class="cal-action-copy">
-                  <div class="cal-action-title">Causa probable / estrategia adicional</div>
-                  <p id="causeText" class="cal-action-note">-</p>
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Causa probable / estrategia adicional</div>
+                  <p id="causeText" class="note-warning-note">-</p>
                 </div>
               </div>
-              <div id="accessWarningItem" class="cal-action-item" style="display:none;">
-                <div class="cal-action-mark high"><i class="fa-solid fa-bolt"></i></div>
-                <div class="cal-action-copy">
-                  <div class="cal-action-title">Selección insegura de acceso</div>
-                  <p id="accessWarningText" class="cal-action-note">Cloruro de calcio 10% por vía periférica no es buena elección por riesgo de extravasación y necrosis tisular.</p>
+              <div id="accessWarningItem" class="note-warning-item" style="display:none;">
+                <div class="note-warning-icon"><i class="fa-solid fa-bolt"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Selección insegura de acceso</div>
+                  <p id="accessWarningText" class="note-warning-note">Cloruro de calcio 10% por vía periférica no es buena elección por riesgo de extravasación y necrosis tisular.</p>
                 </div>
               </div>
             </div>
@@ -552,22 +530,24 @@ require("../head.php");
     return selected ? selected.value : null;
   }
 
-  function calciumTypeLabel(type){
-    const map = {
-      ion_mmol:'Ca iónico',
-      ion_mgdl:'Ca iónico',
-      ion_meq:'Ca iónico',
-      total_mgdl:'Ca total',
-      total_mmol:'Ca total',
-      total_meq:'Ca total'
+  function calciumTypeLabel(mainType, unit){
+    const typeMap = {
+      ionico:'Ca iónico',
+      total:'Ca total'
     };
-    return map[type] || 'Calcio';
+    return typeMap[mainType] || 'Calcio';
   }
 
-  function calciumUnit(type){
-    if(type.indexOf('mgdl') !== -1) return 'mg/dL';
-    if(type.indexOf('meq') !== -1) return 'mEq/L';
+  function calciumUnit(unit){
+    if(unit === 'mgdl') return 'mg/dL';
+    if(unit === 'meq') return 'mEq/L';
     return 'mmol/L';
+  }
+
+  function getCombinedCalciumType(){
+    const mainType = getSelected('calciumTypeMain') || 'ionico';
+    const unit = getSelected('calciumUnit') || 'mmol';
+    return (mainType === 'ionico' ? 'ion_' : 'total_') + unit;
   }
 
   function saltLabel(val){
@@ -693,20 +673,45 @@ require("../head.php");
 
     box.innerHTML = items.map(function(item){
       const icon = item[0] === 'ok' ? 'fa-check' : (item[0] === 'mid' ? 'fa-triangle-exclamation' : 'fa-bolt');
-      return '<div class="cal-action-item">' +
-        '<div class="cal-action-mark ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
-        '<div class="cal-action-copy">' +
-          '<div class="cal-action-title">' + item[1] + '</div>' +
-          '<p class="cal-action-note">' + item[2] + '</p>' +
+      return '<div class="note-warning-item">' +
+        '<div class="note-warning-icon"><i class="fa-solid ' + icon + '"></i></div>' +
+        '<div class="note-warning-copy">' +
+          '<div class="note-warning-title">' + item[1] + '</div>' +
+          '<p class="note-warning-note">' + item[2] + '</p>' +
         '</div>' +
       '</div>';
     }).join('');
   }
 
+  function toggleUnitSelection(){
+    const mainType = getSelected('calciumTypeMain') || 'ionico';
+    const ionicoUnits = document.getElementById('ionicoUnits');
+    const totalUnits = document.getElementById('totalUnits');
+    
+    if(mainType === 'ionico'){
+      ionicoUnits.style.display = 'grid';
+      totalUnits.style.display = 'none';
+      // Reset to mmol for ionic calcium if needed
+      const currentUnit = getSelected('calciumUnit');
+      if(!currentUnit || (currentUnit !== 'mmol' && currentUnit !== 'mgdl' && currentUnit !== 'meq')){
+        document.querySelector('input[name="calciumUnit"][value="mmol"]').checked = true;
+      }
+    } else {
+      ionicoUnits.style.display = 'none';
+      totalUnits.style.display = 'grid';
+      // Reset to mgdl for total calcium if needed
+      const currentUnit = getSelected('calciumUnit');
+      if(!currentUnit || (currentUnit !== 'mmol' && currentUnit !== 'mgdl' && currentUnit !== 'meq')){
+        document.querySelector('input[name="calciumUnit"][value="mgdl"]').checked = true;
+      }
+    }
+  }
+
   function updateInputLabels(){
-    const type = getSelected('calciumType') || 'ion_mmol';
-    document.getElementById('calciumInputLabel').textContent = calciumTypeLabel(type);
-    document.getElementById('calciumInputUnit').textContent = calciumUnit(type);
+    const mainType = getSelected('calciumTypeMain') || 'ionico';
+    const unit = getSelected('calciumUnit') || 'mmol';
+    document.getElementById('calciumInputLabel').textContent = calciumTypeLabel(mainType, unit);
+    document.getElementById('calciumInputUnit').textContent = calciumUnit(unit);
   }
 
   function updateCalciumNote(){
@@ -714,7 +719,9 @@ require("../head.php");
 
     const peso = parseLocal(pesoInput.value);
     const caValue = parseLocal(calciumInput.value);
-    const type = getSelected('calciumType') || 'ion_mmol';
+    const mainType = getSelected('calciumTypeMain') || 'ionico';
+    const unit = getSelected('calciumUnit') || 'mmol';
+    const type = getCombinedCalciumType();
     const gravedad = getSelected('gravedad') || 'incidental';
     const contexto = getSelected('contexto') || 'aislado';
     const sal = getSelected('sal') || 'gluconato';
@@ -854,10 +861,16 @@ require("../head.php");
 
   pesoInput.addEventListener('input', updateCalciumNote);
   calciumInput.addEventListener('input', updateCalciumNote);
-  document.querySelectorAll('input[name="calciumType"], input[name="gravedad"], input[name="contexto"], input[name="sal"], input[name="acceso"]').forEach(function(input){
-    input.addEventListener('change', updateCalciumNote);
+  document.querySelectorAll('input[name="calciumTypeMain"], input[name="calciumUnit"], input[name="gravedad"], input[name="contexto"], input[name="sal"], input[name="acceso"]').forEach(function(input){
+    input.addEventListener('change', function(){
+      if(input.name === 'calciumTypeMain'){
+        toggleUnitSelection();
+      }
+      updateCalciumNote();
+    });
   });
 
+  toggleUnitSelection();
   updateCalciumNote();
 })();
 

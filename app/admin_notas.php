@@ -21,7 +21,7 @@
     }
 
     // Variables navbar
-    $boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+    $boton_toggler="<a class='d-sm-block d-sm-none admin-back-btn' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
     $titulo_navbar = "<span class='text-white d-sm-block d-sm-none'>Gestión de Notas</span>";
     $boton_navbar = "<a></a><a></a>";
 
@@ -127,88 +127,8 @@
     }
 ?>
 
-<style>
-.admin-card{
-    background:#ffffff;
-    border:1px solid #e5e7eb;
-    border-radius:16px;
-    padding:20px;
-    box-shadow:0 8px 24px rgba(0,0,0,.05);
-}
-
-.admin-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:16px;
-}
-
-.admin-full{
-    grid-column:1 / -1;
-}
-
-.admin-label{
-    display:block;
-    font-weight:600;
-    margin-bottom:6px;
-    color:#1f2937;
-}
-
-.admin-input,
-.admin-select,
-.admin-textarea{
-    width:100%;
-    padding:10px 12px;
-    border:1px solid #d1d5db;
-    border-radius:10px;
-    box-sizing:border-box;
-    background:#fff;
-}
-
-.admin-textarea{
-    min-height:100px;
-    resize:vertical;
-}
-
-.admin-catbox{
-    border:1px solid #e5e7eb;
-    border-radius:12px;
-    padding:12px;
-    margin-bottom:12px;
-    background:#f8fafc;
-}
-
-.admin-catrow{
-    display:grid;
-    grid-template-columns:140px 1fr 200px 120px;
-    gap:10px;
-    align-items:center;
-}
-
-.admin-actions{
-    margin-top:18px;
-}
-
-.admin-actions .btn{
-    border-radius:10px;
-}
-
-.admin-help{
-    color:#6b7280;
-    font-size:.92rem;
-}
-
-@media (max-width: 900px){
-    .admin-grid{
-        grid-template-columns:1fr;
-    }
-    .admin-catrow{
-        grid-template-columns:1fr;
-    }
-}
-</style>
-
-<div class="col col-sm-9 col-xl-9">
-    <div class="container-fluid pt-3 pb-4">
+<div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
+    <main class="admin-page">
 
         <?php if($mensaje != ""){ ?>
             <div class='alert alert-success alert-dismissible fade show'>
@@ -224,8 +144,15 @@
             </div>
         <?php } ?>
 
+        <section class="app-hero app-hero-admin admin-header-card mb-3">
+            <div class="app-hero-kicker">Administración</div>
+            <h2>Administrador de Notas</h2>
+            <p>Registra apuntes y notas en el catálogo visible de la app.</p>
+            <span class="app-hero-pill">Solo administradores</span>
+        </section>
+
         <div class="admin-card">
-            <h3 class="mb-3">Administrador de Notas</h3>
+            <h3 class="mb-3">Nueva nota</h3>
 
             <form method="post">
                 <div class="admin-grid">
@@ -290,12 +217,12 @@
                 </div>
 
                 <div class="admin-actions">
-                    <button class="btn btn-primary" type="submit">Guardar nota</button>
+                    <button class="btn btn-app-primary" type="submit">Guardar nota</button>
                 </div>
             </form>
         </div>
 
-    </div>
+    </main>
 </div>
 
 <?php

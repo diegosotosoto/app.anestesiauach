@@ -20,11 +20,11 @@
 
 
 //VARIABLES
-		$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
-		$titulo_navbar="<span class='text-white'></span>";
-		$boton_navbar="<span class='float-end'>
-					<button class='btn pull-right btn-primary shadow-sm border-light' style='; --bs-border-opacity: .1;' type='button' form='epa_guardar' data-bs-toggle='modal' data-bs-target='#confirmarModal' id='boton_modal2'><div class='text-white'><i class='fa-solid fa-floppy-disk py-1 px-3'></i></div></button>
-		</span>";
+			$boton_toggler="<a class='d-sm-block d-sm-none admin-back-btn' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+			$titulo_navbar="<span>EPA</span>";
+			$boton_navbar="<span class='float-end'>
+						<button class='btn btn-app-primary navbar-save-btn' type='button' form='epa_guardar' data-bs-toggle='modal' data-bs-target='#confirmarModal' id='boton_modal2' aria-label='Guardar'><i class='fa-solid fa-floppy-disk'></i></button>
+			</span>";
 		
 	//Carga Head de la página
 	require("head.php");
@@ -42,7 +42,7 @@ echo "
           ¿Estás seguro de que deseas guardar los cambios?
         </div>
         <div class='modal-footer'>
-          <button type='submit' form='epa_guardar' value='Submit' class='btn btn-danger'>Sí, Guardar</button>
+	          <button type='submit' form='epa_guardar' value='Submit' class='btn btn-app-danger'>Sí, Guardar</button>
         </div>
       </div>
     </div>
@@ -50,19 +50,10 @@ echo "
 		";
 
 ?>
-    <style>
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-               -webkit-appearance: none;
-                margin: 0;
-        }
- 
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
-    </style>
-
-<div class="col col-sm-9 col-xl-9"><!- Columna principal (derecha) responsive->
+	<div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
+	<div class="apunte-surface">
+	<div class="container-fluid px-0 px-md-2">
+	<div class="epa-shell">
 
 <form class="needs-validation" name='epa_guardar' id='epa_guardar' action='vista_epa.php' method='post' novalidate>
 			<ul class="list-group">
@@ -73,18 +64,18 @@ echo "
 	$ID_epa = $_POST['ID_epa'];
 
 		//TITULO DE LA PAGINA
-		echo "<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'><br><h5 class='mb-1 fw-bold text-danger'>EDITAR  Evaluación</h5>";
+			echo "<li class='list-group-item epa-section-title'><h5 class='mb-1 fw-bold text-danger'>EDITAR Evaluación</h5>";
 
-		//BOTON A LA IZQUIERDA DEL TITULO class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block'
-		echo "<div class='pt-1 ps-3 me-3 d-flex float-start'>
-		<a class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>
-		</div>";
+			//BOTON A LA IZQUIERDA DEL TITULO
+			echo "<div class='pt-1 ps-3 me-3 d-flex float-start'>
+			<a class='admin-back-btn d-none d-sm-inline-flex' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>
+			</div>";
 
-		//BOTÓN A LA DERECHA DEL TITULO class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block'
-		echo "<span class='float-end'>
-        	<input type='hidden' name='ID_epa' value='".$ID_epa."'/>
-			<button class='btn btn-primary shadow-sm border-light d-none d-sm-block' style='; --bs-border-opacity: .1;' type='button' form='epa_guardar' data-bs-toggle='modal' data-bs-target='#confirmarModal' id='boton_modal'><div class='text-white'><i class='fa-solid fa-floppy-disk pe-2'></i>Guardar</div></button>
-			</span>";
+			//BOTÓN A LA DERECHA DEL TITULO
+			echo "<span class='float-end'>
+	        	<input type='hidden' name='ID_epa' value='".$ID_epa."'/>
+				<button class='btn btn-app-primary pain-action-btn d-none d-sm-inline-flex' type='button' form='epa_guardar' data-bs-toggle='modal' data-bs-target='#confirmarModal' id='boton_modal'><i class='fa-solid fa-floppy-disk pe-2'></i>Guardar</button>
+				</span>";
 
 		//SUBTITULO
 		echo "<div class='mb-1'></div>";
@@ -99,9 +90,9 @@ $is_disabled_dp = ""; //desabilita los datepickers //  1 / ""
 $is_required = ""; //alergias requeridas** // required / ""
 //******** desabilita lo botones de guardado?
 
-$boton_final = "<span class='float-end pe-3 pb-5'>
-						<button class='btn btn-primary shadow-sm border-light d-none d-sm-block' style='; --bs-border-opacity: .1;' type='button' form='epa_guardar' data-bs-toggle='modal' data-bs-target='#confirmarModal'><div class='text-white'><i class='fa-solid fa-floppy-disk pe-2'></i>Guardar Cambios</div></button>
-		</span>";
+	$boton_final = "<span class='float-end pe-3 pb-5'>
+							<button class='btn btn-app-primary pain-action-btn' type='button' form='epa_guardar' data-bs-toggle='modal' data-bs-target='#confirmarModal'><i class='fa-solid fa-floppy-disk pe-2'></i>Guardar Cambios</button>
+			</span>";
 
 	$leer_eva_c="SELECT *  FROM `eval_preanestesica` WHERE `ID_epa` = '$ID_epa'";
 	$consulta_epa=$conexion->query($leer_eva_c);
@@ -314,9 +305,13 @@ list($hemoc,$analgesia_po,$upc,$consent)=$arr_solicitudes2;
 
 
 
-	?>
+		?>
 
 
+	</div>
+	</div>
+	</div>
+	</div>
 
 
 
@@ -335,4 +330,3 @@ list($hemoc,$analgesia_po,$upc,$consent)=$arr_solicitudes2;
 		require("footer.php");
 
 	?>
-

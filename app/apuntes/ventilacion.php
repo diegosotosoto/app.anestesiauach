@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "Peso ideal y ventilación";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "Cálculo de peso ideal y volumen corriente protector para ventilación mecánica perioperatoria. Ayuda a evitar sobreventilación, especialmente en obesidad, talla baja y pacientes con baja compliance.";
@@ -17,7 +17,7 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=2">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=2"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
@@ -128,54 +128,6 @@ require("../head.php");
             color:var(--note-muted);
           }
 
-          .vent-action-list{
-            display:grid;
-            gap:.75rem;
-          }
-
-          .vent-action-item{
-            display:flex;
-            align-items:flex-start;
-            gap:.65rem;
-            border:1px solid #d9e2ef;
-            border-radius:1rem;
-            background:#fff;
-            padding:.75rem .85rem;
-          }
-
-          .vent-action-mark{
-            flex:0 0 auto;
-            width:30px;
-            height:30px;
-            border-radius:999px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            color:#fff;
-            margin-top:.08rem;
-          }
-
-          .vent-action-mark.ok{background:#2ea663;}
-          .vent-action-mark.mid{background:#f4c542;}
-          .vent-action-mark.high{background:#d92d20;}
-
-          .vent-action-copy{min-width:0;flex:1;}
-
-          .vent-action-title{
-            font-size:.95rem;
-            font-weight:800;
-            line-height:1.18;
-            color:var(--note-text);
-            margin-bottom:.1rem;
-          }
-
-          .vent-action-note{
-            margin:0;
-            font-size:.82rem;
-            line-height:1.32;
-            color:var(--note-muted);
-          }
-
           .vent-plan-line{
             padding:.75rem .85rem;
             border-radius:.9rem;
@@ -222,6 +174,7 @@ require("../head.php");
             }
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · VENTILACIÓN MECÁNICA · PABELLÓN</div>
@@ -317,23 +270,25 @@ require("../head.php");
           </div>
         </div>
 
-        <div class="note-summary-box mb-3">
-          <div class="note-summary-box-title">Resumen</div>
-          <div id="summaryNarrative" class="note-summary-box-text">Ingresa talla para calcular peso ideal y volumen corriente protector.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item">
-              <div class="note-summary-k">Sexo / talla</div>
-              <div id="summaryPatient" class="note-summary-v">Hombre · -</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+          <div class="note-card-title">Resumen</div>
+          <div id="summaryNarrative" class="note-summary-box-text mb-3">Ingresa talla para calcular peso ideal y volumen corriente protector.</div>
+          <div class="note-result-grid-2">
+            <div class="note-result-card">
+              <div class="note-result-card-label">Sexo / talla</div>
+              <div id="summaryPatient" class="note-result-card-value">Hombre · -</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Peso ideal</div>
-              <div id="summaryPBW" class="note-summary-v">-</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Peso ideal</div>
+              <div id="summaryPBW" class="note-result-card-value">-</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Estrategia</div>
-              <div id="summaryStrategy" class="note-summary-v">Protectora estándar</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Estrategia</div>
+              <div id="summaryStrategy" class="note-result-card-value">Protectora estándar</div>
             </div>
 
+          </div>
           </div>
         </div>
 
@@ -392,12 +347,12 @@ require("../head.php");
         <div class="note-card mb-3">
           <div class="note-card-body">
             <div class="note-section-label">Conducta práctica</div>
-            <div id="actionList" class="vent-action-list">
-              <div class="vent-action-item">
-                <div class="vent-action-mark mid"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <div class="vent-action-copy">
-                  <div class="vent-action-title">Ingresa talla</div>
-                  <p class="vent-action-note">La talla, no el peso real, define el peso ideal para programar volumen corriente.</p>
+            <div id="actionList" class="note-warning-list">
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-check"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Ingresa talla</div>
+                  <p class="note-warning-note">La talla, no el peso real, define el peso ideal para programar volumen corriente.</p>
                 </div>
               </div>
             </div>
@@ -484,12 +439,11 @@ require("../head.php");
     }
 
     document.getElementById('actionList').innerHTML = items.map(function(item){
-      const icon = item[0] === 'ok' ? 'fa-check' : (item[0] === 'mid' ? 'fa-triangle-exclamation' : 'fa-bolt');
-      return '<div class="vent-action-item">' +
-        '<div class="vent-action-mark ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
-        '<div class="vent-action-copy">' +
-          '<div class="vent-action-title">' + item[1] + '</div>' +
-          '<p class="vent-action-note">' + item[2] + '</p>' +
+      return '<div class="note-warning-item">' +
+        '<div class="note-warning-icon"><i class="fa-solid fa-check"></i></div>' +
+        '<div class="note-warning-copy">' +
+          '<div class="note-warning-title">' + item[1] + '</div>' +
+          '<p class="note-warning-note">' + item[2] + '</p>' +
         '</div>' +
       '</div>';
     }).join('');

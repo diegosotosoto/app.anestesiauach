@@ -26,10 +26,10 @@
 		$formulario=htmlentities(addslashes($_POST['visita']));	
 
 
-		$boton_toggler="<form action='vista_paciente.php' method='post'><button class='d-sm-block d-sm-none btn shadow-sm' type='submit' name='vista' value='$formulario'><div class='text-white'>Cancelar</div></button></form>";
-		$titulo_navbar="<a class='d-sm-block d-sm-none'> Visita </a>";
+			$boton_toggler="<form action='vista_paciente.php' method='post'><button class='d-sm-block d-sm-none admin-back-btn' type='submit' name='vista' value='$formulario'><i class='fa fa-chevron-left'></i>Cancelar</button></form>";
+			$titulo_navbar="<span>Visita</span>";
 
-		$boton_navbar="<button class='btn shadow-sm border-light' style='; --bs-border-opacity: .1;' type='submit' form='form_ed' value='Submit'><div class='text-white'>Guardar</div></button>";
+			$boton_navbar="<button class='btn btn-app-primary navbar-save-btn' type='submit' form='form_ed' value='Submit'>Guardar</button>";
 
 
 	//Carga Head de la página
@@ -38,7 +38,10 @@
 ?>
 
 
-<div class="col col-sm-9 col-xl-9"><!- Columna principal (derecha) responsive->
+	<div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
+	<div class="apunte-surface">
+	<div class="container-fluid px-0 px-md-2">
+	<div class="pain-shell">
 
 	<?php
 		$consulta_ed="SELECT `nombre_paciente`,`rut` FROM `pacientes` WHERE `rut` = '$formulario' ";
@@ -59,17 +62,17 @@
 	<?php
 
 
-		echo "<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><br><h5 class='mb-1 fw-bold'>".$fila['nombre_paciente']."</h5>";
+		echo "<li class='list-group-item pain-section-title'><h5 class='mb-1 fw-bold'>".$fila['nombre_paciente']."</h5>";
 
 
-		//BOTON A LA IZQUIERDA DEL TITULO class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block'
+		//BOTON A LA IZQUIERDA DEL TITULO
 		echo "<div class='pt-1 ps-3 me-3 d-flex float-start'>
-		<form action='vista_paciente.php' method='post'><button class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block' type='submit' name='vista' value='$formulario'><div class='text-white'>Cancelar</div></button></form>
+			<form action='vista_paciente.php' method='post'><button class='admin-back-btn d-none d-sm-inline-flex' type='submit' name='vista' value='$formulario'><i class='fa fa-chevron-left'></i>Cancelar</button></form>
 		</div>";
 
-		//BOTÓN A LA DERECHA DEL TITULO class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block'
+		//BOTÓN A LA DERECHA DEL TITULO
 		echo "<div class='pt-1 ps-3 pe-3 me-2 d-flex float-end'>
-	<button class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block' style='; --bs-border-opacity: .1;' type='submit' form='form_ed' value='Submit'><div class='text-white'>Guardar</div></button>
+		<button class='btn btn-app-primary pain-action-btn d-none d-sm-inline-flex' type='submit' form='form_ed' value='Submit'>Guardar</button>
 		</div>";
 
 
@@ -90,7 +93,7 @@
 
 		<!– TABLA DE REGISTROS –>
 <ul class="list-group">
-	<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><img class='btn-imagen' src='/images/IMG_3987.PNG'/>Exámen Físico</li>
+	<li class='list-group-item pain-section-title'><img class='btn-imagen' src='/images/IMG_3987.PNG'/>Exámen Físico</li>
 	<li class='list-group-item'>
 
 
@@ -150,7 +153,7 @@
 
 				<div class='text-muted pt-3 text-start'>Bolos PCA: Solicitados / Administrados</div><input class="form-control mb-4" type="text" name="bolos" id="bolos"></li>
 
-				<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><img class='btn-imagen' src='/images/IMG_3992.PNG'/>Signos Vitales</li>
+				<li class='list-group-item pain-section-title'><img class='btn-imagen' src='/images/IMG_3992.PNG'/>Signos Vitales</li>
 				<li class='list-group-item'>
 
 				<div class='text-muted text-start'>PAS</div>
@@ -184,7 +187,7 @@
 				</div>
 				</li>
 
-				<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><img class='btn-imagen' src='/images/IMG_3990.PNG'/>Exámenes</li>
+				<li class='list-group-item pain-section-title'><img class='btn-imagen' src='/images/IMG_3990.PNG'/>Exámenes</li>
 
 				<li class='list-group-item'>
 
@@ -218,7 +221,7 @@
 				</li>
 
 
-				<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><img class='btn-imagen' src='/images/IMG_3981.PNG'/>Indicaciones Diarias</li>
+				<li class='list-group-item pain-section-title'><img class='btn-imagen' src='/images/IMG_3981.PNG'/>Indicaciones Diarias</li>
 				<li class='list-group-item'>
 
 				<div class='text-muted text-start'>Anticoagulación</div>
@@ -252,15 +255,19 @@
 				</datalist>
 				</li>
 
-				<li class='list-group-item mb-2' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'>
-			    <div class='text-muted'><img class='btn-imagen' src='/images/IMG_3977.PNG'/>Plan / Comentarios</div><textarea class="form-control mb-2" style="resize: none;" maxlength="250" rows="5" name="comentarios_v" id="comentarios_v"></textarea></li>
+				<li class='list-group-item pain-section-title mb-2'>
+			    <div class='text-muted'><img class='btn-imagen' src='/images/IMG_3977.PNG'/>Plan / Comentarios</div><textarea class="form-control mb-2 pain-textarea" maxlength="250" rows="5" name="comentarios_v" id="comentarios_v"></textarea></li>
+			    <li class='list-group-item border-0 bg-transparent'><button class='btn btn-app-primary pain-action-btn' type='submit' form='form_ed' value='Submit'>Guardar</button></li>
 			    <br>
 			    <br>
 
 		</form>
 </ul>
 
-</div>
+	</div>
+	</div>
+	</div>
+	</div>
 
 <script>
 	// Example starter JavaScript for disabling form submissions if there are invalid fields
@@ -327,6 +334,3 @@
 		require("footer.php");
 
 	?>
-
-
-

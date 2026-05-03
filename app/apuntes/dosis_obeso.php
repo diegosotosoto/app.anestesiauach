@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "Dosis Obeso";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "Apunte interactivo para orientar qué descriptor corporal usar en el paciente obeso adulto según el fármaco y el momento de administración. No calcula dosis en mg: muestra el escalar sugerido para bolo/inducción y para mantención/infusión.";
@@ -20,7 +20,7 @@ $referencias = array(
 );
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=1">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=1"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
@@ -31,7 +31,9 @@ require("../head.php");
 <style>
 .ob-note-shell{max-width:1080px;}
 .ob-drug-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.65rem;}
-.ob-cat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.65rem;}
+.ob-cat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.65rem;align-items:stretch;}
+.ob-cat-grid > div{display:flex;min-height:72px;}
+.ob-cat-grid .drug-card{height:100%;width:100%;align-items:center;justify-content:center;text-align:center;}
 .ob-result-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:1rem;align-items:start;}
 .ob-scale-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem;}
 .ob-scale-box{background:rgba(255,255,255,.78);border:1px solid rgba(16,42,67,.08);border-radius:1rem;padding:.95rem;}
@@ -43,12 +45,22 @@ require("../head.php");
 .ob-scalar-pill{border-radius:1rem;border:1px solid #e5e7eb;padding:.8rem;background:#fff;}
 .ob-scalar-pill .k{font-size:.72rem;text-transform:uppercase;color:var(--note-muted);margin-bottom:.15rem;}
 .ob-scalar-pill .v{font-weight:800;color:var(--note-text);font-size:1rem;}
+/* Scalar pill colors - v2 */
+body .note-shell .ob-scalar-pill.is-tbw{background:#eaf2ff !important;border-color:#c2d8ff !important;}
+body .note-shell .ob-scalar-pill.is-ibw{background:#eaf7fb !important;border-color:#b8e0f0 !important;}
+body .note-shell .ob-scalar-pill.is-ffm{background:#eaf8ef !important;border-color:#b8e0c8 !important;}
+body .note-shell .ob-scalar-pill.is-abw{background:#fff0e1 !important;border-color:#ffd4a8 !important;}
+body .note-shell .ob-scalar-pill.is-pk{background:#f1edff !important;border-color:#d4c8ff !important;}
+body.theme-dark .note-shell .ob-scalar-pill.is-tbw{background:#1a3a5c !important;border-color:#2d5a8a !important;}
+body.theme-dark .note-shell .ob-scalar-pill.is-ibw{background:#1a4a5c !important;border-color:#2d7a9a !important;}
+body.theme-dark .note-shell .ob-scalar-pill.is-ffm{background:#1a4d3a !important;border-color:#2d8a6a !important;}
+body.theme-dark .note-shell .ob-scalar-pill.is-abw{background:#5c3a1a !important;border-color:#8a5a2d !important;}
+body.theme-dark .note-shell .ob-scalar-pill.is-pk{background:#3a1a5c !important;border-color:#5a2d8a !important;}
 .ob-main-card{border-radius:1rem;padding:1rem;border:1px solid var(--note-brand-soft-border);background:var(--note-brand-soft);}
 .ob-main-card.main-yellow{background:#fff7cc;border-color:#e6d36a;}
 .ob-main-card.main-blue{background:#e8f1ff;border-color:#9fc2ff;}
 .ob-main-card.main-red{background:#fdebec;border-color:#ef9a9a;}
 .ob-main-card.main-gray{background:#f5f7fb;border-color:#cfd8e3;}
-.ob-big-drug{font-size:1.8rem;font-weight:900;line-height:1.05;margin-bottom:.35rem;color:#102a43;}
 .ob-big-cat{font-size:.85rem;text-transform:uppercase;letter-spacing:.05em;color:#52627a;margin-bottom:.8rem;}
 .ob-quick-card{background:#fff;border:1px solid #e5e7eb;border-radius:1rem;padding:1rem;margin-bottom:.8rem;}
 .ob-quick-card a{font-weight:800;text-decoration:none;}
@@ -59,20 +71,17 @@ require("../head.php");
 .ob-table .group-row td{background:#eef4ff;font-weight:900;color:#27458f;}
 .ob-tag{display:inline-block;padding:.18rem .45rem;border-radius:999px;font-size:.74rem;font-weight:800;}
 .ob-tag-yellow{background:#fff7cc;color:#8a6a00;}.ob-tag-blue{background:#e8f1ff;color:#1d4ed8;}.ob-tag-red{background:#fdebec;color:#b91c1c;}.ob-tag-orange{background:#fff0e1;color:#c2410c;}.ob-tag-green{background:#eaf8ef;color:#15803d;}.ob-tag-purple{background:#f1edff;color:#7c3aed;}.ob-tag-gray{background:#f5f7fb;color:#374151;}
-.note-option.ob-choice,.note-option.ob-drug-option,.note-option.ob-cat-option{align-items:flex-start;justify-content:flex-start;text-align:left;padding:.8rem .85rem;min-height:72px;}
-.note-option.ob-drug-option small,.note-option.ob-choice small,.note-option.ob-cat-option small{font-size:.74rem;}
-.ob-cat-option.cat-hypnotics{background:#fff7cc;border-color:#e6d36a;}
-.ob-cat-option.cat-opioids{background:#e8f1ff;border-color:#9fc2ff;}
-.ob-cat-option.cat-nmb{background:#fdebec;border-color:#ef9a9a;}
-.ob-cat-option.cat-reversal{background:repeating-linear-gradient(-45deg,#f5f7fb 0 12px,#e4e7eb 12px 24px);border-color:#bcc4cf;}
-.ob-drug-option.drug-hypnotics{background:#fff7cc;border-color:#e6d36a;}
-.ob-drug-option.drug-opioids{background:#e8f1ff;border-color:#9fc2ff;}
-.ob-drug-option.drug-nmb{background:#fdebec;border-color:#ef9a9a;}
-.ob-drug-option.drug-reversal{background:repeating-linear-gradient(-45deg,#f5f7fb 0 12px,#e4e7eb 12px 24px);border-color:#bcc4cf;}
+.note-option.ob-choice{align-items:flex-start;justify-content:flex-start;text-align:left;padding:.8rem .85rem;min-height:72px;}
+.note-option.ob-choice small{font-size:.74rem;}
+/* category buttons now use standardized drug-card classes from clinical-note-system.css */
+/* drug buttons use standardized drug-card classes from clinical-note-system.css */
+.note-check:checked + .drug-card{box-shadow:0 0 0 3px rgba(47,128,237,.3), 0 4px 12px rgba(15,23,42,.15);transform:translateY(-1px);}
+
 @media (max-width:980px){.ob-result-grid{grid-template-columns:1fr;}.ob-scalar-grid{grid-template-columns:repeat(3,minmax(0,1fr));}.ob-cat-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.ob-drug-grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
 @media (max-width:700px){.ob-scale-grid{grid-template-columns:1fr;}.ob-scalar-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.ob-drug-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
-@media (max-width:480px){.ob-scalar-grid{grid-template-columns:1fr;}.ob-big-drug{font-size:1.45rem;}}
+@media (max-width:480px){.ob-scalar-grid{grid-template-columns:1fr;}}
 </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
 <?php
 $drugDB = array(
@@ -80,40 +89,40 @@ $drugDB = array(
     'nombre' => 'Hipnóticos y sedantes',
     'color' => 'main-yellow',
     'items' => array(
-      'propofol' => array('nombre'=>'Propofol','bolo'=>array('IBW','FFM'),'mant'=>array('ABW40'),'mantLabel'=>'TBW alométrico o ABW (FC 0.4)','meaning'=>'Para inducción conviene usar un descriptor conservador como IBW o FFM. Para mantención, la evidencia moderna favorece escalado no lineal; clínicamente, ABW con FC 0,4 es una aproximación simple y útil.','pearl'=>'El error clásico es mantener propofol estrictamente proporcional a TBW en obesidad mórbida. Eso favorece sobredosis en infusión.'),
-      'dexmedetomidina' => array('nombre'=>'Dexmedetomidina','bolo'=>array('IBW','ABW40'),'mant'=>array('FFM','ABW30','ABW40'),'mantLabel'=>'FFM o ABW (FC 0.3–0.4)','meaning'=>'La masa grasa tiene poco efecto sobre los clearances de dexmedetomidina. La mantención debe ajustarse con FFM o con ABW usando un FC bajo.','pearl'=>'Si subes la infusión linealmente con TBW, las concentraciones serán más altas de lo previsto en el obeso.'),
-      'tiopental' => array('nombre'=>'Tiopental','bolo'=>array('FFM','TBW'),'mant'=>array(),'mantLabel'=>'—','meaning'=>'El material docente lo sitúa en un rango entre FFM y TBW para el bolo. Interprétalo como intervalo clínico, no como permiso para ir siempre a TBW.','pearl'=>'Mientras más incierta sea la reserva hemodinámica, más sentido tiene iniciar en el extremo conservador del rango.'),
-      'etomidato' => array('nombre'=>'Etomidato','bolo'=>array('FFM'),'mant'=>array(),'mantLabel'=>'—','meaning'=>'Se aproxima a FFM para inducción, evitando sobredosificación por exceso de tejido adiposo.','pearl'=>'Etomidato resuelve menos el problema circulatorio, pero igual requiere un descriptor prudente.'),
-      'midazolam' => array('nombre'=>'Midazolam','bolo'=>array('TBW'),'mant'=>array(),'mantLabel'=>'—','meaning'=>'En la tabla resumida se mantiene con TBW para dosis inicial. Aun así, en obesidad y apnea del sueño debe titularse con cautela por acumulación y depresión respiratoria.','pearl'=>'Que la tabla diga TBW no significa que el bolo deba ser liberal.')
+      'propofol' => array('nombre'=>'Propofol','clase'=>'drug-inductor-propofol','bolo'=>array('IBW','FFM'),'mant'=>array('ABW40'),'mantLabel'=>'TBW alométrico o ABW (FC 0.4)','meaning'=>'Para inducción conviene usar un descriptor conservador como IBW o FFM. Para mantención, la evidencia moderna favorece escalado no lineal; clínicamente, ABW con FC 0,4 es una aproximación simple y útil.','pearl'=>'El error clásico es mantener propofol estrictamente proporcional a TBW en obesidad mórbida. Eso favorece sobredosis en infusión.'),
+      'dexmedetomidina' => array('nombre'=>'Dexmedetomidina','clase'=>'drug-inductor','bolo'=>array('IBW','ABW40'),'mant'=>array('FFM','ABW30','ABW40'),'mantLabel'=>'FFM o ABW (FC 0.3–0.4)','meaning'=>'La masa grasa tiene poco efecto sobre los clearances de dexmedetomidina. La mantención debe ajustarse con FFM o con ABW usando un FC bajo.','pearl'=>'Si subes la infusión linealmente con TBW, las concentraciones serán más altas de lo previsto en el obeso.'),
+      'tiopental' => array('nombre'=>'Tiopental','clase'=>'drug-inductor','bolo'=>array('FFM','TBW'),'mant'=>array(),'mantLabel'=>'—','meaning'=>'El material docente lo sitúa en un rango entre FFM y TBW para el bolo. Interprétalo como intervalo clínico, no como permiso para ir siempre a TBW.','pearl'=>'Mientras más incierta sea la reserva hemodinámica, más sentido tiene iniciar en el extremo conservador del rango.'),
+      'etomidato' => array('nombre'=>'Etomidato','clase'=>'drug-inductor','bolo'=>array('FFM'),'mant'=>array(),'mantLabel'=>'—','meaning'=>'Se aproxima a FFM para inducción, evitando sobredosificación por exceso de tejido adiposo.','pearl'=>'Etomidato resuelve menos el problema circulatorio, pero igual requiere un descriptor prudente.'),
+      'midazolam' => array('nombre'=>'Midazolam','clase'=>'drug-benzo','bolo'=>array('TBW'),'mant'=>array(),'mantLabel'=>'—','meaning'=>'En la tabla resumida se mantiene con TBW para dosis inicial. Aun así, en obesidad y apnea del sueño debe titularse con cautela por acumulación y depresión respiratoria.','pearl'=>'Que la tabla diga TBW no significa que el bolo deba ser liberal.')
     )
   ),
   'opioides' => array(
     'nombre' => 'Opioides',
     'color' => 'main-blue',
     'items' => array(
-      'fentanilo' => array('nombre'=>'Fentanilo','bolo'=>array('TBW'),'mant'=>array('FFM','PK'),'mantLabel'=>'FFM o PK Mass','meaning'=>'El bolo puede orientarse a TBW, pero la lógica de mantención se correlaciona mejor con FFM o PK Mass.','pearl'=>'PK Mass no es lo mismo que FFM. Es un descriptor farmacocinético con fórmula propia.'),
-      'remifentanilo' => array('nombre'=>'Remifentanilo','bolo'=>array('IBW','FFM'),'mant'=>array('FFM'),'mantLabel'=>'FFM (masa libre de grasa)','meaning'=>'La obesidad no altera de forma relevante su metabolismo; por eso FFM/LBW funciona mejor que TBW.','pearl'=>'Remifentanilo por TBW en obesidad es una forma rápida de sobredosificar.'),
-      'sufentanilo' => array('nombre'=>'Sufentanilo','bolo'=>array('TBW'),'mant'=>array('IBW'),'mantLabel'=>'IBW / PCI','meaning'=>'El bolo se aproxima a TBW y la mantención a IBW; separa claramente carga y fase sostenida.','pearl'=>'No asumas que por ser lipofílico todo el esquema debe ir por TBW.'),
-      'morfina' => array('nombre'=>'Morfina','bolo'=>array('FFM'),'mant'=>array('TITULAR'),'mantLabel'=>'Titular según efecto','meaning'=>'Se prefiere FFM para la carga. La continuación no se resume en un descriptor fijo y debe titularse según analgesia, ventilación y contexto clínico.','pearl'=>'En obesidad, especialmente con OSA/OHS, “titular según efecto” es una medida de seguridad, no una vaguedad.')
+      'fentanilo' => array('nombre'=>'Fentanilo','clase'=>'drug-opioid','bolo'=>array('TBW'),'mant'=>array('FFM','PK'),'mantLabel'=>'FFM o PK Mass','meaning'=>'El bolo puede orientarse a TBW, pero la lógica de mantención se correlaciona mejor con FFM o PK Mass.','pearl'=>'PK Mass no es lo mismo que FFM. Es un descriptor farmacocinético con fórmula propia.'),
+      'remifentanilo' => array('nombre'=>'Remifentanilo','clase'=>'drug-opioid','bolo'=>array('IBW','FFM'),'mant'=>array('FFM'),'mantLabel'=>'FFM (masa libre de grasa)','meaning'=>'La obesidad no altera de forma relevante su metabolismo; por eso FFM/LBW funciona mejor que TBW.','pearl'=>'Remifentanilo por TBW en obesidad es una forma rápida de sobredosificar.'),
+      'sufentanilo' => array('nombre'=>'Sufentanilo','clase'=>'drug-opioid','bolo'=>array('TBW'),'mant'=>array('IBW'),'mantLabel'=>'IBW / PCI','meaning'=>'El bolo se aproxima a TBW y la mantención a IBW; separa claramente carga y fase sostenida.','pearl'=>'No asumas que por ser lipofílico todo el esquema debe ir por TBW.'),
+      'morfina' => array('nombre'=>'Morfina','clase'=>'drug-opioid','bolo'=>array('FFM'),'mant'=>array('TITULAR'),'mantLabel'=>'Titular según efecto','meaning'=>'Se prefiere FFM para la carga. La continuación no se resume en un descriptor fijo y debe titularse según analgesia, ventilación y contexto clínico.','pearl'=>'En obesidad, especialmente con OSA/OHS, "titular según efecto" es una medida de seguridad, no una vaguedad.')
     )
   ),
   'relajantes' => array(
     'nombre' => 'Bloqueadores neuromusculares',
     'color' => 'main-red',
     'items' => array(
-      'succinilcolina' => array('nombre'=>'Succinilcolina','bolo'=>array('TBW'),'mant'=>array(),'mantLabel'=>'—','meaning'=>'Es la excepción importante: en obesidad la dosis de succinilcolina sí se aproxima a TBW.','pearl'=>'No extrapoles esta regla a los no despolarizantes.'),
-      'rocuronio' => array('nombre'=>'Rocuronio','bolo'=>array('IBW'),'mant'=>array(),'mantLabel'=>'—','meaning'=>'Como relajante hidrófilo, no debería escalarse libremente por TBW en el obeso.','pearl'=>'TBW aumenta el riesgo de bloqueo más prolongado del esperado.'),
-      'vecuronio' => array('nombre'=>'Vecuronio','bolo'=>array('IBW'),'mant'=>array(),'mantLabel'=>'—','meaning'=>'En la tabla actual se resume con IBW / PCI.','pearl'=>'Es preferible un descriptor conservador más TOF que exceso de carga.'),
-      'atracurio' => array('nombre'=>'Atracurio','bolo'=>array('TBW'),'mant'=>array(),'mantLabel'=>'—','meaning'=>'La tabla lo resume con TBW. Sigue siendo razonable contrastarlo con respuesta neuromuscular real.','pearl'=>'Cuando una droga aparece en TBW, monitorizar sigue siendo obligatorio.'),
-      'cisatracurio' => array('nombre'=>'Cisatracurio','bolo'=>array('FFM','TBW'),'mant'=>array(),'mantLabel'=>'—','meaning'=>'La tabla actual acepta FFM o TBW, pero la evidencia moderna apoya bien FFM como descriptor funcional en obesidad.','pearl'=>'Si tienes FFM disponible, es una opción más coherente con la fisiología que un TBW automático.')
+      'succinilcolina' => array('nombre'=>'Succinilcolina','clase'=>'drug-neuromuscular','bolo'=>array('TBW'),'mant'=>array(),'mantLabel'=>'—','meaning'=>'Es la excepción importante: en obesidad la dosis de succinilcolina sí se aproxima a TBW.','pearl'=>'No extrapoles esta regla a los no despolarizantes.'),
+      'rocuronio' => array('nombre'=>'Rocuronio','clase'=>'drug-neuromuscular','bolo'=>array('IBW'),'mant'=>array(),'mantLabel'=>'—','meaning'=>'Como relajante hidrófilo, no debería escalarse libremente por TBW en el obeso.','pearl'=>'TBW aumenta el riesgo de bloqueo más prolongado del esperado.'),
+      'vecuronio' => array('nombre'=>'Vecuronio','clase'=>'drug-neuromuscular','bolo'=>array('IBW'),'mant'=>array(),'mantLabel'=>'—','meaning'=>'En la tabla actual se resume con IBW / PCI.','pearl'=>'Es preferible un descriptor conservador más TOF que exceso de carga.'),
+      'atracurio' => array('nombre'=>'Atracurio','clase'=>'drug-neuromuscular','bolo'=>array('TBW'),'mant'=>array(),'mantLabel'=>'—','meaning'=>'La tabla lo resume con TBW. Sigue siendo razonable contrastarlo con respuesta neuromuscular real.','pearl'=>'Cuando una droga aparece en TBW, monitorizar sigue siendo obligatorio.'),
+      'cisatracurio' => array('nombre'=>'Cisatracurio','clase'=>'drug-neuromuscular','bolo'=>array('FFM','TBW'),'mant'=>array(),'mantLabel'=>'—','meaning'=>'La tabla actual acepta FFM o TBW, pero la evidencia moderna apoya bien FFM como descriptor funcional en obesidad.','pearl'=>'Si tienes FFM disponible, es una opción más coherente con la fisiología que un TBW automático.')
     )
   ),
   'reversores' => array(
     'nombre' => 'Reversores',
     'color' => 'main-gray',
     'items' => array(
-      'sugammadex' => array('nombre'=>'Sugammadex','bolo'=>array('TBW','ABW40'),'mant'=>array(),'mantLabel'=>'—','meaning'=>'En reversión profunda, usar TBW o ABW con FC 0,4 es defendible para evitar infradosificación.','pearl'=>'Quedarse corto en la reversión suele ser más peligroso que un pequeño exceso de fármaco.'),
-      'neostigmina' => array('nombre'=>'Neostigmina','bolo'=>array('TBWMAX5'),'mant'=>array(),'mantLabel'=>'—','meaning'=>'Se resume como TBW con tope máximo de 5 mg.','pearl'=>'Aquí el máximo es tan importante como el descriptor.')
+      'sugammadex' => array('nombre'=>'Sugammadex','clase'=>'drug-reversal-other','bolo'=>array('TBW','ABW40'),'mant'=>array(),'mantLabel'=>'—','meaning'=>'En reversión profunda, usar TBW o ABW con FC 0,4 es defendible para evitar infradosificación.','pearl'=>'Quedarse corto en la reversión suele ser más peligroso que un pequeño exceso de fármaco.'),
+      'neostigmina' => array('nombre'=>'Neostigmina','clase'=>'drug-reversal-neuromuscular','bolo'=>array('TBWMAX5'),'mant'=>array(),'mantLabel'=>'—','meaning'=>'Se resume como TBW con tope máximo de 5 mg.','pearl'=>'Aquí el máximo es tan importante como el descriptor.')
     )
   )
 );
@@ -159,23 +168,32 @@ $drugDB = array(
             <label class="note-option ob-choice" for="sexo_f" onclick="setSexo('f')"><i class="fa-solid fa-person-dress"></i>Mujer</label>
           </div>
         </div>
-      </div>
-      <div class="note-input-group">
-        <label class="note-label" for="peso">Peso total</label>
+
+<div class="py-2"></div>
+
+      <div class="note-input-group py-2">
+        <label class="note-label"  for="peso">Peso total</label>
         <div class="note-input-inline"><input type="text" id="peso" class="note-input" inputmode="decimal"><div class="note-input-unit">kg</div></div>
       </div>
-      <div class="note-input-group">
+
+<div class="py-2"></div>
+
+      <div class="note-input-group py-3">
         <label class="note-label" for="talla">Talla</label>
-        <div class="note-input-inline"><input type="text" id="talla" class="note-input" inputmode="decimal"><div class="note-input-unit">cm</div></div>
+        <div class="note-input-inline"><input type="text" id="talla" class="note-input" inputmode="decimal"><div class="note-input-unit">cm</div>
       </div>
-      <div class="note-summary-box">
-        <div class="note-summary-box-title">Resumen</div>
-        <div id="summaryNarrative" class="note-summary-box-text">Ingresa peso total, talla y categoría farmacológica para mostrar los escalares disponibles y el descriptor sugerido.</div>
-        <div class="note-summary-grid-2">
-          <div class="note-summary-item"><div class="note-summary-k">Sexo</div><div id="sumSexo" class="note-summary-v">Hombre</div></div>
-          <div class="note-summary-item"><div class="note-summary-k">IMC</div><div id="sumIMC" class="note-summary-v">—</div></div>
-          <div class="note-summary-item"><div class="note-summary-k">Categoría</div><div id="sumCat" class="note-summary-v">Hipnóticos y sedantes</div></div>
-          <div class="note-summary-item"><div class="note-summary-k">Fármaco</div><div id="sumDrug" class="note-summary-v">Propofol</div></div>
+      </div>      </div>
+
+      <div class="note-card mb-3">
+        <div class="note-card-body">
+          <div class="note-card-title">Resumen</div>
+          <div id="summaryNarrative" class="note-summary-box-text mb-3">Ingresa peso total, talla y categoría farmacológica para mostrar los escalares disponibles y el descriptor sugerido.</div>
+          <div class="note-result-grid-2">
+            <div class="note-result-card"><div class="note-result-card-label">Sexo</div><div id="sumSexo" class="note-result-card-value">Hombre</div></div>
+            <div class="note-result-card"><div class="note-result-card-label">IMC</div><div id="sumIMC" class="note-result-card-value">—</div></div>
+            <div class="note-result-card"><div class="note-result-card-label">Categoría</div><div id="sumCat" class="note-result-card-value">Hipnóticos y sedantes</div></div>
+            <div class="note-result-card"><div class="note-result-card-label">Fármaco</div><div id="sumDrug" class="note-result-card-value">Propofol</div></div>
+          </div>
         </div>
       </div>
     </div>
@@ -186,11 +204,11 @@ $drugDB = array(
   <div class="note-card-body">
     <div class="note-card-title">Escalares disponibles</div>
     <div class="ob-scalar-grid">
-      <div class="ob-scalar-pill"><div class="k">TBW</div><div id="vTBW" class="v">—</div></div>
-      <div class="ob-scalar-pill"><div class="k">IBW / PCI</div><div id="vIBW" class="v">—</div></div>
-      <div class="ob-scalar-pill"><div class="k">FFM / LBW</div><div id="vFFM" class="v">—</div></div>
-      <div class="ob-scalar-pill"><div class="k">ABW</div><div id="vABW" class="v">—</div></div>
-      <div class="ob-scalar-pill"><div class="k">PK Mass</div><div id="vPK" class="v">—</div></div>
+      <div class="ob-scalar-pill is-tbw" style="background:#eaf2ff !important;border-color:#c2d8ff !important;"><div class="k">TBW</div><div id="vTBW" class="v">—</div></div>
+      <div class="ob-scalar-pill is-ibw" style="background:#eaf7fb !important;border-color:#b8e0f0 !important;"><div class="k">IBW / PCI</div><div id="vIBW" class="v">—</div></div>
+      <div class="ob-scalar-pill is-ffm" style="background:#eaf8ef !important;border-color:#b8e0c8 !important;"><div class="k">FFM / LBW</div><div id="vFFM" class="v">—</div></div>
+      <div class="ob-scalar-pill is-abw" style="background:#fff0e1 !important;border-color:#ffd4a8 !important;"><div class="k">ABW</div><div id="vABW" class="v">—</div></div>
+      <div class="ob-scalar-pill is-pk" style="background:#f1edff !important;border-color:#d4c8ff !important;"><div class="k">PK Mass</div><div id="vPK" class="v">—</div></div>
     </div>
   </div>
 </div>
@@ -199,10 +217,10 @@ $drugDB = array(
   <div class="note-card-body">
     <div class="note-card-title">Categoría farmacológica</div>
     <div class="ob-cat-grid">
-      <div><input class="note-check" type="radio" name="categoria" id="cat_hip" checked><label class="note-option ob-cat-option cat-hypnotics" for="cat_hip" onclick="setCategoria('hipnoticos')"><i class="fa-solid fa-moon"></i>Hipnóticos / sedantes</label></div>
-      <div><input class="note-check" type="radio" name="categoria" id="cat_op"><label class="note-option ob-cat-option cat-opioids" for="cat_op" onclick="setCategoria('opioides')"><i class="fa-solid fa-droplet"></i>Opioides</label></div>
-      <div><input class="note-check" type="radio" name="categoria" id="cat_nm"><label class="note-option ob-cat-option cat-nmb" for="cat_nm" onclick="setCategoria('relajantes')"><i class="fa-solid fa-bolt"></i>Bloqueantes neuromusculares</label></div>
-      <div><input class="note-check" type="radio" name="categoria" id="cat_rev"><label class="note-option ob-cat-option cat-reversal" for="cat_rev" onclick="setCategoria('reversores')"><i class="fa-solid fa-rotate-left"></i>Reversores</label></div>
+      <div><input class="note-check" type="radio" name="categoria" id="cat_hip" checked><label class="drug-card drug-inductor" for="cat_hip" onclick="setCategoria('hipnoticos')"><div class="drug-label-content"><div class="drug-label-title"><i class="fa-solid fa-moon pe-2"></i>Hipnóticos / sedantes</div></div></label></div>
+      <div><input class="note-check" type="radio" name="categoria" id="cat_op"><label class="drug-card drug-opioid" for="cat_op" onclick="setCategoria('opioides')"><div class="drug-label-content"><div class="drug-label-title"><i class="fa-solid fa-droplet pe-2"></i>Opioides</div></div></label></div>
+      <div><input class="note-check" type="radio" name="categoria" id="cat_nm"><label class="drug-card drug-neuromuscular" for="cat_nm" onclick="setCategoria('relajantes')"><div class="drug-label-content"><div class="drug-label-title"><i class="fa-solid fa-bolt pe-2"></i>Bloqueantes neuromusculares</div></div></label></div>
+      <div><input class="note-check" type="radio" name="categoria" id="cat_rev"><label class="drug-card drug-reversal-other" for="cat_rev" onclick="setCategoria('reversores')"><div class="drug-label-content"><div class="drug-label-title"><i class="fa-solid fa-rotate-left pe-2"></i>Reversores</div></div></label></div>
     </div>
   </div>
 </div>
@@ -216,20 +234,24 @@ $drugDB = array(
 
 <div class="ob-result-grid mb-3">
   <div class="ob-main-card main-yellow" id="mainCard">
-    <div id="drugName" class="ob-big-drug">Propofol</div>
-    <div id="drugCat" class="ob-big-cat">Hipnóticos y sedantes</div>
-    <div class="ob-scale-grid mb-3">
-      <div class="ob-scale-box">
-        <div class="ob-scale-title">Bolo / inducción</div>
-        <div id="boloName" class="ob-scale-name">IBW / FFM</div>
-        <div id="boloValue" class="ob-scale-value">—</div>
-        <div id="boloSub" class="ob-scale-sub">Usar descriptor conservador para evitar sobredosificación inicial.</div>
+    <div id="drugLabel" class="drug-label drug-inductor">
+      <div class="drug-label-content">
+        <div id="drugName" class="drug-label-title">Propofol</div>
       </div>
-      <div class="ob-scale-box">
-        <div class="ob-scale-title">Mantención / infusión</div>
-        <div id="mantName" class="ob-scale-name">TBW alométrico o ABW (FC 0.4)</div>
-        <div id="mantValue" class="ob-scale-value">—</div>
-        <div id="mantSub" class="ob-scale-sub">ABW 0,4 actúa como aproximación clínica simple del escalado no lineal.</div>
+    </div>
+    <div id="drugCat" class="ob-big-cat">Hipnóticos y sedantes</div>
+    <div class="note-result-grid-2 mb-3">
+      <div class="note-result-card">
+        <div class="note-result-card-label">Bolo / inducción</div>
+        <div id="boloName" class="note-result-card-value">IBW / FFM</div>
+        <div id="boloValue" class="note-result-card-note">—</div>
+        <div id="boloSub" class="small-note text-muted mt-1">Usar descriptor conservador para evitar sobredosificación inicial.</div>
+      </div>
+      <div class="note-result-card">
+        <div class="note-result-card-label">Mantención / infusión</div>
+        <div id="mantName" class="note-result-card-value">TBW alométrico o ABW (FC 0.4)</div>
+        <div id="mantValue" class="note-result-card-note">—</div>
+        <div id="mantSub" class="small-note text-muted mt-1">ABW 0,4 actúa como aproximación clínica simple del escalado no lineal.</div>
       </div>
     </div>
     <div class="note-card mb-3"><b>Interpretación clínica</b><br><span id="drugMeaning">El bolo e infusión de propofol no siguen la misma lógica. En mantención, el aclaramiento no aumenta linealmente con el peso real en obesidad mórbida.</span></div>
@@ -292,12 +314,30 @@ function scalarDisplay(code){ const tbw=getPeso(), ibw=calcIBW(), ffm=calcFFM(),
   if(code==='TBWMAX5') return {name:'TBW (máx. 5 mg)', value: tbw ? n(tbw,1)+' kg' : '—', sub:'Recordar máximo absoluto'};
   return {name:'—',value:'—',sub:'—'};
 }
-function tagHTML(code){ if(code==='TBW') return '<span class="ob-tag ob-tag-blue">TBW</span>'; if(code==='IBW') return '<span class="ob-tag ob-tag-yellow">IBW</span>'; if(code==='FFM') return '<span class="ob-tag ob-tag-green">FFM/LBW</span>'; if(code==='ABW40') return '<span class="ob-tag ob-tag-orange">ABW 0.4</span>'; if(code==='ABW30') return '<span class="ob-tag ob-tag-orange">ABW 0.3</span>'; if(code==='PK') return '<span class="ob-tag ob-tag-purple">PK Mass</span>'; if(code==='TITULAR') return '<span class="ob-tag ob-tag-red">Titular</span>'; if(code==='TBWMAX5') return '<span class="ob-tag ob-tag-blue">TBW máx 5 mg</span>'; return '<span class="ob-tag ob-tag-gray">—</span>'; }
+const tagColors = {
+  light: { tbw: ['#eaf2ff', '#2d5a8a'], ibw: ['#eaf7fb', '#1d4ed8'], ffm: ['#eaf8ef', '#15803d'], abw: ['#fff0e1', '#c2410c'], pk: ['#f1edff', '#7c3aed'] },
+  dark: { tbw: ['#1a3a5c', '#93c5fd'], ibw: ['#1a4a5c', '#93c5fd'], ffm: ['#1a4d3a', '#86efac'], abw: ['#5c3a1a', '#fdba74'], pk: ['#3a1a5c', '#c4b5fd'] }
+};
+function tagHTML(code){
+  const isDark = document.body.classList.contains('theme-dark') || document.body.classList.contains('ui-nocturno');
+  const colors = isDark ? tagColors.dark : tagColors.light;
+  let label, colorKey, bg, text;
+  if(code==='TBW'){ label='TBW'; colorKey='tbw'; }
+  else if(code==='IBW'){ label='IBW'; colorKey='ibw'; }
+  else if(code==='FFM'){ label='FFM/LBW'; colorKey='ffm'; }
+  else if(code==='ABW40'){ label='ABW 0.4'; colorKey='abw'; }
+  else if(code==='ABW30'){ label='ABW 0.3'; colorKey='abw'; }
+  else if(code==='PK'){ label='PK Mass'; colorKey='pk'; }
+  else if(code==='TITULAR'){ label='Titular'; return '<span class="ob-tag" style="background:#fdebec !important;color:#b91c1c !important;border:1px solid #ef9a9a !important;">Titular</span>'; }
+  else if(code==='TBWMAX5'){ label='TBW máx 5 mg'; colorKey='tbw'; }
+  else return '<span class="ob-tag ob-tag-gray">—</span>';
+  const c = colors[colorKey];
+  return `<span class="ob-tag" style="background:${c[0]} !important;color:${c[1]} !important;border:1px solid ${c[1]}33 !important;">${label}</span>`;
+}
 function tagsAndValues(codes){ if(!codes || !codes.length) return '<span class="ob-tag ob-tag-gray">—</span>'; return codes.map(c=>{ const s=scalarDisplay(c); return `<div style="margin-bottom:.25rem;">${tagHTML(c)} <span class="fw-bold">${s.value}</span></div>`; }).join(''); }
-function resolveDrugButtonClass(catKey){ if(catKey==='hipnoticos') return 'drug-hypnotics'; if(catKey==='opioides') return 'drug-opioids'; if(catKey==='relajantes') return 'drug-nmb'; if(catKey==='reversores') return 'drug-reversal'; return ''; }
 function updateSummary(){ const peso=getPeso(), talla=getTallaCm(), bmi=calcBMI(); CNS.safeSetText('sumSexo', sexoActual==='m' ? 'Hombre':'Mujer'); CNS.safeSetText('sumIMC', (peso&&talla)? n(bmi,1)+' kg/m²':'—'); CNS.safeSetText('sumCat', drugDB[categoriaActual].nombre); CNS.safeSetText('sumDrug', drugDB[categoriaActual].items[farmacoActual].nombre); CNS.safeSetText('vTBW', peso ? n(peso,1)+' kg':'—'); CNS.safeSetText('vIBW', talla ? n(calcIBW(),1)+' kg':'—'); CNS.safeSetText('vFFM', (peso&&talla) ? n(calcFFM(),1)+' kg':'—'); CNS.safeSetText('vABW', (peso&&talla) ? n(calcABW(0.4),1)+' kg':'—'); CNS.safeSetText('vPK', peso ? n(calcPK(),1)+' kg':'—'); const summary = !peso || !talla ? 'Ingresa peso total, talla y categoría farmacológica para mostrar los escalares disponibles y el descriptor sugerido.' : `${drugDB[categoriaActual].items[farmacoActual].nombre}; IMC ${n(bmi,1)} kg/m² (${bmiCategoria(bmi)}). Revisa si el descriptor para bolo coincide o no con el de mantención.`; CNS.safeSetText('summaryNarrative', summary); }
-function renderDrugGrid(){ const wrap=document.getElementById('drugGrid'); const cat=drugDB[categoriaActual]; wrap.innerHTML = Object.entries(cat.items).map(([key,item])=>`<div><input class="note-check" type="radio" name="drug" id="drug_${key}" ${key===farmacoActual?'checked':''}><label class="note-option ob-drug-option ${resolveDrugButtonClass(categoriaActual)}" for="drug_${key}" onclick="setFarmaco('${key}')">${item.nombre}<small>${item.bolo.length ? item.bolo.join(' / ').replaceAll('ABW40','ABW0.4').replaceAll('ABW30','ABW0.3') : 'sin bolo fijo'}</small></label></div>`).join(''); }
-function renderFarmaco(){ const cat=drugDB[categoriaActual]; const drug=cat.items[farmacoActual]; const card=document.getElementById('mainCard'); card.className = 'ob-main-card ' + cat.color; CNS.safeSetText('drugName', drug.nombre); CNS.safeSetText('drugCat', cat.nombre); CNS.safeSetText('sumCat', cat.nombre); CNS.safeSetText('sumDrug', drug.nombre);
+function renderDrugGrid(){ const wrap=document.getElementById('drugGrid'); const cat=drugDB[categoriaActual]; wrap.innerHTML = Object.entries(cat.items).map(([key,item])=>`<div><input class="note-check" type="radio" name="drug" id="drug_${key}" ${key===farmacoActual?'checked':''}><label class="drug-card ${item.clase}" for="drug_${key}" onclick="setFarmaco('${key}')"><div class="drug-label-content"><div class="drug-label-title">${item.nombre}</div><div class="drug-label-subtitle">${item.bolo.length ? item.bolo.join(' / ').replaceAll('ABW40','ABW0.4').replaceAll('ABW30','ABW0.3') : 'sin bolo fijo'}</div></div></label></div>`).join(''); }
+function renderFarmaco(){ const cat=drugDB[categoriaActual]; const drug=cat.items[farmacoActual]; const card=document.getElementById('mainCard'); card.className = 'ob-main-card ' + cat.color; const label=document.getElementById('drugLabel'); if(label){ label.className = 'drug-label ' + (drug.clase || 'drug-other'); } CNS.safeSetText('drugName', drug.nombre); CNS.safeSetText('drugCat', cat.nombre); CNS.safeSetText('sumCat', cat.nombre); CNS.safeSetText('sumDrug', drug.nombre);
   const peso=getPeso(), talla=getTallaCm(); if(!peso || !talla){ CNS.safeSetText('boloName','—'); CNS.safeSetText('boloValue','—'); CNS.safeSetText('boloSub','Ingresa peso y talla para calcular los descriptores.'); CNS.safeSetText('mantName','—'); CNS.safeSetText('mantValue','—'); CNS.safeSetText('mantSub','Ingresa peso y talla para calcular los descriptores.'); CNS.safeSetText('drugMeaning','Para mostrar los valores reales de los descriptores, primero ingresa peso total y talla.'); CNS.safeSetText('drugPearl','Evita trabajar con valores por defecto.'); renderTablaCompleta(); return; }
   CNS.safeSetText('boloName', drug.bolo && drug.bolo.length ? drug.bolo.map(c => scalarDisplay(c).name).join(' / ') : '—');
   CNS.safeSetText('boloValue', drug.bolo && drug.bolo.length ? drug.bolo.map(c => scalarDisplay(c).value).join(' / ') : '—');
@@ -309,7 +349,24 @@ function renderFarmaco(){ const cat=drugDB[categoriaActual]; const drug=cat.item
 function renderTablaCompleta(){ const tbody=document.getElementById('tablaCompleta'); let html=''; Object.keys(drugDB).forEach(catKey=>{ const cat=drugDB[catKey]; html += `<tr class="group-row"><td colspan="4">${cat.nombre}</td></tr>`; Object.values(cat.items).forEach(drug=>{ html += `<tr><td><b>${drug.nombre}</b></td><td>${tagsAndValues(drug.bolo)}</td><td>${tagsAndValues(drug.mant)}</td><td>${drug.pearl}</td></tr>`;});}); tbody.innerHTML=html; }
 function recalcularTodo(){ updateSummary(); renderFarmaco(); }
 document.getElementById('peso').addEventListener('input', recalcularTodo); document.getElementById('talla').addEventListener('input', recalcularTodo);
-document.addEventListener('DOMContentLoaded', function(){ updateSummary(); renderDrugGrid(); renderFarmaco(); });
+document.addEventListener('DOMContentLoaded', function(){ updateSummary(); renderDrugGrid(); renderFarmaco(); updateScalarPillColors(); });
+
+// Dark mode color switching for scalar pills
+const scalarPillColors = {
+  light: { tbw: ['#eaf2ff','#c2d8ff'], ibw: ['#eaf7fb','#b8e0f0'], ffm: ['#eaf8ef','#b8e0c8'], abw: ['#fff0e1','#ffd4a8'], pk: ['#f1edff','#d4c8ff'] },
+  dark: { tbw: ['#1a3a5c','#2d5a8a'], ibw: ['#1a4a5c','#2d7a9a'], ffm: ['#1a4d3a','#2d8a6a'], abw: ['#5c3a1a','#8a5a2d'], pk: ['#3a1a5c','#5a2d8a'] }
+};
+function updateScalarPillColors(){
+  const isDark = document.body.classList.contains('theme-dark') || document.body.classList.contains('ui-nocturno');
+  const colors = isDark ? scalarPillColors.dark : scalarPillColors.light;
+  const pills = document.querySelectorAll('.ob-scalar-pill');
+  pills.forEach(pill => {
+    const type = pill.classList.contains('is-tbw') ? 'tbw' : pill.classList.contains('is-ibw') ? 'ibw' : pill.classList.contains('is-ffm') ? 'ffm' : pill.classList.contains('is-abw') ? 'abw' : pill.classList.contains('is-pk') ? 'pk' : null;
+    if(type && colors[type]){ pill.style.backgroundColor = colors[type][0]; pill.style.borderColor = colors[type][1]; }
+  });
+}
+// Listen for theme changes
+new MutationObserver(updateScalarPillColors).observe(document.body, {attributes:true, attributeFilter:['class']});
 </script>
 
       </div>

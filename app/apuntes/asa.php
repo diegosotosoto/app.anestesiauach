@@ -1,9 +1,9 @@
 <?php 
 $titulo_pagina = "Clasificación ASA";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "La clasificación ASA Physical Status permite describir el estado físico preoperatorio del paciente, estandarizar la comunicación clínica y apoyar la estimación global de riesgo perioperatorio. No reemplaza la valoración individual ni el riesgo propio del procedimiento.";
@@ -17,7 +17,7 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=2">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=2"></script>
 
         <style>
@@ -141,7 +141,7 @@ require("../head.php");
             align-items:center;
             justify-content:center;
             text-align:center;
-            min-height:68px;
+            min-height:80px;
             border:2px solid var(--note-line);
             background:#fff;
             border-radius:1rem;
@@ -197,54 +197,6 @@ require("../head.php");
             border-color:#ef9a9a !important;
           }
 
-          .asa-action-list{
-            display:grid;
-            gap:.75rem;
-          }
-
-          .asa-action-item{
-            display:flex;
-            align-items:flex-start;
-            gap:.65rem;
-            border:1px solid #d9e2ef;
-            border-radius:1rem;
-            background:#fff;
-            padding:.75rem .85rem;
-          }
-
-          .asa-action-mark{
-            flex:0 0 auto;
-            width:30px;
-            height:30px;
-            border-radius:999px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            color:#fff;
-            margin-top:.08rem;
-          }
-
-          .asa-action-mark.ok{background:#2ea663;}
-          .asa-action-mark.mid{background:#f4c542;}
-          .asa-action-mark.high{background:#d92d20;}
-
-          .asa-action-copy{min-width:0;flex:1;}
-
-          .asa-action-title{
-            font-size:.95rem;
-            font-weight:800;
-            line-height:1.18;
-            color:var(--note-text);
-            margin-bottom:.1rem;
-          }
-
-          .asa-action-note{
-            margin:0;
-            font-size:.82rem;
-            line-height:1.32;
-            color:var(--note-muted);
-          }
-
           .asa-plan-line{
             padding:.75rem .85rem;
             border-radius:.9rem;
@@ -273,6 +225,7 @@ require("../head.php");
             }
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
         
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
@@ -422,22 +375,22 @@ require("../head.php");
         <div class="note-summary-box mb-3">
           <div class="note-summary-box-title">Resumen</div>
           <div id="summaryNarrative" class="note-summary-box-text">ASA I: paciente sano. Procedimiento electivo/programado.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item">
-              <div class="note-summary-k">Clasificación</div>
-              <div id="summaryClass" class="note-summary-v">ASA I</div>
+          <div class="note-result-grid-2 mt-2">
+            <div class="note-result-card">
+              <div class="note-result-card-label">Clasificación</div>
+              <div id="summaryClass" class="note-result-card-value">ASA I</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Urgencia</div>
-              <div id="summaryEmergency" class="note-summary-v">No</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Urgencia</div>
+              <div id="summaryEmergency" class="note-result-card-value">No</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Qué describe</div>
-              <div class="note-summary-v">Estado físico</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Qué describe</div>
+              <div class="note-result-card-value">Estado físico</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Qué no describe</div>
-              <div class="note-summary-v">Riesgo quirúrgico total</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Qué no describe</div>
+              <div class="note-result-card-value">Riesgo quirúrgico total</div>
             </div>
           </div>
         </div>
@@ -475,12 +428,12 @@ require("../head.php");
         <div class="note-card mb-3">
           <div class="note-card-body">
             <div class="note-section-label">Conducta práctica</div>
-            <div id="actionList" class="asa-action-list">
-              <div class="asa-action-item">
-                <div class="asa-action-mark ok"><i class="fa-solid fa-check"></i></div>
-                <div class="asa-action-copy">
-                  <div class="asa-action-title">Clasificación basal</div>
-                  <p class="asa-action-note">Registrar ASA I si el paciente realmente no tiene enfermedad sistémica clínicamente relevante.</p>
+            <div id="actionList" class="note-warning-list">
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-check"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Clasificación basal</div>
+                  <p class="note-warning-note">Registrar ASA I si el paciente realmente no tiene enfermedad sistémica clínicamente relevante.</p>
                 </div>
               </div>
             </div>
@@ -609,12 +562,11 @@ require("../head.php");
     }
 
     document.getElementById('actionList').innerHTML = items.map(function(item){
-      const icon = item[0] === 'ok' ? 'fa-check' : (item[0] === 'mid' ? 'fa-triangle-exclamation' : 'fa-bolt');
-      return '<div class="asa-action-item">' +
-        '<div class="asa-action-mark ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
-        '<div class="asa-action-copy">' +
-          '<div class="asa-action-title">' + item[1] + '</div>' +
-          '<p class="asa-action-note">' + item[2] + '</p>' +
+      return '<div class="note-warning-item">' +
+        '<div class="note-warning-icon"><i class="fa-solid fa-check"></i></div>' +
+        '<div class="note-warning-copy">' +
+          '<div class="note-warning-title">' + item[1] + '</div>' +
+          '<p class="note-warning-note">' + item[2] + '</p>' +
         '</div>' +
       '</div>';
     }).join('');

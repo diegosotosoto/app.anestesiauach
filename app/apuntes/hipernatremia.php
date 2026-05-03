@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "Hipernatremia";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "Apunte interactivo para apoyo en evaluación y corrección de hipernatremia en contexto perioperatorio adulto. Integra estimación de agua corporal total, déficit de agua libre, meta inicial, velocidad segura de corrección y selector de solución para proponer un plan orientativo.";
@@ -20,7 +20,7 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=2">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=2"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
@@ -204,6 +204,7 @@ require("../head.php");
             }
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · ELECTROLITOS · FLUIDOTERAPIA</div>
@@ -365,25 +366,27 @@ require("../head.php");
           </div>
         </div>
 
-        <div class="note-summary-box mb-3">
-          <div class="note-summary-box-title">Resumen</div>
-          <div id="summaryNarrative" class="note-summary-box-text">Ingresa peso y natremia para estimar déficit de agua libre y velocidad orientativa.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item">
-              <div class="note-summary-k">Peso / ACT</div>
-              <div id="sumPesoAct" class="note-summary-v">-</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Na actual</div>
-              <div id="sumNa" class="note-summary-v">-</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Contexto</div>
-              <div id="sumContexto" class="note-summary-v">Hipovolémico</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Solución</div>
-              <div id="sumSol" class="note-summary-v">Dextrosa 5%</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-card-title">Resumen</div>
+            <div id="summaryNarrative" class="note-summary-box-text mb-3">Ingresa peso y natremia para estimar déficit de agua libre y velocidad orientativa.</div>
+            <div class="note-result-grid-2">
+              <div class="note-result-card">
+                <div class="note-result-card-label">Peso / ACT</div>
+                <div id="sumPesoAct" class="note-result-card-value">-</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Na actual</div>
+                <div id="sumNa" class="note-result-card-value">-</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Contexto</div>
+                <div id="sumContexto" class="note-result-card-value">Hipovolémico</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Solución</div>
+                <div id="sumSol" class="note-result-card-value">Dextrosa 5%</div>
+              </div>
             </div>
           </div>
         </div>
@@ -423,12 +426,12 @@ require("../head.php");
         <div class="note-card mb-3">
           <div class="note-card-body">
             <div class="note-section-label">Lectura clínica</div>
-            <div id="actionList" class="hna-action-list">
-              <div class="hna-action-item">
-                <div class="hna-action-mark mid"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <div class="hna-action-copy">
-                  <div class="hna-action-title">Completa datos de entrada</div>
-                  <p class="hna-action-note">La fórmula solo sirve si se interpreta junto a volemia, pérdidas en curso y controles seriados de sodio.</p>
+            <div id="actionList" class="note-warning-list">
+              <div class="note-warning-item">
+                <div class="note-warning-icon mid"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Completa datos de entrada</div>
+                  <p class="note-warning-note">La fórmula solo sirve si se interpreta junto a volemia, pérdidas en curso y controles seriados de sodio.</p>
                 </div>
               </div>
             </div>
@@ -438,26 +441,26 @@ require("../head.php");
         <div class="note-card mb-3">
           <div class="note-card-body">
             <div class="note-section-label">Plan de fluidos / mecanismo / anestesia</div>
-            <div class="hna-action-list">
-              <div class="hna-action-item">
-                <div class="hna-action-mark ok"><i class="fa-solid fa-droplet"></i></div>
-                <div class="hna-action-copy">
-                  <div class="hna-action-title">Plan de corrección / fluidos</div>
-                  <p id="fluidText" class="hna-action-note">-</p>
+            <div class="note-warning-list">
+              <div class="note-warning-item">
+                <div class="note-warning-icon ok"><i class="fa-solid fa-droplet"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Plan de corrección / fluidos</div>
+                  <p id="fluidText" class="note-warning-note">-</p>
                 </div>
               </div>
-              <div class="hna-action-item">
-                <div class="hna-action-mark high"><i class="fa-solid fa-brain"></i></div>
-                <div class="hna-action-copy">
-                  <div class="hna-action-title">Riesgo fisiológico de corrección rápida</div>
-                  <p id="mechanismText" class="hna-action-note">-</p>
+              <div class="note-warning-item">
+                <div class="note-warning-icon high"><i class="fa-solid fa-brain"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Riesgo fisiológico de corrección rápida</div>
+                  <p id="mechanismText" class="note-warning-note">-</p>
                 </div>
               </div>
-              <div class="hna-action-item">
-                <div class="hna-action-mark mid"><i class="fa-solid fa-mask-ventilator"></i></div>
-                <div class="hna-action-copy">
-                  <div class="hna-action-title">Consideraciones anestésicas</div>
-                  <p id="pharmText" class="hna-action-note">-</p>
+              <div class="note-warning-item">
+                <div class="note-warning-icon mid"><i class="fa-solid fa-mask-ventilator"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Consideraciones anestésicas</div>
+                  <p id="pharmText" class="note-warning-note">-</p>
                 </div>
               </div>
             </div>
@@ -565,11 +568,11 @@ require("../head.php");
 
     box.innerHTML = items.map(function(item){
       const icon = item[0] === 'ok' ? 'fa-check' : (item[0] === 'mid' ? 'fa-triangle-exclamation' : 'fa-bolt');
-      return '<div class="hna-action-item">' +
-        '<div class="hna-action-mark ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
-        '<div class="hna-action-copy">' +
-          '<div class="hna-action-title">' + item[1] + '</div>' +
-          '<p class="hna-action-note">' + item[2] + '</p>' +
+      return '<div class="note-warning-item">' +
+        '<div class="note-warning-icon ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
+        '<div class="note-warning-copy">' +
+          '<div class="note-warning-title">' + item[1] + '</div>' +
+          '<p class="note-warning-note">' + item[2] + '</p>' +
         '</div>' +
       '</div>';
     }).join('');

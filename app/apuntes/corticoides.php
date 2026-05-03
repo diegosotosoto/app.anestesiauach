@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "Corticoides perioperatorios";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "Nota interactiva para estimar riesgo de supresión del eje HH y orientar suplementación perioperatoria en pacientes con uso crónico de glucocorticoides. Convierte la dosis habitual a prednisona equivalente y propone una cobertura práctica según el estrés quirúrgico.";
@@ -17,7 +17,7 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=1">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=1"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
@@ -28,8 +28,8 @@ require("../head.php");
         <style>
           .steroid-shell{max-width:1040px;margin:0 auto;}
           .steroid-drug-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem;}
-          .steroid-drug-grid .note-option{min-height:92px;align-items:flex-start;justify-content:flex-start;text-align:left;gap:.28rem;padding:.78rem .82rem;}
-          .steroid-drug-grid .note-option i{margin-bottom:.08rem;}
+          .steroid-drug-grid .drug-card{min-height:92px;align-items:flex-start;justify-content:flex-start;text-align:left;width:100%;}
+          .steroid-drug-grid .note-check:checked + .drug-card{box-shadow:0 0 0 3px rgba(47,128,237,.14), 0 8px 18px rgba(15,23,42,.10);border:4px solid var(--note-selected);transform:translateY(-1px);}
           .steroid-muted-card{background:#fff;border:1px solid var(--note-line);border-radius:1rem;padding:1rem;}
           .steroid-quick-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;}
           .steroid-selector-sections{display:grid;grid-template-columns:1fr;gap:1rem;}
@@ -45,7 +45,6 @@ require("../head.php");
           .steroid-highlight .n{font-size:.9rem;color:var(--note-muted);line-height:1.4;margin-top:.3rem;}
           .steroid-grade-summary{border-radius:1rem;padding:1rem;}
           .steroid-fludro{background:#fff6ea;border:1px solid #efd3aa;}
-          .steroid-fludro .note-summary-box-title{color:#9a5a00;}
           .steroid-input-help{font-size:.82rem;color:var(--note-muted);margin-top:.3rem;line-height:1.35;}
           @media (max-width:900px){
             .steroid-drug-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
@@ -57,6 +56,7 @@ require("../head.php");
             .steroid-drug-grid,.steroid-selector-options{grid-template-columns:1fr;}
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · ENDOCRINO PERIOPERATORIO</div>
@@ -91,16 +91,16 @@ require("../head.php");
               <div class="note-input-group">
                 <label class="note-label">Glucocorticoide habitual</label>
                 <div class="steroid-drug-grid">
-                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_prednisone" value="prednisone" checked><label class="note-option drug-other" for="st_prednisone"><i class="fa-solid fa-tablets"></i>Prednisona<small>5 mg = ref</small></label></div>
-                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_prednisolone" value="prednisolone"><label class="note-option drug-other" for="st_prednisolone"><i class="fa-solid fa-tablets"></i>Prednisolona<small>5 mg = ref</small></label></div>
-                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_hydrocortisone" value="hydrocortisone"><label class="note-option drug-other" for="st_hydrocortisone"><i class="fa-solid fa-capsules"></i>Hidrocortisona<small>20 mg = 5 mg pred</small></label></div>
-                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_cortisone" value="cortisone"><label class="note-option drug-other" for="st_cortisone"><i class="fa-solid fa-capsules"></i>Cortisona<small>25 mg = 5 mg pred</small></label></div>
-                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_methylpred" value="methylpred"><label class="note-option drug-other" for="st_methylpred"><i class="fa-solid fa-syringe"></i>Metilprednisolona<small>4 mg = 5 mg pred</small></label></div>
-                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_triamcinolone" value="triamcinolone"><label class="note-option drug-other" for="st_triamcinolone"><i class="fa-solid fa-vial"></i>Triamcinolona<small>4 mg = 5 mg pred</small></label></div>
-                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_deflazacort" value="deflazacort"><label class="note-option drug-other" for="st_deflazacort"><i class="fa-solid fa-capsules"></i>Deflazacort<small>7,5 mg = 5 mg pred</small></label></div>
-                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_dexamethasone" value="dexamethasone"><label class="note-option drug-other" for="st_dexamethasone"><i class="fa-solid fa-bolt"></i>Dexametasona<small>0,75 mg = 5 mg pred</small></label></div>
-                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_betamethasone" value="betamethasone"><label class="note-option drug-other" for="st_betamethasone"><i class="fa-solid fa-bolt"></i>Betametasona<small>0,6 mg = 5 mg pred</small></label></div>
-                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_fludrocortisone" value="fludrocortisone"><label class="note-option drug-other" for="st_fludrocortisone"><i class="fa-solid fa-wind"></i>Fludrocortisona<small>2 mg = 5 mg pred*</small></label></div>
+                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_prednisone" value="prednisone" checked><label class="drug-card drug-other" for="st_prednisone"><span class="drug-label-content"><span class="drug-label-title">Prednisona</span><span class="drug-label-subtitle">5 mg = ref</span></span></label></div>
+                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_prednisolone" value="prednisolone"><label class="drug-card drug-other" for="st_prednisolone"><span class="drug-label-content"><span class="drug-label-title">Prednisolona</span><span class="drug-label-subtitle">5 mg = ref</span></span></label></div>
+                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_hydrocortisone" value="hydrocortisone"><label class="drug-card drug-other" for="st_hydrocortisone"><span class="drug-label-content"><span class="drug-label-title">Hidrocortisona</span><span class="drug-label-subtitle">20 mg = 5 mg pred</span></span></label></div>
+                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_cortisone" value="cortisone"><label class="drug-card drug-other" for="st_cortisone"><span class="drug-label-content"><span class="drug-label-title">Cortisona</span><span class="drug-label-subtitle">25 mg = 5 mg pred</span></span></label></div>
+                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_methylpred" value="methylpred"><label class="drug-card drug-other" for="st_methylpred"><span class="drug-label-content"><span class="drug-label-title">Metilprednisolona</span><span class="drug-label-subtitle">4 mg = 5 mg pred</span></span></label></div>
+                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_triamcinolone" value="triamcinolone"><label class="drug-card drug-other" for="st_triamcinolone"><span class="drug-label-content"><span class="drug-label-title">Triamcinolona</span><span class="drug-label-subtitle">4 mg = 5 mg pred</span></span></label></div>
+                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_deflazacort" value="deflazacort"><label class="drug-card drug-other" for="st_deflazacort"><span class="drug-label-content"><span class="drug-label-title">Deflazacort</span><span class="drug-label-subtitle">7,5 mg = 5 mg pred</span></span></label></div>
+                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_dexamethasone" value="dexamethasone"><label class="drug-card drug-other" for="st_dexamethasone"><span class="drug-label-content"><span class="drug-label-title">Dexametasona</span><span class="drug-label-subtitle">0,75 mg = 5 mg pred</span></span></label></div>
+                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_betamethasone" value="betamethasone"><label class="drug-card drug-other" for="st_betamethasone"><span class="drug-label-content"><span class="drug-label-title">Betametasona</span><span class="drug-label-subtitle">0,6 mg = 5 mg pred</span></span></label></div>
+                  <div><input class="note-check calc-trigger" type="radio" name="steroid" id="st_fludrocortisone" value="fludrocortisone"><label class="drug-card drug-other" for="st_fludrocortisone"><span class="drug-label-content"><span class="drug-label-title">Fludrocortisona</span><span class="drug-label-subtitle">2 mg = 5 mg pred*</span></span></label></div>
                 </div>
                 <div class="steroid-input-help">*La fludrocortisona se incluye por equivalencia docente de la tabla adjunta, pero su potente efecto mineralocorticoide obliga a interpretar con cautela la equivalencia glucocorticoide.</div>
               </div>
@@ -155,18 +155,30 @@ require("../head.php");
         <div class="note-summary-box mb-3" id="summaryBox">
           <div class="note-summary-box-title">Resumen</div>
           <div id="summaryNarrative" class="note-summary-box-text">Completa la dosis habitual y confirma el estrés quirúrgico para ver la recomendación.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item"><div class="note-summary-k">Droga</div><div id="sumDrug" class="note-summary-v">-</div></div>
-            <div class="note-summary-item"><div class="note-summary-k">Dosis habitual</div><div id="sumDose" class="note-summary-v">-</div></div>
-            <div class="note-summary-item"><div class="note-summary-k">Prednisona eq.</div><div id="sumPredEq" class="note-summary-v">-</div></div>
-            <div class="note-summary-item"><div class="note-summary-k">Riesgo eje</div><div id="sumAxis" class="note-summary-v">-</div></div>
+          <div class="note-result-grid-2 mt-2">
+            <div class="note-result-card">
+              <div class="note-result-card-label">Droga</div>
+              <div class="drug-label drug-other"><span class="drug-label-content"><span id="sumDrug" class="drug-label-title">-</span></span></div>
+            </div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Dosis habitual</div>
+              <div id="sumDose" class="note-result-card-value">-</div>
+            </div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Prednisona eq.</div>
+              <div id="sumPredEq" class="note-result-card-value">-</div>
+            </div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Riesgo eje</div>
+              <div id="sumAxis" class="note-result-card-value">-</div>
+            </div>
           </div>
         </div>
 
         <div class="note-result-grid-2 mb-3">
           <div class="note-result-card">
             <div class="note-result-card-label">Conducta sugerida</div>
-            <div id="mainDecision" class="note-result-card-value">Complete required fields to view result</div>
+            <div id="mainDecision" class="note-result-card-value">Completa los valores requeridos</div>
             <div class="note-result-card-note">Decisión operativa según exposición y estrés quirúrgico.</div>
           </div>
           <div class="note-result-card">
@@ -186,16 +198,16 @@ require("../head.php");
           </div>
         </div>
 
-        <div class="steroid-interpret-grid mb-3">
-          <div class="steroid-highlight">
-            <div class="k">Interpretación clínica</div>
-            <div id="outAxisInterp" class="v">-</div>
-            <div id="riskText" class="n">La lectura final depende de dosis, duración y contexto del eje.</div>
+        <div class="note-result-grid-2 mb-3">
+          <div class="note-result-card">
+            <div class="note-result-card-label">Interpretación clínica</div>
+            <div id="outAxisInterp" class="note-result-card-value">-</div>
+            <div id="riskText" class="note-result-card-note">La lectura final depende de dosis, duración y contexto del eje.</div>
           </div>
-          <div class="steroid-highlight">
-            <div class="k">Retorno a basal</div>
-            <div id="outReturn" class="v">-</div>
-            <div id="outPostop" class="n">-</div>
+          <div class="note-result-card">
+            <div class="note-result-card-label">Retorno a basal</div>
+            <div id="outReturn" class="note-result-card-value">-</div>
+            <div id="outPostop" class="note-result-card-note">-</div>
           </div>
         </div>
 
@@ -319,7 +331,7 @@ require("../head.php");
   }
 
   function clearResults(){
-    CNS.safeSetText('mainDecision', 'Complete required fields to view result');
+    CNS.safeSetText('mainDecision', 'Completa los valores requeridos');
     CNS.safeSetText('mainDosePlan', '-');
     CNS.safeSetText('outDaySurgery', '-');
     CNS.safeSetText('outMethylEq', '-');

@@ -6,5 +6,7 @@ pdf/.DS_Store
 .DS_Store
 .DS_Store
 app/.DS_Store
+app/secure_config/
 app/.DS_Store
 app/.DS_Store
+.htaccessNOT

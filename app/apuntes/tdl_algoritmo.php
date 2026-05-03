@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "Tubo de doble lumen";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "Algoritmo docente para elección inicial de tubo de doble lumen en anestesia torácica. Integra lado, sexo, talla y ajuste opcional por diámetro bronquial izquierdo cuando hay imagen disponible.";
@@ -17,7 +17,7 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=2">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=2"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
@@ -26,6 +26,12 @@ require("../head.php");
       <div class="note-shell px-1 px-md-0 py-0">
 
         <style>
+          .tdl-sections-row{
+            display:grid;
+            grid-template-columns:repeat(2,minmax(0,1fr));
+            gap:1rem;
+          }
+
           .tdl-choice-grid{
             display:grid;
             grid-template-columns:repeat(2,minmax(0,1fr));
@@ -99,54 +105,6 @@ require("../head.php");
           .tdl-danger-card{
             background:#fff1f1 !important;
             border-color:#efc0bd !important;
-          }
-
-          .tdl-action-list{
-            display:grid;
-            gap:.75rem;
-          }
-
-          .tdl-action-item{
-            display:flex;
-            align-items:flex-start;
-            gap:.65rem;
-            border:1px solid #d9e2ef;
-            border-radius:1rem;
-            background:#fff;
-            padding:.75rem .85rem;
-          }
-
-          .tdl-action-mark{
-            flex:0 0 auto;
-            width:30px;
-            height:30px;
-            border-radius:999px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            color:#fff;
-            margin-top:.08rem;
-          }
-
-          .tdl-action-mark.ok{background:#2ea663;}
-          .tdl-action-mark.mid{background:#f4c542;}
-          .tdl-action-mark.high{background:#d92d20;}
-
-          .tdl-action-copy{min-width:0;flex:1;}
-
-          .tdl-action-title{
-            font-size:.95rem;
-            font-weight:800;
-            line-height:1.18;
-            color:var(--note-text);
-            margin-bottom:.1rem;
-          }
-
-          .tdl-action-note{
-            margin:0;
-            font-size:.82rem;
-            line-height:1.32;
-            color:var(--note-muted);
           }
 
           .tdl-plan-line{
@@ -240,13 +198,15 @@ require("../head.php");
           }
 
           @media (max-width:768px){
-            .tdl-choice-grid,
-            .tdl-choice-grid.tdl-grid-3,
+            .tdl-sections-row{
+              grid-template-columns:1fr;
+            }
             .tdl-schema-grid{
               grid-template-columns:1fr;
             }
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · TÓRAX · AISLAMIENTO PULMONAR</div>
@@ -358,68 +318,76 @@ require("../head.php");
               </div>
             </div>
 
-            <div class="note-section-label">Sexo</div>
-            <div class="tdl-choice-grid mb-3">
-              <label>
-                <input class="tdl-option-input" type="radio" name="sexo" value="hombre" checked>
-                <div class="tdl-option">
-                  <i class="fa-solid fa-person"></i>
-                  <div class="tdl-option-title">Hombre</div>
-                  <div class="tdl-option-sub">tabla por talla</div>
+            <div class="">
+              <div>
+                <div class="note-section-label">Sexo</div>
+                <div class="tdl-choice-grid">
+                  <label>
+                    <input class="tdl-option-input" type="radio" name="sexo" value="hombre" checked>
+                    <div class="tdl-option">
+                      <i class="fa-solid fa-person"></i>
+                      <div class="tdl-option-title">Hombre</div>
+                      <div class="tdl-option-sub">tabla por talla</div>
+                    </div>
+                  </label>
+                  <label>
+                    <input class="tdl-option-input" type="radio" name="sexo" value="mujer">
+                    <div class="tdl-option">
+                      <i class="fa-solid fa-person-dress"></i>
+                      <div class="tdl-option-title">Mujer</div>
+                      <div class="tdl-option-sub">tabla por talla</div>
+                    </div>
+                  </label>
                 </div>
-              </label>
-              <label>
-                <input class="tdl-option-input" type="radio" name="sexo" value="mujer">
-                <div class="tdl-option">
-                  <i class="fa-solid fa-person-dress"></i>
-                  <div class="tdl-option-title">Mujer</div>
-                  <div class="tdl-option-sub">tabla por talla</div>
-                </div>
-              </label>
-            </div>
+              </div>
 
-            <div class="note-section-label">Lado del TDL</div>
-            <div class="tdl-choice-grid">
-              <label>
-                <input class="tdl-option-input" type="radio" name="lado" value="izquierdo" checked>
-                <div class="tdl-option">
-                  <i class="fa-solid fa-lungs"></i>
-                  <div class="tdl-option-title">Izquierdo</div>
-                  <div class="tdl-option-sub">elección habitual</div>
+              <div>
+                <div class="note-section-label">Lado del TDL</div>
+                <div class="tdl-choice-grid">
+                  <label>
+                    <input class="tdl-option-input" type="radio" name="lado" value="izquierdo" checked>
+                    <div class="tdl-option">
+                      <i class="fa-solid fa-lungs"></i>
+                      <div class="tdl-option-title">Izquierdo</div>
+                      <div class="tdl-option-sub">elección habitual</div>
+                    </div>
+                  </label>
+                  <label>
+                    <input class="tdl-option-input" type="radio" name="lado" value="derecho">
+                    <div class="tdl-option">
+                      <i class="fa-solid fa-triangle-exclamation"></i>
+                      <div class="tdl-option-title">Derecho</div>
+                      <div class="tdl-option-sub">indicación específica</div>
+                    </div>
+                  </label>
                 </div>
-              </label>
-              <label>
-                <input class="tdl-option-input" type="radio" name="lado" value="derecho">
-                <div class="tdl-option">
-                  <i class="fa-solid fa-triangle-exclamation"></i>
-                  <div class="tdl-option-title">Derecho</div>
-                  <div class="tdl-option-sub">indicación específica</div>
-                </div>
-              </label>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="note-summary-box mb-3">
-          <div class="note-summary-box-title">Resumen</div>
-          <div id="summaryNarrative" class="note-summary-box-text">Ingresa altura para estimar tamaño inicial del TDL.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item">
-              <div class="note-summary-k">Sexo / altura</div>
-              <div id="sumPatient" class="note-summary-v">Hombre · -</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+          <div class="note-card-title">Resumen</div>
+          <div id="summaryNarrative" class="note-summary-box-text mb-3">Ingresa altura para estimar tamaño inicial del TDL.</div>
+          <div class="note-result-grid-2">
+            <div class="note-result-card">
+              <div class="note-result-card-label">Sexo / altura</div>
+              <div id="sumPatient" class="note-result-card-value">Hombre · -</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Lado</div>
-              <div id="sumSide" class="note-summary-v">Izquierdo</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Lado</div>
+              <div id="sumSide" class="note-result-card-value">Izquierdo</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Por talla</div>
-              <div id="sumSizeHeight" class="note-summary-v">-</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Por talla</div>
+              <div id="sumSizeHeight" class="note-result-card-value">-</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Por bronquio</div>
-              <div id="sumSizeBronchus" class="note-summary-v">No ingresado</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Por bronquio</div>
+              <div id="sumSizeBronchus" class="note-result-card-value">No ingresado</div>
             </div>
+          </div>
           </div>
         </div>
 
@@ -456,12 +424,12 @@ require("../head.php");
         <div class="note-card mb-3">
           <div class="note-card-body">
             <div class="note-section-label">Conducta práctica</div>
-            <div id="actionList" class="tdl-action-list">
-              <div class="tdl-action-item">
-                <div class="tdl-action-mark mid"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <div class="tdl-action-copy">
-                  <div class="tdl-action-title">Completa talla</div>
-                  <p class="tdl-action-note">La recomendación inicial se basa en sexo y altura; el diámetro bronquial puede refinar la decisión si es confiable.</p>
+            <div id="actionList" class="note-warning-list">
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Completa talla</div>
+                  <p class="note-warning-note">La recomendación inicial se basa en sexo y altura; el diámetro bronquial puede refinar la decisión si es confiable.</p>
                 </div>
               </div>
             </div>
@@ -562,11 +530,11 @@ require("../head.php");
 
     document.getElementById('actionList').innerHTML = items.map(function(item){
       const icon = item[0] === 'ok' ? 'fa-check' : (item[0] === 'mid' ? 'fa-triangle-exclamation' : 'fa-bolt');
-      return '<div class="tdl-action-item">' +
-        '<div class="tdl-action-mark ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
-        '<div class="tdl-action-copy">' +
-          '<div class="tdl-action-title">' + item[1] + '</div>' +
-          '<p class="tdl-action-note">' + item[2] + '</p>' +
+      return '<div class="note-warning-item">' +
+        '<div class="note-warning-icon"><i class="fa-solid ' + icon + '"></i></div>' +
+        '<div class="note-warning-copy">' +
+          '<div class="note-warning-title">' + item[1] + '</div>' +
+          '<p class="note-warning-note">' + item[2] + '</p>' +
         '</div>' +
       '</div>';
     }).join('');

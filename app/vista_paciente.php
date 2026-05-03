@@ -39,8 +39,8 @@
 		$busqueda2=$conexion->query($consulta_m);
 		$fila=$busqueda2->fetch_assoc();
 
-    	$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='hoja_dolor.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
-		$boton_navbar="<form action='editar_paciente.php' method='post'><button class='d-sm-block d-sm-none btn btn-md shadow-sm border-light' style='; --bs-border-opacity: .1;'  type='submit' name='editar' value='".$fila['rut']."'/><i class='fa-solid fa-pen fa-lg' style='color:white' aria-hidden='true'></i></button></form>";
+    	$boton_toggler="<a class='d-sm-block d-sm-none admin-back-btn' href='hoja_dolor.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+		$boton_navbar="<form action='editar_paciente.php' method='post'><button class='d-sm-block d-sm-none app-nav-action' type='submit' name='editar' value='".$fila['rut']."' aria-label='Editar paciente'><i class='fa-solid fa-pen fa-lg' aria-hidden='true'></i></button></form>";
 
 
 	//Carga Head de la página
@@ -48,8 +48,10 @@
 
 ?>
 
-<div class="col col-sm-9 col-xl-9"><!- Columna principal (derecha) responsive->
-<div class="row text-center ps-2">
+	<div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
+	<div class="apunte-surface">
+	<div class="container-fluid px-0 px-md-2">
+	<div class="pain-shell">
 
 
 <!-  GUARDAR REGISTROS  ->	
@@ -174,97 +176,113 @@
 
 	?>
 
-<ul class="list-group">
+	<div class="patient-summary-stack">
 
-	<?php
-		$consulta_m="SELECT * FROM `pacientes` WHERE `rut` = '$formulario'";
-		$busqueda2=$conexion->query($consulta_m);
-		$fila=$busqueda2->fetch_assoc();
+		<?php
+			$consulta_m="SELECT * FROM `pacientes` WHERE `rut` = '$formulario'";
+			$busqueda2=$conexion->query($consulta_m);
+			$fila=$busqueda2->fetch_assoc();
 
-		$phpdate1 = strtotime( $fila['fecha_creacion'] );
-		$fecha1 = date( 'd-m-y H:i', $phpdate1 );
+			$phpdate1 = strtotime( $fila['fecha_creacion'] );
+			$fecha1 = date( 'd-m-y H:i', $phpdate1 );
 
-		if(isset($fila['fecha_edicion'])){
-			$phpdate2 = strtotime( $fila['fecha_edicion'] );
-			$fecha2 = date( 'd-m-y H:i', $phpdate2 );
-		}
-		
-
-
-		echo "<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'><br><h5 class='mb-1 fw-bold'>".$fila['nombre_paciente']."</h5>		
-
-		<div class='pt-1 ps-3 me-3 d-flex float-start'>
-		<a class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block' style='width:80px; height:40px; --bs-border-opacity: .1;' href='hoja_dolor.php'><i class='fa fa-chevron-left'></i>Atrás</a>
-		</div>
-
-		<span class='float-end'>
-		<div class='pt-1 ps-3 me-3 d-flex justify-content-end'>
-		<form action='editar_paciente.php' method='post'><button class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block' style='; --bs-border-opacity: .1;'  type='submit' name='editar' value='".$fila['rut']."'/><i class='fa-solid fa-pen fa-lg' style='color:white' aria-hidden='true'></i></button></form>
-		</div>
-		</span>";
-		
-
-		$string_rut = $fila['rut'];
-		$parts = explode("-", $string_rut);
-		$result_rut = $parts[0];
-
-		
-		echo "<p class='mb-1'>Rut:&nbsp;
-				<a class='text-decoration-none' href='https://www.hbvaldivia.cl/core/farmacia/receta/0/".$result_rut."' target='_blank'>".$fila['rut']."</a>
-			</p>";
-
-		echo "<p class='mb-1'>FC:&nbsp;
-			<a class='text-decoration-none' href='https://www.hbvaldivia.cl/core/farmacia/receta/1/".$fila['ficha']."' target='_blank'>".$fila['ficha']."</a>
-		</p>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Unidad&nbsp&nbsp</div><div class='text-end'>".$fila['unidad_cama']."</div></div></li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Procedimiento</div><div>".$fila['procedimiento']."</div></div></li>";	
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Analgesia</div><div>".$fila['analgesia']."</div></div></li>";
-
-			if($fila['analgesia']=="Peridural"){
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Nivel</div><div>".$fila['nivel']."</div></div></li>";	
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Distancia Espacio Epidural</div><div>".$fila['espacio']." cm</div></div></li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Distancia Catéter</div><div>".$fila['distancia']." cm</div></div></li>";
+			if(isset($fila['fecha_edicion']) && trim((string)$fila['fecha_edicion']) !== ''){
+				$phpdate2 = strtotime( $fila['fecha_edicion'] );
+				$fecha2 = date( 'd-m-y H:i', $phpdate2 );
 			}
 
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Solución</div><div>".$fila['solucion']."</div></div></li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Infusión PCA</div><div>".$fila['infusion']." ml/hr</div></div></li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Bolo PCA</div><div>".$fila['bolo']." ml</div></div></li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Lockout PCA</div><div>".$fila['lockout']." min</div></div></li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Peso</div><div>".$fila['peso']." kg</div></div></li>";
+			function patient_summary_has_value($value){
+				return trim((string)$value) !== '';
+			}
 
-		echo "<li class='list-group-item mb-2 py-3'><img class='btn-imagen' src='images/IMG_3977.PNG'/>Comentarios";				
-		echo "<div class='py-2'>".$fila['comentarios']."</div></div></li>";
+			function patient_summary_render_item($label, $value, $suffix = ''){
+				$value = trim((string)$value);
+				if($value === ''){
+					return;
+				}
+				echo "<div class='bitacora-item'><div class='bitacora-item-label'>".app_h_text($label)."</div><div class='bitacora-item-value'>".app_h_text($value.$suffix)."</div></div>";
+			}
 
-		echo "<li class='list-group-item mb-2 py-3'><div><img class='btn-imagen' src='images/IMG_3978.PNG'/>EVOLUCIONES DIARIAS</div>";
-			
+			$string_rut = $fila['rut'];
+			$parts = explode("-", $string_rut);
+			$result_rut = $parts[0];
 
-		$consulta_elementos="SELECT `rut_v` FROM `visita_diaria` WHERE `rut_v`='$formulario'";
-		$confirmar_e=$conexion->query($consulta_elementos);
-		$elementos=mysqli_num_rows($confirmar_e);
-		
+			echo "<section class='bitacora-entry-card'>";
+			echo "<div class='bitacora-entry-header'>";
+			echo "<div class='d-flex justify-content-between align-items-start gap-3 flex-wrap'>";
+			echo "<div><div class='small text-muted'>Paciente</div><h5 class='mb-1'>".app_h_text($fila['nombre_paciente'])."</h5></div>";
+			echo "<div class='text-md-end'>";
+			if(patient_summary_has_value($fecha1)){
+				echo "<div>".app_h_text($fecha1)."</div>";
+			}
+			if(patient_summary_has_value($fila['rut'])){
+				echo "<div><a class='text-decoration-none' href='https://www.hbvaldivia.cl/core/farmacia/receta/0/".app_h_text($result_rut)."' target='_blank'>".app_h_text($fila['rut'])."</a></div>";
+			}
+			if(patient_summary_has_value($fila['ficha'])){
+				echo "<div><a class='text-decoration-none' href='https://www.hbvaldivia.cl/core/farmacia/receta/1/".app_h_text($fila['ficha'])."' target='_blank'>".app_h_text($fila['ficha'])."</a></div>";
+			}
+			echo "</div></div>";
+			echo "<div class='pain-actions pt-3'>";
+			echo "<form action='editar_paciente.php' method='post'><button class='btn btn-app-primary pain-action-btn' type='submit' name='editar' value='".app_h_text($fila['rut'])."' aria-label='Editar paciente'><i class='fa-solid fa-pen fa-lg' aria-hidden='true'></i></button></form>";
+			echo "</div>";
+			echo "</div>";
 
-		if($elementos>0){
-				echo "<div class='py-2'><form action='listar_visitas.php' method='post'><button class='btn btn-light btn-lg shadow-sm' type='submit' name='lista_v' value='$formulario' >$elementos elementos</button></form></div></li>";	
-		}else{
-			echo "<div class='py-2'><button class='btn btn-light btn-lg shadow-sm'>$elementos elementos</button></div></></li>";	
-		}
+			echo "<div class='bitacora-entry-body'><div class='bitacora-grid'>";
+			patient_summary_render_item('Unidad', $fila['unidad_cama']);
+			patient_summary_render_item('Procedimiento', $fila['procedimiento']);
+			patient_summary_render_item('Analgesia', $fila['analgesia']);
+			if($fila['analgesia']=="Peridural"){
+				patient_summary_render_item('Nivel', $fila['nivel']);
+				patient_summary_render_item('Distancia Espacio Epidural', $fila['espacio'], ' cm');
+				patient_summary_render_item('Distancia Catéter', $fila['distancia'], ' cm');
+			}
+			patient_summary_render_item('Solución', $fila['solucion']);
+			patient_summary_render_item('Infusión PCA', $fila['infusion'], ' ml/hr');
+			patient_summary_render_item('Bolo PCA', $fila['bolo'], ' ml');
+			patient_summary_render_item('Lockout PCA', $fila['lockout'], ' min');
+			patient_summary_render_item('Peso', $fila['peso'], ' kg');
+			echo "</div>";
 
-	
+			if(patient_summary_has_value($fila['comentarios'])){
+				echo "<div class='bitacora-feedback-label pt-3'>Comentarios</div>";
+				echo "<div class='bitacora-comments'>".app_h_text($fila['comentarios'])."</div>";
+			}
 
-		echo "<li class='list-group-item'><div><form action='nueva_visita.php' method='post'><button class='btn btn-primary btn-lg' type='submit' name='visita' value='$formulario' ><img class='btn-imagen' src='images/IMG_3981.PNG'/>Nueva Evolución Diaria</button></form></li>";
+			echo "<div class='small text-muted pt-3'>Creado el ".app_h_text($fecha1);
+			if(patient_summary_has_value($fila['creador'])){
+				echo ", por ".app_h_text($fila['creador']);
+			}
+			echo "</div>";
+			if(isset($fecha2)){
+				echo "<div class='small text-muted pt-1'>Editado el ".app_h_text($fecha2);
+				if(patient_summary_has_value($fila['editor'])){
+					echo ", por ".app_h_text($fila['editor']);
+				}
+				echo "</div>";
+			}
+			echo "</div></section>";
 
-		echo "<li class='list-group-item'><small class='text-muted'>Creado el $fecha1, por ".$fila['creador']."</small></li>";
-		if(isset($fila['fecha_edicion'])){
-			echo "<li class='list-group-item pb-5'><small class='text-muted'>Editado el $fecha2, por ".$fila['editor']."</small></li>";
-		}
+			$consulta_elementos="SELECT `rut_v` FROM `visita_diaria` WHERE `rut_v`='$formulario'";
+			$confirmar_e=$conexion->query($consulta_elementos);
+			$elementos=mysqli_num_rows($confirmar_e);
 
+			echo "<section class='pain-card'>";
+			echo "<div class='pain-card-header'><div><h3>Evoluciones diarias</h3><p>".app_h_text($elementos)." elemento(s) registrados</p></div></div>";
+			echo "<div class='pain-actions'>";
+			if($elementos>0){
+				echo "<form action='listar_visitas.php' method='post'><button class='btn btn-app-secondary pain-action-btn' type='submit' name='lista_v' value='".app_h_text($formulario)."'>Ver evoluciones</button></form>";
+			}else{
+				echo "<button class='btn btn-app-secondary pain-action-btn' type='button' disabled>Sin evoluciones</button>";
+			}
+			echo "<form action='nueva_visita.php' method='post'><button class='btn btn-app-primary pain-action-btn' type='submit' name='visita' value='".app_h_text($formulario)."'><i class='fa fa-plus fa-lg' aria-hidden='true'></i>Nueva Evolución Diaria</button></form>";
+			echo "</div></section>";
+		?>
 
-
-	?>
-
-</ul>
-</div>
-</div>
+	</div>
+	</div>
+	</div>
+	</div>
+	</div>
 	<?php 
 		//Cierre Conexión
 		$conexion->close();

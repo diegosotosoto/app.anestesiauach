@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "Delta PP";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "El Delta de Presión de Pulso (Delta PP o PPV) es una herramienta dinámica para estimar respuesta a volumen en pacientes con ventilación mecánica. Un valor elevado solo es interpretable si se cumplen criterios estrictos de validez fisiológica.";
@@ -16,7 +16,7 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=1">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=1"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
@@ -32,26 +32,26 @@ require("../head.php");
           .dpp-main-result-label{font-size:.82rem;text-transform:uppercase;letter-spacing:.06em;color:#3559b7;font-weight:700;margin-bottom:.35rem;}
           .dpp-main-result-title{font-size:1.15rem;font-weight:800;color:var(--note-text);line-height:1.2;}
           .dpp-question-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;}
-          .dpp-question{background:#fff;border:1px solid var(--note-line);border-radius:1rem;padding:1rem;}
-          .dpp-question-title{font-size:.98rem;font-weight:800;color:#3559b7;line-height:1.3;margin:0 0 .75rem 0;}
-          .dpp-binary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;}
+          .dasi-question-card{border:1px solid var(--note-line);background:#fff;border-radius:1rem;padding:.9rem;box-shadow:0 4px 14px rgba(15,23,42,.04);}
+          .dasi-question-text{font-size:.92rem;font-weight:700;color:#3559b7;line-height:1.35;margin-bottom:.7rem;}
+          body.theme-dark .dasi-question-text{color:#8bb3ff;}
+          .dasi-choice-inline{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem;}
+          .dasi-yn-label{display:flex;align-items:center;justify-content:center;gap:.45rem;min-height:58px;border:1px solid #dfe7f2;background:#fff;border-radius:.85rem;padding:.55rem .45rem;font-weight:700;color:#1f2a37;cursor:pointer;transition:.15s ease;box-shadow:0 4px 14px rgba(0,0,0,.04);font-size:.92rem;}
+          .dasi-yn-icon{width:26px;height:26px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:800;flex:0 0 auto;}
+          .dasi-yn-yes .dasi-yn-icon{background:#eaf7ef;color:#1f9d55;border:1px solid #bfe4cb;}
+          .dasi-yn-no .dasi-yn-icon{background:#fff1ef;color:#d92d20;border:1px solid #efc2bb;}
+          .choice-check:checked + .dasi-yn-label{background:#eef3ff;border-color:#9fb9f8;color:#27458f;box-shadow:0 0 0 3px rgba(47,128,237,.12), 0 8px 18px rgba(0,0,0,.06);}
           .dpp-binary{min-width:0;}
-          .dpp-binary .note-option{width:100%;min-height:72px;align-items:flex-start;justify-content:flex-start;text-align:left;padding:.75rem .8rem;gap:.35rem;}
-          .dpp-binary-label{display:flex;align-items:flex-start;gap:.55rem;}
-          .dpp-binary-icon{width:24px;height:24px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;font-size:.82rem;flex:0 0 auto;}
-          .dpp-yes .dpp-binary-icon{background:#eaf7ef;color:#1f9d55;border:1px solid #b7e2c4;}
-          .dpp-no .dpp-binary-icon{background:#fff1f1;color:#d92d20;border:1px solid #f2b8b5;}
-          .dpp-binary-copy{min-width:0;flex:1;}
-          .dpp-binary-title{font-size:.93rem;font-weight:800;color:var(--note-text);line-height:1.24;}
           .dpp-binary-help{font-size:.78rem;color:var(--note-muted);line-height:1.25;margin-top:.12rem;}
           .dpp-footer-note{text-align:center;color:var(--note-muted);font-size:.86rem;}
           @media (max-width:768px){
             .dpp-grid,.dpp-question-grid{grid-template-columns:1fr;}
           }
           @media (max-width:420px){
-            .dpp-binary-grid,.dpp-summary-grid{grid-template-columns:1fr;}
+            .dasi-choice-inline,.dpp-summary-grid{grid-template-columns:1fr;}
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · HEMODINÁMICA</div>
@@ -123,84 +123,84 @@ require("../head.php");
 
         <div class="note-card mb-3">
           <div class="note-card-body">
-            <div class="note-section-label">Criterios de validez</div>
+            <div class="section-title mb-3">Criterios de validez</div>
             <div class="dpp-question-grid">
-              <div class="dpp-question">
-                <div class="dpp-question-title">¿Tórax cerrado?</div>
-                <div class="dpp-binary-grid">
+              <div class="dasi-question-card">
+                <div class="dasi-question-text">¿Tórax cerrado?</div>
+                <div class="dasi-choice-inline">
                   <div class="dpp-binary">
-                    <input class="note-check validity-check" type="radio" name="thorax" id="thorax_yes" value="yes" checked>
-                    <label class="note-option dpp-yes" for="thorax_yes"><span class="dpp-binary-label"><span class="dpp-binary-icon"><i class="fa-solid fa-check"></i></span><span class="dpp-binary-copy"><span class="dpp-binary-title">Sí</span></span></span></label>
+                    <input class="choice-check validity-check" type="radio" name="thorax" id="thorax_yes" value="yes" checked>
+                    <label class="dasi-yn-label dasi-yn-yes" for="thorax_yes"><span class="dasi-yn-icon"><i class="fa-solid fa-check"></i></span><span>Sí</span></label>
                   </div>
                   <div class="dpp-binary">
-                    <input class="note-check validity-check" type="radio" name="thorax" id="thorax_no" value="no">
-                    <label class="note-option dpp-no" for="thorax_no"><span class="dpp-binary-label"><span class="dpp-binary-icon"><i class="fa-solid fa-xmark"></i></span><span class="dpp-binary-copy"><span class="dpp-binary-title">No</span></span></span></label>
-                  </div>
-                </div>
-              </div>
-              <div class="dpp-question">
-                <div class="dpp-question-title">¿Ventilación mecánica controlada, sin respiración espontánea importante?</div>
-                <div class="dpp-binary-grid">
-                  <div class="dpp-binary">
-                    <input class="note-check validity-check" type="radio" name="control" id="control_yes" value="yes" checked>
-                    <label class="note-option dpp-yes" for="control_yes"><span class="dpp-binary-label"><span class="dpp-binary-icon"><i class="fa-solid fa-check"></i></span><span class="dpp-binary-copy"><span class="dpp-binary-title">Sí</span></span></span></label>
-                  </div>
-                  <div class="dpp-binary">
-                    <input class="note-check validity-check" type="radio" name="control" id="control_no" value="no">
-                    <label class="note-option dpp-no" for="control_no"><span class="dpp-binary-label"><span class="dpp-binary-icon"><i class="fa-solid fa-xmark"></i></span><span class="dpp-binary-copy"><span class="dpp-binary-title">No</span></span></span></label>
+                    <input class="choice-check validity-check" type="radio" name="thorax" id="thorax_no" value="no">
+                    <label class="dasi-yn-label dasi-yn-no" for="thorax_no"><span class="dasi-yn-icon"><i class="fa-solid fa-xmark"></i></span><span>No</span></label>
                   </div>
                 </div>
               </div>
-              <div class="dpp-question">
-                <div class="dpp-question-title">¿Volumen corriente ≥ 8 mL/kg?</div>
-                <div class="dpp-binary-grid">
+              <div class="dasi-question-card">
+                <div class="dasi-question-text">¿Ventilación mecánica controlada, sin respiración espontánea importante?</div>
+                <div class="dasi-choice-inline">
                   <div class="dpp-binary">
-                    <input class="note-check validity-check" type="radio" name="vt" id="vt_yes" value="yes" checked>
-                    <label class="note-option dpp-yes" for="vt_yes"><span class="dpp-binary-label"><span class="dpp-binary-icon"><i class="fa-solid fa-check"></i></span><span class="dpp-binary-copy"><span class="dpp-binary-title">Sí</span></span></span></label>
+                    <input class="choice-check validity-check" type="radio" name="control" id="control_yes" value="yes" checked>
+                    <label class="dasi-yn-label dasi-yn-yes" for="control_yes"><span class="dasi-yn-icon"><i class="fa-solid fa-check"></i></span><span>Sí</span></label>
                   </div>
                   <div class="dpp-binary">
-                    <input class="note-check validity-check" type="radio" name="vt" id="vt_no" value="no">
-                    <label class="note-option dpp-no" for="vt_no"><span class="dpp-binary-label"><span class="dpp-binary-icon"><i class="fa-solid fa-xmark"></i></span><span class="dpp-binary-copy"><span class="dpp-binary-title">No</span></span></span></label>
-                  </div>
-                </div>
-              </div>
-              <div class="dpp-question">
-                <div class="dpp-question-title">¿Ritmo sinusal?</div>
-                <div class="dpp-binary-grid">
-                  <div class="dpp-binary">
-                    <input class="note-check validity-check" type="radio" name="sinus" id="sinus_yes" value="yes" checked>
-                    <label class="note-option dpp-yes" for="sinus_yes"><span class="dpp-binary-label"><span class="dpp-binary-icon"><i class="fa-solid fa-check"></i></span><span class="dpp-binary-copy"><span class="dpp-binary-title">Sí</span></span></span></label>
-                  </div>
-                  <div class="dpp-binary">
-                    <input class="note-check validity-check" type="radio" name="sinus" id="sinus_no" value="no">
-                    <label class="note-option dpp-no" for="sinus_no"><span class="dpp-binary-label"><span class="dpp-binary-icon"><i class="fa-solid fa-xmark"></i></span><span class="dpp-binary-copy"><span class="dpp-binary-title">No</span></span></span></label>
+                    <input class="choice-check validity-check" type="radio" name="control" id="control_no" value="no">
+                    <label class="dasi-yn-label dasi-yn-no" for="control_no"><span class="dasi-yn-icon"><i class="fa-solid fa-xmark"></i></span><span>No</span></label>
                   </div>
                 </div>
               </div>
-              <div class="dpp-question">
-                <div class="dpp-question-title">¿Decúbito supino, sin cambios posturales relevantes?</div>
-                <div class="dpp-binary-grid">
+              <div class="dasi-question-card">
+                <div class="dasi-question-text">¿Volumen corriente ≥ 8 mL/kg?</div>
+                <div class="dasi-choice-inline">
                   <div class="dpp-binary">
-                    <input class="note-check validity-check" type="radio" name="position" id="position_yes" value="yes" checked>
-                    <label class="note-option dpp-yes" for="position_yes"><span class="dpp-binary-label"><span class="dpp-binary-icon"><i class="fa-solid fa-check"></i></span><span class="dpp-binary-copy"><span class="dpp-binary-title">Sí</span></span></span></label>
+                    <input class="choice-check validity-check" type="radio" name="vt" id="vt_yes" value="yes" checked>
+                    <label class="dasi-yn-label dasi-yn-yes" for="vt_yes"><span class="dasi-yn-icon"><i class="fa-solid fa-check"></i></span><span>Sí</span></label>
                   </div>
                   <div class="dpp-binary">
-                    <input class="note-check validity-check" type="radio" name="position" id="position_no" value="no">
-                    <label class="note-option dpp-no" for="position_no"><span class="dpp-binary-label"><span class="dpp-binary-icon"><i class="fa-solid fa-xmark"></i></span><span class="dpp-binary-copy"><span class="dpp-binary-title">No</span></span></span></label>
+                    <input class="choice-check validity-check" type="radio" name="vt" id="vt_no" value="no">
+                    <label class="dasi-yn-label dasi-yn-no" for="vt_no"><span class="dasi-yn-icon"><i class="fa-solid fa-xmark"></i></span><span>No</span></label>
                   </div>
                 </div>
               </div>
-              <div class="dpp-question">
-                <div class="dpp-question-title">¿Hay condiciones que invalidan o distorsionan la medición?</div>
+              <div class="dasi-question-card">
+                <div class="dasi-question-text">¿Ritmo sinusal?</div>
+                <div class="dasi-choice-inline">
+                  <div class="dpp-binary">
+                    <input class="choice-check validity-check" type="radio" name="sinus" id="sinus_yes" value="yes" checked>
+                    <label class="dasi-yn-label dasi-yn-yes" for="sinus_yes"><span class="dasi-yn-icon"><i class="fa-solid fa-check"></i></span><span>Sí</span></label>
+                  </div>
+                  <div class="dpp-binary">
+                    <input class="choice-check validity-check" type="radio" name="sinus" id="sinus_no" value="no">
+                    <label class="dasi-yn-label dasi-yn-no" for="sinus_no"><span class="dasi-yn-icon"><i class="fa-solid fa-xmark"></i></span><span>No</span></label>
+                  </div>
+                </div>
+              </div>
+              <div class="dasi-question-card">
+                <div class="dasi-question-text">¿Decúbito supino, sin cambios posturales relevantes?</div>
+                <div class="dasi-choice-inline">
+                  <div class="dpp-binary">
+                    <input class="choice-check validity-check" type="radio" name="position" id="position_yes" value="yes" checked>
+                    <label class="dasi-yn-label dasi-yn-yes" for="position_yes"><span class="dasi-yn-icon"><i class="fa-solid fa-check"></i></span><span>Sí</span></label>
+                  </div>
+                  <div class="dpp-binary">
+                    <input class="choice-check validity-check" type="radio" name="position" id="position_no" value="no">
+                    <label class="dasi-yn-label dasi-yn-no" for="position_no"><span class="dasi-yn-icon"><i class="fa-solid fa-xmark"></i></span><span>No</span></label>
+                  </div>
+                </div>
+              </div>
+              <div class="dasi-question-card">
+                <div class="dasi-question-text">¿Hay condiciones que invalidan o distorsionan la medición?</div>
                 <div class="dpp-binary-help mb-2">Ej: tórax abierto, ventilación muy protectora, esfuerzo espontáneo importante, hipertensión intraabdominal relevante, PEEP/VD muy alterados.</div>
-                <div class="dpp-binary-grid">
+                <div class="dasi-choice-inline">
                   <div class="dpp-binary">
-                    <input class="note-check validity-check" type="radio" name="invalidator" id="invalidator_no" value="no" checked>
-                    <label class="note-option dpp-yes" for="invalidator_no"><span class="dpp-binary-label"><span class="dpp-binary-icon"><i class="fa-solid fa-check"></i></span><span class="dpp-binary-copy"><span class="dpp-binary-title">No</span></span></span></label>
+                    <input class="choice-check validity-check" type="radio" name="invalidator" id="invalidator_no" value="no" checked>
+                    <label class="dasi-yn-label dasi-yn-yes" for="invalidator_no"><span class="dasi-yn-icon"><i class="fa-solid fa-check"></i></span><span>No</span></label>
                   </div>
                   <div class="dpp-binary">
-                    <input class="note-check validity-check" type="radio" name="invalidator" id="invalidator_yes" value="yes">
-                    <label class="note-option dpp-no" for="invalidator_yes"><span class="dpp-binary-label"><span class="dpp-binary-icon"><i class="fa-solid fa-xmark"></i></span><span class="dpp-binary-copy"><span class="dpp-binary-title">Sí</span></span></span></label>
+                    <input class="choice-check validity-check" type="radio" name="invalidator" id="invalidator_yes" value="yes">
+                    <label class="dasi-yn-label dasi-yn-no" for="invalidator_yes"><span class="dasi-yn-icon"><i class="fa-solid fa-xmark"></i></span><span>Sí</span></label>
                   </div>
                 </div>
               </div>
@@ -208,44 +208,48 @@ require("../head.php");
           </div>
         </div>
 
-        <div class="note-summary-box mb-3">
-          <div class="note-summary-box-title">Resumen</div>
-          <div id="summaryNarrative" class="note-summary-box-text">Ingresa las presiones y revisa los criterios de validez para interpretar el Delta PP con seguridad.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item">
-              <div class="note-summary-k">PP máxima</div>
-              <div id="ppMax" class="note-summary-v">-</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">PP mínima</div>
-              <div id="ppMin" class="note-summary-v">-</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Validez del índice</div>
-              <div id="summaryValidity" class="note-summary-v">-</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Categoría</div>
-              <div id="summaryCategory" class="note-summary-v">-</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-card-title">Resumen</div>
+            <div id="summaryNarrative" class="note-summary-box-text mb-3">Ingresa las presiones y revisa los criterios de validez para interpretar el Delta PP con seguridad.</div>
+            <div class="note-result-grid-2">
+              <div class="note-result-card">
+                <div class="note-result-card-label">PP máxima</div>
+                <div id="ppMax" class="note-result-card-value">-</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">PP mínima</div>
+                <div id="ppMin" class="note-result-card-value">-</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Validez del índice</div>
+                <div id="summaryValidity" class="note-result-card-value">-</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Categoría</div>
+                <div id="summaryCategory" class="note-result-card-value">-</div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="dpp-main-result mb-3">
-          <div class="dpp-main-result-label">Resultado principal</div>
-          <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
-            <div>
-              <div id="resultTitle" class="dpp-main-result-title">Delta PP</div>
-              <div id="resultText" class="note-result-secondary mt-2">Resultado orientativo; interpretar solo si los criterios de validez son aceptables.</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-card-title mb-3">Resultado e interpretación</div>
+            <div class="note-result-grid-2">
+              <div class="note-result-card">
+                <div class="note-result-card-label">Resultado principal</div>
+                <div id="resultTitle" class="note-result-card-value">Delta PP</div>
+                <div id="deltaPP" class="note-result-card-note">-</div>
+                <div id="resultText" class="small-note text-muted mt-1">Resultado orientativo; interpretar solo si los criterios de validez son aceptables.</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Interpretación clínica</div>
+                <div id="interpretationMain" class="note-result-card-value">Pendiente de cálculo</div>
+                <div id="interpretationSoft" class="small-note text-muted mt-1">Integra el resultado con perfusión, sangrado, función ventricular y riesgos del paciente.</div>
+              </div>
             </div>
-            <div id="deltaPP" class="dpp-main-result-value">-</div>
           </div>
-        </div>
-
-        <div class="note-interpretation mb-3">
-          <div class="note-interpretation-label">Interpretación clínica</div>
-          <div id="interpretationMain" class="note-interpretation-main">Pendiente de cálculo</div>
-          <div id="interpretationSoft" class="note-interpretation-soft">Integra el resultado con perfusión, sangrado, función ventricular y riesgos del paciente.</div>
         </div>
 
         <div id="warningBox" class="note-warning mb-3">

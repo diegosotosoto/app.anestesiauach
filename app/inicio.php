@@ -27,9 +27,9 @@
 		//Botones del Toggle NAVBAR
 
 
-		$boton_toggler="<button class='navbar-toggler shadow-sm' type='button' data-bs-toggle='offcanvas' data-bs-target='#offcanvasNavbar' aria-controls='offcanvasNavbar' style='width:70px; height:40px'><i class='fa-solid fa-bars' style='color:white'></i></button>";
+		$boton_toggler="<button class='navbar-toggler app-nav-toggle' type='button' data-bs-toggle='offcanvas' data-bs-target='#offcanvasNavbar' aria-controls='offcanvasNavbar' aria-label='Abrir menú'><i class='fa-solid fa-bars'></i></button>";
 		$titulo_navbar="";
-		$boton_navbar="<a class='btn btn-lg shadow-sm' href='nuevo_paciente.php' role='button'><i class='fa fa-plus fa-lg' style='color:white' aria-hidden='true'></i></a>";
+		$boton_navbar="<a class='app-nav-action' href='nuevo_paciente.php' role='button' aria-label='Nuevo paciente'><i class='fa fa-plus' aria-hidden='true'></i></a>";
 		//Conexión
 		require("navbar.php");
 	?>
@@ -104,26 +104,31 @@
 </br>
 </br>
 
-<div class="container text-center">
-  <div class="row pt-5">
-    <div class="col text-center">
-      <a href="#" class="btn shadow-sm btn-success" style="height: 150px;width: 150px"><i class="fa-solid fa-user-plus fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Nuevo Paciente</div></a>
-    </div>
+<div class="content-shell px-3">
+  <div class="links-grid home-grid">
+    <a href="#" class="link-tile home-tile home-tile-dolor">
+      <i class="fa-solid fa-user-plus fa-2x mb-2"></i>
+      <div class="link-title">Nuevo Paciente</div>
+      <div class="link-desc">Registro clínico inicial.</div>
+    </a>
 
-    <div class="col text-center">
-      <a href="#" class="btn shadow-sm btn-primary" style="height: 150px;width: 150px"><i class="fa-solid fa-syringe fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Ingreso Dolor</div></a>
-    </div>
+    <a href="#" class="link-tile home-tile home-tile-bitacora">
+      <i class="fa-solid fa-syringe fa-2x mb-2"></i>
+      <div class="link-title">Ingreso Dolor</div>
+      <div class="link-desc">Seguimiento de analgesia.</div>
+    </a>
 
-  </div>
-   <div class="row pt-5">
-    <div class="col text-center">
-      <a href="#" class="btn shadow-sm btn-danger disabled" style="height: 150px;width: 150px"> <i class="fa-solid fa-clipboard fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Visita Preanestésica</div></a>
-    </div>
-    
-    <div class="col text-center">
-      <a href="apuntes.php" class="btn shadow-sm btn-warning" style="height: 150px;width: 150px"><i class="fa-solid fa-book fa-2xl pt-5"></i><div class="text-center pt-3 ps-2 pe-2">Apuntes</div></a>
-    </div>
+    <a href="#" class="link-tile home-tile home-tile-epa disabled" aria-disabled="true">
+      <i class="fa-solid fa-clipboard fa-2x mb-2"></i>
+      <div class="link-title">Visita Preanestésica</div>
+      <div class="link-desc">Flujo no disponible.</div>
+    </a>
 
+    <a href="apuntes.php" class="link-tile home-tile home-tile-apuntes">
+      <i class="fa-solid fa-book fa-2x mb-2"></i>
+      <div class="link-title">Apuntes</div>
+      <div class="link-desc">Notas y calculadoras.</div>
+    </a>
   </div>
 </div>
 

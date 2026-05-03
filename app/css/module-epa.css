@@ -1,0 +1,16 @@
+/* Modulo Evaluacion Preanestesica */
+.epa-card,
+.epa-section-title,
+.epa-accordion-button{
+  background:var(--app-card);
+  color:var(--app-text);
+  border-color:var(--app-border);
+}
+
+body.theme-dark .epa-card,
+body.theme-dark .epa-section-title,
+body.theme-dark .epa-accordion-button{
+  background:var(--app-card) !important;
+  color:var(--app-text) !important;
+  border-color:var(--app-border) !important;
+}

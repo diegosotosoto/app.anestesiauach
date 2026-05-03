@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "Escalares de dosificación";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "Apunte interactivo para visualizar los principales escalares de dosificación en el paciente obeso adulto. Permite ingresar sexo, talla y peso total, seleccionar un escalar y mostrar su valor calculado, su relación con el peso total, su utilidad clínica y una fórmula docente simplificada.";
@@ -18,7 +18,7 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=1">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=1"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
@@ -43,19 +43,30 @@ require("../head.php");
 
           .esc-option{
             display:flex;
-            flex-direction:column;
-            align-items:flex-start;
-            justify-content:center;
+            flex-direction:row;
+            align-items:center;
+            justify-content:flex-start;
             text-align:left;
-            min-height:86px;
-            padding:.9rem .95rem;
+            min-height:56px;
+            padding:.65rem .85rem;
             border-radius:1rem;
             border:2px solid var(--note-line);
             background:#fff;
             cursor:pointer;
             transition:.15s ease;
             box-shadow:0 3px 10px rgba(15,23,42,.04);
-            gap:.25rem;
+            gap:.75rem;
+          }
+          .esc-option-icon{
+            font-size:1.1rem;
+            color:var(--note-brand);
+            width:1.5rem;
+            text-align:center;
+          }
+          .esc-option-text{
+            display:flex;
+            flex-direction:column;
+            gap:.15rem;
           }
 
           .esc-option-input:checked + .esc-option{
@@ -64,14 +75,14 @@ require("../head.php");
             transform:translateY(-1px);
           }
 
-          .esc-option-title{
+          .esc-choice-title{
             font-size:.98rem;
             font-weight:800;
             line-height:1.2;
             color:var(--note-text);
             margin:0;
           }
-          .esc-option-sub{
+          .esc-choice-sub{
             font-size:.87rem;
             line-height:1.35;
             color:var(--note-muted);
@@ -85,13 +96,6 @@ require("../head.php");
             padding:.7rem .65rem;
           }
 
-          .esc-tbw{background:#eaf2ff;}
-          .esc-bmi{background:#fff8db;}
-          .esc-ibw{background:#eaf7fb;}
-          .esc-ffm{background:#eaf8ef;}
-          .esc-abw{background:#fff0e1;}
-          .esc-pk{background:#f1edff;}
-          .esc-bsa{background:#f5f7fb;}
 
           .esc-overview-grid{
             display:grid;
@@ -104,7 +108,6 @@ require("../head.php");
             padding:1rem;
             border:1px solid var(--note-line);
           }
-
           .esc-overview-card b{
             display:block;
             margin-bottom:.25rem;
@@ -119,31 +122,6 @@ require("../head.php");
           .esc-gray{background:#f5f7fb;border-color:#d9e0ea;}
           .esc-red{background:#fdebec;border-color:#ef9a9a;}
 
-          .esc-warning-item{
-            display:flex;
-            align-items:flex-start;
-            gap:.8rem;
-            border:1px solid #ead38a;
-            border-radius:1rem;
-            background:#fff9e8;
-            padding:.95rem 1rem;
-          }
-          .esc-warning-mark{
-            flex:0 0 auto;
-            width:34px;
-            height:34px;
-            border-radius:999px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            background:#f4c542;
-            color:#fff;
-            margin-top:.08rem;
-          }
-          .esc-warning-copy{min-width:0;flex:1;}
-          .esc-warning-title{font-size:1rem;font-weight:800;line-height:1.22;color:var(--note-text);margin-bottom:.15rem;}
-          .esc-warning-note{margin:0;font-size:.9rem;line-height:1.4;color:var(--note-muted);}
-
           @media (max-width:992px){
             .esc-scalar-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
           }
@@ -155,6 +133,7 @@ require("../head.php");
             .esc-sex-grid{grid-template-columns:1fr;}
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · OBESIDAD · FARMACOLOGÍA PERIOPERATORIA</div>
@@ -196,15 +175,21 @@ require("../head.php");
               <label>
                 <input class="esc-option-input" type="radio" name="sexo" value="m" checked>
                 <div class="esc-option">
-                  <div class="esc-option-title">Hombre</div>
-                  <div class="esc-option-sub">Aplicar ecuaciones masculinas</div>
+                  <div class="esc-option-icon"><i class="fa-solid fa-mars"></i></div>
+                  <div class="esc-option-text">
+                    <div class="esc-choice-title">Hombre</div>
+                    <div class="esc-choice-sub">Pcte. masculino</div>
+                  </div>
                 </div>
               </label>
               <label>
                 <input class="esc-option-input" type="radio" name="sexo" value="f">
                 <div class="esc-option">
-                  <div class="esc-option-title">Mujer</div>
-                  <div class="esc-option-sub">Aplicar ecuaciones femeninas</div>
+                  <div class="esc-option-icon"><i class="fa-solid fa-venus"></i></div>
+                  <div class="esc-option-text">
+                    <div class="esc-choice-title">Mujer</div>
+                    <div class="esc-choice-sub">Pcte. femenina</div>
+                  </div>
                 </div>
               </label>
             </div>
@@ -237,81 +222,83 @@ require("../head.php");
               <label>
                 <input class="esc-option-input" type="radio" name="scalar" value="tbw" checked>
                 <div class="esc-option esc-tbw">
-                  <div class="esc-option-title">TBW</div>
-                  <div class="esc-option-sub">Peso total</div>
+                  <div class="esc-choice-title">TBW</div>
+                  <div class="esc-choice-sub">Peso total</div>
                 </div>
               </label>
 
               <label>
                 <input class="esc-option-input" type="radio" name="scalar" value="bmi">
                 <div class="esc-option esc-bmi">
-                  <div class="esc-option-title">BMI</div>
-                  <div class="esc-option-sub">IMC</div>
+                  <div class="esc-choice-title">BMI</div>
+                  <div class="esc-choice-sub">IMC</div>
                 </div>
               </label>
 
               <label>
                 <input class="esc-option-input" type="radio" name="scalar" value="ibw">
                 <div class="esc-option esc-ibw">
-                  <div class="esc-option-title">IBW / PCI</div>
-                  <div class="esc-option-sub">Peso ideal</div>
+                  <div class="esc-choice-title">IBW / PCI</div>
+                  <div class="esc-choice-sub">Peso ideal</div>
                 </div>
               </label>
 
               <label>
                 <input class="esc-option-input" type="radio" name="scalar" value="ffm">
                 <div class="esc-option esc-ffm">
-                  <div class="esc-option-title">FFM</div>
-                  <div class="esc-option-sub">Masa libre de grasa</div>
+                  <div class="esc-choice-title">FFM</div>
+                  <div class="esc-choice-sub">Masa libre de grasa</div>
                 </div>
               </label>
 
               <label>
                 <input class="esc-option-input" type="radio" name="scalar" value="abw">
                 <div class="esc-option esc-abw">
-                  <div class="esc-option-title">ABW</div>
-                  <div class="esc-option-sub">Peso ajustado</div>
+                  <div class="esc-choice-title">ABW</div>
+                  <div class="esc-choice-sub">Peso ajustado</div>
                 </div>
               </label>
 
               <label>
                 <input class="esc-option-input" type="radio" name="scalar" value="pk">
                 <div class="esc-option esc-pk">
-                  <div class="esc-option-title">PK Mass</div>
-                  <div class="esc-option-sub">Masa farmacocinética</div>
+                  <div class="esc-choice-title">PK Mass</div>
+                  <div class="esc-choice-sub">Masa farmacocinética</div>
                 </div>
               </label>
 
               <label>
                 <input class="esc-option-input" type="radio" name="scalar" value="bsa">
                 <div class="esc-option esc-bsa">
-                  <div class="esc-option-title">BSA / SCT</div>
-                  <div class="esc-option-sub">Superficie corporal</div>
+                  <div class="esc-choice-title">BSA / SCT</div>
+                  <div class="esc-choice-sub">Superficie corporal</div>
                 </div>
               </label>
             </div>
           </div>
         </div>
 
-        <div class="note-summary-box mb-3">
-          <div class="note-summary-box-title">Resumen</div>
-          <div id="summaryNarrative" class="note-summary-box-text">Ingresa peso y talla para calcular el escalar seleccionado en un paciente obeso adulto.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item">
-              <div class="note-summary-k">Sexo</div>
-              <div id="sumSexo" class="note-summary-v">Hombre</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Peso total</div>
-              <div id="sumPeso" class="note-summary-v">—</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Talla</div>
-              <div id="sumTalla" class="note-summary-v">—</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">IMC / categoría</div>
-              <div id="sumIMC" class="note-summary-v">—</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-card-title">Resumen</div>
+            <div id="summaryNarrative" class="note-summary-box-text mb-3">Ingresa peso y talla para calcular el escalar seleccionado en un paciente obeso adulto.</div>
+            <div class="note-result-grid-2">
+              <div class="note-result-card">
+                <div class="note-result-card-label">Sexo</div>
+                <div id="sumSexo" class="note-result-card-value">Hombre</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Peso total</div>
+                <div id="sumPeso" class="note-result-card-value">—</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Talla</div>
+                <div id="sumTalla" class="note-result-card-value">—</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">IMC / categoría</div>
+                <div id="sumIMC" class="note-result-card-value">—</div>
+              </div>
             </div>
           </div>
         </div>
@@ -338,11 +325,11 @@ require("../head.php");
           </div>
         </div>
 
-        <div class="esc-warning-item mb-3">
-          <div class="esc-warning-mark"><i class="fa-solid fa-triangle-exclamation"></i></div>
-          <div class="esc-warning-copy">
-            <div class="esc-warning-title">Advertencia clínica</div>
-            <p id="warningText" class="esc-warning-note">En el paciente obeso, el error más frecuente es dosificar todo por peso total. El descriptor correcto depende de distribución, aclaramiento y objetivo farmacológico.</p>
+        <div class="note-warning-item mb-3">
+          <div class="note-warning-icon"><i class="fa-solid fa-check"></i></div>
+          <div class="note-warning-copy">
+            <div class="note-warning-title">Advertencia clínica</div>
+            <p id="warningText" class="note-warning-note">En el paciente obeso, el error más frecuente es dosificar todo por peso total. El descriptor correcto depende de distribución, aclaramiento y objetivo farmacológico.</p>
           </div>
         </div>
 
@@ -350,14 +337,14 @@ require("../head.php");
           <div class="note-card-body">
             <div class="note-section-label">Resumen rápido de todos los escalares</div>
             <div class="esc-overview-grid">
-              <div class="esc-overview-card esc-blue"><b>TBW</b>Peso real medido del paciente. Útil para describir al paciente, pero no como descriptor universal de dosis.</div>
-              <div class="esc-overview-card esc-yellow"><b>BMI</b>Clasifica el grado de obesidad, pero no es un escalar directo de dosificación farmacológica.</div>
-              <div class="esc-overview-card esc-cyan"><b>IBW / PCI</b>Peso basado en talla y sexo; sirve como referencia estructural y como base para otros escalares.</div>
-              <div class="esc-overview-card esc-green"><b>FFM</b>Descriptor moderno preferido en obesidad mórbida para varios modelos farmacocinéticos.</div>
-              <div class="esc-overview-card esc-orange"><b>ABW</b>Peso intermedio: IBW + 40% del exceso de peso. Sigue siendo una aproximación clínica útil.</div>
-              <div class="esc-overview-card esc-purple"><b>PK Mass</b>Descriptor farmacocinético con fórmula propia. No equivale a FFM.</div>
-              <div class="esc-overview-card esc-gray"><b>BSA / SCT</b>Superficie corporal; útil para algunos contextos fisiológicos y hemodinámicos.</div>
-              <div class="esc-overview-card esc-red"><b>Alometría</b>No es “otro peso”, sino una forma no lineal de escalar funciones como aclaramiento.</div>
+              <div class="esc-overview-card esc-tbw"><b>TBW</b>Peso total real medido del paciente. Útil para describir al paciente, pero no como descriptor universal de dosis.</div>
+              <div class="esc-overview-card esc-bmi"><b>BMI</b>Índice de masa corporal. Clasifica el grado de obesidad, pero no es un escalar directo de dosificación farmacológica.</div>
+              <div class="esc-overview-card esc-ibw"><b>IBW / PCI</b>Peso Ideal. Peso basado en talla y sexo; sirve como referencia estructural y como base para otros escalares.</div>
+              <div class="esc-overview-card esc-ffm"><b>FFM</b>Masa Libre de Grasa. Descriptor moderno preferido en obesidad mórbida para varios modelos farmacocinéticos.</div>
+              <div class="esc-overview-card esc-abw"><b>ABW</b>Peso corregido: IBW + 40% del exceso de peso. Sigue siendo una aproximación clínica útil.</div>
+              <div class="esc-overview-card esc-pk"><b>PK Mass</b>Masa Farmacocinética. Descriptor farmacocinético con fórmula propia. No equivale a FFM.</div>
+              <div class="esc-overview-card esc-bsa"><b>BSA / SCT</b>Superficie corporal; útil para algunos contextos fisiológicos y hemodinámicos.</div>
+              <div class="esc-overview-card esc-red"><b>Alometría</b>No es “otro peso”, sino una forma no lineal de escalar funciones como aclaramiento, en relación al tamaño y proporción de un órgano.</div>
             </div>
           </div>
         </div>
@@ -564,6 +551,46 @@ require("../head.php");
   function recalculateAll(){
     updateSummary();
     renderEscalar();
+    updateEscalarColors();
+  }
+
+  const escalarColors = {
+    light: {
+      tbw: ['#eaf2ff', '#c2d8ff'],
+      bmi: ['#fff8db', '#edd57a'],
+      ibw: ['#eaf7fb', '#b8e0f0'],
+      ffm: ['#eaf8ef', '#b8e0c8'],
+      abw: ['#fff0e1', '#ffd4a8'],
+      pk: ['#f1edff', '#d4c8ff'],
+      bsa: ['#f5f7fb', '#d9e0ea']
+    },
+    dark: {
+      tbw: ['#1a3a5c', '#2d5a8a'],
+      bmi: ['#5c501a', '#8a7a2d'],
+      ibw: ['#1a4a5c', '#2d7a9a'],
+      ffm: ['#1a4d3a', '#2d8a6a'],
+      abw: ['#5c3a1a', '#8a5a2d'],
+      pk: ['#3a1a5c', '#5a2d8a'],
+      bsa: ['#3a3a3a', '#5a5a5a']
+    }
+  };
+
+  function updateEscalarColors(){
+    const isDark = document.body.classList.contains('theme-dark') || document.body.classList.contains('ui-nocturno');
+    const colors = isDark ? escalarColors.dark : escalarColors.light;
+    document.querySelectorAll('.esc-scalar-grid .esc-option, .esc-overview-card').forEach(function(el){
+      const type = el.classList.contains('esc-tbw') ? 'tbw' :
+        el.classList.contains('esc-bmi') ? 'bmi' :
+        el.classList.contains('esc-ibw') ? 'ibw' :
+        el.classList.contains('esc-ffm') ? 'ffm' :
+        el.classList.contains('esc-abw') ? 'abw' :
+        el.classList.contains('esc-pk') ? 'pk' :
+        el.classList.contains('esc-bsa') ? 'bsa' : null;
+      if(type && colors[type]){
+        el.style.setProperty('background', colors[type][0], 'important');
+        el.style.setProperty('border-color', colors[type][1], 'important');
+      }
+    });
   }
 
   document.querySelectorAll('input[name="sexo"]').forEach(function(input){
@@ -584,6 +611,7 @@ require("../head.php");
   tallaInput.addEventListener('input', recalculateAll);
 
   recalculateAll();
+  new MutationObserver(updateEscalarColors).observe(document.body, {attributes:true, attributeFilter:['class']});
 })();
 
 function toggleInfo(){

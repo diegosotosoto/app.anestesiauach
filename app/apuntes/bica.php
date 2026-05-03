@@ -13,13 +13,13 @@ $referencias = array(
 $icono_apunte = "<i class='fa-solid fa-flask-vial pe-3 pt-2'></i>";
 $titulo_apunte = "Corrección de bicarbonato";
 
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=20260416-2">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
@@ -27,8 +27,6 @@ require("../head.php");
       <div class="note-shell">
 
         <style>
-          .bica-summary-box .note-summary-box-text{margin-bottom:.75rem;}
-
           .bica-reco-wrap{
             border:1px solid var(--note-line);
             border-radius:1.35rem;
@@ -98,6 +96,7 @@ require("../head.php");
             .bica-reco-main{font-size:1.2rem;}
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero">
           <div class="note-hero-kicker">APP CLÍNICA · ÁCIDO-BASE</div>
@@ -152,25 +151,27 @@ require("../head.php");
           </div>
         </div>
 
-        <div class="note-summary-box bica-summary-box mb-3">
-          <div class="note-summary-box-title">Resumen</div>
-          <div id="summaryNarrative" class="note-summary-box-text">Ingresa peso y Base Excess para mostrar un resumen clínico rápido.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item">
-              <div class="note-summary-k">Peso usado</div>
-              <div id="summaryPeso" class="note-summary-v">No ingresado</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">BE usado</div>
-              <div id="summaryBe" class="note-summary-v">No ingresado</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Déficit estimado</div>
-              <div id="summaryDeficit" class="note-summary-v">-</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Corrección inicial</div>
-              <div id="summaryInitial" class="note-summary-v">-</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-card-title">Resumen</div>
+            <div id="summaryNarrative" class="note-summary-box-text mb-3">Ingresa peso y Base Excess para mostrar un resumen clínico rápido.</div>
+            <div class="note-result-grid-2">
+              <div class="note-result-card">
+                <div class="note-result-card-label">Peso usado</div>
+                <div id="summaryPeso" class="note-result-card-value">No ingresado</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">BE usado</div>
+                <div id="summaryBe" class="note-result-card-value">No ingresado</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Déficit estimado</div>
+                <div id="summaryDeficit" class="note-result-card-value">-</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Corrección inicial</div>
+                <div id="summaryInitial" class="note-result-card-value">-</div>
+              </div>
             </div>
           </div>
         </div>

@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "Dosis AALL";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "Referencia interactiva orientativa para calcular dosis máximas de anestésicos locales en adultos según peso, droga y eventual uso de epinefrina. La cifra resultante no reemplaza el ajuste clínico según sitio de bloqueo, absorción esperada, comorbilidad y riesgo de LAST.";
@@ -17,13 +17,14 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=1">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=1"></script>
 
 <?php
 $drugs = array(
   'lidocaina' => array(
     'label' => 'Lidocaína',
+    'clase' => 'drug-local',
     'mgkg_sin' => 4.5,
     'mgkg_con' => 7.0,
     'max_sin' => 300,
@@ -32,6 +33,7 @@ $drugs = array(
   ),
   'bupivacaina' => array(
     'label' => 'Bupivacaína',
+    'clase' => 'drug-local',
     'mgkg_sin' => 2.5,
     'mgkg_con' => 3.0,
     'max_sin' => 175,
@@ -40,6 +42,7 @@ $drugs = array(
   ),
   'levobupivacaina' => array(
     'label' => 'Levobupivacaína',
+    'clase' => 'drug-local',
     'mgkg_sin' => 2.5,
     'mgkg_con' => 3.0,
     'max_sin' => 150,
@@ -48,6 +51,7 @@ $drugs = array(
   ),
   'cloroprocaina' => array(
     'label' => 'Cloroprocaína',
+    'clase' => 'drug-local',
     'mgkg_sin' => 11.0,
     'mgkg_con' => 14.0,
     'max_sin' => 800,
@@ -65,71 +69,25 @@ $drugs = array(
         <style>
           .aall-shell{max-width:980px;margin:0 auto;}
           .aall-drug-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;}
-          .aall-drug-option .note-option{min-height:88px;align-items:flex-start;justify-content:flex-start;text-align:left;padding:.8rem .9rem;gap:.35rem;}
-          .aall-drug-option .note-option .note-drug-title{font-size:1rem;font-weight:800;line-height:1.15;color:var(--note-text);}
-          .aall-drug-option .note-option .note-drug-sub{font-size:.82rem;line-height:1.25;color:#475467;}
+          .aall-drug-grid > label{display:flex;}
+          .aall-drug-grid .drug-card{height:100%;width:100%;min-height:88px;align-items:center;justify-content:flex-start;text-align:left;}
           .aall-grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;}
           .aall-risk-list{margin:0;padding-left:1rem;}
           .aall-risk-list li{margin-bottom:.22rem;}
-          .aall-summary-box{background:var(--note-brand-soft);border:1px solid var(--note-brand-soft-border);border-radius:1rem;padding:1rem;}
-          .aall-summary-box .note-summary-item{background:#fff;border:1px solid var(--note-line-strong);border-radius:1rem;padding:.85rem .95rem;}
-          .aall-summary-text{font-size:1.02rem;font-weight:800;line-height:1.35;color:var(--note-text);margin-bottom:.8rem;}
           .aall-description{background:#fff;border:1px solid var(--note-line);border-radius:1rem;padding:1rem;}
           .aall-empty{font-size:.95rem;color:var(--note-muted);}
           .aall-highlight{background:linear-gradient(180deg,var(--note-brand-soft) 0%,#f7faff 100%);}
-          .aall-local{background:var(--drug-local);}
+          .note-check:checked + .drug-card{box-shadow:0 0 0 3px rgba(47,128,237,.3), 0 4px 12px rgba(15,23,42,.15);transform:translateY(-1px);}
+          .note-choice-grid .note-option{min-height:56px;}
           @media (max-width:768px){
-            .aall-drug-grid,.aall-grid-2{grid-template-columns:1fr;}
+            .aall-grid-2{grid-template-columns:1fr;}
+            .aall-drug-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem;}
           }
-          .aal-warning-item{
-  display:flex;
-  align-items:flex-start;
-  gap:.8rem;
-  border:1px solid #ead38a;
-  border-radius:1rem;
-  background:#fff9e8;
-  padding:.95rem 1rem;
-}
-
-.aal-warning-mark{
-  flex:0 0 auto;
-  width:34px;
-  height:34px;
-  border-radius:999px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#f4c542;
-  color:#fff;
-  margin-top:.08rem;
-}
-
-.aal-warning-mark i{
-  font-size:.95rem;
-}
-
-.aal-warning-copy{
-  min-width:0;
-  flex:1;
-}
-
-.aal-warning-title{
-  font-size:1rem;
-  font-weight:800;
-  line-height:1.22;
-  color:var(--note-text);
-  margin-bottom:.15rem;
-  text-align:center;
-}
-
-.aal-warning-note{
-  margin:0;
-  font-size:.9rem;
-  line-height:1.4;
-  color:var(--note-muted);
-  text-align:center;
-}
+          @media (max-width:460px){
+            .aall-drug-grid{grid-template-columns:1fr;}
+          }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="aall-shell">
           <div class="note-hero mb-3">
@@ -195,11 +153,13 @@ $drugs = array(
               <div class="note-label mt-3">Anestésico local</div>
               <div class="aall-drug-grid">
                 <?php foreach($drugs as $key => $drug){ ?>
-                  <label class="aall-drug-option">
+                  <label>
                     <input class="note-check" type="radio" name="farmaco" value="<?php echo $key; ?>" <?php echo $key === 'lidocaina' ? 'checked' : ''; ?>>
-                    <span class="note-option aall-local">
-                      <span class="note-drug-title"><?php echo $drug['label']; ?></span>
-                      <span class="note-drug-sub">Anestésico local</span>
+                    <span class="drug-card <?php echo $drug['clase']; ?>">
+                      <div class="drug-label-content">
+                        <div class="drug-label-title"><?php echo $drug['label']; ?></div>
+                        <div class="drug-label-subtitle">Anestésico local</div>
+                      </div>
                     </span>
                   </label>
                 <?php } ?>
@@ -207,25 +167,27 @@ $drugs = array(
             </div>
           </div>
 
-          <div class="aall-summary-box mb-3">
-            <div class="note-summary-box-title">Resumen</div>
-            <div id="summaryText" class="aall-summary-text">Lidocaína 70 kg sin epinefrina.</div>
-            <div class="note-summary-grid-2">
-              <div class="note-summary-item">
-                <div class="note-summary-k">Droga</div>
-                <div id="summaryDrug" class="note-summary-v">Lidocaína</div>
-              </div>
-              <div class="note-summary-item">
-                <div class="note-summary-k">Escenario</div>
-                <div id="summaryScenario" class="note-summary-v">Sin epinefrina</div>
-              </div>
-              <div class="note-summary-item">
-                <div class="note-summary-k">Peso usado</div>
-                <div id="summaryWeight" class="note-summary-v">70 kg</div>
-              </div>
-              <div class="note-summary-item">
-                <div class="note-summary-k">Límite por peso</div>
-                <div id="summaryMgKg" class="note-summary-v">4.5 mg/kg</div>
+          <div class="note-card mb-3">
+            <div class="note-card-body">
+              <div class="note-card-title">Resumen</div>
+              <div id="summaryText" class="note-summary-box-text mb-3">Lidocaína 70 kg sin epinefrina.</div>
+              <div class="note-result-grid-2">
+                <div class="note-result-card">
+                  <div class="note-result-card-label">Droga</div>
+                  <div id="summaryDrugLabel" class="drug-label drug-local"><div class="drug-label-content"><div class="drug-label-title" id="summaryDrug">Lidocaína</div></div></div>
+                </div>
+                <div class="note-result-card">
+                  <div class="note-result-card-label">Escenario</div>
+                  <div id="summaryScenario" class="note-result-card-value">Sin epinefrina</div>
+                </div>
+                <div class="note-result-card">
+                  <div class="note-result-card-label">Peso usado</div>
+                  <div id="summaryWeight" class="note-result-card-value">70 kg</div>
+                </div>
+                <div class="note-result-card">
+                  <div class="note-result-card-label">Límite por peso</div>
+                  <div id="summaryMgKg" class="note-result-card-value">4.5 mg/kg</div>
+                </div>
               </div>
             </div>
           </div>
@@ -272,37 +234,37 @@ $drugs = array(
   </div>
 
   <div class="note-checklist-section-body" style="display:block;border-top:none;padding-top:0;">
-    <div class="note-checklist-list">
+    <div class="note-warning-list">
 
-      <div class="aal-warning-item">
-        <div class="aal-warning-mark"><i class="fa-solid fa-triangle-exclamation"></i></div>
-        <div class="aal-warning-copy">
-          <div class="aal-warning-title">Mayor susceptibilidad sistémica</div>
-          <p class="aal-warning-note">Sepsis, embarazo, extremos de edad, desnutrición o hipoproteinemia.</p>
+      <div class="note-warning-item">
+        <div class="note-warning-icon"><i class="fa-solid fa-check"></i></div>
+        <div class="note-warning-copy">
+          <div class="note-warning-title">Mayor susceptibilidad sistémica</div>
+          <p class="note-warning-note">Sepsis, embarazo, extremos de edad, desnutrición o hipoproteinemia.</p>
         </div>
       </div>
 
-      <div class="aal-warning-item">
-        <div class="aal-warning-mark"><i class="fa-solid fa-triangle-exclamation"></i></div>
-        <div class="aal-warning-copy">
-          <div class="aal-warning-title">Reserva orgánica reducida</div>
-          <p class="aal-warning-note">Hepatopatía, insuficiencia cardíaca, enfermedad renal crónica o shock.</p>
+      <div class="note-warning-item">
+        <div class="note-warning-icon"><i class="fa-solid fa-check"></i></div>
+        <div class="note-warning-copy">
+          <div class="note-warning-title">Reserva orgánica reducida</div>
+          <p class="note-warning-note">Hepatopatía, insuficiencia cardíaca, enfermedad renal crónica o shock.</p>
         </div>
       </div>
 
-      <div class="aal-warning-item">
-        <div class="aal-warning-mark"><i class="fa-solid fa-triangle-exclamation"></i></div>
-        <div class="aal-warning-copy">
-          <div class="aal-warning-title">Sitios de absorción alta</div>
-          <p class="aal-warning-note">Intercostal, epidural, plexos o infiltración extensa.</p>
+      <div class="note-warning-item">
+        <div class="note-warning-icon"><i class="fa-solid fa-check"></i></div>
+        <div class="note-warning-copy">
+          <div class="note-warning-title">Sitios de absorción alta</div>
+          <p class="note-warning-note">Intercostal, epidural, plexos o infiltración extensa.</p>
         </div>
       </div>
 
-      <div class="aal-warning-item">
-        <div class="aal-warning-mark"><i class="fa-solid fa-triangle-exclamation"></i></div>
-        <div class="aal-warning-copy">
-          <div class="aal-warning-title">Uso combinado de varios anestésicos locales</div>
-          <p class="aal-warning-note">Piensa siempre en dosis total acumulada y no sólo en cada fármaco por separado.</p>
+      <div class="note-warning-item">
+        <div class="note-warning-icon"><i class="fa-solid fa-check"></i></div>
+        <div class="note-warning-copy">
+          <div class="note-warning-title">Uso combinado de varios anestésicos locales</div>
+          <p class="note-warning-note">Piensa siempre en dosis total acumulada y no sólo en cada fármaco por separado.</p>
         </div>
       </div>
 
@@ -382,6 +344,8 @@ $drugs = array(
     const finalMg = Math.min(byWeight, absCap);
 
     CNS.safeSetText(summaryText, `${drug.label} ${CNS.formatNumber(weight,1)} kg ${scenario === 'con' ? 'con' : 'sin'} epinefrina.`);
+    const drugLabelEl = document.getElementById('summaryDrugLabel');
+    if(drugLabelEl){ drugLabelEl.className = 'drug-label ' + (drug.clase || 'drug-local'); }
     CNS.safeSetText(summaryDrug, drug.label);
     CNS.safeSetText(summaryScenario, scenario === 'con' ? 'Con epinefrina' : 'Sin epinefrina');
     CNS.safeSetText(summaryWeight, formatKg(weight));

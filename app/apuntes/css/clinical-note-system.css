@@ -14,6 +14,8 @@
   --note-success-border:#cfe8e6;
   --note-warning-bg:#fff9e8;
   --note-warning-border:#ecd798;
+  --note-warning-accent:#facc15;
+  --note-check-accent:#22c55e;
   --note-danger-bg:#fff5f3;
   --note-danger-border:#efc4be;
   --note-radius:.95rem;
@@ -21,13 +23,40 @@
   --note-shadow:0 8px 24px rgba(15,23,42,.06);
   --note-selected:#2f80ed;
 
-  --drug-opioid:#dff2ff;
-  --drug-local:#e7e7eb;
-  --drug-inductor:#fff2b8;
-  --drug-neuromuscular:#ffd9d9;
-  --drug-vasoactive:#eee3ff;
-  --drug-atropine:#e0f6df;
+  /* Drug label colors based on ISO anesthesia standards */
+  --drug-opioid:#8fd3ff;
+  --drug-local:#d1d5db;
+  --drug-inductor:#facc15;
+  --drug-neuromuscular:#ef4444;
+  --drug-vasoactive:#c4b5fd;
+  --drug-atropine:#86efac;
+  --drug-benzo:#f59e0b;
+  --drug-reversal:#ff6b7a;
   --drug-other:#ffffff;
+
+  /* Drug label contrast box - 50% white for subtle contrast, fixed for all modes */
+  --drug-label-contrast:rgba(255,255,255,0.50);
+  --drug-label-text:#111827;
+  --drug-label-subtitle:#374151;
+  /* Grade severity color system (green → yellow → orange → red) */
+  --grade-1-bg:#e9f8ef;
+  --grade-1-border:#b7ddc3;
+  --grade-2-bg:#fff8db;
+  --grade-2-border:#ead38a;
+  --grade-2b-bg:#fff2c7;
+  --grade-2b-border:#e3be69;
+  --grade-3-bg:#fff4e5;
+  --grade-3-border:#fdba74;
+  --grade-4-bg:#fdecec;
+  --grade-4-border:#fca5a5;
+}
+
+body.theme-dark,
+body.ui-nocturno{
+  --note-warning-bg:rgba(250,204,21,.12);
+  --note-warning-border:rgba(250,204,21,.45);
+  --note-warning-accent:#facc15;
+  --note-check-accent:#15803d;
 }
 
 body{background:var(--note-bg);}
@@ -45,7 +74,7 @@ body{background:var(--note-bg);}
 }
 
 .note-hero{
-  background:linear-gradient(135deg,var(--note-brand),var(--note-brand-2));
+  background:var(--note-brand);
   color:#fff;
   padding:1.15rem 1.25rem;
 }
@@ -74,14 +103,19 @@ body{background:var(--note-bg);}
   border:1px solid var(--note-line);
   border-radius:var(--note-radius);
   background:var(--note-soft);
-  padding:.75rem .82rem;
+  padding:1rem .82rem;
+}
+
+body.theme-dark .note-input-group{
+  background:var(--note-card);
+  border-color:var(--note-line-strong);
 }
 
 .note-label{
-  font-size:.84rem;
+  font-size:.93rem;
   font-weight:700;
   color:var(--note-text);
-  margin-bottom:.22rem;
+  margin-bottom:.5rem;
   display:block;
   line-height:1.15;
 }
@@ -127,6 +161,14 @@ body{background:var(--note-bg);}
 .note-option i{font-size:.8rem;margin-bottom:.08rem;color:#3559b7;}
 .note-option small,.note-option .note-sub{font-weight:500;color:var(--note-muted);font-size:.72rem;line-height:1.2;margin-top:.14rem;}
 
+.small-note-button{
+  min-height:56px;
+}
+
+.standard-note-button{
+  min-height:80px !important;
+}
+
 .note-check:checked + .note-option,
 .note-option.is-selected{
   transform:translateY(-1px);
@@ -137,6 +179,27 @@ body{background:var(--note-bg);}
 .note-option-age{background:#f5f9ff;}
 .note-option-group{background:#fffdfa;}
 .note-option-mode{background:#f7fbf8;}
+
+/* Grade severity backgrounds for option buttons */
+.note-option.note-grade-1{background:var(--grade-1-bg);}
+.note-option.note-grade-2{background:var(--grade-2-bg);}
+.note-option.note-grade-2b{background:var(--grade-2b-bg);}
+.note-option.note-grade-3{background:var(--grade-3-bg);}
+.note-option.note-grade-4{background:var(--grade-4-bg);}
+
+/* Grade severity panel/card backgrounds */
+.note-grade-panel-1{background:var(--grade-1-bg);border-color:var(--grade-1-border) !important;}
+.note-grade-panel-2{background:var(--grade-2-bg);border-color:var(--grade-2-border) !important;}
+.note-grade-panel-2b{background:var(--grade-2b-bg);border-color:var(--grade-2b-border) !important;}
+.note-grade-panel-3{background:var(--grade-3-bg);border-color:var(--grade-3-border) !important;}
+.note-grade-panel-4{background:var(--grade-4-bg);border-color:var(--grade-4-border) !important;}
+
+/* Grade severity reference card backgrounds */
+.note-grade-card-1{background:var(--grade-1-bg) !important;border-color:var(--grade-1-border) !important;}
+.note-grade-card-2{background:var(--grade-2-bg) !important;border-color:var(--grade-2-border) !important;}
+.note-grade-card-2b{background:var(--grade-2b-bg) !important;border-color:var(--grade-2b-border) !important;}
+.note-grade-card-3{background:var(--grade-3-bg) !important;border-color:var(--grade-3-border) !important;}
+.note-grade-card-4{background:var(--grade-4-bg) !important;border-color:var(--grade-4-border) !important;}
 
 .drug-opioid{background:var(--drug-opioid);}
 .drug-local{background:var(--drug-local);}
@@ -153,7 +216,8 @@ body{background:var(--note-bg);}
 .drug-reversal-atropine,
 .drug-reversal-other{
   background-size:12px 12px;
-  background-image:repeating-linear-gradient(135deg, rgba(255,255,255,.9) 0 4px, rgba(255,255,255,0) 4px 8px);
+  background-image:none;
+  border-style:double;
 }
 .drug-reversal-opioid{background-color:var(--drug-opioid);}
 .drug-reversal-local{background-color:var(--drug-local);}
@@ -162,6 +226,293 @@ body{background:var(--note-bg);}
 .drug-reversal-vasoactive{background-color:var(--drug-vasoactive);}
 .drug-reversal-atropine{background-color:var(--drug-atropine);}
 .drug-reversal-other{background-color:var(--drug-other);}
+
+/* ============================================================================
+   STANDARDIZED DRUG LABEL COMPONENT
+   Based on dilucion_farmacos.php - Unified drug labeling for all apuntes
+   ============================================================================ */
+
+/* Base drug label container - always has background color */
+.drug-label{
+  display:inline-flex;
+  align-items:center;
+  gap:.5rem;
+  padding:.35rem .5rem;
+  border-radius:.6rem;
+  border:1px solid rgba(0,0,0,0.08);
+  font-family:inherit;
+  line-height:1.3;
+}
+
+/* The 50% transparent white contrast box - FIXED, doesn't change in night mode */
+.drug-label-content{
+  display:flex;
+  flex-direction:column;
+  gap:.15rem;
+  padding:.35rem .55rem;
+  border-radius:.45rem;
+  background:rgba(255,255,255,0.50) !important;
+  border:1px solid rgba(0,0,0,0.10);
+  min-width:0;
+}
+
+/* Drug title - black text */
+.drug-label-title{
+  font-size:.88rem;
+  font-weight:700;
+  color:#111827 !important;
+  line-height:1.2;
+  margin:0;
+}
+
+/* Optional subtitle - smaller text (drug class or dilution info) */
+.drug-label-subtitle{
+  font-size:.72rem;
+  font-weight:500;
+  color:#374151 !important;
+  line-height:1.15;
+  margin:0;
+}
+
+/* Size variants */
+.drug-label-sm{padding:.25rem .4rem;}
+.drug-label-sm .drug-label-content{padding:.25rem .45rem;}
+.drug-label-sm .drug-label-title{font-size:.8rem;}
+.drug-label-sm .drug-label-subtitle{font-size:.65rem;}
+
+.drug-label-lg{padding:.5rem .7rem;}
+.drug-label-lg .drug-label-content{padding:.5rem .75rem;}
+.drug-label-lg .drug-label-title{font-size:1rem;}
+.drug-label-lg .drug-label-subtitle{font-size:.8rem;}
+
+/* Icon/abbreviation prefix (optional) */
+.drug-label-prefix{
+  flex:0 0 auto;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:28px;
+  height:28px;
+  border-radius:.4rem;
+  background:rgba(255,255,255,0.50) !important;
+  border:1px solid rgba(0,0,0,0.12);
+  font-size:.75rem;
+  font-weight:800;
+  color:#111827 !important;
+}
+
+.drug-label-prefix i{font-size:.85rem;color:#111827 !important;}
+
+/* Drug category color classes (ISO anesthesia standard colors) */
+.drug-label.drug-opioid{background:var(--drug-opioid);}
+.drug-label.drug-local{background:var(--drug-local);}
+.drug-label.drug-inductor{background:var(--drug-inductor);}
+.drug-label.drug-inductor-propofol{background:var(--drug-inductor);}
+.drug-label.drug-neuromuscular{background:var(--drug-neuromuscular);}
+.drug-label.drug-vasoactive{background:var(--drug-vasoactive);}
+.drug-label.drug-atropine{background:var(--drug-atropine);}
+.drug-label.drug-benzo{background:var(--drug-benzo);}
+.drug-label.drug-reversal{background:var(--drug-reversal);}
+.drug-label.drug-other{background:var(--drug-other);}
+
+/* Reversal agents - striped pattern with double border */
+.drug-label.drug-reversal-opioid,
+.drug-label.drug-reversal-local,
+.drug-label.drug-reversal-inductor,
+.drug-label.drug-reversal-neuromuscular,
+.drug-label.drug-reversal-vasoactive,
+.drug-label.drug-reversal-atropine,
+.drug-label.drug-reversal-benzo,
+.drug-label.drug-reversal-other{
+  background-size:12px 12px;
+  background-image:repeating-linear-gradient(135deg, rgba(255,255,255,0.9) 0 4px, rgba(255,255,255,0) 4px 8px) !important;
+  border-style:double;
+  border-width:3px;
+}
+
+.drug-label.drug-reversal-opioid{background-color:var(--drug-opioid);}
+.drug-label.drug-reversal-local{background-color:var(--drug-local);}
+.drug-label.drug-reversal-inductor{background-color:var(--drug-inductor);}
+.drug-label.drug-reversal-neuromuscular{background-color:var(--drug-neuromuscular);}
+.drug-label.drug-reversal-vasoactive{background-color:var(--drug-vasoactive);}
+.drug-label.drug-reversal-atropine{background-color:var(--drug-atropine);}
+.drug-label.drug-reversal-benzo{background-color:var(--drug-benzo);}
+.drug-label.drug-reversal-other{background-color:var(--drug-other);}
+
+/* Fixed colors in ALL modes - contrast box never changes */
+body.theme-dark .drug-label-content,
+body.ui-nocturno .drug-label-content,
+body.theme-dark .drug-label-prefix,
+body.ui-nocturno .drug-label-prefix{
+  background:rgba(255,255,255,0.50) !important;
+  border-color:rgba(0,0,0,0.10) !important;
+}
+
+body.theme-dark .drug-label-title,
+body.ui-nocturno .drug-label-title{
+  color:#111827 !important;
+}
+
+body.theme-dark .drug-label-subtitle,
+body.ui-nocturno .drug-label-subtitle{
+  color:#374151 !important;
+}
+
+body.theme-dark .drug-label-prefix,
+body.ui-nocturno .drug-label-prefix{
+  color:#111827 !important;
+}
+
+body.theme-dark .drug-label-prefix i,
+body.ui-nocturno .drug-label-prefix i{
+  color:#111827 !important;
+}
+
+/* Block-level drug card (for standalone display) */
+.drug-card{
+  display:flex;
+  align-items:center;
+  gap:.65rem;
+  padding:.6rem .85rem;
+  border-radius:.75rem;
+  border:1px solid rgba(0,0,0,0.08);
+  font-family:inherit;
+}
+
+.drug-card .drug-label-content{
+  flex:1;
+  padding:.5rem .7rem;
+}
+
+.drug-card .drug-label-title{font-size:1.05rem;}
+.drug-card .drug-label-subtitle{font-size:.85rem;}
+
+.drug-card.drug-opioid{background:var(--drug-opioid);}
+.drug-card.drug-local{background:var(--drug-local);}
+.drug-card.drug-inductor{background:var(--drug-inductor);}
+.drug-card.drug-inductor-propofol{background:var(--drug-inductor);}
+.drug-card.drug-neuromuscular{background:var(--drug-neuromuscular);}
+.drug-card.drug-vasoactive{background:var(--drug-vasoactive);}
+.drug-card.drug-atropine{background:var(--drug-atropine);}
+.drug-card.drug-benzo{background:var(--drug-benzo);}
+.drug-card.drug-reversal{background:var(--drug-reversal);}
+.drug-card.drug-other{background:var(--drug-other);}
+
+/* Reversal agents for drug-card - striped pattern with white background and colored stripes */
+.drug-card.drug-reversal-opioid,
+.drug-card.drug-reversal-local,
+.drug-card.drug-reversal-inductor,
+.drug-card.drug-reversal-neuromuscular,
+.drug-card.drug-reversal-vasoactive,
+.drug-card.drug-reversal-atropine,
+.drug-card.drug-reversal-benzo,
+.drug-card.drug-reversal-other{
+  background-size:12px 12px;
+  background-image:repeating-linear-gradient(135deg, rgba(255,255,255,0.85) 0 4px, transparent 4px 8px) !important;
+  border-style:double;
+  border-width:3px;
+}
+
+.drug-card.drug-reversal-opioid{background-color:var(--drug-opioid);}
+.drug-card.drug-reversal-local{background-color:var(--drug-local);}
+.drug-card.drug-reversal-inductor{background-color:var(--drug-inductor);}
+.drug-card.drug-reversal-neuromuscular{background-color:var(--drug-neuromuscular);}
+.drug-card.drug-reversal-vasoactive{background-color:var(--drug-vasoactive);}
+.drug-card.drug-reversal-atropine{background-color:var(--drug-atropine);}
+.drug-card.drug-reversal-benzo{background-color:var(--drug-benzo);}
+.drug-card.drug-reversal-other{background-color:var(--drug-reversal);}
+
+/* Small variant of drug card - for compact layouts */
+.drug-card-sm{
+  display:flex;
+  align-items:center;
+  gap:.5rem;
+  padding:.45rem .65rem;
+  border-radius:.65rem;
+  border:1px solid rgba(0,0,0,0.08);
+  font-family:inherit;
+  min-height:56px;
+}
+
+.drug-card-sm .drug-label-content{
+  flex:1;
+  padding:.35rem .55rem;
+}
+
+.drug-card-sm .drug-label-title{font-size:.88rem;line-height:1.2;}
+.drug-card-sm .drug-label-subtitle{font-size:.72rem;line-height:1.15;}
+
+.drug-card-sm.drug-opioid{background:var(--drug-opioid);}
+.drug-card-sm.drug-local{background:var(--drug-local);}
+.drug-card-sm.drug-inductor{background:var(--drug-inductor);}
+.drug-card-sm.drug-inductor-propofol{background:var(--drug-inductor);}
+.drug-card-sm.drug-neuromuscular{background:var(--drug-neuromuscular);}
+.drug-card-sm.drug-vasoactive{background:var(--drug-vasoactive);}
+.drug-card-sm.drug-atropine{background:var(--drug-atropine);}
+.drug-card-sm.drug-benzo{background:var(--drug-benzo);}
+.drug-card-sm.drug-reversal{background:var(--drug-reversal);}
+.drug-card-sm.drug-other{background:var(--drug-other);}
+
+/* Small drug cards in grids */
+.reg-drug-grid .drug-card-sm,
+.analg-drug-grid .drug-card-sm,
+.ob-drug-grid .drug-card-sm,
+.note-drug-grid .drug-card-sm{
+  min-height:56px;
+}
+
+/* ==========================================================================
+   Drug Label Consistent Sizing - Prevents height differences when text wraps
+   ============================================================================ */
+
+/* Ensure drug labels in grids always have consistent height */
+.note-summary-grid .drug-label,
+.note-summary-grid-2 .drug-label,
+.note-summary-grid-3 .drug-label,
+.note-summary-grid-4 .drug-label{
+  min-height:56px;
+  width:100%;
+  justify-content:center;
+}
+
+/* For drug cards in grids - ensure consistent sizing with room for longer text */
+.reg-drug-grid .drug-card,
+.analg-drug-grid .drug-card,
+.ob-drug-grid .drug-card,
+.note-drug-grid .drug-card,
+.note-summary-grid .drug-card,
+.note-summary-grid-2 .drug-card,
+.note-summary-grid-3 .drug-card,
+.note-summary-grid-4 .drug-card{
+  min-height:80px;
+}
+
+/* Allow text wrapping but keep consistent padding */
+.note-summary-grid .drug-label-content,
+.note-summary-grid-2 .drug-label-content,
+.note-summary-grid-3 .drug-label-content,
+.note-summary-grid-4 .drug-label-content{
+  padding:.5rem .7rem;
+}
+
+/* Ensure drug card content has room for longer text */
+.drug-card .drug-label-content{
+  padding:.6rem .8rem;
+}
+
+.drug-card .drug-label-title{
+  font-size:1rem;
+  line-height:1.25;
+  white-space:normal;
+  word-break:break-word;
+}
+
+.drug-card .drug-label-subtitle{
+  font-size:.82rem;
+  line-height:1.3;
+  white-space:normal;
+  word-break:break-word;
+}
 
 .note-summary{
   background:var(--note-brand-soft);
@@ -227,6 +578,7 @@ body{background:var(--note-bg);}
 .note-warning{background:var(--note-warning-bg);border:1px solid var(--note-warning-border);}
 .note-danger{background:var(--note-danger-bg);border:1px solid var(--note-danger-border);}
 .note-mint{background:#f2f8ff;border:1px solid #d4e6ff;}
+body.theme-dark .note-mint{background:var(--note-brand-soft);border:1px solid var(--note-brand-soft-border);}
 .note-hidden{display:none !important;}
 
 .note-info-header{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1rem;}
@@ -266,7 +618,7 @@ body{background:var(--note-bg);}
 .info-box-title{font-size:.8rem;text-transform:uppercase;color:var(--note-muted);letter-spacing:.08em;}
 .info-toggle-btn{border-radius:.6rem;font-size:.85rem;padding:.35rem .7rem;white-space:nowrap;background:#6c757d;border:none;color:#fff;transition:.2s;}
 .info-toggle-btn:hover,.info-toggle-btn:focus{background:#5a6268;color:#fff;}
-.info-box-content{padding:1rem;display:none;animation:noteFadeIn .2s ease-in-out;border-top:1px solid #e9eef5;}
+.info-box-content{padding:1rem;display:none;animation:noteFadeIn .2s ease-in-out;border-top:1px solid var(--note-line);}
 .info-box-content.show{display:block;}
 .section-card{background:var(--note-card);border-radius:var(--note-radius-lg);box-shadow:var(--note-shadow);overflow:hidden;margin-bottom:1rem;}
 .section-title{font-size:.8rem;letter-spacing:.05em;text-transform:uppercase;color:var(--note-muted);}
@@ -292,6 +644,12 @@ body{background:var(--note-bg);}
   min-height:54px;border:2px solid var(--note-line);background:#fff;border-radius:.85rem;padding:.4rem .5rem;
   font-weight:700;font-size:.88rem;color:var(--note-text);cursor:pointer;transition:.15s ease;line-height:1.08;
   box-shadow:0 3px 10px rgba(15,23,42,.04);
+}
+
+body.theme-dark .choice-btn,
+body.theme-dark .factor-btn,
+body.theme-dark .score-btn-plain{
+  background:var(--note-card);
 }
 .choice-check:checked + .choice-btn,
 .choice-radio:checked + .choice-btn,
@@ -914,21 +1272,20 @@ body{background:var(--note-bg);}
   }
 }
 
-/* Canonical summary box */
+/* Canonical summary / resume-style */
 .note-summary-box{
-  background:var(--note-brand-soft);
-  border:1px solid var(--note-brand-soft-border);
-  border-radius:1rem;
+  background:var(--note-card);
+  border-radius:var(--note-radius-lg);
+  box-shadow:var(--note-shadow);
+  overflow:hidden;
   padding:1rem;
 }
 
 .note-summary-box-title{
-  font-size:.8rem;
-  text-transform:uppercase;
-  letter-spacing:.06em;
-  color:#3559b7;
-  font-weight:700;
-  margin-bottom:.65rem;
+  font-size:1rem;
+  font-weight:800;
+  color:var(--note-text);
+  margin-bottom:.35rem;
 }
 
 .note-summary-box-text{
@@ -946,19 +1303,28 @@ body{background:var(--note-bg);}
 }
 
 .note-summary-grid-2 .note-summary-item{
-  background:#fff;
-  border:1px solid var(--note-line-strong);
+  background:var(--note-brand-soft);
+  border:1px solid var(--note-brand-soft-border);
   border-radius:1rem;
-  padding:.8rem .9rem;
+  padding:.9rem 1rem;
   min-height:0;
+  box-shadow:0 4px 12px rgba(15,23,42,.04);
 }
 
 .note-summary-grid-2 .note-summary-item .note-summary-k{
-  margin-bottom:.18rem;
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  color:#3559b7;
+  font-weight:700;
+  margin-bottom:.22rem;
 }
 
 .note-summary-grid-2 .note-summary-item .note-summary-v{
-  line-height:1.2;
+  font-size:1.15rem;
+  line-height:1.15;
+  font-weight:800;
+  color:var(--note-text);
 }
 
 @media (max-width:768px){
@@ -981,7 +1347,7 @@ body{background:var(--note-bg);}
 }
 
 .note-result-card{
-  background:linear-gradient(180deg, var(--note-brand-soft) 0%, #f7faff 100%);
+  background:var(--note-brand-soft);
   border:1px solid var(--note-brand-soft-border);
   border-radius:1rem;
   padding:.9rem 1rem;
@@ -1121,7 +1487,7 @@ body{background:var(--note-bg);}
 
 /* Emergency hero variant */
 .note-hero-emergency{
-  background:linear-gradient(135deg, #8f1f32, #b52d45);
+  background:#8f1f32;
   color:#fff;
 }
 
@@ -1242,7 +1608,8 @@ body{background:var(--note-bg);}
   padding:.85rem .9rem;
 }
 
-.note-checklist-item.is-done{
+.note-checklist-item.is-done,
+.note-checklist-item-input:checked + .note-checklist-item{
   background:#f4fbf7;
   border-color:#cfe8d9;
 }
@@ -1269,7 +1636,8 @@ body{background:var(--note-bg);}
   background:#fff;
 }
 
-.note-checklist-item.is-done .note-checklist-item-mark{
+.note-checklist-item.is-done .note-checklist-item-mark,
+.note-checklist-item-input:checked + .note-checklist-item .note-checklist-item-mark{
   background:#2f9e62;
   border-color:#2f9e62;
 }
@@ -1294,14 +1662,16 @@ body{background:var(--note-bg);}
   margin:0;
 }
 
-.note-checklist-record{
+.note-checklist-record,
+.iv-record-box{
   background:var(--note-brand-soft);
   border:1px solid var(--note-brand-soft-border);
   border-radius:1rem;
   padding:1rem;
 }
 
-.note-checklist-record-box{
+.note-checklist-record-box,
+.iv-record-output{
   width:100%;
   min-height:150px;
   border:1px solid #d0d5dd;
@@ -1331,7 +1701,7 @@ body{background:var(--note-bg);}
   position:sticky;
   top:.65rem;
   z-index:20;
-  background:#fff;
+  background:var(--note-card);
   border:1px solid var(--note-line);
   border-radius:1rem;
   padding:.55rem .7rem;
@@ -1363,13 +1733,14 @@ body{background:var(--note-bg);}
   border-radius:999px;
   font-size:.82rem;
   font-weight:700;
-  background:#f7ebe7;
+  background:var(--note-danger-bg);
   color:#c02f1d;
+  border:1px solid var(--note-danger-border);
 }
 
 .note-checklist-progress-track{
   height:10px;
-  background:#edf0f5;
+  background:var(--note-soft);
   border-radius:999px;
   overflow:hidden;
   margin-bottom:.55rem;
@@ -1378,7 +1749,7 @@ body{background:var(--note-bg);}
 .note-checklist-progress-bar{
   height:100%;
   width:0%;
-  background:linear-gradient(90deg,var(--note-brand),var(--note-brand-2));
+  background:var(--note-brand);
   transition:width .2s ease;
 }
 
@@ -1390,9 +1761,9 @@ body{background:var(--note-bg);}
   min-height:34px;
   padding:.38rem .72rem;
   border-radius:.7rem;
-  border:1px solid #7a8597;
-  background:#fff;
-  color:#5f6b7d;
+  border:1px solid var(--note-line-strong);
+  background:var(--note-card);
+  color:var(--note-muted);
   font-weight:500;
   cursor:pointer;
   transition:.15s ease;
@@ -1406,6 +1777,49 @@ body{background:var(--note-bg);}
   border-color:#ef4444;
   color:#ef4444;
 }
+
+/* ── Action buttons ────────────────────────────────────────────────────── */
+.note-action-btn,
+.note-action-btn-sm{
+  display:inline-flex;
+  align-items:center;
+  gap:.5rem;
+  padding:.45rem .65rem;
+  border-radius:.65rem;
+  border:1px solid var(--note-line-strong);
+  background:var(--note-card);
+  color:var(--note-text);
+  font-weight:500;
+  cursor:pointer;
+  text-align:left;
+  width:100%;
+  transition:.15s ease;
+}
+.note-action-btn{min-height:80px;}
+.note-action-btn-sm{min-height:56px;}
+.note-action-btn:hover,
+.note-action-btn-sm:hover{
+  box-shadow:0 4px 12px rgba(15,23,42,.08);
+  border-color:var(--note-brand);
+}
+.note-action-btn-title{
+  display:block;
+  font-size:.88rem;
+  font-weight:700;
+  line-height:1.2;
+  color:var(--note-text);
+}
+.note-action-btn-sub{
+  display:block;
+  font-size:.72rem;
+  line-height:1.15;
+  color:var(--note-muted);
+}
+.note-action-btn-primary{
+  background:var(--note-brand-soft);
+  border-color:var(--note-brand-soft-border);
+}
+.note-action-btn-primary .note-action-btn-title{color:var(--note-brand);}
 
 .note-checklist-toolbar{
   display:flex;
@@ -1428,7 +1842,7 @@ body{background:var(--note-bg);}
   position:sticky;
   top:.65rem;
   z-index:20;
-  background:#fff;
+  background:var(--note-card);
   border:1px solid var(--note-line);
   border-radius:1rem;
   padding:.35rem .5rem;
@@ -1529,3 +1943,168 @@ body{background:var(--note-bg);}
     grid-template-columns:1fr;
   }
 }
+
+/* ── Global last-checklist-* / last-check-* component ─────────────────── */
+.last-checklist-section{background:var(--note-card);border:1px solid var(--note-line);border-radius:1.1rem;overflow:hidden;margin-bottom:1rem;}
+.last-checklist-head{padding:1rem 1rem .95rem 1rem;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;cursor:pointer;}
+.last-checklist-title{font-size:1.03rem;font-weight:800;color:var(--note-text);line-height:1.2;margin:0;}
+.last-checklist-help{font-size:.9rem;color:var(--note-muted);line-height:1.4;margin:.2rem 0 0 0;}
+.last-checklist-chevron{flex:0 0 auto;color:var(--note-muted);font-size:1rem;transition:transform .18s ease;}
+.last-checklist-section.is-collapsed .last-checklist-chevron{transform:rotate(-90deg);}
+.last-checklist-body{padding:0 1rem 1rem 1rem;border-top:1px solid var(--note-line);}
+.last-checklist-section.is-collapsed .last-checklist-body{display:none;}
+.last-checklist-list{display:grid;gap:.75rem;}
+.last-check-item{display:flex;align-items:flex-start;gap:.8rem;padding:.9rem .95rem;border:1px solid var(--note-line);border-radius:1rem;background:var(--note-card);cursor:pointer;transition:.16s ease;}
+.last-check-item:hover{border-color:var(--note-line-strong);}
+.last-check-item.is-done{background:var(--note-success-bg) !important;border-color:var(--note-success-border) !important;}
+.last-check-input{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;}
+.last-check-mark{flex:0 0 auto;width:26px;height:26px;border-radius:999px;border:2px solid var(--note-line-strong);display:flex;align-items:center;justify-content:center;margin-top:.1rem;background:var(--note-card);color:var(--note-card);transition:.16s ease;}
+.last-check-item.is-done .last-check-mark{background:#2f9e62 !important;border-color:#2f9e62 !important;color:#fff !important;}
+.last-check-copy{min-width:0;flex:1;}
+.last-check-title{font-size:.96rem;font-weight:800;color:var(--note-text);line-height:1.25;margin:0 0 .12rem 0;}
+.last-check-note{font-size:.88rem;color:var(--note-muted);line-height:1.4;margin:0;}
+
+/* ── Dark mode overrides ───────────────────────────────────────────────── */
+body.theme-dark,
+body.ui-nocturno{
+  --note-card:#172033;
+  --note-soft:#1a2540;
+  --note-line:rgba(178,204,255,.18);
+  --note-line-strong:rgba(178,204,255,.28);
+  --note-text:#eef4ff;
+  --note-muted:#8fa3be;
+  --note-success-bg:#1a4a33;
+  --note-success-border:#3a9e6e;
+  --note-danger-bg:rgba(180,35,24,.13);
+  --note-danger-border:rgba(239,196,190,.28);
+}
+
+body.theme-dark .note-checklist-progress-block,
+body.ui-nocturno .note-checklist-progress-block{border-color:var(--note-line);}
+body.theme-dark .note-checklist-progress-badge,
+body.ui-nocturno .note-checklist-progress-badge{color:#fca5a5;}
+body.theme-dark .note-checklist-btn,
+body.ui-nocturno .note-checklist-btn{border-color:var(--note-line-strong);}
+body.theme-dark .note-checklist-btn:hover,
+body.ui-nocturno .note-checklist-btn:hover{background:rgba(178,204,255,.1);color:var(--note-text);}
+
+body.theme-dark .info-box,
+body.ui-nocturno .info-box{border:1px solid var(--note-line);}
+body.theme-dark .info-box-title,
+body.ui-nocturno .info-box-title{color:var(--note-muted);}
+
+body.theme-dark .note-result-card,
+body.ui-nocturno .note-result-card,
+body.theme-dark .note-summary-grid-2 .note-summary-item,
+body.ui-nocturno .note-summary-grid-2 .note-summary-item{background:rgba(53,89,183,.32);border-color:rgba(53,89,183,.55);}
+body.theme-dark .note-result-card-label,
+body.ui-nocturno .note-result-card-label{color:var(--note-muted);}
+body.theme-dark .note-result-card-value,
+body.ui-nocturno .note-result-card-value,
+body.theme-dark .note-result-card-note,
+body.ui-nocturno .note-result-card-note{color:var(--note-text);}
+
+body.theme-dark .note-success,
+body.ui-nocturno .note-success{background:var(--note-success-bg);border-color:var(--note-success-border);}
+body.theme-dark .note-danger,
+body.ui-nocturno .note-danger{background:var(--note-danger-bg);border-color:var(--note-danger-border);}
+body.theme-dark .note-card-title,
+body.ui-nocturno .note-card-title{color:var(--note-text);}
+
+body.theme-dark .note-teaching-wrap,
+body.ui-nocturno .note-teaching-wrap{background:var(--note-card);}
+body.theme-dark .note-teaching-title,
+body.ui-nocturno .note-teaching-title{color:var(--note-muted);}
+body.theme-dark .note-teaching-main,
+body.ui-nocturno .note-teaching-main{color:var(--note-text);}
+body.theme-dark .note-tips,
+body.ui-nocturno .note-tips{background:rgba(178,204,255,.05);border-color:var(--note-line);color:var(--note-text);}
+
+body.theme-dark .note-checklist-record,
+body.theme-dark .iv-record-box,
+body.ui-nocturno .note-checklist-record,
+body.ui-nocturno .iv-record-box{background:var(--note-card);border-color:var(--note-line);}
+
+body.theme-dark .note-checklist-record-box,
+body.theme-dark .iv-record-output,
+body.ui-nocturno .note-checklist-record-box,
+body.ui-nocturno .iv-record-output{background:#0f172a;color:var(--note-text);border-color:var(--note-line);}
+
+body.theme-dark .last-checklist-section,
+body.ui-nocturno .last-checklist-section,
+body.theme-dark .last-check-item,
+body.ui-nocturno .last-check-item{box-shadow:none;}
+
+body.theme-dark .last-check-item.is-done,
+body.ui-nocturno .last-check-item.is-done{background:var(--note-success-bg) !important;border-color:var(--note-success-border) !important;}
+body.theme-dark .last-check-item.is-done .last-check-mark,
+body.ui-nocturno .last-check-item.is-done .last-check-mark{background:#2f9e62 !important;border-color:#2f9e62 !important;color:#fff !important;}
+
+/* ── Cormack-Lehane grade panels ───────────────────────────────────────────── */
+.cl-grade-panel{
+  border-radius:1rem;
+  padding:1rem;
+  border:1px solid transparent;
+}
+.cl-grade-panel.grade-1{background:var(--grade-1-bg);border-color:var(--grade-1-border);}
+.cl-grade-panel.grade-2a{background:var(--grade-2-bg);border-color:var(--grade-2-border);}
+.cl-grade-panel.grade-2b{background:var(--grade-2b-bg);border-color:var(--grade-2b-border);}
+.cl-grade-panel.grade-3{background:var(--grade-3-bg);border-color:var(--grade-3-border);}
+.cl-grade-panel.grade-4{background:var(--grade-4-bg);border-color:var(--grade-4-border);}
+
+.cl-grade-summary{border:none;box-shadow:none;}
+.cl-grade-summary.grade-1{background:var(--grade-1-bg);}
+.cl-grade-summary.grade-2a{background:var(--grade-2-bg);}
+.cl-grade-summary.grade-2b{background:var(--grade-2b-bg);}
+.cl-grade-summary.grade-3{background:var(--grade-3-bg);}
+.cl-grade-summary.grade-4{background:var(--grade-4-bg);}
+
+/* Grade selection buttons */
+.cl-grade-option .note-option.note-grade-1{background:var(--grade-1-bg) !important;}
+.cl-grade-option .note-option.note-grade-2{background:var(--grade-2-bg) !important;}
+.cl-grade-option .note-option.note-grade-2b{background:var(--grade-2b-bg) !important;}
+.cl-grade-option .note-option.note-grade-3{background:var(--grade-3-bg) !important;}
+.cl-grade-option .note-option.note-grade-4{background:var(--grade-4-bg) !important;}
+
+/* ── Chip list (reusable: safe/danger drug tags) ───────────────────────── */
+.note-chip-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;}
+@media (max-width:768px){.note-chip-grid{grid-template-columns:1fr;}}
+.note-chip-list{display:flex;flex-direction:column;gap:.35rem;flex-wrap:nowrap;}
+.note-chip{display:inline-flex;align-items:center;gap:.35rem;padding:.4rem .75rem;border-radius:.6rem;border:1px solid var(--note-line-strong);background:var(--note-card);font-size:.85rem;font-weight:600;color:var(--note-text);text-align:left;white-space:normal;word-wrap:break-word;word-break:break-word;}
+.note-chip-safe{background:var(--note-success-bg);border-color:var(--note-success-border);color:#1e7a5a;}
+.note-chip-danger{background:var(--note-danger-bg);border-color:var(--note-danger-border);color:#b42318;}
+.note-chip-warn{background:var(--note-warning-bg);border-color:var(--note-warning-border);color:#92400e;}
+body.theme-dark .note-chip-safe,
+body.ui-nocturno .note-chip-safe{color:#6ee7b7;}
+body.theme-dark .note-chip-danger,
+body.ui-nocturno .note-chip-danger{color:#fca5a5;}
+body.theme-dark .note-chip-warn,
+body.ui-nocturno .note-chip-warn{color:#fde68a;}
+
+/* Scalar pill colors for dosis_obeso.php */
+.ob-scalar-pill.is-tbw{background:#eaf2ff;border-color:#c2d8ff;}
+.ob-scalar-pill.is-ibw{background:#eaf7fb;border-color:#b8e0f0;}
+.ob-scalar-pill.is-ffm{background:#eaf8ef;border-color:#b8e0c8;}
+.ob-scalar-pill.is-abw{background:#fff0e1;border-color:#ffd4a8;}
+.ob-scalar-pill.is-pk{background:#f1edff;border-color:#d4c8ff;}
+body.theme-dark .ob-scalar-pill.is-tbw{background:#1a3a5c;border-color:#2d5a8a;}
+body.theme-dark .ob-scalar-pill.is-ibw{background:#1a4a5c;border-color:#2d7a9a;}
+body.theme-dark .ob-scalar-pill.is-ffm{background:#1a4d3a;border-color:#2d8a6a;}
+body.theme-dark .ob-scalar-pill.is-abw{background:#5c3a1a;border-color:#8a5a2d;}
+body.theme-dark .ob-scalar-pill.is-pk{background:#3a1a5c;border-color:#5a2d8a;}
+
+/* Scalar colors for escalares.php */
+.esc-scalar-grid .esc-tbw{background:#eaf2ff !important;}
+.esc-scalar-grid .esc-bmi{background:#fff8db !important;}
+.esc-scalar-grid .esc-ibw{background:#eaf7fb !important;}
+.esc-scalar-grid .esc-ffm{background:#eaf8ef !important;}
+.esc-scalar-grid .esc-abw{background:#fff0e1 !important;}
+.esc-scalar-grid .esc-pk{background:#f1edff !important;}
+.esc-scalar-grid .esc-bsa{background:#f5f7fb !important;}
+body.theme-dark .esc-scalar-grid .esc-tbw{background:#1a3a5c !important;}
+body.theme-dark .esc-scalar-grid .esc-bmi{background:#5c501a !important;}
+body.theme-dark .esc-scalar-grid .esc-ibw{background:#1a4a5c !important;}
+body.theme-dark .esc-scalar-grid .esc-ffm{background:#1a4d3a !important;}
+body.theme-dark .esc-scalar-grid .esc-abw{background:#5c3a1a !important;}
+body.theme-dark .esc-scalar-grid .esc-pk{background:#3a1a5c !important;}
+body.theme-dark .esc-scalar-grid .esc-bsa{background:#3a3a3a !important;}

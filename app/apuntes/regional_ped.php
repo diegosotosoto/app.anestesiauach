@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "Regional pediátrica";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "Apunte interactivo para estimar volumen orientativo y carga total de anestésico local en bloqueos regionales pediátricos. Prioriza masa total, concentración, edad/fisiología, sitio anatómico, lateralidad y margen respecto al máximo teórico.";
@@ -18,7 +18,7 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=2">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=2"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
@@ -55,7 +55,7 @@ require("../head.php");
             text-align:center;
             min-height:72px;
             border:2px solid var(--note-line);
-            background:#fff;
+            background:var(--note-bg);
             border-radius:1rem;
             padding:.65rem .75rem;
             cursor:pointer;
@@ -106,10 +106,17 @@ require("../head.php");
           .reg-option-sub{
             font-size:.76rem;
             line-height:1.22;
-            color:var(--note-muted);
+            color:var(--note-text-secondary);
             margin:0;
             font-weight:600;
           }
+
+          /* drug buttons use standardized drug-card classes from clinical-note-system.css */
+          .reg-drug-grid > label{display:flex;}
+          .reg-drug-grid .drug-card{height:100%;width:100%;align-items:center;justify-content:flex-start;text-align:left;}
+          .reg-drug-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+          .reg-drug-grid .drug-card .drug-label-content{padding:.6rem .8rem;}
+          .reg-option-input:checked + .drug-card{box-shadow:0 0 0 3px rgba(47,128,237,.3), 0 4px 12px rgba(15,23,42,.15);transform:translateY(-1px);}
 
           .reg-drug-chip{
             display:inline-block;
@@ -217,6 +224,7 @@ require("../head.php");
             }
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · ANESTESIA REGIONAL · PEDIATRÍA</div>
@@ -304,26 +312,32 @@ require("../head.php");
             </div>
 
             <div class="note-section-label">Anestésico local</div>
-            <div class="reg-choice-grid mb-3">
+            <div class="reg-choice-grid reg-drug-grid mb-3">
               <label>
                 <input class="reg-option-input" type="radio" name="droga" value="bupi" checked>
-                <div class="reg-option drug-local">
-                  <div class="reg-option-title">Bupivacaína</div>
-                  <div class="reg-option-sub">máx 2,5 mg/kg</div>
+                <div class="drug-card drug-local">
+                  <div class="drug-label-content">
+                    <div class="drug-label-title">Bupivacaína</div>
+                    <div class="drug-label-subtitle">máx 2,5 mg/kg</div>
+                  </div>
                 </div>
               </label>
               <label>
                 <input class="reg-option-input" type="radio" name="droga" value="levo">
-                <div class="reg-option drug-local">
-                  <div class="reg-option-title">Levobupivacaína</div>
-                  <div class="reg-option-sub">máx 2,5 mg/kg</div>
+                <div class="drug-card drug-local">
+                  <div class="drug-label-content">
+                    <div class="drug-label-title">Levobupivacaína</div>
+                    <div class="drug-label-subtitle">máx 2,5 mg/kg</div>
+                  </div>
                 </div>
               </label>
               <label>
                 <input class="reg-option-input" type="radio" name="droga" value="ropi">
-                <div class="reg-option drug-local">
-                  <div class="reg-option-title">Ropivacaína</div>
-                  <div class="reg-option-sub">máx 3 mg/kg</div>
+                <div class="drug-card drug-local">
+                  <div class="drug-label-content">
+                    <div class="drug-label-title">Ropivacaína</div>
+                    <div class="drug-label-subtitle">máx 3 mg/kg</div>
+                  </div>
                 </div>
               </label>
             </div>
@@ -332,21 +346,21 @@ require("../head.php");
             <div class="reg-choice-grid">
               <label>
                 <input class="reg-option-input" type="radio" name="conc" value="1.25">
-                <div class="reg-option drug-local">
+                <div class="reg-option">
                   <div class="reg-option-title">0,125%</div>
                   <div class="reg-option-sub">1,25 mg/mL</div>
                 </div>
               </label>
               <label>
                 <input class="reg-option-input" type="radio" name="conc" value="2">
-                <div class="reg-option drug-local">
+                <div class="reg-option">
                   <div class="reg-option-title">0,2%</div>
                   <div class="reg-option-sub">2 mg/mL</div>
                 </div>
               </label>
               <label>
                 <input class="reg-option-input" type="radio" name="conc" value="2.5" checked>
-                <div class="reg-option drug-local">
+                <div class="reg-option">
                   <div class="reg-option-title">0,25%</div>
                   <div class="reg-option-sub">2,5 mg/mL</div>
                 </div>
@@ -417,25 +431,27 @@ require("../head.php");
           </div>
         </div>
 
-        <div class="note-summary-box mb-3">
-          <div class="note-summary-box-title">Resumen</div>
-          <div id="summaryNarrative" class="note-summary-box-text">Ingresa peso y selecciona bloqueo para estimar volumen y masa total.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item">
-              <div class="note-summary-k">Peso / edad</div>
-              <div id="sumPatient" class="note-summary-v">-</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Droga / concentración</div>
-              <div id="sumDrug" class="note-summary-v">Bupivacaína 0,25%</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Bloqueo</div>
-              <div id="sumBlock" class="note-summary-v">-</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Lateralidad</div>
-              <div id="sumSide" class="note-summary-v">Unilateral</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-card-title">Resumen</div>
+            <div id="summaryNarrative" class="note-summary-box-text mb-3">Ingresa peso y selecciona bloqueo para estimar volumen y masa total.</div>
+            <div class="note-result-grid-2">
+              <div class="note-result-card">
+                <div class="note-result-card-label">Peso / edad</div>
+                <div id="sumPatient" class="note-result-card-value">-</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Droga / concentración</div>
+                <div id="sumDrug" class="note-result-card-value">Bupivacaína 0,25%</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Bloqueo</div>
+                <div id="sumBlock" class="note-result-card-value">-</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Lateralidad</div>
+                <div id="sumSide" class="note-result-card-value">Unilateral</div>
+              </div>
             </div>
           </div>
         </div>
@@ -473,12 +489,12 @@ require("../head.php");
         <div class="note-card mb-3">
           <div class="note-card-body">
             <div class="note-section-label">Conducta práctica</div>
-            <div id="actionList" class="reg-action-list">
-              <div class="reg-action-item">
-                <div class="reg-action-mark mid"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <div class="reg-action-copy">
-                  <div class="reg-action-title">Completa datos de entrada</div>
-                  <p class="reg-action-note">El cálculo solo es útil si revisas masa total y contexto fisiológico, no solo volumen.</p>
+            <div id="actionList" class="note-warning-list">
+              <div class="note-warning-item">
+                <div class="note-warning-icon mid"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Completa datos de entrada</div>
+                  <p class="note-warning-note">El cálculo solo es útil si revisas masa total y contexto fisiológico, no solo volumen.</p>
                 </div>
               </div>
             </div>
@@ -648,11 +664,11 @@ require("../head.php");
 
     document.getElementById('actionList').innerHTML = items.map(function(item){
       const icon = item[0] === 'ok' ? 'fa-check' : (item[0] === 'mid' ? 'fa-triangle-exclamation' : 'fa-bolt');
-      return '<div class="reg-action-item">' +
-        '<div class="reg-action-mark ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
-        '<div class="reg-action-copy">' +
-          '<div class="reg-action-title">' + item[1] + '</div>' +
-          '<p class="reg-action-note">' + item[2] + '</p>' +
+      return '<div class="note-warning-item">' +
+        '<div class="note-warning-icon ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
+        '<div class="note-warning-copy">' +
+          '<div class="note-warning-title">' + item[1] + '</div>' +
+          '<p class="note-warning-note">' + item[2] + '</p>' +
         '</div>' +
       '</div>';
     }).join('');
@@ -671,6 +687,8 @@ require("../head.php");
     const concPct = conc / 10;
 
     setText('sumPatient', peso && peso > 0 ? fmt(peso,1) + ' kg · ' + ageText(age) : ageText(age));
+    const drugLabelEl = document.getElementById('sumDrugLabel');
+    if(drugLabelEl){ drugLabelEl.className = 'drug-label drug-local'; }
     setText('sumDrug', drug.name + ' ' + fmt(concPct,3) + '%');
     setText('sumBlock', block ? block.name : '-');
     setText('sumSide', lado === 2 ? 'Bilateral' : 'Unilateral');

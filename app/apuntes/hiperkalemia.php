@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "Hiperkalemia";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "Algoritmo interactivo para evaluación y manejo inicial de hiperkalemia perioperatoria. Integra valor de potasio, ECG, severidad clínica y necesidad de estabilización de membrana, redistribución y eliminación.";
@@ -17,7 +17,7 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=2">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=2"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
@@ -48,7 +48,7 @@ require("../head.php");
             align-items:center;
             justify-content:center;
             text-align:center;
-            min-height:72px;
+            min-height:80px;
             border:2px solid var(--note-line);
             background:#fff;
             border-radius:1rem;
@@ -86,54 +86,6 @@ require("../head.php");
             font-weight:600;
           }
 
-          .hk-action-list{
-            display:grid;
-            gap:.75rem;
-          }
-
-          .hk-action-item{
-            display:flex;
-            align-items:flex-start;
-            gap:.65rem;
-            border:1px solid #d9e2ef;
-            border-radius:1rem;
-            background:#fff;
-            padding:.75rem .85rem;
-          }
-
-          .hk-action-mark{
-            flex:0 0 auto;
-            width:30px;
-            height:30px;
-            border-radius:999px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            color:#fff;
-            margin-top:.08rem;
-          }
-
-          .hk-action-mark.ok{background:#2ea663;}
-          .hk-action-mark.mid{background:#f4c542;}
-          .hk-action-mark.high{background:#d92d20;}
-
-          .hk-action-copy{min-width:0;flex:1;}
-
-          .hk-action-title{
-            font-size:.95rem;
-            font-weight:800;
-            line-height:1.18;
-            color:var(--note-text);
-            margin-bottom:.1rem;
-          }
-
-          .hk-action-note{
-            margin:0;
-            font-size:.82rem;
-            line-height:1.32;
-            color:var(--note-muted);
-          }
-
           .hk-plan-line{
             padding:.75rem .85rem;
             border-radius:.9rem;
@@ -144,33 +96,6 @@ require("../head.php");
 
           .hk-plan-line:last-child{
             margin-bottom:0;
-          }
-
-          .hk-drug{
-            display:inline-block;
-            padding:.22rem .48rem;
-            border-radius:.6rem;
-            font-weight:800;
-            border:1px solid rgba(31,42,55,.12);
-            line-height:1.1;
-            color:#111827;
-            background:var(--drug-other);
-          }
-
-          .hk-drug-warning{
-            background:#fff9e8;
-          }
-
-          .hk-drug-danger{
-            background:#fff1f1;
-          }
-
-          .hk-drug-glucose{
-            background:#fff2b8;
-          }
-
-          .hk-drug-vent{
-            background:#dff2ff;
           }
 
           .hk-severity-low{
@@ -250,6 +175,7 @@ require("../head.php");
             }
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · ELECTROLITOS · URGENCIA PERIOPERATORIA</div>
@@ -342,22 +268,22 @@ require("../head.php");
         <div class="note-summary-box mb-3">
           <div class="note-summary-box-title">Resumen</div>
           <div id="summaryNarrative" class="note-summary-box-text">Ingresa potasio y contexto clínico para orientar severidad y manejo.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item">
-              <div class="note-summary-k">Potasio</div>
-              <div id="summaryK" class="note-summary-v">-</div>
+          <div class="note-result-grid-2 mt-2">
+            <div class="note-result-card">
+              <div class="note-result-card-label">Potasio</div>
+              <div id="summaryK" class="note-result-card-value">-</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Severidad</div>
-              <div id="summarySeverity" class="note-summary-v">Pendiente</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Severidad</div>
+              <div id="summarySeverity" class="note-result-card-value">Pendiente</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">ECG / clínica</div>
-              <div id="summaryEcg" class="note-summary-v">ECG normal</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">ECG / clínica</div>
+              <div id="summaryEcg" class="note-result-card-value">ECG normal</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Estrategia</div>
-              <div id="summaryStrategy" class="note-summary-v">Pendiente</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Estrategia</div>
+              <div id="summaryStrategy" class="note-result-card-value">Pendiente</div>
             </div>
           </div>
         </div>
@@ -396,12 +322,12 @@ require("../head.php");
         <div class="note-card mb-3">
           <div class="note-card-body">
             <div class="note-section-label">Conducta práctica</div>
-            <div id="actionList" class="hk-action-list">
-              <div class="hk-action-item">
-                <div class="hk-action-mark mid"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <div class="hk-action-copy">
-                  <div class="hk-action-title">Completa potasio y ECG</div>
-                  <p class="hk-action-note">La severidad bioquímica no reemplaza la evaluación electrocardiográfica y clínica.</p>
+            <div id="actionList" class="note-warning-list">
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-check"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Completa potasio y ECG</div>
+                  <p class="note-warning-note">La severidad bioquímica no reemplaza la evaluación electrocardiográfica y clínica.</p>
                 </div>
               </div>
             </div>
@@ -424,37 +350,37 @@ require("../head.php");
                 <tbody>
                   <tr>
                     <td>Estabilizar membrana</td>
-                    <td><span class="hk-drug hk-drug-danger">Gluconato de calcio 10%</span></td>
+                    <td><span class="drug-label drug-other drug-label-sm"><span class="drug-label-title">Gluconato de calcio 10%</span></span></td>
                     <td>10 mL EV en 5–10 min</td>
                     <td>Inicio inmediato. Repetir si persisten cambios ECG. No baja el K.</td>
                   </tr>
                   <tr>
                     <td>Redistribución</td>
-                    <td><span class="hk-drug hk-drug-glucose">Insulina + glucosa</span></td>
+                    <td><span class="drug-label drug-other drug-label-sm"><span class="drug-label-title">Insulina + glucosa</span></span></td>
                     <td>10 U insulina regular + glucosa EV</td>
                     <td>Controlar glicemia. Riesgo de hipoglicemia tardía.</td>
                   </tr>
                   <tr>
                     <td>Redistribución</td>
-                    <td><span class="hk-drug hk-drug-vent">Salbutamol</span></td>
+                    <td><span class="drug-label drug-other drug-label-sm"><span class="drug-label-title">Salbutamol</span></span></td>
                     <td>10–20 mg nebulizado</td>
                     <td>Puede ser adyuvante. Inicio ~30 min. Vigilar taquicardia.</td>
                   </tr>
                   <tr>
                     <td>Acidosis asociada</td>
-                    <td><span class="hk-drug">Bicarbonato</span></td>
+                    <td><span class="drug-label drug-other drug-label-sm"><span class="drug-label-title">Bicarbonato</span></span></td>
                     <td>Considerar si acidosis metabólica significativa</td>
                     <td>No usar como medida única. Riesgo de sobrecarga y alcalosis.</td>
                   </tr>
                   <tr>
                     <td>Eliminación renal</td>
-                    <td><span class="hk-drug">Furosemida</span></td>
+                    <td><span class="drug-label drug-other drug-label-sm"><span class="drug-label-title">Furosemida</span></span></td>
                     <td>40–80 mg EV en adultos, si diuresis posible</td>
                     <td>No útil si anuria. Vigilar volemia y respuesta.</td>
                   </tr>
                   <tr>
                     <td>Eliminación definitiva</td>
-                    <td><span class="hk-drug hk-drug-warning">Hemodiálisis</span></td>
+                    <td>Hemodiálisis</td>
                     <td>Considerar precozmente</td>
                     <td>Severa, refractaria, falla renal, rebote o sobrecarga.</td>
                   </tr>
@@ -546,12 +472,11 @@ require("../head.php");
     }
 
     box.innerHTML = items.map(function(item){
-      const icon = item[0] === 'ok' ? 'fa-check' : (item[0] === 'mid' ? 'fa-triangle-exclamation' : 'fa-bolt');
-      return '<div class="hk-action-item">' +
-        '<div class="hk-action-mark ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
-        '<div class="hk-action-copy">' +
-          '<div class="hk-action-title">' + item[1] + '</div>' +
-          '<p class="hk-action-note">' + item[2] + '</p>' +
+      return '<div class="note-warning-item">' +
+        '<div class="note-warning-icon"><i class="fa-solid fa-check"></i></div>' +
+        '<div class="note-warning-copy">' +
+          '<div class="note-warning-title">' + item[1] + '</div>' +
+          '<p class="note-warning-note">' + item[2] + '</p>' +
         '</div>' +
       '</div>';
     }).join('');
@@ -628,7 +553,7 @@ require("../head.php");
       document.getElementById('algoMain').textContent = 'Manejo moderado';
       document.getElementById('algoSoft').textContent = 'Redistribuir potasio y planificar eliminación. Monitorizar ECG, K y glicemia.';
       document.getElementById('planCalcium').textContent = 'No de rutina si ECG normal; usar si aparecen cambios ECG.';
-      document.getElementById('planShift').innerHTML = '<span class="hk-drug hk-drug-glucose">Insulina + glucosa</span> y <span class="hk-drug hk-drug-vent">salbutamol</span> según riesgo.';
+      document.getElementById('planShift').innerHTML = '<span class="drug-label drug-other drug-label-sm"><span class="drug-label-title">Insulina + glucosa</span></span> y <span class="drug-label drug-other drug-label-sm"><span class="drug-label-title">salbutamol</span></span> según riesgo.';
       document.getElementById('planRemove').textContent = renal === 'risk' ? 'Bajo umbral para diálisis.' : 'Furosemida si diuresis; tratar causa; considerar diálisis si refractaria.';
       renderActions('moderate');
       return;
@@ -640,10 +565,10 @@ require("../head.php");
     document.getElementById('priorityText').textContent = forcedSevere ? 'ECG alterado/inestabilidad: estabilizar membrana de inmediato.' : 'K severo o contexto renal de alto riesgo.';
     document.getElementById('algoMain').textContent = 'Manejo urgente';
     document.getElementById('algoSoft').textContent = 'Estabilizar membrana si ECG alterado o inestabilidad, redistribuir potasio y buscar eliminación definitiva.';
-    document.getElementById('planCalcium').innerHTML = '<span class="hk-drug hk-drug-danger">Gluconato de calcio 10%</span> 10 mL EV en 5–10 min si ECG alterado/inestable; repetir si persiste.';
-    document.getElementById('planShift').innerHTML = '<span class="hk-drug hk-drug-glucose">Insulina + glucosa</span> + <span class="hk-drug hk-drug-vent">salbutamol</span>. Controlar glicemia.';
+    document.getElementById('planCalcium').innerHTML = '<span class="drug-label drug-other drug-label-sm"><span class="drug-label-title">Gluconato de calcio 10%</span></span> 10 mL EV en 5–10 min si ECG alterado/inestable; repetir si persiste.';
+    document.getElementById('planShift').innerHTML = '<span class="drug-label drug-other drug-label-sm"><span class="drug-label-title">Insulina + glucosa</span></span> + <span class="drug-label drug-other drug-label-sm"><span class="drug-label-title">salbutamol</span></span>. Controlar glicemia.';
     document.getElementById('planRemove').innerHTML = renal === 'risk'
-      ? '<span class="hk-drug hk-drug-warning">Hemodiálisis precoz</span> si falla renal, refractaria, rebote o sobrecarga.'
+      ? 'Hemodiálisis precoz si falla renal, refractaria, rebote o sobrecarga.'
       : 'Furosemida si diuresis posible; considerar diálisis si refractaria o severa persistente.';
     renderActions('severe');
   }

@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "Ultrasonido gástrico";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "Apunte interactivo para apoyar la evaluación ecográfica del contenido gástrico y estimar volumen antral. Integra calidad del contenido, área antral en decúbito lateral derecho, peso y edad para orientar riesgo de broncoaspiración.";
@@ -18,277 +18,155 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=2">
-<script src="js/clinical-note-system.js?v=2"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
     <div class="container-fluid px-0 px-md-2">
-      <div class="note-shell px-1 px-md-0 py-0">
+      <div class="note-shell gas-shell">
 
         <style>
-          .gas-choice-grid{
-            display:grid;
-            grid-template-columns:repeat(2,minmax(0,1fr));
-            gap:.75rem;
+          :root{
+            --note-brand:#27458f;
+            --note-brand-soft:#eef4ff;
+            --note-brand-soft-border:#cfe1ff;
+            --note-bg:#f4f7fb;
+            --note-card:#ffffff;
+            --note-soft:#f8fafc;
+            --note-line:#dfe7f2;
+            --note-text:#1f2a37;
+            --note-muted:#667085;
+            --note-success-bg:#edf8f7;
+            --note-success-border:#cfe8e6;
+            --note-warning-bg:#fff9e8;
+            --note-warning-border:#ecd798;
+            --note-danger-bg:#fff5f3;
+            --note-danger-border:#efc4be;
+            --note-radius:1rem;
+            --note-radius-lg:1.25rem;
+            --note-shadow:0 8px 24px rgba(15,23,42,.06);
+            --note-selected:#2f80ed;
           }
 
-          .gas-choice-grid.gas-grid-4{
-            grid-template-columns:repeat(4,minmax(0,1fr));
-          }
+          body{background:var(--note-bg);}
+          .note-shell{max-width:980px;margin:0 auto;}
+          .note-hero,.note-card,.note-info-card{background:var(--note-card);border-radius:var(--note-radius-lg);box-shadow:var(--note-shadow);overflow:hidden;margin-bottom:1rem;}
+          .note-hero{background:linear-gradient(135deg,var(--note-brand),#3559b7);color:#fff;padding:1.15rem 1.25rem;}
+          .note-hero h1{color:#fff;}
+          .note-badge{display:inline-block;padding:.2rem .55rem;border-radius:999px;font-size:.78rem;background:#eef3ff;color:#3559b7;font-weight:700;}
+          .note-hero-subtle{font-size:.94rem;color:rgba(255,255,255,.78);}
+          .note-card-body{padding:1rem;}
+          .note-card-title{font-size:1rem;font-weight:800;color:var(--note-text);margin-bottom:.35rem;}
+          .note-section-label{font-size:.8rem;letter-spacing:.05em;text-transform:uppercase;color:var(--note-muted);margin-bottom:.9rem;}
+          .note-muted{font-size:.9rem;color:var(--note-muted);}
+          .note-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;}
+          .note-input-group{border:1px solid var(--note-line);border-radius:var(--note-radius);background:var(--note-soft);padding:1rem;}
+          .note-label{font-size:.9rem;font-weight:700;color:var(--note-text);margin-bottom:.35rem;display:block;}
 
-          .gas-model-grid{
-            grid-template-columns:repeat(2,minmax(0,1fr));
-            gap:.55rem;
-          }
+          .note-interpretation{border-radius:var(--note-radius);padding:1.2rem;background:var(--note-brand-soft);border:1px solid var(--note-brand-soft-border);text-align:center;}
+          .note-interpretation-label{font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;color:#3559b7;margin-bottom:.45rem;font-weight:700;}
+          .note-interpretation-main{font-size:1.35rem;font-weight:900;color:var(--note-text);line-height:1.2;}
+          .note-interpretation-soft{margin-top:.55rem;font-size:.92rem;color:#5f6b76;}
 
-          .gas-model-option{
-            min-height:58px;
-            padding:.45rem .5rem;
-            border-radius:.85rem;
-          }
+          .note-warning,.note-danger,.note-success{border-radius:var(--note-radius);padding:1rem;}
+          .note-warning{background:var(--note-warning-bg);border:1px solid var(--note-warning-border);}
+          .note-danger{background:var(--note-danger-bg);border:1px solid var(--note-danger-border);}
+          .note-success{background:var(--note-success-bg);border:1px solid var(--note-success-border);}
 
-          .gas-model-option i{
-            font-size:.85rem;
-          }
+          .note-info-header{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1rem;}
+          .note-info-title{font-size:.8rem;text-transform:uppercase;color:var(--note-muted);letter-spacing:.08em;}
+          .note-info-toggle{border-radius:.6rem;font-size:.85rem;padding:.35rem .7rem;white-space:nowrap;background:#6c757d;border:none;color:#fff;transition:.2s;}
+          .note-info-toggle:hover{background:#5a6268;color:#fff;}
+          .note-info-content{padding:1rem;display:none;animation:fadeIn .2s ease-in-out;border-top:1px solid #e9eef5;}
+          @keyframes fadeIn{from{opacity:0;transform:translateY(-5px);}to{opacity:1;transform:translateY(0);}}
 
-          .gas-model-option .gas-option-title{
-            font-size:.84rem;
-          }
+          .note-teaching-wrap{border-radius:1.3rem;background:#f4f7fb;padding:1.2rem;}
+          .note-teaching-title{text-align:center;font-size:.9rem;text-transform:uppercase;color:#64748b;letter-spacing:.05em;}
+          .note-teaching-main{text-align:center;font-size:1.45rem;font-weight:800;margin-bottom:1rem;line-height:1.15;}
+          .note-tips{background:#fff;border-radius:1rem;padding:1rem;border:1px solid #e5e7eb;margin-bottom:.8rem;}
 
-          .gas-model-option .gas-option-sub{
-            font-size:.68rem;
-          }
-
-          .gas-option-input{
-            position:absolute;
-            opacity:0;
-            pointer-events:none;
-          }
-
+          .gas-option-input{position:absolute;opacity:0;pointer-events:none;}
           .gas-option{
-            display:flex;
-            flex-direction:column;
-            align-items:center;
-            justify-content:center;
-            text-align:center;
-            min-height:72px;
-            border:2px solid var(--note-line);
-            background:#fff;
-            border-radius:1rem;
-            padding:.65rem .75rem;
-            cursor:pointer;
-            transition:.15s ease;
-            box-shadow:0 3px 10px rgba(15,23,42,.04);
-            gap:.18rem;
+            display:flex;flex-direction:column;align-items:center;justify-content:center;
+            text-align:center;min-height:72px;border:2px solid var(--note-line);
+            background:var(--note-card);border-radius:1rem;padding:.65rem .75rem;
+            cursor:pointer;transition:.15s ease;box-shadow:0 3px 10px rgba(15,23,42,.04);gap:.18rem;
           }
-
-          .gas-option i{
-            color:#3559b7;
-            font-size:1rem;
-          }
-
+          .gas-option i{color:#3559b7;font-size:1rem;}
           .gas-option-input:checked + .gas-option{
             box-shadow:0 0 0 3px rgba(47,128,237,.14), 0 8px 18px rgba(15,23,42,.10);
-            border:4px solid var(--note-selected);
-            transform:translateY(-1px);
+            border:4px solid var(--note-selected);transform:translateY(-1px);
           }
+          .gas-option-title{font-size:.9rem;font-weight:800;line-height:1.15;color:var(--note-text);margin:0;}
+          .gas-option-sub{font-size:.76rem;line-height:1.22;color:var(--note-muted);margin:0;font-weight:600;}
 
-          .gas-option-title{
-            font-size:.9rem;
-            font-weight:800;
-            line-height:1.15;
-            color:var(--note-text);
-            margin:0;
-          }
-
-          .gas-option-sub{
-            font-size:.76rem;
-            line-height:1.22;
-            color:var(--note-muted);
-            margin:0;
-            font-weight:600;
-          }
+          .gas-choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;}
+          .gas-model-option{min-height:58px;padding:.45rem .5rem;border-radius:.85rem;}
+          .gas-model-option i{font-size:.85rem;}
+          .gas-model-option .gas-option-title{font-size:.84rem;}
+          .gas-model-option .gas-option-sub{font-size:.68rem;}
 
           .gas-content-vacio{background:#edf8f1;}
           .gas-content-liquido{background:#e6f4ff;}
           .gas-content-espeso{background:#fff9e8;}
           .gas-content-solido{background:#fff1f1;}
 
-          .gas-visual-box{
-            border:1px solid var(--note-line);
-            border-radius:1rem;
-            padding:1rem;
-            background:#fff;
-          }
+          .gas-visual-box{border:1px solid var(--note-line);border-radius:var(--note-radius-lg);padding:1rem;background:var(--note-card);}
+          .gas-visual-box.is-low{background:var(--note-success-bg);border-color:var(--note-success-border);}
+          .gas-visual-box.is-mid{background:#f2f8ff;border-color:#d4e6ff;}
+          .gas-visual-box.is-warn{background:var(--note-warning-bg);border-color:var(--note-warning-border);}
+          .gas-visual-box.is-danger{background:var(--note-danger-bg);border-color:var(--note-danger-border);}
+          .gas-visual-grid{display:grid;grid-template-columns:.95fr 1.05fr;gap:1rem;align-items:start;}
 
-          .gas-visual-box.is-low{
-            background:var(--note-success-bg);
-            border-color:var(--note-success-border);
-          }
+          .gas-image-card{background:var(--note-card);border:1px solid var(--note-line);border-radius:1rem;overflow:hidden;}
+          .gas-image-card img{width:100%;display:block;object-fit:cover;}
+          .gas-image-cap{padding:.65rem .75rem;font-size:.82rem;line-height:1.3;color:var(--note-muted);border-top:1px solid var(--note-line);}
 
-          .gas-visual-box.is-mid{
-            background:#f2f8ff;
-            border-color:#d4e6ff;
-          }
-
-          .gas-visual-box.is-warn{
-            background:var(--note-warning-bg);
-            border-color:var(--note-warning-border);
-          }
-
-          .gas-visual-box.is-danger{
-            background:var(--note-danger-bg);
-            border-color:var(--note-danger-border);
-          }
-
-          .gas-visual-grid{
-            display:grid;
-            grid-template-columns:.95fr 1.05fr;
-            gap:1rem;
-            align-items:start;
-          }
-
-          .gas-image-card{
-            background:#fff;
-            border:1px solid var(--note-line);
-            border-radius:1rem;
-            overflow:hidden;
-          }
-
-          .gas-image-card img{
-            width:100%;
-            display:block;
-            object-fit:cover;
-          }
-
-          .gas-image-cap{
-            padding:.65rem .75rem;
-            font-size:.82rem;
-            line-height:1.3;
-            color:var(--note-muted);
-            border-top:1px solid #eef2f6;
-            background:#fff;
-          }
-
-          .gas-action-list{
-            display:grid;
-            gap:.75rem;
-          }
-
-          .gas-action-item{
-            display:flex;
-            align-items:flex-start;
-            gap:.65rem;
-            border:1px solid #d9e2ef;
-            border-radius:1rem;
-            background:#fff;
-            padding:.75rem .85rem;
-          }
-
-          .gas-action-mark{
-            flex:0 0 auto;
-            width:30px;
-            height:30px;
-            border-radius:999px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            color:#fff;
-            margin-top:.08rem;
-          }
-
+          .gas-action-list{display:grid;gap:.75rem;}
+          .gas-action-item{display:flex;align-items:flex-start;gap:.65rem;border:1px solid var(--note-line);border-radius:1rem;background:var(--note-card);padding:.75rem .85rem;}
+          .gas-action-mark{flex:0 0 auto;width:30px;height:30px;border-radius:999px;display:flex;align-items:center;justify-content:center;color:#fff;margin-top:.08rem;}
           .gas-action-mark.ok{background:#2ea663;}
           .gas-action-mark.mid{background:#f4c542;}
           .gas-action-mark.high{background:#d92d20;}
-
           .gas-action-copy{min-width:0;flex:1;}
+          .gas-action-title{font-size:.95rem;font-weight:800;line-height:1.18;color:var(--note-text);margin-bottom:.1rem;}
+          .gas-action-note{margin:0;font-size:.82rem;line-height:1.32;color:var(--note-muted);}
 
-          .gas-action-title{
-            font-size:.95rem;
-            font-weight:800;
-            line-height:1.18;
-            color:var(--note-text);
-            margin-bottom:.1rem;
+          .gas-plan-line{padding:.75rem .85rem;border-radius:.9rem;background:var(--note-card);border:1px solid var(--note-line);margin-bottom:.6rem;}
+          .gas-plan-line:last-child{margin-bottom:0;}
+
+          .gas-ok-card{background:#edf8f1 !important;border-color:#b7ddc3 !important;}
+          .gas-mid-card{background:#fff9e8 !important;border-color:#ead38a !important;}
+          .gas-danger-card{background:#fff1f1 !important;border-color:#efc0bd !important;}
+
+          @media(max-width:768px){
+            .note-grid,.gas-visual-grid{grid-template-columns:1fr;}
+            .note-teaching-main{font-size:1.2rem;}
           }
-
-          .gas-action-note{
-            margin:0;
-            font-size:.82rem;
-            line-height:1.32;
-            color:var(--note-muted);
-          }
-
-          .gas-plan-line{
-            padding:.75rem .85rem;
-            border-radius:.9rem;
-            background:#fff;
-            border:1px solid var(--note-line-strong);
-            margin-bottom:.6rem;
-          }
-
-          .gas-plan-line:last-child{
-            margin-bottom:0;
-          }
-
-          .gas-ok-card{
-            background:#edf8f1 !important;
-            border-color:#b7ddc3 !important;
-          }
-
-          .gas-mid-card{
-            background:#fff9e8 !important;
-            border-color:#ead38a !important;
-          }
-
-          .gas-danger-card{
-            background:#fff1f1 !important;
-            border-color:#efc0bd !important;
-          }
-
-          @media (max-width:768px){
-            .gas-choice-grid,
-            .gas-choice-grid.gas-grid-4,
-            .gas-visual-grid{
-              grid-template-columns:1fr;
-            }
-
-            .gas-model-grid{
-              grid-template-columns:repeat(2,minmax(0,1fr));
-            }
-          }
-          .gas-content-grid{
-            display:grid;
-            grid-template-columns:repeat(2,minmax(0,1fr));
-            gap:.75rem;
-          }
-
-          @media (max-width:420px){
-            .gas-content-grid{
-              grid-template-columns:1fr;
-            }
+          @media(max-width:576px){
+            .note-info-toggle{margin-left:auto;}
           }
         </style>
+        <link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
+        <link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · POCUS · ASPIRACIÓN</div>
-          <h2>Ultrasonido gástrico</h2>
+          <h1 class="h2 mb-2">Ultrasonido gástrico</h1>
           <div class="note-hero-subtitle">Estima contenido y volumen gástrico para orientar riesgo de broncoaspiración cuando el ayuno es incierto o clínicamente relevante.</div>
         </div>
 
-        <div class="info-box mb-3">
-          <div class="info-box-header">
-            <div class="info-box-title">Información</div>
-            <button type="button" onclick="toggleInfo()" class="btn btn-sm info-toggle-btn">Mostrar / ocultar</button>
+        <div class="note-info-card mb-3">
+          <div class="note-info-header">
+            <div class="note-info-title">Información</div>
+            <button type="button" onclick="toggleInfo()" class="note-info-toggle">Mostrar / ocultar</button>
           </div>
-          <div id="infoContent" class="info-box-content">
+          <div id="infoContent" class="note-info-content">
             <p class="mb-2"><?php echo $descripcion_info; ?></p>
             <?php if(!empty($formula)){ ?>
               <hr>
               <b>Comentario:</b><br>
               <?php echo $formula; ?>
             <?php } ?>
-
             <hr>
             <b>Técnica resumida:</b>
             <ul class="mb-0 mt-2">
@@ -297,14 +175,12 @@ require("../head.php");
               <li>Evaluar antro en decúbito supino y luego en decúbito lateral derecho.</li>
               <li>Usar transductor curvo en general; lineal puede ayudar en niños pequeños.</li>
             </ul>
-
             <hr>
             <b>Referencia visual de exploración:</b>
             <div class="gas-image-card mt-3">
               <img src="img_apuntes/us_gastrico.jpeg" alt="Guía de posición del transductor y estructuras anatómicas">
               <div class="gas-image-cap">Posición del transductor y estructuras objetivo durante evaluación del antro gástrico.</div>
             </div>
-
             <hr>
             <b>Referencias:</b>
             <ul class="mb-0 mt-2">
@@ -334,8 +210,7 @@ require("../head.php");
                   <input id="edad" type="text" inputmode="decimal" class="note-input">
                   <div id="edadUnitText" class="note-input-unit">meses</div>
                 </div>
-
-                <div class="gas-choice-grid gas-model-grid">
+                <div class="gas-choice-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem;">
                   <label>
                     <input class="gas-option-input" type="radio" name="edadunit" value="meses" checked>
                     <div class="gas-option gas-model-option">
@@ -353,7 +228,6 @@ require("../head.php");
                     </div>
                   </label>
                 </div>
-
                 <div id="modeloAutoTexto" class="note-result-secondary mt-2">
                   Se aplicará el modelo pediátrico de Spencer.
                 </div>
@@ -369,7 +243,7 @@ require("../head.php");
             </div>
 
             <div class="note-section-label">Consistencia / aspecto del contenido</div>
-              <div class="gas-choice-grid gas-content-grid">
+            <div class="gas-choice-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));">
               <label>
                 <input class="gas-option-input" type="radio" name="contenido" value="vacio" checked>
                 <div class="gas-option gas-content-vacio">
@@ -411,12 +285,8 @@ require("../head.php");
             <div>
               <div class="note-section-label">Referencia visual</div>
               <div id="visualTitulo" class="note-card-title">Estómago vacío</div>
-              <div id="visualTexto" class="note-muted mb-3">
-                Antro pequeño o colapsado, con paredes próximas y sin distensión evidente.
-              </div>
-              <div id="visualClinical" class="note-result-secondary">
-                Si el antro está realmente vacío y no hay otros factores de riesgo, la lectura ecográfica orienta a bajo riesgo.
-              </div>
+              <div id="visualTexto" class="note-muted mb-3">Antro pequeño o colapsado, con paredes próximas y sin distensión evidente.</div>
+              <div id="visualClinical" class="note-result-secondary">Si el antro está realmente vacío y no hay otros factores de riesgo, la lectura ecográfica orienta a bajo riesgo.</div>
             </div>
             <div class="gas-image-card">
               <img id="visualImg" src="img_apuntes/estomago_vacio.jpg" alt="Referencia visual del contenido gástrico">
@@ -428,22 +298,22 @@ require("../head.php");
         <div class="note-summary-box mb-3">
           <div class="note-summary-box-title">Resumen</div>
           <div id="summaryNarrative" class="note-summary-box-text">Ingresa peso, edad y área antral para estimar volumen; la calidad del contenido siempre pesa en la decisión.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item">
-              <div class="note-summary-k">Peso / edad</div>
-              <div id="summaryPatient" class="note-summary-v">-</div>
+          <div class="note-result-grid-2 mt-2">
+            <div class="note-result-card">
+              <div class="note-result-card-label">Peso / edad</div>
+              <div id="summaryPatient" class="note-result-card-value">-</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Modelo aplicado</div>
-              <div id="summaryModel" class="note-summary-v">Spencer</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Modelo aplicado</div>
+              <div id="summaryModel" class="note-result-card-value">Spencer</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Área DLD</div>
-              <div id="summaryArea" class="note-summary-v">-</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Área DLD</div>
+              <div id="summaryArea" class="note-result-card-value">-</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Contenido</div>
-              <div id="summaryContent" class="note-summary-v">Vacío</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Contenido</div>
+              <div id="summaryContent" class="note-result-card-value">Vacío</div>
             </div>
           </div>
         </div>
@@ -465,7 +335,6 @@ require("../head.php");
           <div class="note-interpretation-label">Resultado principal</div>
           <div id="riesgoFinal" class="note-interpretation-main">Pendiente</div>
           <div id="riesgoTexto" class="note-interpretation-soft">Completa datos y clasifica contenido. La interpretación integra calidad del contenido + volumen relativo.</div>
-
           <div class="mt-3 text-start">
             <div class="gas-plan-line"><strong>Fórmula aplicada:</strong> <span id="formulaCorta">-</span></div>
             <div class="gas-plan-line"><strong>Lectura cualitativa:</strong> <span id="qualitativeText">Antro compatible con vacío.</span></div>

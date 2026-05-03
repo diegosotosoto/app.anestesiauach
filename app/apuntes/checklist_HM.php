@@ -11,162 +11,20 @@ $referencias = array(
 $titulo_pagina = "Checklist HM";
 $navbar_titulo = "Apuntes";
 
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' style='width:50px; height:40px; --bs-border-opacity: .1;' type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation'> ? </button>";
+$boton_navbar = "<button class='app-nav-action' type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 
 require("../head.php");
 ?>
 
-<link rel="stylesheet" href="css/clinical-note-system.css?v=1">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=1"></script>
 
-<style>
-.hm-shell{max-width:980px;margin:0 auto;}
-.hm-warning-card{
-  background:#fff8e8;
-  border:1px solid #e6cb7a;
-  border-radius:1.15rem;
-  padding:1rem 1.1rem;
-}
-.hm-warning-title{
-  font-size:.9rem;
-  font-weight:800;
-  text-align:center;
-  color:#1f2a37;
-  margin-bottom:.45rem;
-}
-.hm-section-icon{
-  color:#64748b;
-  font-size:1.1rem;
-}
-.hm-section-chevron{
-  color:#64748b;
-  font-size:1.2rem;
-  transition:transform .18s ease;
-}
-.note-checklist-section.is-collapsed .hm-section-chevron{
-  transform:rotate(-90deg);
-}
-.last-check-item{
-  display:flex;
-  align-items:flex-start;
-  gap:.8rem;
-  border:1px solid #cfe8d9;
-  border-radius:1rem;
-  background:#fff;
-  padding:.9rem 1rem;
-  cursor:pointer;
-  transition:.16s ease;
-}
-.last-check-item:hover{
-  border-color:#b9d9c8;
-  box-shadow:0 4px 12px rgba(15,23,42,.04);
-}
-.last-check-input{
-  position:absolute;
-  opacity:0;
-  pointer-events:none;
-  width:1px;
-  height:1px;
-}
-.last-check-mark{
-  flex:0 0 auto;
-  width:34px;
-  height:34px;
-  border-radius:999px;
-  border:2px solid #b8c2d0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#fff;
-  color:#fff;
-  margin-top:.08rem;
-  transition:.16s ease;
-}
-.last-check-mark i{font-size:.95rem;}
-.last-check-copy{
-  min-width:0;
-  flex:1;
-}
-.last-check-title{
-  font-size:1rem;
-  font-weight:800;
-  line-height:1.22;
-  color:var(--note-text);
-  margin-bottom:.15rem;
-  text-align:center;
-}
-.last-check-note{
-  margin:0;
-  font-size:.9rem;
-  line-height:1.4;
-  color:var(--note-muted);
-  text-align:center;
-}
-.last-check-item.is-done{
-  background:#edf8f1;
-  border-color:#b7ddc3;
-}
-.last-check-item.is-done .last-check-mark{
-  background:#2ea663;
-  border-color:#2ea663;
-}
-.hm-dantrolene-grid{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:.75rem;
-}
-.hm-dantrolene-card{
-  background:linear-gradient(180deg,var(--note-brand-soft) 0%, #f7faff 100%);
-  border:1px solid var(--note-brand-soft-border);
-  border-radius:1rem;
-  padding:1rem;
-}
-.hm-dantrolene-card .k{
-  font-size:.8rem;
-  text-transform:uppercase;
-  letter-spacing:.06em;
-  color:#3559b7;
-  font-weight:700;
-  margin-bottom:.25rem;
-  text-align:center;
-}
-.hm-dantrolene-card .v{
-  font-size:1.25rem;
-  font-weight:800;
-  color:var(--note-text);
-  line-height:1.15;
-  text-align:center;
-}
-.hm-dantrolene-card .n{
-  margin-top:.25rem;
-  font-size:.9rem;
-  line-height:1.35;
-  color:var(--note-muted);
-  text-align:center;
-}
-.hm-inline-inputs{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:.75rem;
-}
-.hm-record-label{
-  font-size:.82rem;
-  text-transform:uppercase;
-  letter-spacing:.06em;
-  color:var(--note-muted);
-  font-weight:700;
-  margin-bottom:.35rem;
-}
-@media (max-width: 768px){
-  .hm-dantrolene-grid,
-  .hm-inline-inputs{
-    grid-template-columns:1fr;
-  }
-}
-</style>
+
+
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
@@ -198,8 +56,8 @@ require("../head.php");
     </div>
   </div>
 
-  <div class="hm-warning-card mb-3">
-    <div class="hm-warning-title">Advertencia visible</div>
+  <div class="note-warning mb-3">
+    <div class="fw-semibold mb-1">Advertencia visible</div>
     <p class="mb-0 text-center">
       Ante sospecha real de hipertermia maligna, la prioridad es suspender gatillantes, hiperventilar con O<sub>2</sub> al 100%, pedir ayuda y administrar dantrolene precozmente. Este checklist ordena la respuesta, pero no reemplaza juicio clínico ni protocolos institucionales.
     </p>
@@ -226,17 +84,17 @@ require("../head.php");
     </div>
   </div>
 
-  <div class="note-checklist-section">
-    <div class="note-checklist-section-head">
-      <div>
-        <div class="note-checklist-section-title">1. Sospecha diagnóstica inmediata</div>
-        <div class="note-checklist-section-help">Signos clínicos de alarma que deben disparar la respuesta.</div>
-      </div>
-      <div class="hm-section-chevron"><i class="fa-solid fa-chevron-down"></i></div>
-    </div>
+        <div class="last-checklist-section">
+          <div class="last-checklist-head">
+            <div>
+              <div class="last-checklist-title">1. Sospecha diagnóstica inmediata</div>
+              <div class="last-checklist-help">Signos clínicos de alarma que deben disparar la respuesta.</div>
+            </div>
+            <div class="last-checklist-chevron"><i class="fa-solid fa-chevron-down"></i></div>
+          </div>
 
-    <div class="note-checklist-section-body">
-      <div class="note-checklist-list">
+          <div class="last-checklist-body">
+            <div class="last-checklist-list">
         <label class="last-check-item">
           <input class="last-check-input task-check" type="checkbox">
           <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
@@ -276,17 +134,17 @@ require("../head.php");
     </div>
   </div>
 
-  <div class="note-checklist-section">
-    <div class="note-checklist-section-head">
-      <div>
-        <div class="note-checklist-section-title">2. Medidas inmediatas</div>
-        <div class="note-checklist-section-help">Acciones prioritarias en los primeros minutos.</div>
-      </div>
-      <div class="hm-section-chevron"><i class="fa-solid fa-chevron-down"></i></div>
-    </div>
+        <div class="last-checklist-section">
+          <div class="last-checklist-head">
+            <div>
+              <div class="last-checklist-title">2. Medidas inmediatas</div>
+              <div class="last-checklist-help">Acciones prioritarias en los primeros minutos.</div>
+            </div>
+            <div class="last-checklist-chevron"><i class="fa-solid fa-chevron-down"></i></div>
+          </div>
 
-    <div class="note-checklist-section-body">
-      <div class="note-checklist-list">
+          <div class="last-checklist-body">
+            <div class="last-checklist-list">
         <label class="last-check-item">
           <input class="last-check-input task-check" type="checkbox">
           <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
@@ -326,16 +184,16 @@ require("../head.php");
     </div>
   </div>
 
-  <div class="note-checklist-section">
-    <div class="note-checklist-section-head">
-      <div>
-        <div class="note-checklist-section-title">3. Dantrolene</div>
-        <div class="note-checklist-section-help">Cálculo rápido para dosis inicial y carga acumulada.</div>
-      </div>
-      <div class="hm-section-chevron"><i class="fa-solid fa-chevron-down"></i></div>
-    </div>
+        <div class="last-checklist-section">
+          <div class="last-checklist-head">
+            <div>
+              <div class="last-checklist-title">3. Dantrolene</div>
+              <div class="last-checklist-help">Cálculo rápido para dosis inicial y carga acumulada.</div>
+            </div>
+            <div class="last-checklist-chevron"><i class="fa-solid fa-chevron-down"></i></div>
+          </div>
 
-    <div class="note-checklist-section-body">
+          <div class="last-checklist-body">
       <div class="hm-inline-inputs mb-3">
         <div class="note-input-group">
           <label class="note-label" for="weightInput">Peso</label>
@@ -344,57 +202,58 @@ require("../head.php");
             <div class="note-input-unit">kg</div>
           </div>
         </div>
+      </div>
 
-        <div class="note-input-group">
-          <label class="note-label" for="weightLog">Peso usado en registro</label>
-          <div class="note-input-inline">
-            <input type="text" id="weightLog" class="note-input" inputmode="decimal" placeholder="Opcional">
-            <div class="note-input-unit">kg</div>
-          </div>
+      <div class="note-input-group mb-3">
+        <label class="note-label">Acciones rápidas</label>
+        <div class="note-choice-grid">
+          <button type="button" id="calcDoseBtn" class="note-action-btn-sm note-action-btn-primary">
+            <i class="fa-solid fa-calculator"></i>
+            <span><span class="note-action-btn-title">Calcular</span><span class="note-action-btn-sub">Basado en el peso ingresado</span></span>
+          </button>
+          <button type="button" id="fillDemoBtn" class="note-action-btn-sm">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span><span class="note-action-btn-title">Ejemplo 70 kg</span><span class="note-action-btn-sub">Llenar con valores de referencia</span></span>
+          </button>
         </div>
       </div>
 
-      <div class="note-checklist-toolbar mb-3">
-        <button type="button" id="calcDoseBtn" class="btn note-checklist-btn"><i class="fa-solid fa-calculator me-1"></i> Calcular</button>
-        <button type="button" id="fillDemoBtn" class="btn note-checklist-btn"><i class="fa-solid fa-wand-magic-sparkles me-1"></i> Ejemplo 70 kg</button>
-      </div>
-
-      <div class="hm-dantrolene-grid">
-        <div class="hm-dantrolene-card">
-          <div class="k">Peso usado</div>
-          <div id="outWeight" class="v">-</div>
-          <div class="n">Base del cálculo actual.</div>
+      <div class="note-result-grid-2">
+        <div class="note-result-card">
+          <div class="note-result-card-label">Peso usado</div>
+          <div id="outWeight" class="note-result-card-value">-</div>
+          <div class="note-result-card-note">Base del cálculo actual.</div>
         </div>
-        <div class="hm-dantrolene-card">
-          <div class="k">Dosis inicial</div>
-          <div id="outInitialDose" class="v">-</div>
-          <div class="n">Orientativa: 2,5 mg/kg IV.</div>
+        <div class="note-result-card">
+          <div class="note-result-card-label">Dosis inicial</div>
+          <div id="outInitialDose" class="note-result-card-value">-</div>
+          <div class="note-result-card-note">Orientativa: 2,5 mg/kg IV.</div>
         </div>
-        <div class="hm-dantrolene-card">
-          <div class="k">Viales de 20 mg</div>
-          <div id="outVials20" class="v">-</div>
-          <div class="n">Redondeo práctico para preparación rápida.</div>
+        <div class="note-result-card">
+          <div class="note-result-card-label">Viales de 20 mg</div>
+          <div id="outVials20" class="note-result-card-value">-</div>
+          <div class="note-result-card-note">Redondeo práctico para preparación rápida.</div>
         </div>
-        <div class="hm-dantrolene-card">
-          <div class="k">Carga acumulada 10 mg/kg</div>
-          <div id="outMaxDose" class="v">-</div>
-          <div class="n">Si persiste la sospecha o respuesta incompleta.</div>
+        <div class="note-result-card">
+          <div class="note-result-card-label">Carga acumulada 10 mg/kg</div>
+          <div id="outMaxDose" class="note-result-card-value">-</div>
+          <div class="note-result-card-note">Si persiste la sospecha o respuesta incompleta.</div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="note-checklist-section">
-    <div class="note-checklist-section-head">
-      <div>
-        <div class="note-checklist-section-title">4. Tratamiento de complicaciones</div>
-        <div class="note-checklist-section-help">Reanimación paralela mientras se corrige la crisis.</div>
-      </div>
-      <div class="hm-section-chevron"><i class="fa-solid fa-chevron-down"></i></div>
-    </div>
+        <div class="last-checklist-section">
+          <div class="last-checklist-head">
+            <div>
+              <div class="last-checklist-title">4. Tratamiento de complicaciones</div>
+              <div class="last-checklist-help">Reanimación paralela mientras se corrige la crisis.</div>
+            </div>
+            <div class="last-checklist-chevron"><i class="fa-solid fa-chevron-down"></i></div>
+          </div>
 
-    <div class="note-checklist-section-body">
-      <div class="note-checklist-list">
+          <div class="last-checklist-body">
+            <div class="last-checklist-list">
         <label class="last-check-item">
           <input class="last-check-input task-check" type="checkbox">
           <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
@@ -425,16 +284,16 @@ require("../head.php");
     </div>
   </div>
 
-  <div class="note-checklist-section">
-    <div class="note-checklist-section-head">
-      <div>
-        <div class="note-checklist-section-title">5. Registro rápido</div>
-        <div class="note-checklist-section-help">Resumen exportable del evento.</div>
-      </div>
-      <div class="hm-section-chevron"><i class="fa-solid fa-chevron-down"></i></div>
-    </div>
+        <div class="last-checklist-section">
+          <div class="last-checklist-head">
+            <div>
+              <div class="last-checklist-title">5. Registro rápido</div>
+              <div class="last-checklist-help">Resumen exportable del evento.</div>
+            </div>
+            <div class="last-checklist-chevron"><i class="fa-solid fa-chevron-down"></i></div>
+          </div>
 
-    <div class="note-checklist-section-body">
+          <div class="last-checklist-body">
       <div class="hm-inline-inputs mb-3">
         <div>
           <div class="hm-record-label">Hora de sospecha</div>
@@ -446,9 +305,9 @@ require("../head.php");
         </div>
       </div>
 
-      <div class="note-checklist-record">
+      <div class="iv-record-box">
         <div class="note-card-title mb-2">Registro resumido</div>
-        <textarea id="recordOutput" class="note-checklist-record-box"></textarea>
+        <textarea id="recordOutput" class="iv-record-output"></textarea>
 
         <div class="note-checklist-toolbar mt-2">
           <button type="button" id="copySummaryBtn" class="btn note-checklist-btn"><i class="fa-solid fa-copy me-1"></i> Copiar</button>
@@ -484,7 +343,6 @@ require("../head.php");
   const progressText = document.getElementById('progressText');
 
   const weightInput = document.getElementById('weightInput');
-  const weightLog = document.getElementById('weightLog');
   const outWeight = document.getElementById('outWeight');
   const outInitialDose = document.getElementById('outInitialDose');
   const outVials20 = document.getElementById('outVials20');
@@ -513,20 +371,20 @@ require("../head.php");
     section.classList.toggle('is-collapsed', shouldCollapse);
   }
 
-  document.querySelectorAll('.note-checklist-section-head').forEach(function(head){
+  document.querySelectorAll('.last-checklist-head').forEach(function(head){
     head.addEventListener('click', function(e){
       if(e.target.closest('button')) return;
-      const section = head.closest('.note-checklist-section');
+      const section = head.closest('.last-checklist-section');
       if(section) toggleSection(section);
     });
   });
 
   document.getElementById('expandAllBtn').addEventListener('click', function(){
-    document.querySelectorAll('.note-checklist-section').forEach(function(section){ toggleSection(section, false); });
+    document.querySelectorAll('.last-checklist-section').forEach(function(section){ toggleSection(section, false); });
   });
 
   document.getElementById('collapseAllBtn').addEventListener('click', function(){
-    document.querySelectorAll('.note-checklist-section').forEach(function(section){ toggleSection(section, true); });
+    document.querySelectorAll('.last-checklist-section').forEach(function(section){ toggleSection(section, true); });
   });
 
   function formatWeight(weight){
@@ -584,7 +442,7 @@ require("../head.php");
 
   function buildSummary(){
     const timeStart = document.getElementById('timeStart').value || '-';
-    const weight = weightLog.value.trim() || (getCurrentWeight() ? CNS.formatNumber(getCurrentWeight(),1) : '-');
+    const weight = getCurrentWeight() ? CNS.formatNumber(getCurrentWeight(),1) : '-';
     const notes = document.getElementById('notesBox').value.trim() || '-';
     const doneItems = checks.filter(function(c){
       return c.checked;
@@ -612,13 +470,11 @@ require("../head.php");
 
   checks.forEach(function(check){ check.addEventListener('change', updateProgress); });
   document.getElementById('timeStart').addEventListener('input', updateRecordOutput);
-  weightLog.addEventListener('input', updateRecordOutput);
   document.getElementById('notesBox').addEventListener('input', updateRecordOutput);
 
   document.getElementById('resetBtn').addEventListener('click', function(){
     checks.forEach(function(c){ c.checked = false; setChecklistItemState(c); });
     weightInput.value = '';
-    weightLog.value = '';
     document.getElementById('timeStart').value = '';
     document.getElementById('notesBox').value = '';
     clearDoseOutputs();

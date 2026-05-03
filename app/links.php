@@ -5,7 +5,7 @@
 //  require("valida_pag.php");   ****   PERMITE QUE LA PÁGINA SEA PÚBLICA   *****
 
 //Variables sin conexion
-$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler="<a class='d-sm-block d-sm-none admin-back-btn' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar="<div class='text-white'>Links Útiles</div>";
 $boton_navbar="<a></a><a></a>";
 
@@ -15,14 +15,18 @@ require("head.php");
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
 <div class="apunte-surface">
   <div class="container-fluid px-0 px-md-2">
-    <div class="apuntes-shell">
+    <div class="content-shell">
 
 
-      <div class="apuntes-hero">
-        <div class="small opacity-75 mb-1">APP clínica • links de interés</div>
-        <div class="apuntes-hero-title">Links de interés en Anestesiología</div>
-        <div class="apuntes-hero-subtitle"> Recursos clínicos y académicos útiles para la práctica diaria, docencia y toma de decisiones en anestesiología.</div>
-      </div>
+      <section class="app-hero app-hero-blue">
+        <div class="app-hero-row">
+          <div class="app-hero-body">
+            <div class="app-hero-kicker">APP clínica • links de interés</div>
+            <h2>Links de interés en Anestesiología</h2>
+            <p>Recursos clínicos y académicos útiles para la práctica diaria, docencia y toma de decisiones en anestesiología.</p>
+          </div>
+        </div>
+      </section>
 
 
       <div class="links-grid">
@@ -124,91 +128,6 @@ require("head.php");
   </div>
 </div>
 
-
-<style>
-  .apuntes-hero{
-    background: linear-gradient(135deg, var(--app-navy), #3559b7);
-    color: #fff;
-    border-radius: 1.25rem;
-    box-shadow: 0 8px 24px rgba(0,0,0,.06);
-    padding: 1.15rem 1.25rem;
-    margin-bottom: 1rem;
-  }
-
-  .apuntes-hero-title{
-    font-size: 1.2rem;
-    font-weight: 700;
-    line-height: 1.2;
-  }
-
-  .apuntes-hero-subtitle{
-    color: rgba(255,255,255,.75);
-    margin-top: .35rem;
-  }
-
-.links-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:16px;
-}
-
-/* BOTÓN ESTILO CLÍNICO */
-.link-tile{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  text-align:center;
-  padding:18px 14px;
-  border-radius:18px;
-  text-decoration:none;
-  color:#1f2a37;
-  background:#ffffff;
-  border:1px solid #e5e9f2;
-  box-shadow:0 8px 20px rgba(0,0,0,.05);
-  transition:.15s;
-}
-
-.link-tile:hover{
-  transform:translateY(-2px);
-  box-shadow:0 12px 26px rgba(0,0,0,.08);
-  background:#f8fbff;
-  color:#1f2a37;
-}
-
-/* ÍCONO */
-.link-icon{
-  font-size:1.6rem;
-  color:#27458f;
-  margin-bottom:8px;
-}
-
-/* TÍTULO */
-.link-title{
-  font-weight:600;
-  font-size:.98rem;
-}
-
-/* DESCRIPCIÓN */
-.link-desc{
-  font-size:.82rem;
-  color:#667085;
-  margin-top:4px;
-  line-height:1.3;
-}
-
-/* RESPONSIVE */
-@media (min-width:768px){
-  .links-grid{
-    grid-template-columns:repeat(3,1fr);
-  }
-}
-
-@media (min-width:1200px){
-  .links-grid{
-    grid-template-columns:repeat(4,1fr);
-  }
-}
-</style>
 
 <script>
 const openExternal = (url) => {

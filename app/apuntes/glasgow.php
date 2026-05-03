@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "Escala de Glasgow";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "La escala de Glasgow evalúa el nivel de conciencia mediante tres dominios: respuesta ocular, verbal y motora. Su suma total va de 3 a 15 puntos y ayuda a describir gravedad neurológica, orientar vigilancia y anticipar implicancias anestésicas.";
@@ -16,7 +16,7 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=1">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=1"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
@@ -174,6 +174,7 @@ require("../head.php");
             .gcs-legend-grid{grid-template-columns:1fr;}
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · EVALUACIÓN NEUROLÓGICA</div>
@@ -269,25 +270,27 @@ require("../head.php");
           </div>
         </div>
 
-        <div class="note-summary-box mb-3">
-          <div class="note-summary-box-title">Resumen</div>
-          <div id="summaryNarrative" class="note-summary-box-text">Selecciona respuesta ocular, verbal y motora para calcular Glasgow total.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item">
-              <div class="note-summary-k">Ocular</div>
-              <div id="summaryOcular" class="note-summary-v">—</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Verbal</div>
-              <div id="summaryVerbal" class="note-summary-v">—</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Motora</div>
-              <div id="summaryMotora" class="note-summary-v">—</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Categoría</div>
-              <div id="summarySeverity" class="note-summary-v">No completado</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-card-title">Resumen</div>
+            <div id="summaryNarrative" class="note-summary-box-text mb-3">Selecciona respuesta ocular, verbal y motora para calcular Glasgow total.</div>
+            <div class="note-result-grid-2">
+              <div class="note-result-card">
+                <div class="note-result-card-label">Ocular</div>
+                <div id="summaryOcular" class="note-result-card-value">—</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Verbal</div>
+                <div id="summaryVerbal" class="note-result-card-value">—</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Motora</div>
+                <div id="summaryMotora" class="note-result-card-value">—</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Categoría</div>
+                <div id="summarySeverity" class="note-result-card-value">No completado</div>
+              </div>
             </div>
           </div>
         </div>
@@ -329,12 +332,12 @@ require("../head.php");
         <div class="note-card mb-3">
           <div class="note-card-body">
             <div class="note-section-label">Conducta práctica</div>
-            <div id="checklistBox" class="d-grid gap-3">
-              <div class="gcs-check-item">
-                <div class="gcs-check-mark mid"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <div class="gcs-check-copy">
-                  <div class="gcs-check-title">Completa los tres dominios antes de concluir</div>
-                  <p class="gcs-check-note">Un Glasgow incompleto puede ocultar deterioro neurológico o inducir falsa seguridad.</p>
+            <div id="checklistBox" class="note-warning-list">
+              <div class="note-warning-item">
+                <div class="note-warning-icon mid"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Completa los tres dominios antes de concluir</div>
+                  <p class="note-warning-note">Un Glasgow incompleto puede ocultar deterioro neurológico o inducir falsa seguridad.</p>
                 </div>
               </div>
             </div>
@@ -391,11 +394,11 @@ require("../head.php");
 
     box.innerHTML = items.map(function(item){
       const icon = item[0] === 'ok' ? 'fa-check' : (item[0] === 'mid' ? 'fa-triangle-exclamation' : 'fa-bolt');
-      return '<div class="gcs-check-item">' +
-        '<div class="gcs-check-mark ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
-        '<div class="gcs-check-copy">' +
-          '<div class="gcs-check-title">' + item[1] + '</div>' +
-          '<p class="gcs-check-note">' + item[2] + '</p>' +
+      return '<div class="note-warning-item">' +
+        '<div class="note-warning-icon ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
+        '<div class="note-warning-copy">' +
+          '<div class="note-warning-title">' + item[1] + '</div>' +
+          '<p class="note-warning-note">' + item[2] + '</p>' +
         '</div>' +
       '</div>';
     }).join('');

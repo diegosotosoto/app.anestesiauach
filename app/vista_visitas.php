@@ -28,22 +28,22 @@
 		$rut_v=htmlentities(addslashes($_POST['rut_v']));
 		$fecha_v=htmlentities(addslashes($_POST['fecha_v']));
 
-		$boton_toggler="<form method='post' action='listar_visitas.php'><button class='btn d-sm-block d-sm-none shadow-sm border-light' style='; --bs-border-opacity: .1;' type='submit' name='lista_v' value='$rut_v'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></button></form>";
-		$titulo_navbar=" ";
-		$boton_navbar="<form method='post' action='https://anestesiauach.cl/pdf/generar_pdf.php' target='_blank');'><input type='hidden' name='fecha_v' value='$fecha_v'><button class='btn shadow-sm border-light' style='width:60px; --bs-border-opacity: .1;' type='submit' name='rut_v' value='$rut_v'><div class='text-white'><i class='fa-solid fa-file-pdf'></i></div></button></form>";
+			$boton_toggler="<form method='post' action='listar_visitas.php'><button class='d-sm-block d-sm-none admin-back-btn' type='submit' name='lista_v' value='$rut_v'><i class='fa fa-chevron-left'></i>Atrás</button></form>";
+			$titulo_navbar=" ";
+			$boton_navbar="<form method='post' action='https://anestesiauach.cl/pdf/generar_pdf.php' target='_blank');'><input type='hidden' name='fecha_v' value='$fecha_v'><button class='btn btn-app-primary navbar-save-btn' type='submit' name='rut_v' value='$rut_v' aria-label='Exportar PDF'><i class='fa-solid fa-file-pdf'></i></button></form>";
 
 	//Carga Head de la página
 	require("head.php");
 
 ?>
 
-<div class="col col-sm-9 col-xl-9 pb-5"><!- Columna principal (derecha) responsive->
+	<div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
+	<div class="apunte-surface">
+	<div class="container-fluid px-0 px-md-2">
+	<div class="pain-shell">
 
 
-<div class="row text-center ps-2">
-
-
-<ul class="list-group">
+<div class="patient-summary-stack">
 
 	<?php
 	
@@ -53,28 +53,6 @@
 
 		$phpdate1 = strtotime( $fila['fecha_v'] );
 		$fecha1 = date( 'd-m-y H:i', $phpdate1 );
-
-
-
-
-		//TITULO DE LA PAGINA
-		echo "<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><br><h5 class='mb-1 fw-bold'>".$fila['nombre_paciente_v']."</h5>";
-
-
-		//BOTON A LA IZQUIERDA DEL TITULO class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block'
-		echo "<div class='pt-1 ps-3 me-3 d-flex float-start'>
-		<form method='post' action='listar_visitas.php'><button class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block' style='; --bs-border-opacity: .1;' type='submit' name='lista_v' value='$rut_v'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></button></form>
-		</div>";
-
-		//BOTÓN A LA DERECHA DEL TITULO class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block'
-		echo "<div class='pt-1 ps-3 pe-3 me-2 d-flex float-end'>
-		<form method='post' action='https://anestesiauach.cl/pdf/generar_pdf.php' target='_blank');'><input type='hidden' name='fecha_v' value='$fecha_v'><button class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block' style='width:60px; --bs-border-opacity: .1;' type='submit' name='rut_v' value='$rut_v'><div class='text-white'><i class='fa-solid fa-file-pdf'></i></div></button></form>
-		</div>";
-
-
-
-
-		//SUBTITULO
 		$consulta_fc="SELECT `ficha` FROM `pacientes` WHERE `rut` = '$rut_v'";
 		$busqueda_fc=$conexion->query($consulta_fc);
 		$fc=$busqueda_fc->fetch_assoc();
@@ -83,55 +61,101 @@
 		$parts = explode("-", $string_rut);
 		$result_rut = $parts[0];
 
-		echo "<p class='mb-1'>Rut:&nbsp;
-				<a class='text-decoration-none' href='https://www.hbvaldivia.cl/core/farmacia/receta/0/".$result_rut."' target='_blank'>".$fila['rut_v']."</a>
-			</p>";
+		function visit_detail_has_value($value){
+			return trim((string)$value) !== '';
+		}
 
-		echo "<p class='mb-1'>FC:&nbsp;
-			<a class='text-decoration-none' href='https://www.hbvaldivia.cl/core/farmacia/receta/1/".$fc['ficha']."' target='_blank'>".$fc['ficha']."</a>
-		</p>";
+		function visit_detail_render_item($label, $value, $suffix = ''){
+			$value = trim((string)$value);
+			if($value === ''){
+				return;
+			}
+			echo "<div class='bitacora-item'><div class='bitacora-item-label'>".app_h_text($label)."</div><div class='bitacora-item-value'>".app_h_text($value.$suffix)."</div></div>";
+		}
 
+		function visit_detail_section($title, $items){
+			$has_values = false;
+			foreach($items as $item){
+				if(visit_detail_has_value($item[1])){
+					$has_values = true;
+					break;
+				}
+			}
+			if(!$has_values){
+				return;
+			}
+			echo "<div class='bitacora-feedback-label pt-3'>".app_h_text($title)."</div>";
+			echo "<div class='bitacora-grid'>";
+			foreach($items as $item){
+				$suffix = isset($item[2]) ? $item[2] : '';
+				visit_detail_render_item($item[0], $item[1], $suffix);
+			}
+			echo "</div>";
+		}
 
-		echo "<li class='list-group-item py-3' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><img class='btn-imagen' src='images/IMG_3987.PNG'/>Exámen Físico</li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>EVA Estático</div><div>".$fila['eva_estatico']."</div></div></li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>EVA Dinámico</div><div>".$fila['eva_dinamico']."</div></div></li>";	
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Sedación</div><div>".$fila['sedacion']."</div></div></li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Exámen Motor</div><div>".$fila['motor']."</div></div></li>";	
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Bolos PCA: Solicitados / Administrados</div><div>".$fila['bolos']."</div></div></li>";
-
-		echo "<li class='list-group-item py-3' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><img class='btn-imagen' src='images/IMG_3992.PNG'/>Signos Vitales</li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>PAS</div><div>".$fila['pas']." mmHg</div></div></li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>PAD</div><div>".$fila['pad']." mmHg</div></div></li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>FC</div><div>".$fila['fc']." x min</div></div></li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>SaO2</div><div>".$fila['sao2']." %</div></div></li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>FiO2</div><div>".$fila['fio2']." %</div></div></li>";
-
-		echo "<li class='list-group-item py-3' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><img class='btn-imagen' src='images/IMG_3990.PNG'/>Exámenes</li>";		
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Fecha Exámenes</div><div>".$fila['fecha_exs']." </div></div></li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>INR</div><div>".$fila['inr']."</div></div></li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>TTPA</div><div>".$fila['ttpa']." seg</div></div></li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Plaquetas</div><div>".$fila['plaq']." x10^3</div></div></li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Creatinina</div><div>".$fila['crea']." mg/dL</div></div></li>";
-
-		echo "<li class='list-group-item py-3' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><img class='btn-imagen' src='images/IMG_3981.PNG'/>Indicaciones Diarias</li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>Anticoagulación</div><div>".$fila['anticoagulante']."</div></div></li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>1.-</div><div>".$fila['indic1']."</div></div></li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>2.-</div><div>".$fila['indic2']."</div></div></li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>3.-</div><div>".$fila['indic3']."</div></div></li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>4.-</div><div>".$fila['indic4']."</div></div></li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>5.-</div><div>".$fila['indic5']."</div></div></li>";
-		echo "<li class='list-group-item'><div class='d-flex justify-content-between'><div>6.-</div><div>".$fila['indic6']."</div></div></li>";
-
-		echo "<li class='list-group-item py-3' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><img class='btn-imagen' src='images/IMG_3977.PNG'/>Plan / Comentarios"."</li>";				
-		echo "<li class='list-group-item'><div class='py-2'>".$fila['comentarios_v']."</div></li>";
-		echo "<li class='list-group-item'><small class='text-muted'>Creado el $fecha1, por ".$fila['editor_v']."</small></li>";
-		echo "<br>";
+		echo "<section class='bitacora-entry-card'>";
+		echo "<div class='bitacora-entry-header'>";
+		echo "<div class='d-flex justify-content-between align-items-start gap-3 flex-wrap'>";
+		echo "<div><div class='small text-muted'>Evolución diaria</div><h5 class='mb-1'>".app_h_text($fila['nombre_paciente_v'])."</h5></div>";
+		echo "<div class='text-md-end'><div>".app_h_text($fecha1)."</div>";
+		if(visit_detail_has_value($fila['rut_v'])){
+			echo "<div><a class='text-decoration-none' href='https://www.hbvaldivia.cl/core/farmacia/receta/0/".app_h_text($result_rut)."' target='_blank'>".app_h_text($fila['rut_v'])."</a></div>";
+		}
+		if(isset($fc['ficha']) && visit_detail_has_value($fc['ficha'])){
+			echo "<div><a class='text-decoration-none' href='https://www.hbvaldivia.cl/core/farmacia/receta/1/".app_h_text($fc['ficha'])."' target='_blank'>".app_h_text($fc['ficha'])."</a></div>";
+		}
+		echo "</div></div>";
+		echo "<div class='pain-actions d-none d-sm-flex pt-3'>";
+		echo "<form method='post' action='listar_visitas.php'><button class='admin-back-btn' type='submit' name='lista_v' value='".app_h_text($rut_v)."'><i class='fa fa-chevron-left'></i>Atrás</button></form>";
+		echo "<form method='post' action='https://anestesiauach.cl/pdf/generar_pdf.php' target='_blank');'><input type='hidden' name='fecha_v' value='".app_h_text($fecha_v)."'><button class='btn btn-app-primary pain-action-btn' type='submit' name='rut_v' value='".app_h_text($rut_v)."' aria-label='Exportar PDF'><i class='fa-solid fa-file-pdf'></i></button></form>";
+		echo "</div></div>";
+		echo "<div class='bitacora-entry-body'>";
+		visit_detail_section('Examen físico', [
+			['EVA estático', $fila['eva_estatico']],
+			['EVA dinámico', $fila['eva_dinamico']],
+			['Sedación', $fila['sedacion']],
+			['Examen motor', $fila['motor']],
+			['Bolos PCA: solicitados / administrados', $fila['bolos']],
+		]);
+		visit_detail_section('Signos vitales', [
+			['PAS', $fila['pas'], ' mmHg'],
+			['PAD', $fila['pad'], ' mmHg'],
+			['FC', $fila['fc'], ' x min'],
+			['SaO2', $fila['sao2'], ' %'],
+			['FiO2', $fila['fio2'], ' %'],
+		]);
+		visit_detail_section('Exámenes', [
+			['Fecha exámenes', $fila['fecha_exs']],
+			['INR', $fila['inr']],
+			['TTPA', $fila['ttpa'], ' seg'],
+			['Plaquetas', $fila['plaq'], ' x10^3'],
+			['Creatinina', $fila['crea'], ' mg/dL'],
+		]);
+		visit_detail_section('Indicaciones diarias', [
+			['Anticoagulación', $fila['anticoagulante']],
+			['1', $fila['indic1']],
+			['2', $fila['indic2']],
+			['3', $fila['indic3']],
+			['4', $fila['indic4']],
+			['5', $fila['indic5']],
+			['6', $fila['indic6']],
+		]);
+		if(visit_detail_has_value($fila['comentarios_v'])){
+			echo "<div class='bitacora-feedback-label pt-3'>Plan / Comentarios</div>";
+			echo "<div class='bitacora-comments'>".app_h_text($fila['comentarios_v'])."</div>";
+		}
+		echo "<div class='small text-muted pt-3'>Creado el ".app_h_text($fecha1);
+		if(visit_detail_has_value($fila['editor_v'])){
+			echo ", por ".app_h_text($fila['editor_v']);
+		}
+		echo "</div></div></section>";
 			
 	?>
 
-</ul>
 </div>
-</div>
+	</div>
+	</div>
+	</div>
 
 	<?php 
 		//Cierre Conexión
@@ -145,5 +169,3 @@
 		require("footer.php");
 
 	?>
-
-

@@ -24,7 +24,7 @@
   }
 
   //Variables
-  $boton_toggler="<a class='btn btn-lg shadow-sm border-light d-sm-block d-sm-none' style='--bs-border-opacity: .1;' href='bitacora_rechazos.php'><div class='text-white'><i class='fa fa-chevron-left'></i>Atrás</div></a>";
+  $boton_toggler="<a class='d-sm-block d-sm-none admin-back-btn' href='bitacora_rechazos.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
   $titulo_navbar="<span class='text-white d-sm-block d-sm-none'>Gestión</span>";
   $boton_navbar="<a></a><a></a>";
 
@@ -33,129 +33,6 @@
 ?>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
-
-<style>
-  .bitacora-shell{
-    max-width:980px;
-    margin:0 auto;
-  }
-
-  .bitacora-topbar{
-    background:linear-gradient(135deg, #27458f, #3559b7);
-    color:#fff;
-    border-radius:1.25rem;
-    box-shadow:0 8px 24px rgba(0,0,0,.06);
-    padding:1.15rem 1.25rem;
-    margin-bottom:1rem;
-  }
-
-  .bitacora-topbar h1{
-    color:#fff;
-  }
-
-  .subtle{
-    font-size:.92rem;
-  }
-
-  .pill{
-    display:inline-block;
-    padding:.25rem .6rem;
-    border-radius:999px;
-    font-size:.8rem;
-    font-weight:600;
-  }
-
-  .bitacora-tabs{
-    margin-bottom:1rem;
-  }
-
-  .bitacora-tabs .nav-link{
-    border-radius:.85rem;
-    margin-right:.5rem;
-    color:#3559b7;
-  }
-
-  .bitacora-tabs .nav-link.active{
-    background:#3559b7;
-    color:#fff;
-    border-color:#3559b7;
-  }
-
-  .bitacora-tabs span.nav-link{
-    display:block;
-    cursor:default;
-  }
-
-  .bitacora-card{
-    border:0;
-    border-radius:1rem;
-    box-shadow:0 8px 24px rgba(0,0,0,.06);
-    background:#fff;
-    overflow:hidden;
-    margin-bottom:1rem;
-  }
-
-  .bitacora-card-header{
-    background:linear-gradient(0deg, #fef2f2 0%, #ffffff 40%, #ffffff 100%);
-    border-bottom:1px solid #f5c2c7;
-    padding:1rem 1.1rem;
-  }
-
-  .bitacora-card-body{
-    padding:1.1rem 1.1rem 1.2rem 1.1rem;
-  }
-
-  .bitacora-grid{
-    display:grid;
-    gap:.7rem;
-  }
-
-  .bitacora-item{
-    display:flex;
-    justify-content:space-between;
-    gap:1rem;
-    align-items:flex-start;
-    background:#f8fafc;
-    border:1px solid #dfe7f2;
-    border-radius:.9rem;
-    padding:.85rem 1rem;
-  }
-
-  .bitacora-item-label{
-    color:#5f6b76;
-    font-weight:500;
-  }
-
-  .bitacora-item-value{
-    color:#1f2a37;
-    font-weight:600;
-    text-align:right;
-  }
-
-  .bitacora-block-title{
-    font-size:.82rem;
-    text-transform:uppercase;
-    letter-spacing:.05em;
-    color:#667085;
-    margin-top:.7rem;
-    margin-bottom:.45rem;
-  }
-
-  .bitacora-comments{
-    background:#f8fafc;
-    border:1px solid #dfe7f2;
-    border-radius:.9rem;
-    padding:1rem;
-    white-space:pre-wrap;
-    line-height:1.55;
-  }
-
-  .empty-state{
-    text-align:center;
-    color:#6c757d;
-    padding:1.2rem 1rem;
-  }
-</style>
 
 <div class="apunte-surface">
   <div class="container-fluid px-0 px-md-2">
@@ -201,7 +78,7 @@
 
   if($staff_b){
     echo "<div class='bitacora-card'>
-            <div class='bitacora-card-header'>
+            <div class='bitacora-card-header bitacora-card-header-danger'>
               <h5 class='mb-1 fw-bold'>Rechazos asociados a ".$staff_label."</h5>
             </div>
           </div>";
@@ -223,7 +100,7 @@
     $result_rut = $parts[0];
 
     echo "<div class='bitacora-card'>";
-    echo "<div class='bitacora-card-header'>";
+    echo "<div class='bitacora-card-header bitacora-card-header-danger'>";
     echo "<div class='d-flex justify-content-between align-items-start gap-3 flex-wrap'>";
     echo "<div><div class='small text-muted'>Registro rechazado</div><h5 class='mb-1'>".$row_user['fecha_b']."</h5></div>";
     echo "<div class='text-md-end'>

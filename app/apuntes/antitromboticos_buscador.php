@@ -15,13 +15,13 @@ require("../conectar.php");
 $conexion = new mysqli($db_host, $db_usuario, $db_contra, $db_nombre);
 $conexion->set_charset("utf8");
 
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity: .1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=2">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 
 <style>
 .antitrombo-search-card{
@@ -162,7 +162,7 @@ require("../head.php");
   padding:.28rem .62rem;
   border-radius:999px;
   background:#eef3ff;
-  color:#3559b7;
+  color:#1f2a37;
   font-size:.82rem;
   font-weight:800;
   line-height:1.15;
@@ -172,7 +172,17 @@ require("../head.php");
 
 .antitrombo-mobile-label i{
   font-size:.82rem;
-  color:#3559b7;
+  color:#1f2a37;
+}
+
+body.theme-dark .note-shell .antitrombo-mobile-label,
+body.ui-nocturno .note-shell .antitrombo-mobile-label{
+  color:#030712 !important;
+}
+
+body.theme-dark .note-shell .antitrombo-mobile-label i,
+body.ui-nocturno .note-shell .antitrombo-mobile-label i{
+  color:#030712 !important;
 }
 
 .antitrombo-mobile-value{
@@ -255,6 +265,7 @@ require("../head.php");
   }
 }
 </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="container-fluid px-0 px-md-2">
@@ -297,7 +308,7 @@ require("../head.php");
           <div class="note-muted mb-2">Busca por principio activo o nombre comercial.</div>
           <div class="antitrombo-input-row">
             <input id="searchInput" type="search" class="antitrombo-search-input" placeholder="Ej: xarelto, eliquis, clopidogrel, clexane" list="drugSuggestions" autocomplete="off">
-            <button class="btn btn-primary antitrombo-clear-btn" id="clearBtn" type="button">Limpiar</button>
+            <button class="btn btn-app-primary antitrombo-clear-btn" id="clearBtn" type="button">Limpiar</button>
           </div>
           <datalist id="drugSuggestions"></datalist>
         </div>

@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "Analgesia epidural";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "Resumen práctico de dosis habituales para analgesia epidural, top up epidural y analgesia combinada espinal/epidural en trabajo de parto. Incluye además manejo del catéter intratecal accidental y recomendaciones prácticas para optimizar la calidad analgésica.";
@@ -17,7 +17,7 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=1">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=1"></script>
 
 <?php
@@ -90,25 +90,6 @@ $epiduralData = array(
           .epi-table th:last-child,.epi-table td:last-child{border-right:none;}
           .epi-table tr:last-child td{border-bottom:none;}
           .epi-table td:first-child{font-weight:800;color:var(--note-text);}
-          .epi-drug-badge{
-            display:inline-block;
-            padding:.28rem .55rem;
-            border-radius:.65rem;
-            font-weight:800;
-            border:1px solid rgba(31,42,55,.12);
-            line-height:1.1;
-            color:#111827;
-            box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);
-          }
-          .epi-bupi,.epi-levo,.epi-ropi,.epi-lido{background:#d1d5db;color:#111827;}
-          .epi-fenta{background:#7dd3fc;color:#111827;}
-          .epi-epi{background:#d8b4fe;color:#111827;}
-          .epi-warning-list{display:grid;gap:.75rem;}
-          .epi-warning-item{display:flex;align-items:flex-start;gap:.8rem;border:1px solid #ead38a;border-radius:1rem;background:#fff9e8;padding:.95rem 1rem;}
-          .epi-warning-mark{flex:0 0 auto;width:34px;height:34px;border-radius:999px;display:flex;align-items:center;justify-content:center;background:#f4c542;color:#fff;margin-top:.08rem;}
-          .epi-warning-copy{min-width:0;flex:1;}
-          .epi-warning-title{font-size:1rem;font-weight:800;line-height:1.22;color:var(--note-text);margin-bottom:.15rem;}
-          .epi-warning-note{margin:0;font-size:.9rem;line-height:1.4;color:var(--note-muted);}
           @media (max-width:768px){
             .epi-choice-grid,.epi-choice-grid.epi-stage-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
           }
@@ -116,6 +97,7 @@ $epiduralData = array(
             .epi-choice-grid,.epi-choice-grid.epi-stage-grid{grid-template-columns:1fr;}
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · ANALGESIA OBSTÉTRICA</div>
@@ -188,25 +170,27 @@ $epiduralData = array(
           </div>
         </div>
 
-        <div class="note-summary-box mb-3">
-          <div class="note-summary-box-title">Resumen</div>
-          <div id="summaryNarrative" class="note-summary-box-text">Inicio epidural en dilatación 1-4 cm. Esquema orientativo con volumen total aproximado de 20 mL.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item">
-              <div class="note-summary-k">Modo</div>
-              <div id="summaryMode" class="note-summary-v">Inicio epidural</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Escenario</div>
-              <div id="summaryStage" class="note-summary-v">1-4</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Volumen / contexto</div>
-              <div id="summaryVolume" class="note-summary-v">20 mL aprox.</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Foco práctico</div>
-              <div id="summaryFocus" class="note-summary-v">Titular según respuesta</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-card-title">Resumen</div>
+            <div id="summaryNarrative" class="note-summary-box-text mb-3">Inicio epidural en dilatación 1-4 cm. Esquema orientativo con volumen total aproximado de 20 mL.</div>
+            <div class="note-result-grid-2">
+              <div class="note-result-card">
+                <div class="note-result-card-label">Modo</div>
+                <div id="summaryMode" class="note-result-card-value">Inicio epidural</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Escenario</div>
+                <div id="summaryStage" class="note-result-card-value">1-4</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Volumen / contexto</div>
+                <div id="summaryVolume" class="note-result-card-value">20 mL aprox.</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Foco práctico</div>
+                <div id="summaryFocus" class="note-result-card-value">Titular según respuesta</div>
+              </div>
             </div>
           </div>
         </div>
@@ -254,26 +238,26 @@ $epiduralData = array(
         <div class="note-card mb-3">
           <div class="note-card-body">
             <div class="note-section-label">Factores que obligan a ser más conservador</div>
-            <div class="epi-warning-list">
-              <div class="epi-warning-item">
-                <div class="epi-warning-mark"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <div class="epi-warning-copy">
-                  <div class="epi-warning-title">No basta con “poner el catéter”</div>
-                  <p class="epi-warning-note">No te vayas hasta lograr una contracción sin dolor. La calidad depende del seguimiento y titulación, no solo de la técnica.</p>
+            <div class="note-warning-list">
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-check"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">No basta con “poner el catéter”</div>
+                  <p class="note-warning-note">No te vayas hasta lograr una contracción sin dolor. La calidad depende del seguimiento y titulación, no solo de la técnica.</p>
                 </div>
               </div>
-              <div class="epi-warning-item">
-                <div class="epi-warning-mark"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <div class="epi-warning-copy">
-                  <div class="epi-warning-title">Dolor sacro en segunda etapa</div>
-                  <p class="epi-warning-note">Puede requerir volúmenes mayores iniciales para cubrir raíces sacras. No asumas que el mismo esquema siempre sirve.</p>
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-check"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Dolor sacro en segunda etapa</div>
+                  <p class="note-warning-note">Puede requerir volúmenes mayores iniciales para cubrir raíces sacras. No asumas que el mismo esquema siempre sirve.</p>
                 </div>
               </div>
-              <div class="epi-warning-item">
-                <div class="epi-warning-mark"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <div class="epi-warning-copy">
-                  <div class="epi-warning-title">Sospecha de epidural fallida o mal posicionada</div>
-                  <p class="epi-warning-note">Reevalúa nivel sensitivo bilateral, respuesta al bolo y posibilidad de instalación intravascular o catéter ineficaz.</p>
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-check"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Sospecha de epidural fallida o mal posicionada</div>
+                  <p class="note-warning-note">Reevalúa nivel sensitivo bilateral, respuesta al bolo y posibilidad de instalación intravascular o catéter ineficaz.</p>
                 </div>
               </div>
             </div>
@@ -361,11 +345,12 @@ $epiduralData = array(
     });
   }
 
-  function drugBadgeClass(drug){
-    if(['Bupivacaína','Levobupivacaína','Ropivacaína','Lidocaína'].includes(drug)) return 'epi-drug-badge epi-bupi';
-    if(drug === 'Fentanilo') return 'epi-drug-badge epi-fenta';
-    if(drug === 'Epinefrina') return 'epi-drug-badge epi-epi';
-    return 'epi-drug-badge';
+  function drugBadgeHtml(drug){
+    var clase = 'drug-other';
+    if(['Bupivacaína','Levobupivacaína','Ropivacaína','Lidocaína'].includes(drug)) clase = 'drug-local';
+    else if(drug === 'Fentanilo') clase = 'drug-opioid';
+    else if(drug === 'Epinefrina') clase = 'drug-vasoactive';
+    return '<span class="drug-label ' + clase + ' drug-label-sm"><span class="drug-label-title">' + drug + '</span></span>';
   }
 
   function renderTable(mode){
@@ -374,7 +359,7 @@ $epiduralData = array(
     const cols = Object.keys(firstRow);
 
     epiHeadRow.innerHTML = '<th>Escenario</th>' + cols.map(function(col){
-      return '<th><span class="' + drugBadgeClass(col) + '">' + col + '</span></th>';
+      return '<th>' + drugBadgeHtml(col) + '</th>';
     }).join('');
 
     epiTableBody.innerHTML = Object.keys(rows).map(function(stage){

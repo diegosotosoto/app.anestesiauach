@@ -351,128 +351,15 @@ if($q && $r = $q->fetch_assoc()) $resumen_export['internos'] = (int)$r['total'];
 $q = $conexion->query("SELECT COUNT(*) AS total FROM `bitacora_internos` bi INNER JOIN `usuarios_dolor` u ON u.`email_usuario` = bi.`autor_i` WHERE u.`becad_otro` = 1");
 if($q && $r = $q->fetch_assoc()) $resumen_export['otras_especialidades'] = (int)$r['total'];
 
-$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler="<a class='d-sm-block d-sm-none admin-back-btn' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white d-sm-block d-sm-none'>Exportar Bitácoras</span>";
 $boton_navbar = "<a></a><a></a>";
 
 require('head.php');
 ?>
 
-<style>
-.export-shell{
-    max-width:1100px;
-    margin:0 auto;
-}
-
-.export-card{
-    background:#fff;
-    border:1px solid #dfe7f2;
-    border-radius:18px;
-    box-shadow:0 8px 24px rgba(0,0,0,.06);
-    padding:1rem 1.1rem;
-    margin-bottom:1rem;
-}
-
-.export-title{
-    font-size:1.25rem;
-    font-weight:800;
-    color:#1f2a37;
-}
-
-.export-subtle{
-    color:#6b7280;
-    font-size:.92rem;
-}
-
-.export-grid{
-    display:grid;
-    grid-template-columns:repeat(4, 1fr);
-    gap:12px;
-}
-
-.export-stat{
-    background:linear-gradient(0deg, #e9effb 0%, #ffffff 42%, #ffffff 100%);
-    border:1px solid #dfe7f2;
-    border-radius:16px;
-    padding:1rem;
-}
-
-.export-stat-num{
-    font-size:1.55rem;
-    font-weight:800;
-    color:#244aa5;
-}
-
-.export-stat-label{
-    color:#4b5563;
-    font-weight:700;
-    line-height:1.2;
-}
-
-.export-form-grid{
-    display:grid;
-    grid-template-columns:1.3fr .8fr .8fr .8fr;
-    gap:14px;
-    align-items:end;
-}
-
-.export-label{
-    font-weight:700;
-    color:#1f2a37;
-    margin-bottom:.35rem;
-}
-
-.export-help{
-    color:#6b7280;
-    font-size:.9rem;
-    line-height:1.35;
-}
-
-.export-actions{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    justify-content:flex-end;
-    align-items:center;
-}
-
-.export-note{
-    background:#f8fafc;
-    border:1px solid #dfe7f2;
-    border-radius:16px;
-    padding:.9rem 1rem;
-    color:#4b5563;
-    line-height:1.45;
-}
-
-.admin-back-btn{
-    width:auto !important;
-    height:44px !important;
-    min-height:44px !important;
-    padding:0 14px !important;
-    border-radius:14px !important;
-    font-size:1rem !important;
-    line-height:1 !important;
-}
-
-@media (max-width: 991.98px){
-    .export-grid,
-    .export-form-grid{
-        grid-template-columns:1fr;
-    }
-
-    .export-actions{
-        justify-content:stretch;
-    }
-
-    .export-actions .btn{
-        width:100%;
-    }
-}
-</style>
-
-<div class="col col-sm-9 col-xl-9 pb-5">
-    <div class="container-fluid export-shell">
+<div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
+    <main class="admin-page export-shell">
 
         <?php if($error_export !== ''){ ?>
             <div class="alert alert-danger alert-dismissible fade show">
@@ -481,15 +368,12 @@ require('head.php');
             </div>
         <?php } ?>
 
-        <div class="export-card">
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                <div>
-                    <div class="export-title">Exportar Bitácoras</div>
-                    <div class="export-subtle">Descarga completa o filtrada por fechas de las bitácoras de becados, internos y residentes de otras especialidades.</div>
-                </div>
-
-            </div>
-        </div>
+        <section class="app-hero app-hero-admin admin-header-card mb-3">
+            <div class="app-hero-kicker">Administración</div>
+            <h2>Exportar Bitácoras</h2>
+            <p>Descarga completa o filtrada por fechas de las bitácoras de becados, internos y becados pasantes.</p>
+            <span class="app-hero-pill">Solo administradores</span>
+        </section>
 
         <div class="export-grid mb-3">
             <div class="export-stat">
@@ -552,10 +436,10 @@ require('head.php');
                 </div>
 
                 <div class="export-actions mt-3">
-                    <a href="admin_exportar_bitacoras.php" class="btn btn-outline-secondary">
+                    <a href="admin_exportar_bitacoras.php" class="btn btn-app-secondary">
                         Limpiar filtros
                     </a>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-app-primary">
                         <i class="fa-solid fa-file-export me-1"></i> Exportar
                     </button>
                 </div>
@@ -572,7 +456,7 @@ require('head.php');
             </div>
         </div>
 
-    </div>
+    </main>
 </div>
 
 <?php

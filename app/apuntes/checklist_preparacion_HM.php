@@ -1,7 +1,7 @@
 <?php
 $titulo_pagina = "Checklist preparación HM";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
 $boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
 
@@ -16,125 +16,9 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=1">
-<script src="js/clinical-note-system.js?v=1"></script>
-
-<style>
-.prep-shell{max-width:980px;margin:0 auto;}
-.prep-warning-card{
-  background:#fff8e8;
-  border:1px solid #e6cb7a;
-  border-radius:1.15rem;
-  padding:1rem 1.1rem;
-}
-.prep-warning-title{
-  font-size:.9rem;
-  font-weight:800;
-  text-align:center;
-  color:#1f2a37;
-  margin-bottom:.45rem;
-}
-.prep-section-chevron{
-  color:#64748b;
-  font-size:1.2rem;
-  transition:transform .18s ease;
-}
-.note-checklist-section.is-collapsed .prep-section-chevron{transform:rotate(-90deg);}
-.last-check-item{
-  display:flex;
-  align-items:flex-start;
-  gap:.8rem;
-  border:1px solid #dfe7f2;
-  border-radius:1rem;
-  background:#fff;
-  padding:.9rem 1rem;
-  cursor:pointer;
-  transition:.16s ease;
-}
-.last-check-item:hover{
-  border-color:#c9d4e5;
-  box-shadow:0 4px 12px rgba(15,23,42,.04);
-}
-.last-check-input{
-  position:absolute;
-  opacity:0;
-  pointer-events:none;
-  width:1px;
-  height:1px;
-}
-.last-check-mark{
-  flex:0 0 auto;
-  width:34px;
-  height:34px;
-  border-radius:999px;
-  border:2px solid #b8c2d0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:#fff;
-  color:#fff;
-  margin-top:.08rem;
-  transition:.16s ease;
-}
-.last-check-mark i{font-size:.95rem;}
-.last-check-copy{min-width:0;flex:1;}
-.last-check-title{
-  font-size:1rem;
-  font-weight:800;
-  line-height:1.22;
-  color:var(--note-text);
-  margin-bottom:.15rem;
-}
-.last-check-note{
-  margin:0;
-  font-size:.9rem;
-  line-height:1.4;
-  color:var(--note-muted);
-}
-.last-check-item.is-done{
-  background:#edf8f1;
-  border-color:#b7ddc3;
-}
-.last-check-item.is-done .last-check-mark{
-  background:#2ea663;
-  border-color:#2ea663;
-}
-.prep-record-label{
-  font-size:.82rem;
-  text-transform:uppercase;
-  letter-spacing:.06em;
-  color:var(--note-muted);
-  font-weight:700;
-  margin-bottom:.35rem;
-}
-.prep-grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;}
-.prep-chip-list{display:flex;flex-wrap:wrap;gap:.35rem;}
-.prep-chip{
-  display:inline-flex;
-  align-items:center;
-  gap:.35rem;
-  padding:.35rem .6rem;
-  border-radius:999px;
-  border:1px solid var(--note-line-strong);
-  background:#fff;
-  font-size:.82rem;
-  font-weight:700;
-  color:var(--note-text);
-}
-.prep-chip-danger{
-  background:#fff5f3;
-  border-color:#efc4be;
-  color:#b42318;
-}
-.prep-chip-safe{
-  background:#edf8f7;
-  border-color:#cfe8e6;
-  color:#1e7a5a;
-}
-@media (max-width:768px){
-  .prep-grid-2{grid-template-columns:1fr;}
-}
-</style>
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
+<script src="js/clinical-note-system.js?v=<?= @filemtime($app_root_dir . '/apuntes/js/clinical-note-system.js') ?: time() ?>"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
@@ -166,8 +50,8 @@ require("../head.php");
           </div>
         </div>
 
-        <div class="prep-warning-card mb-3">
-          <div class="prep-warning-title">Advertencia visible</div>
+        <div class="note-warning mb-3">
+          <div class="fw-semibold mb-1">Advertencia visible</div>
           <p class="mb-0 text-center">
             Este checklist es para <strong>preparación</strong> de un paciente susceptible a Hipertermia Maligna, no para el manejo de una crisis activa. La meta es evitar exposición a gatillantes y tener los recursos críticos listos antes de iniciar la anestesia.
           </p>
@@ -197,16 +81,16 @@ require("../head.php");
           </div>
         </div>
 
-        <div class="note-checklist-section">
-          <div class="note-checklist-section-head">
+        <div class="last-checklist-section">
+          <div class="last-checklist-head">
             <div>
-              <div class="note-checklist-section-title">1. Identificación del paciente susceptible</div>
-              <div class="note-checklist-section-help">Confirmar el riesgo real antes de programar el procedimiento.</div>
+              <h3 class="last-checklist-title">1. Identificación del paciente susceptible</h3>
+              <p class="last-checklist-help">Confirmar el riesgo real antes de programar el procedimiento.</p>
             </div>
-            <div class="prep-section-chevron"><i class="fa-solid fa-chevron-down"></i></div>
+            <i class="fa-solid fa-chevron-down last-checklist-chevron"></i>
           </div>
-          <div class="note-checklist-section-body">
-            <div class="note-checklist-list">
+          <div class="last-checklist-body">
+            <div class="last-checklist-list">
               <label class="last-check-item">
                 <input class="last-check-input task-check" type="checkbox">
                 <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
@@ -243,16 +127,16 @@ require("../head.php");
           </div>
         </div>
 
-        <div class="note-checklist-section">
-          <div class="note-checklist-section-head">
+        <div class="last-checklist-section">
+          <div class="last-checklist-head">
             <div>
-              <div class="note-checklist-section-title">2. Programación y coordinación del pabellón</div>
-              <div class="note-checklist-section-help">Asegurar entorno, personal y soporte antes del ingreso del paciente.</div>
+              <h3 class="last-checklist-title">2. Programación y coordinación del pabellón</h3>
+              <p class="last-checklist-help">Asegurar entorno, personal y soporte antes del ingreso del paciente.</p>
             </div>
-            <div class="prep-section-chevron"><i class="fa-solid fa-chevron-down"></i></div>
+            <i class="fa-solid fa-chevron-down last-checklist-chevron"></i>
           </div>
-          <div class="note-checklist-section-body">
-            <div class="note-checklist-list">
+          <div class="last-checklist-body">
+            <div class="last-checklist-list">
               <label class="last-check-item">
                 <input class="last-check-input task-check" type="checkbox">
                 <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
@@ -289,20 +173,20 @@ require("../head.php");
           </div>
         </div>
 
-        <div class="note-checklist-section">
-          <div class="note-checklist-section-head">
+        <div class="last-checklist-section">
+          <div class="last-checklist-head">
             <div>
-              <div class="note-checklist-section-title">3. Dantrolene y recursos críticos</div>
-              <div class="note-checklist-section-help">Verificar stock, acceso y preparación práctica.</div>
+              <h3 class="last-checklist-title">3. Dantrolene y recursos críticos</h3>
+              <p class="last-checklist-help">Verificar stock, acceso y preparación práctica.</p>
             </div>
-            <div class="prep-section-chevron"><i class="fa-solid fa-chevron-down"></i></div>
+            <i class="fa-solid fa-chevron-down last-checklist-chevron"></i>
           </div>
-          <div class="note-checklist-section-body">
+          <div class="last-checklist-body">
             <div class="note-warning mb-3">
-              <div class="note-card-title">Objetivo operativo</div>
+              <div class="fw-semibold mb-1">Objetivo operativo</div>
               <div>El pabellón debe contar al menos con la primera dosis de dantrolene y con claridad sobre cómo obtener dosis adicionales oportunamente.</div>
             </div>
-            <div class="note-checklist-list mb-3">
+            <div class="last-checklist-list mb-3">
               <label class="last-check-item">
                 <input class="last-check-input task-check" type="checkbox">
                 <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
@@ -343,20 +227,20 @@ require("../head.php");
           </div>
         </div>
 
-        <div class="note-checklist-section">
-          <div class="note-checklist-section-head">
+        <div class="last-checklist-section">
+          <div class="last-checklist-head">
             <div>
-              <div class="note-checklist-section-title">4. Preparación de la máquina de anestesia</div>
-              <div class="note-checklist-section-help">Eliminar exposición residual a gatillantes antes del ingreso del paciente.</div>
+              <h3 class="last-checklist-title">4. Preparación de la máquina de anestesia</h3>
+              <p class="last-checklist-help">Eliminar exposición residual a gatillantes antes del ingreso del paciente.</p>
             </div>
-            <div class="prep-section-chevron"><i class="fa-solid fa-chevron-down"></i></div>
+            <i class="fa-solid fa-chevron-down last-checklist-chevron"></i>
           </div>
-          <div class="note-checklist-section-body">
+          <div class="last-checklist-body">
             <div class="note-danger mb-3">
-              <div class="note-card-title">Meta</div>
+              <div class="fw-semibold mb-1">Meta</div>
               <div>Asegurar una técnica completamente libre de halogenados y succinilcolina.</div>
             </div>
-            <div class="note-checklist-list">
+            <div class="last-checklist-list">
               <label class="last-check-item">
                 <input class="last-check-input task-check" type="checkbox">
                 <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
@@ -393,16 +277,16 @@ require("../head.php");
           </div>
         </div>
 
-        <div class="note-checklist-section">
-          <div class="note-checklist-section-head">
+        <div class="last-checklist-section">
+          <div class="last-checklist-head">
             <div>
-              <div class="note-checklist-section-title">5. Evaluación preoperatoria y medidas preventivas</div>
-              <div class="note-checklist-section-help">Checklist final del plan anestésico preventivo.</div>
+              <h3 class="last-checklist-title">5. Evaluación preoperatoria y medidas preventivas</h3>
+              <p class="last-checklist-help">Checklist final del plan anestésico preventivo.</p>
             </div>
-            <div class="prep-section-chevron"><i class="fa-solid fa-chevron-down"></i></div>
+            <i class="fa-solid fa-chevron-down last-checklist-chevron"></i>
           </div>
-          <div class="note-checklist-section-body">
-            <div class="note-checklist-list mb-3">
+          <div class="last-checklist-body">
+            <div class="last-checklist-list mb-3">
               <label class="last-check-item">
                 <input class="last-check-input task-check" type="checkbox">
                 <div class="last-check-mark"><i class="fa-solid fa-check"></i></div>
@@ -437,51 +321,51 @@ require("../head.php");
               </label>
             </div>
 
-            <div class="prep-grid-2">
+            <div class="note-chip-grid">
               <div class="note-success">
-                <div class="note-card-title">Técnicas / fármacos seguros</div>
-                <div class="prep-chip-list">
-                  <span class="prep-chip prep-chip-safe">TIVA / Propofol</span>
-                  <span class="prep-chip prep-chip-safe">Benzodiacepinas</span>
-                  <span class="prep-chip prep-chip-safe">Opioides</span>
-                  <span class="prep-chip prep-chip-safe">Ketamina</span>
-                  <span class="prep-chip prep-chip-safe">Etomidato</span>
-                  <span class="prep-chip prep-chip-safe">Óxido nitroso</span>
-                  <span class="prep-chip prep-chip-safe">Rocuronio / Vecuronio</span>
-                  <span class="prep-chip prep-chip-safe">Atracurio / Mivacurio</span>
-                  <span class="prep-chip prep-chip-safe">Neostigmina / Atropina</span>
-                  <span class="prep-chip prep-chip-safe">Anestesia local / regional / espinal / peridural</span>
+                <div class="fw-semibold mb-1">Técnicas / fármacos seguros</div>
+                <div class="note-chip-list">
+                  <span class="note-chip note-chip-safe">TIVA / Propofol</span>
+                  <span class="note-chip note-chip-safe">Benzodiacepinas</span>
+                  <span class="note-chip note-chip-safe">Opioides</span>
+                  <span class="note-chip note-chip-safe">Ketamina</span>
+                  <span class="note-chip note-chip-safe">Etomidato</span>
+                  <span class="note-chip note-chip-safe">Óxido nitroso</span>
+                  <span class="note-chip note-chip-safe">Rocuronio / Vecuronio</span>
+                  <span class="note-chip note-chip-safe">Atracurio / Mivacurio</span>
+                  <span class="note-chip note-chip-safe">Neostigmina / Atropina</span>
+                  <span class="note-chip note-chip-safe">Anestesia local / regional / espinal / peridural</span>
                 </div>
               </div>
               <div class="note-danger">
-                <div class="note-card-title">Gatillantes inseguros</div>
-                <div class="prep-chip-list">
-                  <span class="prep-chip prep-chip-danger">Sevoflurano</span>
-                  <span class="prep-chip prep-chip-danger">Isoflurano</span>
-                  <span class="prep-chip prep-chip-danger">Desflurano</span>
-                  <span class="prep-chip prep-chip-danger">Halotano / Enflurano</span>
-                  <span class="prep-chip prep-chip-danger">Succinilcolina</span>
+                <div class="fw-semibold mb-1">Gatillantes inseguros</div>
+                <div class="note-chip-list">
+                  <span class="note-chip note-chip-danger">Sevoflurano</span>
+                  <span class="note-chip note-chip-danger">Isoflurano</span>
+                  <span class="note-chip note-chip-danger">Desflurano</span>
+                  <span class="note-chip note-chip-danger">Halotano / Enflurano</span>
+                  <span class="note-chip note-chip-danger">Succinilcolina</span>
                 </div>
                 <div class="small-note mt-2">No usar halogenados ni succinilcolina.</div>
               </div>
             </div>
 
             <div class="note-warning mt-3 mb-0">
-              <div class="note-card-title">Profilaxis con dantrolene</div>
+              <div class="fw-semibold mb-1">Profilaxis con dantrolene</div>
               <div>No se recomienda de rutina en la mayoría de los pacientes susceptibles. Considerarla caso a caso. Si se usa, la referencia orientativa es 2,5 mg/kg IV 30 min antes. Evitar asociación con bloqueadores del calcio.</div>
             </div>
           </div>
         </div>
 
-        <div class="note-checklist-section">
-          <div class="note-checklist-section-head">
+        <div class="last-checklist-section">
+          <div class="last-checklist-head">
             <div>
-              <div class="note-checklist-section-title">6. Registro rápido</div>
-              <div class="note-checklist-section-help">Resumen exportable de la preparación completada.</div>
+              <h3 class="last-checklist-title">6. Registro rápido</h3>
+              <p class="last-checklist-help">Resumen exportable de la preparación completada.</p>
             </div>
-            <div class="prep-section-chevron"><i class="fa-solid fa-chevron-down"></i></div>
+            <i class="fa-solid fa-chevron-down last-checklist-chevron"></i>
           </div>
-          <div class="note-checklist-section-body">
+          <div class="last-checklist-body">
             <div class="prep-grid-2 mb-3">
               <div>
                 <div class="prep-record-label">Fecha</div>
@@ -501,9 +385,9 @@ require("../head.php");
               </div>
             </div>
 
-            <div class="note-checklist-record">
-              <div class="note-card-title mb-2">Registro resumido</div>
-              <textarea id="recordOutput" class="note-checklist-record-box"></textarea>
+            <div class="iv-record-box">
+              <div class="fw-semibold mb-2">Registro resumido</div>
+              <textarea id="recordOutput" class="iv-record-output"></textarea>
               <div class="note-checklist-toolbar mt-2">
                 <button type="button" id="copySummaryBtn" class="btn note-checklist-btn"><i class="fa-solid fa-copy me-1"></i> Copiar</button>
                 <button type="button" id="downloadTxtBtn" class="btn note-checklist-btn"><i class="fa-solid fa-file-arrow-down me-1"></i> Descargar TXT</button>
@@ -531,7 +415,6 @@ require("../head.php");
   const checks = Array.from(document.querySelectorAll('.task-check'));
   const progressBar = document.getElementById('progressBar');
   const progressText = document.getElementById('progressText');
-  const sections = Array.from(document.querySelectorAll('.note-checklist-section'));
   const recordOutput = document.getElementById('recordOutput');
   const copyFeedback = document.getElementById('copyFeedback');
 
@@ -555,19 +438,19 @@ require("../head.php");
     section.classList.toggle('is-collapsed', shouldCollapse);
   }
 
-  document.querySelectorAll('.note-checklist-section-head').forEach(function(head){
+  document.querySelectorAll('.last-checklist-head').forEach(function(head){
     head.addEventListener('click', function(){
-      const section = head.closest('.note-checklist-section');
+      const section = head.closest('.last-checklist-section');
       if(section) toggleSection(section);
     });
   });
 
   document.getElementById('expandAllBtn').addEventListener('click', function(){
-    sections.forEach(section => toggleSection(section, false));
+    document.querySelectorAll('.last-checklist-section').forEach(function(section){ toggleSection(section, false); });
   });
 
   document.getElementById('collapseAllBtn').addEventListener('click', function(){
-    sections.forEach(section => toggleSection(section, true));
+    document.querySelectorAll('.last-checklist-section').forEach(function(section){ toggleSection(section, true); });
   });
 
   function buildSummary(){

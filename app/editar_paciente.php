@@ -1,4 +1,4 @@
-f<?php
+<?php
 
 //Validador login
     require("valida_pag.php");
@@ -22,11 +22,11 @@ f<?php
 //Variables sin conexion
 $formulario=$_POST['editar']; //Corresponde al rut del paciente
 
-$boton_toggler="<form action='vista_paciente.php' method='post'><button class='d-sm-block d-sm-none btn shadow-sm' type='submit' name='vista' value='$formulario'><div class='text-white'>Cancelar</div></button></form>";
+$boton_toggler="<form action='vista_paciente.php' method='post'><button class='d-sm-block d-sm-none admin-back-btn' type='submit' name='vista' value='$formulario'><i class='fa fa-chevron-left'></i>Atrás</button></form>";
 
 $titulo_navbar="";
 
-$boton_navbar="<button class='btn shadow-sm' type='submit' name='editar' value='Submit' onclick='envioForm_ed_pacte()'><div class='text-white'>Guardar</div></button>";
+$boton_navbar="<button class='btn btn-app-primary navbar-save-btn' type='submit' name='editar' value='Submit' onclick='envioForm_ed_pacte()'>Guardar</button>";
 
 //Carga Head de la página
 require("head.php");
@@ -34,7 +34,10 @@ require("head.php");
 ?>
 
 
-<div class="col col-sm-9 col-xl-9"><!- Columna principal (derecha) responsive->
+<div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
+<div class="apunte-surface">
+<div class="container-fluid px-0 px-md-2">
+<div class="pain-shell">
 
 
 	<?php
@@ -61,20 +64,13 @@ require("head.php");
 			<ul class="list-group">
 	<?php
 		//TITULO DE LA PAGINA
-		echo "<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'><br><h5 class='mb-1 fw-bold'>".$fila['nombre_paciente']."</h5>";
+		echo "<li class='list-group-item pain-section-title'><h5 class='mb-1 fw-bold'>".$fila['nombre_paciente']."</h5>";
 
 
 		//BOTON A LA DERECHA DEL TITULO
-		echo "<div class='pt-1 ps-3 me-3 d-flex float-start'>
-		<form action='vista_paciente.php' method='post'><button class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block' type='submit' name='vista' value='$formulario'><div class='text-white'>Cancelar</div></button></form>
-		</div>";
 
 		//BOTÓN A LA IZQUIERDA DEL TITULO
-		echo "<span class='float-end'>
-		<div class='pt-1 ps-3 me-3 d-flex justify-content-end'>
-		<button class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block' type='submit' name='editar' value='Submit' onclick='envioForm_ed_pacte()'><div class='text-white'>Guardar</div></button>
-		</div>
-		</span>";
+
 
 		//SUBTITULO
 		echo "<div class='mb-1'>Rut: ".$fila['rut']."</div>";
@@ -89,7 +85,7 @@ require("head.php");
 
 
 		<!– TABLA DE REGISTROS –>
-				<div class="container">
+				<div class="pain-form-card">
 				<div class="row">
 				<div class="col">
 
@@ -256,7 +252,7 @@ require("head.php");
 					</div>
 
 				<div class='col'>
-			    <div class='text-muted pt-4'>Comentarios</div><textarea class="form-control mb-2" style="resize: none;" maxlength="250" rows="5" name="comentarios_e" id="comentarios_e"><?php echo html_entity_decode($fila['comentarios']);?></textarea>
+		    <div class='text-muted pt-4'>Comentarios</div><textarea class="form-control mb-2 pain-textarea" maxlength="250" rows="5" name="comentarios_e" id="comentarios_e"><?php echo html_entity_decode($fila['comentarios']);?></textarea>
 				</div>
 </div>
 </div>
@@ -264,7 +260,7 @@ require("head.php");
 			<br>
 
 			<ul class="list-group">
-			    <li class="list-group-item active" aria-current="true">Dar de alta este Paciente (No se puede deschacer)<img class='btn-imagen' style='margin-left:10px'src='/images/IMG_3982.PNG'/></li>
+			    <li class="list-group-item pain-section-title" aria-current="true">Dar de alta este Paciente (No se puede deshacer)<img class='btn-imagen pain-inline-img' src='/images/IMG_3982.PNG'/></li>
 			    <li class="list-group-item">
 					<div class="container">
 					<div class="row py-4">
@@ -276,27 +272,35 @@ require("head.php");
 
 						<div class="form-check form-switch">
 
-
 							<?php
 
 							if($_POST['reactivar']){ //SI SE REACTIVA EL REGISTRO
 									if($_POST['reactivar']=='yes'){
 
-										echo "<input class='form-check-input form-switch-md' style='transform: scale(1.3);' type='checkbox' role='switch' id='flexSwitchCheckDefault' name='de_alta_e'><label class='form-check-label' for='flexSwitchCheckDefault'></label>";
+											echo "<input class='form-check-input form-switch-md pain-switch' type='checkbox' role='switch' id='flexSwitchCheckDefault' name='de_alta_e'><label class='form-check-label' for='flexSwitchCheckDefault'></label>";
 
 									}else {
-										echo "<input class='form-check-input form-switch-md' style='transform: scale(1.3);' type='checkbox' role='switch' id='flexSwitchCheckChecked' name='de_alta_e' checked><label class='form-check-label' for='flexSwitchCheckChecked'></label> ";
+											echo "<input class='form-check-input form-switch-md pain-switch' type='checkbox' role='switch' id='flexSwitchCheckChecked' name='de_alta_e' checked><label class='form-check-label' for='flexSwitchCheckChecked'></label> ";
 										
 									}
 							}else{ //edicion normal
 
-								echo "<input class='form-check-input form-switch-md' style='transform: scale(1.3);' type='checkbox' role='switch' id='flexSwitchCheckDefault' name='de_alta_e'><label class='form-check-label' for='flexSwitchCheckDefault'></label>";
+								echo "<input class='form-check-input form-switch-md pain-switch' type='checkbox' role='switch' id='flexSwitchCheckDefault' name='de_alta_e'><label class='form-check-label' for='flexSwitchCheckDefault'></label>";
 
 							}
 							?>
 
+</div></div>
+						<div class="col">
 
-						</div>
+<?php
+			    			echo "<span class='float-end'>
+		<div class='pt-1 ps-3 me-3 d-flex justify-content-end'>
+		<button class='btn btn-app-primary pain-action-btn' type='submit' name='editar' value='Submit' onclick='envioForm_ed_pacte()'>Guardar</button>
+		</div>
+		</span>"; ?>
+			    </div>
+
 					</div>
 					</div>
 					</div>
@@ -307,10 +311,13 @@ require("head.php");
 </ul>
 
 
-		</form>
-</div>
+			</form>
+	</div>
+	</div>
+	</div>
+	</div>
 
-	<?php 
+		<?php 
 
 		$conexion->close();
 

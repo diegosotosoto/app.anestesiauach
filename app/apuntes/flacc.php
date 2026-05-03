@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "Escala FLACC";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "La escala FLACC permite evaluar dolor en lactantes, niños pequeños o pacientes no comunicativos mediante cinco dominios observacionales: cara, piernas, actividad, llanto y consolabilidad. Cada dominio puntúa 0, 1 o 2 para un total de 0 a 10.";
@@ -15,7 +15,7 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=1">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=1"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
@@ -61,44 +61,14 @@ require("../head.php");
             opacity:0;
             pointer-events:none;
           }
-.flacc-option{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  min-height:68px;
-  border:2px solid var(--note-line);
-  border-radius:.9rem;
-  padding:.62rem .8rem;
-  cursor:pointer;
-  transition:.15s ease;
-  box-shadow:0 3px 10px rgba(15,23,42,.04);
-  gap:.12rem;
-}
-          .flacc-option-0{background:#eef8f3;}
-          .flacc-option-1{background:#fff8e1;}
-          .flacc-option-2{background:#fff1f1;}
 
           .flacc-option-input:checked + .flacc-option{
             box-shadow:0 0 0 3px rgba(47,128,237,.14), 0 8px 18px rgba(15,23,42,.10);
             border:4px solid var(--note-selected);
             transform:translateY(-1px);
           }
-
-.flacc-option-text{
-  font-size:.86rem;
-  line-height:1.22;
-  color:var(--note-text);
-  margin:0;
-  font-weight:700;
-}
-.flacc-option-points{
-  font-size:1.05rem;
-  font-weight:900;
-  line-height:1;
-  color:#3559b7;
-}
+          body .note-shell .flacc-option .flacc-option-text{background:transparent !important;background-color:transparent !important;}
+          body .note-shell .flacc-option .flacc-option-points{background:transparent !important;background-color:transparent !important;}
 
           .flacc-legend-grid{
             display:grid;
@@ -187,6 +157,7 @@ require("../head.php");
             .flacc-legend-grid{grid-template-columns:1fr;}
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · DOLOR PEDIÁTRICO</div>
@@ -294,25 +265,27 @@ require("../head.php");
           </div>
         </div>
 
-        <div class="note-summary-box mb-3">
-          <div class="note-summary-box-title">Resumen</div>
-          <div id="summaryNarrative" class="note-summary-box-text">Selecciona una opción por cada dominio para obtener un puntaje total FLACC y una orientación de manejo.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item">
-              <div class="note-summary-k">Puntaje total</div>
-              <div id="summaryScore" class="note-summary-v">0 / 10</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Categoría</div>
-              <div id="summarySeverity" class="note-summary-v">No completado</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Estado</div>
-              <div id="summaryState" class="note-summary-v">Incompleto</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Conducta</div>
-              <div id="summaryPlan" class="note-summary-v">Completar evaluación</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-card-title">Resumen</div>
+            <div id="summaryNarrative" class="note-summary-box-text mb-3">Selecciona una opción por cada dominio para obtener un puntaje total FLACC y una orientación de manejo.</div>
+            <div class="note-result-grid-2">
+              <div class="note-result-card">
+                <div class="note-result-card-label">Puntaje total</div>
+                <div id="summaryScore" class="note-result-card-value">0 / 10</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Categoría</div>
+                <div id="summarySeverity" class="note-result-card-value">No completado</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Estado</div>
+                <div id="summaryState" class="note-result-card-value">Incompleto</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Conducta</div>
+                <div id="summaryPlan" class="note-result-card-value">Completar evaluación</div>
+              </div>
             </div>
           </div>
         </div>
@@ -356,12 +329,12 @@ require("../head.php");
         <div class="note-card mb-3">
           <div class="note-card-body">
             <div class="note-section-label">Conducta práctica</div>
-            <div id="checklistBox" class="d-grid gap-3">
-              <div class="flacc-check-item">
-                <div class="flacc-check-mark mid"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <div class="flacc-check-copy">
-                  <div class="flacc-check-title">Completa los cinco dominios antes de concluir</div>
-                  <p class="flacc-check-note">Un FLACC incompleto puede subestimar o distorsionar la impresión clínica del dolor.</p>
+            <div id="checklistBox" class="note-warning-list">
+              <div class="note-warning-item">
+                <div class="note-warning-icon mid"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Completa los cinco dominios antes de concluir</div>
+                  <p class="note-warning-note">Un FLACC incompleto puede subestimar o distorsionar la impresión clínica del dolor.</p>
                 </div>
               </div>
             </div>
@@ -423,11 +396,11 @@ require("../head.php");
 
     box.innerHTML = items.map(function(item){
       const icon = item[0] === 'ok' ? 'fa-check' : (item[0] === 'mid' ? 'fa-triangle-exclamation' : 'fa-bolt');
-      return '<div class="flacc-check-item">' +
-        '<div class="flacc-check-mark ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
-        '<div class="flacc-check-copy">' +
-          '<div class="flacc-check-title">' + item[1] + '</div>' +
-          '<p class="flacc-check-note">' + item[2] + '</p>' +
+      return '<div class="note-warning-item">' +
+        '<div class="note-warning-icon ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
+        '<div class="note-warning-copy">' +
+          '<div class="note-warning-title">' + item[1] + '</div>' +
+          '<p class="note-warning-note">' + item[2] + '</p>' +
         '</div>' +
       '</div>';
     }).join('');

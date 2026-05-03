@@ -24,7 +24,7 @@ if(!$usuario || (int)$usuario['admin'] !== 1){
 }
 
 // Variables navbar
-$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler="<a class='d-sm-block d-sm-none admin-back-btn' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar="<span class='text-white d-sm-block d-sm-none'>Gestión Bitácora</span>";
 $boton_navbar="<a></a><a></a>";
 
@@ -328,116 +328,8 @@ if($q_pasantes){
 }
 ?>
 
-<style>
-.gestion-shell{
-	max-width:1100px;
-	margin:0 auto;
-}
-
-.gestion-card{
-	background:#fff;
-	border:1px solid #dfe7f2;
-	border-radius:18px;
-	box-shadow:0 8px 24px rgba(0,0,0,.06);
-	padding:1rem 1.1rem;
-	margin-bottom:1rem;
-}
-
-.gestion-title{
-	font-size:1.25rem;
-	font-weight:700;
-	color:#1f2a37;
-}
-
-.gestion-subtle{
-	color:#6b7280;
-	font-size:.92rem;
-}
-
-.gestion-grid{
-	display:grid;
-	grid-template-columns:repeat(3, 1fr);
-	gap:12px;
-}
-
-.gestion-stat{
-	background:linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);
-	border:1px solid #dfe7f2;
-	border-radius:16px;
-	padding:1rem;
-}
-
-.gestion-stat-num{
-	font-size:1.6rem;
-	font-weight:800;
-	color:#244aa5;
-}
-
-.gestion-stat-label{
-	color:#4b5563;
-	font-weight:600;
-}
-
-.gestion-table{
-	width:100%;
-	border-collapse:separate;
-	border-spacing:0;
-}
-
-.gestion-table th,
-.gestion-table td{
-	padding:.8rem .9rem;
-	border-bottom:1px solid #e5e7eb;
-	vertical-align:middle;
-}
-
-.gestion-table th{
-	color:#1f2a37;
-	font-weight:700;
-	background:#f8fafc;
-}
-
-.gestion-table tr:last-child td{
-	border-bottom:0;
-}
-
-.gestion-badge{
-	display:inline-block;
-	padding:.22rem .55rem;
-	border-radius:999px;
-	font-size:.78rem;
-	font-weight:700;
-	background:#dbeafe;
-	color:#1d4ed8;
-}
-
-.gestion-block-title{
-	font-size:1.05rem;
-	font-weight:700;
-	color:#1f2a37;
-	margin-bottom:.75rem;
-}
-
-.gestion-empty{
-	color:#6b7280;
-	padding:.6rem 0;
-}
-
-@media (max-width: 900px){
-	.gestion-grid{
-		grid-template-columns:1fr;
-	}
-
-	.gestion-table{
-		display:block;
-		overflow-x:auto;
-		white-space:nowrap;
-	}
-}
-</style>
-
-<div class="col col-sm-9 col-xl-9 pb-5">
-	<div class="container-fluid gestion-shell">
+<div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
+	<main class="admin-page gestion-shell">
 
 		<?php if($mensaje !== ""){ ?>
 			<div class='alert alert-success alert-dismissible fade show'>
@@ -453,19 +345,16 @@ if($q_pasantes){
 			</div>
 		<?php } ?>
 
-		<div class="gestion-card">
-			<div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-				<div>
-					<div class="gestion-title">Gestión Bitácoras</div>
-					<div class="gestion-subtle">Aprobación administrativa de registros pendientes</div>
-				</div>
-
-				<form method="post" onsubmit="return confirm('¿Aprobar absolutamente todas las bitácoras pendientes?');">
+		<section class="app-hero app-hero-admin admin-header-card mb-3">
+			<div class="app-hero-kicker">Administración</div>
+			<h2>Gestión Bitácoras</h2>
+			<p>Aprobación administrativa de registros pendientes.</p>
+			<span class="app-hero-pill">Solo administradores</span>
+			<form method="post" class="mt-3" onsubmit="return confirm('¿Aprobar absolutamente todas las bitácoras pendientes?');">
 					<input type="hidden" name="accion_bitacora" value="aprobar_todo">
-					<button type="submit" class="btn btn-danger">Aprobar todo</button>
+					<button type="submit" class="btn btn-app-danger">Aprobar todo</button>
 				</form>
-			</div>
-		</div>
+		</section>
 
 		<div class="gestion-grid mb-3">
 			<div class="gestion-stat">
@@ -474,7 +363,7 @@ if($q_pasantes){
 				<form method="post" class="mt-3" onsubmit="return confirm('¿Aprobar todas las bitácoras pendientes de becados/residentes?');">
 					<input type="hidden" name="accion_bitacora" value="aprobar_grupo">
 					<input type="hidden" name="grupo" value="becados_residentes">
-					<button type="submit" class="btn btn-outline-primary btn-sm">Aprobar grupo</button>
+					<button type="submit" class="btn btn-app-secondary btn-sm">Aprobar grupo</button>
 				</form>
 			</div>
 
@@ -484,7 +373,7 @@ if($q_pasantes){
 				<form method="post" class="mt-3" onsubmit="return confirm('¿Aprobar todas las bitácoras pendientes de internos?');">
 					<input type="hidden" name="accion_bitacora" value="aprobar_grupo">
 					<input type="hidden" name="grupo" value="internos">
-					<button type="submit" class="btn btn-outline-primary btn-sm">Aprobar grupo</button>
+					<button type="submit" class="btn btn-app-secondary btn-sm">Aprobar grupo</button>
 				</form>
 			</div>
 
@@ -494,7 +383,7 @@ if($q_pasantes){
 				<form method="post" class="mt-3" onsubmit="return confirm('¿Aprobar todas las bitácoras pendientes de becados pasantes?');">
 					<input type="hidden" name="accion_bitacora" value="aprobar_grupo">
 					<input type="hidden" name="grupo" value="becados_pasantes">
-					<button type="submit" class="btn btn-outline-primary btn-sm">Aprobar grupo</button>
+					<button type="submit" class="btn btn-app-secondary btn-sm">Aprobar grupo</button>
 				</form>
 			</div>
 		</div>
@@ -526,7 +415,7 @@ if($q_pasantes){
 										<input type="hidden" name="accion_bitacora" value="aprobar_staff">
 										<input type="hidden" name="tabla" value="bitacora_proced">
 										<input type="hidden" name="staff_email" value="<?= h($row['staff_email']) ?>">
-										<button type="submit" class="btn btn-outline-success btn-sm">Aprobar staff</button>
+										<button type="submit" class="btn btn-app-secondary btn-sm">Aprobar staff</button>
 									</form>
 								</td>
 							</tr>
@@ -563,7 +452,7 @@ if($q_pasantes){
 										<input type="hidden" name="accion_bitacora" value="aprobar_staff">
 										<input type="hidden" name="tabla" value="bitacora_internos">
 										<input type="hidden" name="staff_email" value="<?= h($row['staff_email']) ?>">
-										<button type="submit" class="btn btn-outline-success btn-sm">Aprobar staff</button>
+										<button type="submit" class="btn btn-app-secondary btn-sm">Aprobar staff</button>
 									</form>
 								</td>
 							</tr>
@@ -607,7 +496,7 @@ if($q_pasantes){
 										<input type="hidden" name="accion_bitacora" value="aprobar_individual">
 										<input type="hidden" name="tabla" value="bitacora_proced">
 										<input type="hidden" name="id" value="<?= (int)$row['id'] ?>">
-										<button type="submit" class="btn btn-primary btn-sm">Aprobar</button>
+										<button type="submit" class="btn btn-app-primary btn-sm">Aprobar</button>
 									</form>
 								</td>
 							</tr>
@@ -651,7 +540,7 @@ if($q_pasantes){
 										<input type="hidden" name="accion_bitacora" value="aprobar_individual">
 										<input type="hidden" name="tabla" value="bitacora_internos">
 										<input type="hidden" name="id" value="<?= (int)$row['id'] ?>">
-										<button type="submit" class="btn btn-primary btn-sm">Aprobar</button>
+										<button type="submit" class="btn btn-app-primary btn-sm">Aprobar</button>
 									</form>
 								</td>
 							</tr>
@@ -695,7 +584,7 @@ if($q_pasantes){
 										<input type="hidden" name="accion_bitacora" value="aprobar_individual">
 										<input type="hidden" name="tabla" value="bitacora_internos">
 										<input type="hidden" name="id" value="<?= (int)$row['id'] ?>">
-										<button type="submit" class="btn btn-primary btn-sm">Aprobar</button>
+										<button type="submit" class="btn btn-app-primary btn-sm">Aprobar</button>
 									</form>
 								</td>
 							</tr>
@@ -705,7 +594,7 @@ if($q_pasantes){
 			<?php } ?>
 		</div>
 
-	</div>
+	</main>
 </div>
 
 <?php require("footer.php"); ?>

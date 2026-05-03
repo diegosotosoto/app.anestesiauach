@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "Mallampati";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "El score de Mallampati es una evaluación clínica simple de estructuras orofaríngeas visibles con el paciente despierto. Sirve como parte del tamizaje preoperatorio de vía aérea, pero su rendimiento aislado para predecir intubación difícil es limitado.";
@@ -17,20 +17,20 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=2">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=2"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
     <div class="container-fluid px-0 px-md-2">
-      <div class="note-shell px-1 px-md-0 py-0">
+      <div class="note-shell mallampati-shell px-1 px-md-0 py-0">
 
         <style>
           :root{
-            --mp-grade-1:#e8f7f2;
-            --mp-grade-2:#fff9e8;
-            --mp-grade-3:#fff0e1;
-            --mp-grade-4:#fdebec;
+            --grade-1-bg:#e9f8ef;
+            --grade-2-bg:#fff8db;
+            --grade-3-bg:#fff0e1;
+            --grade-4-bg:#fdebec;
           }
 
           .mp-grade-grid{
@@ -55,10 +55,11 @@ require("../head.php");
             line-height:1.1;
           }
 
-          .mp-grade-1{background:var(--mp-grade-1);}
-          .mp-grade-2{background:var(--mp-grade-2);}
-          .mp-grade-3{background:var(--mp-grade-3);}
-          .mp-grade-4{background:var(--mp-grade-4);}
+          .mp-grade-option .note-option.note-grade-1{background:var(--grade-1-bg);}
+          .mp-grade-option .note-option.note-grade-2{background:var(--grade-2-bg);}
+          .mp-grade-option .note-option.note-grade-3{background:var(--grade-3-bg);}
+          .mp-grade-option .note-option.note-grade-4{background:var(--grade-4-bg);}
+
 
           .mp-main-grid{
             display:grid;
@@ -86,18 +87,12 @@ require("../head.php");
             border:1px solid transparent;
           }
 
-          .mp-grade-panel.grade-1{background:#e9f8ef;border-color:#b7e4c7;}
-          .mp-grade-panel.grade-2{background:#fff8db;border-color:#f4d35e;}
-          .mp-grade-panel.grade-3{background:#fff0e1;border-color:#f7b267;}
-          .mp-grade-panel.grade-4{background:#fdebec;border-color:#f2a7b1;}
+          .mp-grade-panel.grade-1{background:var(--grade-1-bg);border-color:var(--grade-1-border);}
+          .mp-grade-panel.grade-2{background:var(--grade-2-bg);border-color:var(--grade-2-border);}
+          .mp-grade-panel.grade-3{background:var(--grade-3-bg);border-color:var(--grade-3-border);}
+          .mp-grade-panel.grade-4{background:var(--grade-4-bg);border-color:var(--grade-4-border);}
 
           .mp-meta-stack{display:grid;gap:.8rem;}
-
-          .mp-summary-box{
-            border:0;
-          }
-
-          .mp-summary-box .note-summary-box-text{margin-bottom:.5rem;}
 
           .mp-reference-grid{display:grid;gap:.75rem;}
 
@@ -113,54 +108,12 @@ require("../head.php");
             margin-bottom:.15rem;
           }
 
-          .mp-technique-list{
-            display:grid;
-            gap:.75rem;
-          }
-
-          .mp-technique-item{
-            display:flex;
-            align-items:flex-start;
-            gap:.65rem;
-            border:1px solid #d9e2ef;
-            border-radius:1rem;
-            background:#fff;
-            padding:.75rem .85rem;
-          }
-
-          .mp-technique-mark{
-            flex:0 0 auto;
-            width:30px;
-            height:30px;
-            border-radius:999px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            color:#fff;
-            background:#3559b7;
-            margin-top:.08rem;
-          }
-
-          .mp-technique-title{
-            font-size:.95rem;
-            font-weight:800;
-            line-height:1.18;
-            color:var(--note-text);
-            margin-bottom:.1rem;
-          }
-
-          .mp-technique-note{
-            margin:0;
-            font-size:.82rem;
-            line-height:1.32;
-            color:var(--note-muted);
-          }
-
           @media (max-width:768px){
             .mp-grade-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
             .mp-main-grid{grid-template-columns:1fr;}
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · VÍA AÉREA · EVALUACIÓN PREOPERATORIA</div>
@@ -196,30 +149,26 @@ require("../head.php");
             <div class="mp-grade-grid">
               <div class="mp-grade-option">
                 <input class="note-check mp-trigger" type="radio" name="mpgrade" id="mp1" value="1" checked>
-                <label class="note-option mp-grade-1" for="mp1">
-                  <span>Clase I</span>
-                  <small>Úvula completa</small>
+                <label class="note-option note-grade-1" for="mp1">
+                  <span class="clgradefill clg1"><span>Clase I</span><small>Úvula completa</small></span>
                 </label>
               </div>
               <div class="mp-grade-option">
                 <input class="note-check mp-trigger" type="radio" name="mpgrade" id="mp2" value="2">
-                <label class="note-option mp-grade-2" for="mp2">
-                  <span>Clase II</span>
-                  <small>Úvula parcial</small>
+                <label class="note-option note-grade-2" for="mp2">
+                  <span class="clgradefill clg2"><span>Clase II</span><small>Úvula parcial</small></span>
                 </label>
               </div>
               <div class="mp-grade-option">
                 <input class="note-check mp-trigger" type="radio" name="mpgrade" id="mp3" value="3">
-                <label class="note-option mp-grade-3" for="mp3">
-                  <span>Clase III</span>
-                  <small>Base de úvula</small>
+                <label class="note-option note-grade-3" for="mp3">
+                  <span class="clgradefill clg3"><span>Clase III</span><small>Base de úvula</small></span>
                 </label>
               </div>
               <div class="mp-grade-option">
                 <input class="note-check mp-trigger" type="radio" name="mpgrade" id="mp4" value="4">
-                <label class="note-option mp-grade-4" for="mp4">
-                  <span>Clase IV</span>
-                  <small>Solo paladar duro</small>
+                <label class="note-option note-grade-4" for="mp4">
+                  <span class="clgradefill clg4"><span>Clase IV</span><small>Solo paladar duro</small></span>
                 </label>
               </div>
             </div>
@@ -238,14 +187,14 @@ require("../head.php");
                   <div id="summaryBox" class="note-summary-box mp-summary-box mt-3 mb-0" style="background:#e9f8ef;border-color:#b7e4c7;">
                     <div class="note-summary-box-title">Resumen</div>
                     <div id="summaryNarrative" class="note-summary-box-text">Mallampati I: paladar blando, úvula completa y pilares visibles; hallazgo orofaríngeo favorable.</div>
-                    <div class="note-summary-grid-2">
-                      <div class="note-summary-item">
-                        <div class="note-summary-k">Clase seleccionada</div>
-                        <div id="summaryGrade" class="note-summary-v">Clase I</div>
+                    <div class="note-result-grid-2 mt-2">
+                      <div class="note-result-card">
+                        <div class="note-result-card-label">Clase seleccionada</div>
+                        <div id="summaryGrade" class="note-result-card-value">Clase I</div>
                       </div>
-                      <div class="note-summary-item">
-                        <div class="note-summary-k">Conducta</div>
-                        <div id="summaryAction" class="note-summary-v">Integrar con el resto de la vía aérea</div>
+                      <div class="note-result-card">
+                        <div class="note-result-card-label">Conducta</div>
+                        <div id="summaryAction" class="note-result-card-value">Integrar con el resto de la vía aérea</div>
                       </div>
                     </div>
                   </div>
@@ -281,26 +230,26 @@ require("../head.php");
         <div class="section-card mb-3">
           <div class="note-card-body">
             <div class="note-section-label">Técnica correcta</div>
-            <div class="mp-technique-list">
-              <div class="mp-technique-item">
-                <div class="mp-technique-mark"><i class="fa-solid fa-chair"></i></div>
-                <div>
-                  <div class="mp-technique-title">Paciente sentado, cabeza neutra</div>
-                  <p class="mp-technique-note">Evaluarlo en supino puede sobreestimar la dificultad y reducir la validez del examen.</p>
+            <div class="note-warning-list">
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-chair"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Paciente sentado, cabeza neutra</div>
+                  <p class="note-warning-note">Evaluarlo en supino puede sobreestimar la dificultad y reducir la validez del examen.</p>
                 </div>
               </div>
-              <div class="mp-technique-item">
-                <div class="mp-technique-mark"><i class="fa-solid fa-face-smile"></i></div>
-                <div>
-                  <div class="mp-technique-title">Boca máxima abierta, lengua protruyente</div>
-                  <p class="mp-technique-note">La lengua debe estar relajada y sin ayuda del examinador.</p>
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-face-smile"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Boca máxima abierta, lengua protruyente</div>
+                  <p class="note-warning-note">La lengua debe estar relajada y sin ayuda del examinador.</p>
                 </div>
               </div>
-              <div class="mp-technique-item">
-                <div class="mp-technique-mark"><i class="fa-solid fa-volume-xmark"></i></div>
-                <div>
-                  <div class="mp-technique-title">Sin fonación</div>
-                  <p class="mp-technique-note">Pedir “aaah” eleva estructuras y puede mejorar artificialmente la visualización.</p>
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-volume-xmark"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Sin fonación</div>
+                  <p class="note-warning-note">Pedir “aaah” eleva estructuras y puede mejorar artificialmente la visualización.</p>
                 </div>
               </div>
             </div>
@@ -310,22 +259,18 @@ require("../head.php");
         <div class="section-card mb-3">
           <div class="note-card-body">
             <div class="note-section-label">Resumen rápido por clases</div>
-            <div class="mp-reference-grid">
-              <div class="mp-reference-card" style="background:#e9f8ef;border-color:#b7e4c7;">
-                <b>Clase I</b>
-                Paladar blando, úvula completa y pilares amigdalinos visibles.
+            <div class="cl-reference-grid">
+              <div class="cl-reference-card note-grade-card-1">
+                <div class="clgradecardfill clg1"><b>Clase I</b><span>Paladar blando, úvula completa y pilares amigdalinos visibles.</span></div>
               </div>
-              <div class="mp-reference-card" style="background:#fff8db;border-color:#f4d35e;">
-                <b>Clase II</b>
-                Paladar blando y úvula parcial visibles; pilares no visibles completamente.
+              <div class="cl-reference-card note-grade-card-2">
+                <div class="clgradecardfill clg2"><b>Clase II</b><span>Paladar blando y úvula parcial visibles; pilares no visibles completamente.</span></div>
               </div>
-              <div class="mp-reference-card" style="background:#fff0e1;border-color:#f7b267;">
-                <b>Clase III</b>
-                Solo base de úvula o paladar blando parcialmente visible.
+              <div class="cl-reference-card note-grade-card-3">
+                <div class="clgradecardfill clg3"><b>Clase III</b><span>Solo base de úvula o paladar blando parcialmente visible.</span></div>
               </div>
-              <div class="mp-reference-card" style="background:#fdebec;border-color:#f2a7b1;">
-                <b>Clase IV</b>
-                Solo paladar duro visible; no se visualiza paladar blando ni úvula.
+              <div class="cl-reference-card note-grade-card-4">
+                <div class="clgradecardfill clg4"><b>Clase IV</b><span>Solo paladar duro visible; no se visualiza paladar blando ni úvula.</span></div>
               </div>
             </div>
           </div>
@@ -367,8 +312,8 @@ require("../head.php");
   const gradeData = {
     '1': {
       panelClass: 'grade-1',
-      captionBg: '#e9f8ef',
-      captionBorder: '#b7e4c7',
+      captionBg: 'var(--grade-1-bg)',
+      captionBorder: 'var(--grade-1-border)',
       grade: 'Clase I',
       vision: 'Paladar blando, úvula completa y pilares visibles',
       meaning: 'Tamizaje favorable',
@@ -383,8 +328,8 @@ require("../head.php");
     },
     '2': {
       panelClass: 'grade-2',
-      captionBg: '#fff8db',
-      captionBorder: '#f4d35e',
+      captionBg: 'var(--grade-2-bg)',
+      captionBorder: 'var(--grade-2-border)',
       grade: 'Clase II',
       vision: 'Paladar blando y úvula parcialmente visible',
       meaning: 'Tamizaje levemente menos favorable',
@@ -399,8 +344,8 @@ require("../head.php");
     },
     '3': {
       panelClass: 'grade-3',
-      captionBg: '#fff0e1',
-      captionBorder: '#f7b267',
+      captionBg: 'var(--grade-3-bg)',
+      captionBorder: 'var(--grade-3-border)',
       grade: 'Clase III',
       vision: 'Solo base de úvula o paladar blando parcialmente visible',
       meaning: 'Aumenta alerta de vía aérea',
@@ -415,8 +360,8 @@ require("../head.php");
     },
     '4': {
       panelClass: 'grade-4',
-      captionBg: '#fdebec',
-      captionBorder: '#f2a7b1',
+      captionBg: 'var(--grade-4-bg)',
+      captionBorder: 'var(--grade-4-border)',
       grade: 'Clase IV',
       vision: 'Solo paladar duro visible',
       meaning: 'Alta alerta de dificultad potencial',

@@ -1,0 +1,38 @@
+/* Modulo Otros: links, telefonos, correos */
+.link-tile,
+.telefonos-panel,
+.telefono-panel,
+.telefono-item,
+.correos-card,
+.correos-disclaimer-card,
+.correo-item,
+.about-card,
+.about-feature-card,
+.about-share-card{
+  background:var(--app-card);
+  color:var(--app-text);
+  border-color:var(--app-border);
+  background-image:none;
+}
+
+.link-tile:not(.home-tile):hover,
+.link-tile:not(.home-tile):focus{
+  background:var(--app-blue-soft) !important;
+  color:var(--app-text) !important;
+}
+
+body.theme-dark .link-tile,
+body.theme-dark .telefonos-panel,
+body.theme-dark .telefono-panel,
+body.theme-dark .telefono-item,
+body.theme-dark .correos-card,
+body.theme-dark .correos-disclaimer-card,
+body.theme-dark .correo-item,
+body.theme-dark .about-card,
+body.theme-dark .about-feature-card,
+body.theme-dark .about-share-card{
+  background:var(--app-card) !important;
+  color:var(--app-text) !important;
+  border-color:var(--app-border) !important;
+  background-image:none !important;
+}

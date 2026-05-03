@@ -10,13 +10,16 @@ if (!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])) {
 
 }
 
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 
 $titulo_navbar = "<div class='text-white'>Cálculos y Apuntes</div>";
 
 $boton_navbar = "<a></a><a></a>";
 
 require("head.php");
+
+?>
+<?php
 
 /*
 
@@ -210,403 +213,19 @@ $stmt_apuntes->close();
 
 ?>
 
-<style>
-
-.topbar{
-
-  background: linear-gradient(135deg, #27458f, #3559b7);
-
-  color: #fff;
-
-  border-radius: 1.25rem;
-
-}
-
-.topbar h1{
-
-  color:#fff;
-
-}
-
-.subtle{
-
-  font-size:.92rem;
-
-}
-
-.pill{
-
-  display:inline-block;
-
-  padding:.25rem .6rem;
-
-  border-radius:999px;
-
-  font-size:.8rem;
-
-  font-weight:600;
-
-}
-
-.apuntes-shell{
-
-  max-width: 980px;
-
-  margin: 0 auto;
-
-}
-
-.apuntes-hero{
-
-  background: linear-gradient(135deg, var(--app-navy), #3559b7);
-
-  color: #fff;
-
-  border-radius: 1.25rem;
-
-  box-shadow: 0 8px 24px rgba(0,0,0,.06);
-
-  padding: 1.15rem 1.25rem;
-
-  margin-bottom: 1rem;
-
-}
-
-.apuntes-hero-title{
-
-  font-size: 1.2rem;
-
-  font-weight: 700;
-
-  line-height: 1.2;
-
-}
-
-.apuntes-hero-subtitle{
-
-  color: rgba(255,255,255,.75);
-
-  margin-top: .35rem;
-
-}
-
-.apuntes-accordion .accordion-item{
-
-  border: 0;
-
-  border-radius: 1rem !important;
-
-  overflow: hidden;
-
-  box-shadow: 0 8px 24px rgba(0,0,0,.06);
-
-  margin-bottom: .55rem;
-
-}
-
-.apuntes-accordion .accordion-button{
-
-  padding: 1rem 1.1rem;
-
-  font-size: 1rem;
-
-  font-weight: 600;
-
-  box-shadow: none !important;
-
-}
-
-.apuntes-accordion .accordion-button:not(.collapsed){
-
-  color: #244aa5;
-
-  background: #eef4ff;
-
-}
-
-.apuntes-accordion .accordion-button:focus{
-
-  box-shadow: none;
-
-}
-
-.apuntes-accordion .accordion-body{
-
-  background: #fff;
-
-  padding: 1rem;
-
-}
-
-.apuntes-icon{
-
-  height: 34px;
-
-  width: 34px;
-
-  margin-left: 4px;
-
-  margin-right: 16px;
-
-  flex: 0 0 auto;
-
-}
-
-.apuntes-emergency .accordion-button{
-
-  background: linear-gradient(0deg, #f8d7da 0%, #f5c2c7 40%, #f1aeb5 100%);
-
-  color: #000;
-
-}
-
-.apuntes-standard .accordion-button{
-
-  background: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);
-
-  color: #1f2a37;
-
-}
-
-.apuntes-list{
-
-  display: grid;
-
-  gap: .65rem;
-
-}
-
-.apuntes-link{
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: space-between;
-
-  gap: .6rem;
-
-  min-width: 0;
-
-  overflow: hidden;
-
-  background: #f8fafc;
-
-  border: 1px solid #dfe7f2;
-
-  border-radius: .9rem;
-
-  padding: .9rem 1rem;
-
-  color: #2453c6;
-
-  box-shadow: 0 6px 18px rgba(33,55,98,.06);
-
-  transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease;
-
-}
-
-.apuntes-link:hover{
-
-  transform: translateY(-1px);
-
-  box-shadow: 0 10px 22px rgba(33,55,98,.10);
-
-  background: #ffffff;
-
-  color: #244aa5;
-
-}
-
-.apuntes-link-main{
-
-  display: inline-flex;
-
-  align-items: center;
-
-  gap: .65rem;
-
-  text-decoration: none;
-
-  color: inherit;
-
-  flex: 1 1 auto;
-
-  min-width: 0;
-
-  overflow: hidden;
-
-}
-
-.apuntes-link-main:hover{
-
-  text-decoration: none;
-
-  color: inherit;
-
-}
-
-.apuntes-link i{
-
-  min-width: 22px;
-
-  text-align: center;
-
-}
-
-.apunte-title{
-  min-width: 0;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-
-.apuntes-empty{
-
-  color: #6b7280;
-
-  font-size: .95rem;
-
-  padding: .25rem 0;
-
-}
-
-.apunte-meta{
-
-  margin-left: auto;
-
-  display: inline-flex;
-
-  align-items: center;
-
-  gap: .35rem;
-
-  flex: 0 0 auto;
-
-  white-space: nowrap;
-
-}
-
-.apunte-badge-new{
-
-  display: inline-block;
-
-  padding: .18rem .5rem;
-
-  border-radius: 999px;
-
-  font-size: .72rem;
-
-  font-weight: 700;
-
-  line-height: 1;
-
-  background: #dbeafe;
-
-  color: #1d4ed8;
-
-  border: 1px solid #bfdbfe;
-
-}
-
-.apunte-star{
-  color: #f59e0b;
-  font-size: 1rem;
-  line-height: 1;
-  display: block;
-}
-
-.apunte-fav-btn{
-  margin-left: .1rem;
-  border: none;
-  background: transparent !important;
-  width: 30px;
-  height: 30px;
-  min-width: 30px;
-  min-height: 30px;
-  padding: 0;
-  cursor: pointer;
-  line-height: 1;
-  color: #cbd5e1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  flex: 0 0 30px;
-  transition: transform .15s ease, color .15s ease, background-color .15s ease;
-}
-
-.apunte-fav-btn:hover{
-  transform: scale(1.03);
-  color: #f59e0b;
-  background: rgba(245, 158, 11, 0.08) !important;
-}
-
-.apunte-fav-btn.is-active{
-  color: #f59e0b;
-  background: rgba(245, 158, 11, 0.12) !important;
-}
-
-@media (max-width: 768px){
-  .apunte-fav-btn{
-    width: 30px;
-    height: 30px;
-    min-width: 30px;
-    min-height: 30px;
-    flex: 0 0 30px;
-    border-radius: 8px;
-  }
-
-  .apunte-star{
-    font-size: 1rem;
-  }
-}
-
-@media (max-width: 549px){
-  .apuntes-shell{
-    max-width: 100%;
-  }
-
-  .apuntes-hero{
-    border-radius: 1rem;
-    padding: 1rem;
-  }
-
-  .apuntes-hero-title{
-    font-size: 1.08rem;
-  }
-
-  .apuntes-accordion .accordion-button{
-    padding: .95rem 1rem;
-    font-size: .96rem;
-  }
-
-  .apuntes-icon{
-    height: 30px;
-    width: 30px;
-    margin-right: 14px;
-  }
-
-  .apuntes-link{
-    padding: .85rem .9rem;
-    font-size: .96rem;
-  }
-
-    .apunte-meta{
-    gap: .25rem;
-  }
-}
-
-</style>
-
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
   <div class="apunte-surface">
     <div class="container-fluid px-0 px-md-2">
       <div class="apuntes-shell">
-        <div class="apuntes-hero">
-          <div class="small opacity-75 mb-1">APP clínica • recursos y cálculos</div>
-          <div class="apuntes-hero-title">Sección de Apuntes y Cálculos</div>
-          <div class="apuntes-hero-subtitle">Acceso rápido a escalas, scores, buscadores, checklists y utilidades clínicas.</div>
-        </div>
+        <section class="app-hero app-hero-blue">
+          <div class="app-hero-row">
+            <div class="app-hero-body">
+              <div class="app-hero-kicker">APP clínica • recursos y cálculos</div>
+              <h2>Sección de Apuntes y Cálculos</h2>
+              <p>Acceso rápido a escalas, scores, buscadores, checklists y utilidades clínicas.</p>
+            </div>
+          </div>
+        </section>
         <div class="accordion apuntes-accordion" id="accordionApuntes">
           <div class="accordion-item apuntes-standard" id="favoritosAccordionItem" <?= empty($favoritos) ? 'style="display:none;"' : '' ?>>
 
@@ -625,8 +244,8 @@ $stmt_apuntes->close();
                   <?php foreach ($favoritos as $nota): ?>
                     <div class="apuntes-link favorito-item" data-nota-id="<?= (int)$nota['nota_id'] ?>">
 <a href="<?= htmlspecialchars($nota['ruta']) ?>" class="apuntes-link-main" data-nota-id="<?= (int)$nota['nota_id'] ?>">
-                        <i class="<?= htmlspecialchars($nota['icono_fa']) ?>"></i>
-                        <span><?= htmlspecialchars($nota['titulo']) ?></span>
+                        <span class="apunte-icon-circle"><i class="<?= htmlspecialchars($nota['icono_fa']) ?>"></i></span>
+                        <span class="apunte-title"><?= htmlspecialchars($nota['titulo']) ?></span>
                       </a>
                       <span class="apunte-meta">
 
@@ -713,9 +332,9 @@ $stmt_apuntes->close();
 
 <a href="<?= htmlspecialchars($nota['ruta']) ?>" class="apuntes-link-main" data-nota-id="<?= (int)$nota['nota_id'] ?>">
 
-                            <i class="<?= htmlspecialchars($nota['icono_fa']) ?>"></i>
+                            <span class="apunte-icon-circle"><i class="<?= htmlspecialchars($nota['icono_fa']) ?>"></i></span>
 
-                            <span><?= htmlspecialchars($nota['titulo']) ?></span>
+                            <span class="apunte-title"><?= htmlspecialchars($nota['titulo']) ?></span>
 
                           </a>
 
@@ -895,9 +514,9 @@ badgeNew = '<span class="apunte-badge-new" data-nota-id="' + escapeAttr(notaId) 
 
 <a href="${escapeAttr(ruta)}" class="apuntes-link-main" data-nota-id="${escapeAttr(notaId)}">
 
-            <i class="${escapeAttr(icono)}"></i>
+            <span class="apunte-icon-circle"><i class="${escapeAttr(icono)}"></i></span>
 
-            <span>${escapeHtml(titulo)}</span>
+            <span class="apunte-title">${escapeHtml(titulo)}</span>
 
           </a>
 

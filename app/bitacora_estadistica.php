@@ -29,7 +29,7 @@
 
 //VARIABLES
 	
-		$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+		$boton_toggler="<a class='d-sm-block d-sm-none admin-back-btn' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 		$titulo_navbar="<span class='text-white'>Bitácora</span>";
 		$boton_navbar="<a></a>";
 
@@ -40,135 +40,9 @@
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
 
-<style>
-  .bitacora-shell{
-    max-width:1100px;
-    margin:0 auto;
-  }
-
-  .bitacora-topbar{
-    background:linear-gradient(135deg, #27458f, #3559b7);
-    color:#fff;
-    border-radius:1.25rem;
-    box-shadow:0 8px 24px rgba(0,0,0,.06);
-    padding:1.15rem 1.25rem;
-    margin-bottom:1rem;
-  }
-
-  .bitacora-topbar h1{
-    color:#fff;
-  }
-
-  .subtle{
-    font-size:.92rem;
-  }
-
-  .pill{
-    display:inline-block;
-    padding:.25rem .6rem;
-    border-radius:999px;
-    font-size:.8rem;
-    font-weight:600;
-  }
-
-  .bitacora-tabs{
-    margin-bottom:1rem;
-  }
-
-  .bitacora-tabs .nav-link{
-    border-radius:.85rem;
-    margin-right:.5rem;
-    color:#3559b7;
-  }
-
-  .bitacora-tabs .nav-link.active{
-    background:#3559b7;
-    color:#fff;
-    border-color:#3559b7;
-  }
-
-  .bitacora-tabs span.nav-link{
-    display:block;
-    cursor:default;
-  }
-
-  .bitacora-summary-card,
-  .bitacora-chart-card{
-    border:0;
-    border-radius:1rem;
-    box-shadow:0 8px 24px rgba(0,0,0,.06);
-    background:#fff;
-    overflow:hidden;
-  }
-
-  .bitacora-summary-card{
-    margin-bottom:1rem;
-  }
-
-  .bitacora-summary-header{
-    background:linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);
-    border-bottom:1px solid #e9eef5;
-    padding:1rem 1.1rem;
-  }
-
-  .bitacora-summary-body{
-    padding:1rem 1.1rem;
-  }
-
-  .minicex-link{
-    word-break:break-all;
-  }
- .charts-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit, minmax(320px, 360px));
-  justify-content:center;
-  gap:1rem;
-  margin-top:1rem;
-}
-
-.chart-col{
-  min-width:0;
-  width:100%;
-}
-
-.bitacora-chart-card{
-  border:0;
-  border-radius:1rem;
-  box-shadow:0 8px 24px rgba(0,0,0,.06);
-  background:#fff;
-  overflow:hidden;
-  padding:1rem;
-  min-height:360px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.chart-canvas{
-  width:100%;
-  height:320px;
-}
-
-@media (max-width:767px){
-  .charts-grid{
-    grid-template-columns:1fr;
-    gap:1.1rem;
-  }
-
-  .bitacora-chart-card{
-    min-height:330px;
-    padding:.8rem;
-  }
-
-  .chart-canvas{
-    height:300px;
-  }
-}
-</style>
-
 <div class="apunte-surface">
   <div class="container-fluid px-0 px-md-2">
-    <div class="bitacora-shell">
+    <div class="bitacora-shell bitacora-shell-wide">
 
   <?php if($usuario['admin']==1 or $usuario['staff_']==1){
 
@@ -235,15 +109,16 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
 }
 
 
-  $select_name="SELECT `nombre_usuario`,`link_minicex`  FROM `usuarios_dolor` WHERE `email_usuario` = '$autor_b' ";
+  $select_name="SELECT `nombre_usuario`,`link_minicex`, `ui_icono`, `ui_icono_color`, `admin`  FROM `usuarios_dolor` WHERE `email_usuario` = '$autor_b' ";
   $name_query=$conexion->query($select_name);
   $name_row=$name_query->fetch_assoc();
+  $icono_estadistica = app_render_user_inline_icon($name_row);
 
 
 ?>
       <div class="bitacora-summary-card">
         <div class="bitacora-summary-header">
-          <h4 class='mb-1 fw-bold pt-2'>Estadística de <?php echo app_h_text($name_row['nombre_usuario']); ?></h4>
+          <h4 class='mb-1 fw-bold pt-2'>Estadística de <?php echo $icono_estadistica.app_h_text($name_row['nombre_usuario']); ?></h4>
         </div>
         <div class="bitacora-summary-body">
           <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap">
@@ -665,6 +540,28 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
     </div>
 <script type="text/javascript">
     google.charts.load("current", {packages:['corechart']});
+    function appChartThemeOptions(options){
+      if (!document.body.classList.contains("theme-dark")) return options;
+
+      return Object.assign({}, options, {
+        backgroundColor: "transparent",
+        titleTextStyle: { color: "#eef4ff", bold: true },
+        legend: { position: "none", textStyle: { color: "#eef4ff" } },
+        hAxis: Object.assign({}, options.hAxis || {}, {
+          textStyle: { color: "#cbd5e1" },
+          titleTextStyle: { color: "#eef4ff" },
+          gridlines: { color: "#334155" },
+          baselineColor: "#64748b"
+        }),
+        vAxis: Object.assign({}, options.vAxis || {}, {
+          textStyle: { color: "#cbd5e1" },
+          titleTextStyle: { color: "#eef4ff" },
+          gridlines: { color: "#334155" },
+          baselineColor: "#64748b"
+        })
+      });
+    }
+
     google.charts.setOnLoadCallback(drawChart);
     function drawChart() {
       var data = google.visualization.arrayToDataTable([
@@ -702,7 +599,7 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
         legend: { position: "none" },
       };
       var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values"));
-      chart.draw(view, options);
+      chart.draw(view, appChartThemeOptions(options));
   }
   </script>
 
@@ -762,7 +659,7 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
     },
   };
       var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values2"));
-      chart.draw(view, options);
+      chart.draw(view, appChartThemeOptions(options));
   }
   </script>
 
@@ -810,7 +707,7 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
         legend: { position: "none" },
       };
       var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values3"));
-      chart.draw(view, options);
+      chart.draw(view, appChartThemeOptions(options));
   }
   </script>
 
@@ -871,7 +768,7 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
     },
   };
       var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values4"));
-      chart.draw(view, options);
+      chart.draw(view, appChartThemeOptions(options));
   }
   </script>
 
@@ -919,7 +816,7 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
         legend: { position: "none" },
       };
       var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values5"));
-      chart.draw(view, options);
+      chart.draw(view, appChartThemeOptions(options));
   }
   </script>
 
@@ -966,7 +863,7 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
         legend: { position: "none" },
       };
       var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values6"));
-      chart.draw(view, options);
+      chart.draw(view, appChartThemeOptions(options));
   }
   </script>
 
@@ -1014,7 +911,7 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
         legend: { position: "none" },
       };
       var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values6X"));
-      chart.draw(view, options);
+      chart.draw(view, appChartThemeOptions(options));
   }
   </script>
 
@@ -1063,7 +960,7 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
         legend: { position: "none" },
       };
       var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values7"));
-      chart.draw(view, options);
+      chart.draw(view, appChartThemeOptions(options));
   }
   </script>
 
@@ -1124,7 +1021,7 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
     },
   };
       var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values8"));
-      chart.draw(view, options);
+      chart.draw(view, appChartThemeOptions(options));
   }
   </script>
 
@@ -1173,7 +1070,7 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
         legend: { position: "none" },
       };
       var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values9"));
-      chart.draw(view, options);
+      chart.draw(view, appChartThemeOptions(options));
   }
 </script>
 

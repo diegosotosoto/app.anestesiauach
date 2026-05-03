@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "Pérdida sanguínea admisible";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "Estimación de la pérdida sanguínea admisible antes de alcanzar un hematocrito objetivo. Ayuda a anticipar reposición de volumen, necesidad de controles seriados y eventual transfusión, siempre integrada al contexto clínico.";
@@ -17,7 +17,7 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=2">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=2"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
@@ -169,6 +169,7 @@ require("../head.php");
             }
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · HEMORRAGIA · TRANSFUSIÓN</div>
@@ -290,25 +291,27 @@ require("../head.php");
           </div>
         </div>
 
-        <div class="note-summary-box mb-3">
-          <div class="note-summary-box-title">Resumen</div>
-          <div id="summaryNarrative" class="note-summary-box-text">Ingresa peso, hematocrito inicial y hematocrito objetivo para calcular la pérdida sanguínea admisible.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item">
-              <div class="note-summary-k">Peso / volemia</div>
-              <div id="summaryWeight" class="note-summary-v">-</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Hematocritos</div>
-              <div id="summaryHct" class="note-summary-v">-</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Volemia total</div>
-              <div id="summaryBloodVolume" class="note-summary-v">-</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Pérdida actual</div>
-              <div id="summaryCurrentLoss" class="note-summary-v">No ingresada</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-card-title">Resumen</div>
+            <div id="summaryNarrative" class="note-summary-box-text mb-3">Ingresa peso, hematocrito inicial y hematocrito objetivo para calcular la pérdida sanguínea admisible.</div>
+            <div class="note-result-grid-2">
+              <div class="note-result-card">
+                <div class="note-result-card-label">Peso / volemia</div>
+                <div id="summaryWeight" class="note-result-card-value">-</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Hematocritos</div>
+                <div id="summaryHct" class="note-result-card-value">-</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Volemia total</div>
+                <div id="summaryBloodVolume" class="note-result-card-value">-</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Pérdida actual</div>
+                <div id="summaryCurrentLoss" class="note-result-card-value">No ingresada</div>
+              </div>
             </div>
           </div>
         </div>
@@ -346,12 +349,12 @@ require("../head.php");
         <div class="note-card mb-3">
           <div class="note-card-body">
             <div class="note-section-label">Conducta práctica</div>
-            <div id="actionList" class="psa-action-list">
-              <div class="psa-action-item">
-                <div class="psa-action-mark mid"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <div class="psa-action-copy">
-                  <div class="psa-action-title">Completa los datos esenciales</div>
-                  <p class="psa-action-note">La estimación requiere peso, volemia estimada, hematocrito inicial y hematocrito objetivo menor al inicial.</p>
+            <div id="actionList" class="note-warning-list">
+              <div class="note-warning-item">
+                <div class="note-warning-icon mid"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Completa los datos esenciales</div>
+                  <p class="note-warning-note">La estimación requiere peso, volemia estimada, hematocrito inicial y hematocrito objetivo menor al inicial.</p>
                 </div>
               </div>
             </div>
@@ -435,11 +438,11 @@ require("../head.php");
 
     box.innerHTML = items.map(function(item){
       const icon = item[0] === 'ok' ? 'fa-check' : (item[0] === 'mid' ? 'fa-triangle-exclamation' : 'fa-bolt');
-      return '<div class="psa-action-item">' +
-        '<div class="psa-action-mark ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
-        '<div class="psa-action-copy">' +
-          '<div class="psa-action-title">' + item[1] + '</div>' +
-          '<p class="psa-action-note">' + item[2] + '</p>' +
+      return '<div class="note-warning-item">' +
+        '<div class="note-warning-icon ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
+        '<div class="note-warning-copy">' +
+          '<div class="note-warning-title">' + item[1] + '</div>' +
+          '<p class="note-warning-note">' + item[2] + '</p>' +
         '</div>' +
       '</div>';
     }).join('');

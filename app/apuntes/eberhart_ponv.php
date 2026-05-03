@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "Score de Eberhart";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "El score de Eberhart permite estimar el riesgo de vómitos postoperatorios en niños y orientar una estrategia profiláctica rápida en base a 4 factores clínicos simples.";
@@ -16,7 +16,7 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=1">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=1"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
@@ -168,6 +168,7 @@ require("../head.php");
             .eberhart-binary-grid{grid-template-columns:1fr;}
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · NVPO PEDIÁTRICO</div>
@@ -221,16 +222,16 @@ require("../head.php");
               <div class="eberhart-question-title"><?php echo $q['title']; ?></div>
               <div class="eberhart-binary-grid">
                 <label>
-                  <input class="eberhart-option-input" type="radio" name="<?php echo $q['id']; ?>" value="1">
-                  <div class="eberhart-option">
-                    <div class="eberhart-option-mark"><i class="fa-solid fa-check"></i></div>
+                  <input class="eberhart-option-input apfel-option-input" type="radio" name="<?php echo $q['id']; ?>" value="1">
+                  <div class="eberhart-option apfel-option">
+                    <div class="eberhart-option-mark apfel-option-mark"><i class="fa-solid fa-check"></i></div>
                     <div class="eberhart-option-copy"><div class="eberhart-option-title">Sí</div></div>
                   </div>
                 </label>
                 <label>
-                  <input class="eberhart-option-input" type="radio" name="<?php echo $q['id']; ?>" value="0" checked>
-                  <div class="eberhart-option">
-                    <div class="eberhart-option-mark no"><i class="fa-solid fa-xmark"></i></div>
+                  <input class="eberhart-option-input apfel-option-input" type="radio" name="<?php echo $q['id']; ?>" value="0" checked>
+                  <div class="eberhart-option apfel-option">
+                    <div class="eberhart-option-mark apfel-option-mark no"><i class="fa-solid fa-xmark"></i></div>
                     <div class="eberhart-option-copy"><div class="eberhart-option-title">No</div></div>
                   </div>
                 </label>
@@ -240,14 +241,16 @@ require("../head.php");
           </div>
         </div>
 
-        <div class="note-summary-box mb-3">
-          <div class="note-summary-box-title">Resumen</div>
-          <div id="summaryNarrative" class="note-summary-box-text">0 factores de riesgo. Riesgo estimado bajo.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item"><div class="note-summary-k">Peso</div><div id="summaryWeight" class="note-summary-v">-</div></div>
-            <div class="note-summary-item"><div class="note-summary-k">Riesgo estimado</div><div id="summaryRisk" class="note-summary-v">9%</div></div>
-            <div class="note-summary-item"><div class="note-summary-k">Nivel</div><div id="summaryLevel" class="note-summary-v">Bajo</div></div>
-            <div class="note-summary-item"><div class="note-summary-k">Estrategia</div><div id="summaryStrategy" class="note-summary-v">Observación / sin profilaxis rutinaria</div></div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-card-title">Resumen</div>
+            <div id="summaryNarrative" class="note-summary-box-text mb-3">0 factores de riesgo. Riesgo estimado bajo.</div>
+            <div class="note-result-grid-2">
+              <div class="note-result-card"><div class="note-result-card-label">Peso</div><div id="summaryWeight" class="note-result-card-value">-</div></div>
+              <div class="note-result-card"><div class="note-result-card-label">Riesgo estimado</div><div id="summaryRisk" class="note-result-card-value">9%</div></div>
+              <div class="note-result-card"><div class="note-result-card-label">Nivel</div><div id="summaryLevel" class="note-result-card-value">Bajo</div></div>
+              <div class="note-result-card"><div class="note-result-card-label">Estrategia</div><div id="summaryStrategy" class="note-result-card-value">Observación / sin profilaxis rutinaria</div></div>
+            </div>
           </div>
         </div>
 

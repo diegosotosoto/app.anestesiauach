@@ -19,54 +19,51 @@ require("valida_pag.php");
 
 
 //Variables sin conexion
-	$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
-	$titulo_navbar="<div class='text-white'>Pacientes Dolor HBV</div>";
-	$boton_navbar="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:50px; height:40px; --bs-border-opacity: .1;' href='nuevo_paciente.php'><i class='fa fa-plus fa-lg' style='color:white' aria-hidden='true'></i></a>";
+		$boton_toggler="<a class='d-sm-block d-sm-none admin-back-btn' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+		$titulo_navbar="<div>Pacientes Dolor HBV</div>";
+		$boton_navbar="<a class='d-sm-block d-sm-none app-nav-action' href='nuevo_paciente.php' aria-label='Nuevo paciente'><i class='fa fa-plus fa-lg' aria-hidden='true'></i></a>";
 
 
 //Carga Head de la página
 require("head.php");
 
 ?>
-<div class="col col-sm-9 col-xl-9 pb-5"><!- Columna principal (derecha) responsive->
-<ul class="list-group">
+	<div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
+		<div class="apunte-surface">
+			<div class="container-fluid px-0 px-md-2">
+				<div class="pain-shell">
 
 
-	<?php
-		//TITULO DE LA PAGINA
-		echo "<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'><br><h5 class='mb-1 fw-bold'> Manejo de Dolor Agudo</h5>";
+		<section class="app-hero app-hero-blue">
+			<div class="app-hero-row">
+				<div class="app-hero-body">
+					<div class="app-hero-kicker">APP clínica • dolor agudo</div>
+					<h2>Manejo de Dolor Agudo</h2>
+					<p>Pacientes activos para seguimiento clínico y registro diario.</p>
+				</div>
+			</div>
+		</section>
 
-
-		//BOTON A LA IZQUIERDA DEL TITULO
-		echo "<div class='pt-1 ps-3 me-3 d-flex float-start'>
-		<a class='btn pull-left btn-primary shadow-sm border-light d-none d-sm-block' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>
-		</div>";
-
-		//BOTÓN A LA DERECHA DEL TITULO
-		echo "<span class='float-end'>
-		<div class='pt-1 ps-3 me-3 d-flex justify-content-end'>
-		<a class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block' style='width:50px; height:40px; --bs-border-opacity: .1;' href='nuevo_paciente.php'><i class='fa fa-plus fa-lg' style='color:white' aria-hidden='true'></i></a>
-		</div>
-		</span>";
-
-		//SUBTITULO
-		echo "<div class='mb-1'>HBV</div>";
-		echo "<div class='mb-1'></div></li>";
-	?>
-
-
-
-		<div class="list-group py-3" id="link_wrapper">
-		<!-  CARGA CONTENIDO DE PACIENTES  ->
+		<div class="pain-actions d-none d-sm-flex justify-content-between">
+			<a class="admin-back-btn" href="index.php"><i class="fa fa-chevron-left"></i>Atrás</a>
+			<a class="btn btn-app-primary pain-action-btn" href="nuevo_paciente.php" aria-label="Nuevo paciente"><i class="fa fa-plus fa-lg" aria-hidden="true"></i></a>
 		</div>
 
 
-		<div class="pt-3 ps-3 me-3 d-flex justify-content-end">
-		<a class='btn pull-right btn-primary shadow-sm border-light d-none d-sm-block' style='; --bs-border-opacity: .1;' href='nuevo_paciente.php'><i class='fa fa-plus fa-lg pe-2' style='color:white' aria-hidden='true'></i>Nuevo Paciente</a>
-		</div>
 
-</ul>
-</div>
+			<div class="pain-list-host py-3" id="link_wrapper">
+			<!-  CARGA CONTENIDO DE PACIENTES  ->
+			</div>
+
+
+			<div class="pain-actions">
+			<a class='btn btn-app-primary pain-action-btn' href='nuevo_paciente.php'><i class='fa fa-plus fa-lg' aria-hidden='true'></i>Nuevo Paciente</a>
+			</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
 
 
 
@@ -106,4 +103,3 @@ setInterval(function(){
 
 window.onload = loadXMLDoc;
 </script>
-

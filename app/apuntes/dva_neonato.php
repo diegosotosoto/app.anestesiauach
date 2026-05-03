@@ -2,9 +2,9 @@
 $titulo_pagina = "DVA neonato";
 $navbar_titulo = "Apuntes";
 
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "Calculadora docente de diluciones de drogas vasoactivas en neonatología. Usa un esquema de preparación en jeringa de 50 mL para que 1 mL/h corresponda a una dosis fija por kg/min según la droga seleccionada.";
@@ -17,7 +17,7 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=1">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=1"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
@@ -28,18 +28,18 @@ require("../head.php");
         <style>
           .dva-shell{max-width:980px;margin:0 auto;}
           .dva-drug-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;}
-          .dva-drug-grid .note-option{
+          .dva-drug-grid .drug-card{
             width:100%;
             min-height:92px;
             align-items:flex-start;
             justify-content:flex-start;
             text-align:left;
-            gap:.35rem;
-            padding:.8rem .85rem;
           }
-          .dva-drug-grid .note-option i{margin-bottom:.1rem;}
-          .dva-drug-grid .note-option .drug-line{font-size:.96rem;font-weight:800;line-height:1.18;color:var(--note-text);}
-          .dva-drug-grid .note-option .drug-sub{font-size:.78rem;line-height:1.28;color:var(--note-muted);}
+          .dva-drug-grid .note-check:checked + .drug-card{
+            box-shadow:0 0 0 3px rgba(47,128,237,.3), 0 4px 12px rgba(15,23,42,.15);
+            transform:translateY(-1px);
+            border:4px solid var(--note-selected);
+          }
 
           .dva-result-main{
             background:linear-gradient(180deg,var(--note-brand-soft) 0%, #f7faff 100%);
@@ -94,36 +94,18 @@ require("../head.php");
             line-height:1.34;
             color:var(--note-muted);
           }
-          .dva-warning-item{
-            display:flex;
-            align-items:flex-start;
-            gap:.8rem;
-            border:1px solid #ead38a;
+          .dva-interpretation-box{
+            background:var(--note-card);
+            border:1px solid var(--note-line);
             border-radius:1rem;
-            background:#fff9e8;
-            padding:.95rem 1rem;
+            padding:1rem;
           }
-          .dva-warning-mark{
-            flex:0 0 auto;
-            width:34px;
-            height:34px;
-            border-radius:999px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            background:#f4c542;
-            color:#fff;
-            margin-top:.08rem;
-          }
-          .dva-warning-copy{min-width:0;flex:1;}
-          .dva-warning-title{font-size:1rem;font-weight:800;line-height:1.22;color:var(--note-text);margin-bottom:.15rem;text-align:center;}
-          .dva-warning-note{margin:0;font-size:.9rem;line-height:1.4;color:var(--note-muted);text-align:center;}
-
           @media (max-width:768px){
             .dva-drug-grid,.dva-help-grid{grid-template-columns:1fr;}
             .dva-result-main .v{font-size:1.28rem;}
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · NEONATOLOGÍA</div>
@@ -177,67 +159,74 @@ require("../head.php");
             <div class="dva-drug-grid">
               <div>
                 <input class="note-check vaso-trigger" type="radio" name="vaso" id="vaso_ne" value="ne" checked>
-                <label class="note-option drug-vasoactive" for="vaso_ne">
-                  <i class="fa-solid fa-arrow-up-right-dots"></i>
-                  <div class="drug-line">Noradrenalina</div>
-                  <div class="drug-sub">4 mg / 4 mL · Objetivo 0,1 µg/kg/min por 1 mL/h</div>
+                <label class="drug-card drug-vasoactive" for="vaso_ne">
+                  <div class="drug-label-content">
+                    <div class="drug-label-title">Noradrenalina</div>
+                    <div class="drug-label-subtitle">4 mg / 4 mL · Objetivo 0,1 µg/kg/min por 1 mL/h</div>
+                  </div>
                 </label>
               </div>
               <div>
                 <input class="note-check vaso-trigger" type="radio" name="vaso" id="vaso_epi" value="epi">
-                <label class="note-option drug-vasoactive" for="vaso_epi">
-                  <i class="fa-solid fa-heart-circle-bolt"></i>
-                  <div class="drug-line">Adrenalina</div>
-                  <div class="drug-sub">1 mg / mL · Objetivo 0,1 µg/kg/min por 1 mL/h</div>
+                <label class="drug-card drug-vasoactive" for="vaso_epi">
+                  <div class="drug-label-content">
+                    <div class="drug-label-title">Adrenalina</div>
+                    <div class="drug-label-subtitle">1 mg / mL · Objetivo 0,1 µg/kg/min por 1 mL/h</div>
+                  </div>
                 </label>
               </div>
               <div>
                 <input class="note-check vaso-trigger" type="radio" name="vaso" id="vaso_dopa" value="dopa">
-                <label class="note-option drug-vasoactive" for="vaso_dopa">
-                  <i class="fa-solid fa-bolt"></i>
-                  <div class="drug-line">Dopamina</div>
-                  <div class="drug-sub">200 mg / 5 mL · Objetivo 6 µg/kg/min por 1 mL/h</div>
+                <label class="drug-card drug-vasoactive" for="vaso_dopa">
+                  <div class="drug-label-content">
+                    <div class="drug-label-title">Dopamina</div>
+                    <div class="drug-label-subtitle">200 mg / 5 mL · Objetivo 6 µg/kg/min por 1 mL/h</div>
+                  </div>
                 </label>
               </div>
               <div>
                 <input class="note-check vaso-trigger" type="radio" name="vaso" id="vaso_dobu" value="dobu">
-                <label class="note-option drug-vasoactive" for="vaso_dobu">
-                  <i class="fa-solid fa-wave-square"></i>
-                  <div class="drug-line">Dobutamina</div>
-                  <div class="drug-sub">250 mg / 5 mL · Objetivo 2 µg/kg/min por 1 mL/h</div>
+                <label class="drug-card drug-vasoactive" for="vaso_dobu">
+                  <div class="drug-label-content">
+                    <div class="drug-label-title">Dobutamina</div>
+                    <div class="drug-label-subtitle">250 mg / 5 mL · Objetivo 2 µg/kg/min por 1 mL/h</div>
+                  </div>
                 </label>
               </div>
               <div>
                 <input class="note-check vaso-trigger" type="radio" name="vaso" id="vaso_milri" value="milri">
-                <label class="note-option drug-vasoactive" for="vaso_milri">
-                  <i class="fa-solid fa-droplet"></i>
-                  <div class="drug-line">Milrinona</div>
-                  <div class="drug-sub">10 mg / 10 mL · Objetivo 1 µg/kg/min por 1 mL/h</div>
+                <label class="drug-card drug-vasoactive" for="vaso_milri">
+                  <div class="drug-label-content">
+                    <div class="drug-label-title">Milrinona</div>
+                    <div class="drug-label-subtitle">10 mg / 10 mL · Objetivo 1 µg/kg/min por 1 mL/h</div>
+                  </div>
                 </label>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="note-summary-box mb-3">
-          <div class="note-summary-box-title">Resumen</div>
-          <div id="summaryNarrative" class="note-summary-box-text">Ingresa el peso y selecciona una droga para ver la preparación sugerida.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item">
-              <div class="note-summary-k">Peso usado</div>
-              <div id="summaryPeso" class="note-summary-v">-</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Droga</div>
-              <div id="summaryDroga" class="note-summary-v">Noradrenalina</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Presentación</div>
-              <div id="summaryPresentacion" class="note-summary-v">4 mg / 4 mL</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Objetivo a 1 mL/h</div>
-              <div id="summaryObjetivo" class="note-summary-v">0,1 µg/kg/min</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-card-title">Resumen</div>
+            <div id="summaryNarrative" class="note-summary-box-text mb-3">Ingresa el peso y selecciona una droga para ver la preparación sugerida.</div>
+            <div class="note-result-grid-2">
+              <div class="note-result-card">
+                <div class="note-result-card-label">Peso usado</div>
+                <div id="summaryPeso" class="note-result-card-value">-</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Droga</div>
+                <div id="summaryDroga" class="note-result-card-value">Noradrenalina</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Presentación</div>
+                <div id="summaryPresentacion" class="note-result-card-value">4 mg / 4 mL</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Objetivo a 1 mL/h</div>
+                <div id="summaryObjetivo" class="note-result-card-value">0,1 µg/kg/min</div>
+              </div>
             </div>
           </div>
         </div>
@@ -274,7 +263,7 @@ require("../head.php");
           </div>
         </div>
 
-        <div class="note-mint mb-3">
+        <div class="dva-interpretation-box mb-3">
           <div class="note-card-title text-center">Interpretación</div>
           <p id="interpretacionTexto" class="mb-0 text-center">Verás una preparación pensada para que 1 mL/h entregue una dosis fija orientativa según peso y droga.</p>
         </div>
@@ -287,26 +276,26 @@ require("../head.php");
             </div>
           </div>
           <div class="note-checklist-section-body" style="display:block;border-top:none;padding-top:0;">
-            <div class="note-checklist-list">
-              <div class="dva-warning-item">
-                <div class="dva-warning-mark"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <div class="dva-warning-copy">
-                  <div class="dva-warning-title">Presentación real de la ampolla</div>
-                  <p class="dva-warning-note">No asumas la concentración por memoria. Verifica etiqueta física, volumen y miligramos totales.</p>
+            <div class="note-warning-list">
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-check"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Presentación real de la ampolla</div>
+                  <p class="note-warning-note">No asumas la concentración por memoria. Verifica etiqueta física, volumen y miligramos totales.</p>
                 </div>
               </div>
-              <div class="dva-warning-item">
-                <div class="dva-warning-mark"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <div class="dva-warning-copy">
-                  <div class="dva-warning-title">Preparación individualizada por peso</div>
-                  <p class="dva-warning-note">En este esquema, la concentración final cambia con el peso. No reutilices una jeringa preparada para otro paciente.</p>
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-check"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Preparación individualizada por peso</div>
+                  <p class="note-warning-note">En este esquema, la concentración final cambia con el peso. No reutilices una jeringa preparada para otro paciente.</p>
                 </div>
               </div>
-              <div class="dva-warning-item">
-                <div class="dva-warning-mark"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <div class="dva-warning-copy">
-                  <div class="dva-warning-title">Concordancia entre jeringa, bomba y vía</div>
-                  <p class="dva-warning-note">Una preparación correcta puede volverse insegura si la bomba, la vía o la velocidad programada no corresponden.</p>
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-check"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Concordancia entre jeringa, bomba y vía</div>
+                  <p class="note-warning-note">Una preparación correcta puede volverse insegura si la bomba, la vía o la velocidad programada no corresponden.</p>
                 </div>
               </div>
             </div>

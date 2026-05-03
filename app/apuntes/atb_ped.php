@@ -12,13 +12,13 @@ $referencias = array(
 $icono_apunte = "<i class='fa-solid fa-shield-virus pe-3 pt-2'></i>";
 $titulo_apunte = "Profilaxis antibiótica pediátrica";
 
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=20260416-2">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 
 <?php
 $abx_rows = array(
@@ -43,17 +43,12 @@ $abx_rows = array(
         <style>
           .abx-drug-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem;}
           .abx-option{min-width:0;display:flex;}
-          .abx-option .note-option{width:100%;min-height:84px;align-items:flex-start;justify-content:flex-start;text-align:left;gap:.35rem;padding:.78rem .82rem;}
-          .abx-option .note-option i{margin-bottom:.08rem;}
-          .abx-option .note-option small{line-height:1.15;}
-
-          .abx-summary-box .note-summary-box-text{margin-bottom:.85rem;}
-          .abx-summary-box .note-summary-grid-2 .note-summary-item{padding:.72rem .85rem;min-height:0;}
-          .abx-summary-box .note-summary-grid-2 .note-summary-k{margin-bottom:.18rem;}
-          .abx-summary-box .note-summary-grid-2 .note-summary-v{line-height:1.15;}
+          .abx-option .drug-card{width:100%;min-height:68px;align-items:flex-start;justify-content:flex-start;text-align:left;padding:.55rem .65rem;}
+          .abx-option .note-check:checked + .drug-card{box-shadow:0 0 0 3px rgba(47,128,237,.14), 0 8px 18px rgba(15,23,42,.10);border:4px solid var(--note-selected);transform:translateY(-1px);}
 
           .abx-result-emphasis{font-size:2rem;font-weight:900;color:var(--note-brand);line-height:1;}
-          .abx-table-card{background:#fff;border:1px solid var(--note-line);border-radius:1rem;padding:1rem;}
+          .abx-reference-box{background:var(--note-card);border:1px solid var(--note-line);border-radius:1rem;padding:1rem;}
+          .abx-table-card{background:var(--note-card);border:1px solid var(--note-line);border-radius:1rem;padding:1rem;}
           .abx-table{font-size:.92rem;margin-bottom:0;}
           .abx-table th{background:#f8fafc;font-size:.84rem;color:#475467;white-space:nowrap;}
           .abx-table td,.abx-table th{vertical-align:top;}
@@ -64,6 +59,7 @@ $abx_rows = array(
             .abx-drug-grid{grid-template-columns:1fr;}
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero">
           <div class="note-hero-kicker">APP CLÍNICA · ANTIBIÓTICOS EN PABELLÓN</div>
@@ -112,43 +108,43 @@ $abx_rows = array(
               <div class="abx-drug-grid note-drug-grid">
                 <div class="abx-option">
                   <input class="note-check abx-check" type="radio" name="abx" id="abx_cefazolina" value="cefazolina" checked>
-                  <label class="note-option drug-other" for="abx_cefazolina"><i class="fa-solid fa-vial-circle-check"></i>Cefazolina<small>30 mg/kg · redosis 4 h</small></label>
+                  <label class="drug-card drug-other" for="abx_cefazolina"><span class="drug-label-content"><span class="drug-label-title">Cefazolina</span><span class="drug-label-subtitle">30 mg/kg · redosis 4 h</span></span></label>
                 </div>
                 <div class="abx-option">
                   <input class="note-check abx-check" type="radio" name="abx" id="abx_clinda" value="clindamicina">
-                  <label class="note-option drug-other" for="abx_clinda"><i class="fa-solid fa-vial-circle-check"></i>Clindamicina<small>10 mg/kg · redosis 6 h</small></label>
+                  <label class="drug-card drug-other" for="abx_clinda"><span class="drug-label-content"><span class="drug-label-title">Clindamicina</span><span class="drug-label-subtitle">10 mg/kg · redosis 6 h</span></span></label>
                 </div>
                 <div class="abx-option">
                   <input class="note-check abx-check" type="radio" name="abx" id="abx_vanco" value="vancomicina">
-                  <label class="note-option drug-other" for="abx_vanco"><i class="fa-solid fa-vial-circle-check"></i>Vancomicina<small>15 mg/kg · sin redosis estándar</small></label>
+                  <label class="drug-card drug-other" for="abx_vanco"><span class="drug-label-content"><span class="drug-label-title">Vancomicina</span><span class="drug-label-subtitle">15 mg/kg · sin redosis estándar</span></span></label>
                 </div>
                 <div class="abx-option">
                   <input class="note-check abx-check" type="radio" name="abx" id="abx_genta" value="gentamicina">
-                  <label class="note-option drug-other" for="abx_genta"><i class="fa-solid fa-vial-circle-check"></i>Gentamicina<small>2,5 mg/kg · dosis única</small></label>
+                  <label class="drug-card drug-other" for="abx_genta"><span class="drug-label-content"><span class="drug-label-title">Gentamicina</span><span class="drug-label-subtitle">2,5 mg/kg · dosis única</span></span></label>
                 </div>
                 <div class="abx-option">
                   <input class="note-check abx-check" type="radio" name="abx" id="abx_ampicilina" value="ampicilina">
-                  <label class="note-option drug-other" for="abx_ampicilina"><i class="fa-solid fa-vial-circle-check"></i>Ampicilina<small>50 mg/kg · redosis 2 h</small></label>
+                  <label class="drug-card drug-other" for="abx_ampicilina"><span class="drug-label-content"><span class="drug-label-title">Ampicilina</span><span class="drug-label-subtitle">50 mg/kg · redosis 2 h</span></span></label>
                 </div>
                 <div class="abx-option">
                   <input class="note-check abx-check" type="radio" name="abx" id="abx_ampisulb" value="ampicilina-sulbactam">
-                  <label class="note-option drug-other" for="abx_ampisulb"><i class="fa-solid fa-vial-circle-check"></i>Ampi-Sulb<small>50 mg/kg (ampicilina) · redosis 2 h</small></label>
+                  <label class="drug-card drug-other" for="abx_ampisulb"><span class="drug-label-content"><span class="drug-label-title">Ampi-Sulb</span><span class="drug-label-subtitle">50 mg/kg (ampicilina) · redosis 2 h</span></span></label>
                 </div>
                 <div class="abx-option">
                   <input class="note-check abx-check" type="radio" name="abx" id="abx_cefuroximo" value="cefuroximo">
-                  <label class="note-option drug-other" for="abx_cefuroximo"><i class="fa-solid fa-vial-circle-check"></i>Cefuroximo<small>50 mg/kg · redosis 4 h</small></label>
+                  <label class="drug-card drug-other" for="abx_cefuroximo"><span class="drug-label-content"><span class="drug-label-title">Cefuroximo</span><span class="drug-label-subtitle">50 mg/kg · redosis 4 h</span></span></label>
                 </div>
                 <div class="abx-option">
                   <input class="note-check abx-check" type="radio" name="abx" id="abx_cefoxitina" value="cefoxitina">
-                  <label class="note-option drug-other" for="abx_cefoxitina"><i class="fa-solid fa-vial-circle-check"></i>Cefoxitina<small>40 mg/kg · redosis 2 h</small></label>
+                  <label class="drug-card drug-other" for="abx_cefoxitina"><span class="drug-label-content"><span class="drug-label-title">Cefoxitina</span><span class="drug-label-subtitle">40 mg/kg · redosis 2 h</span></span></label>
                 </div>
                 <div class="abx-option">
                   <input class="note-check abx-check" type="radio" name="abx" id="abx_metronidazol" value="metronidazol">
-                  <label class="note-option drug-other" for="abx_metronidazol"><i class="fa-solid fa-vial-circle-check"></i>Metronidazol<small>15 mg/kg · sin redosis estándar</small></label>
+                  <label class="drug-card drug-other" for="abx_metronidazol"><span class="drug-label-content"><span class="drug-label-title">Metronidazol</span><span class="drug-label-subtitle">15 mg/kg · sin redosis estándar</span></span></label>
                 </div>
                 <div class="abx-option">
                   <input class="note-check abx-check" type="radio" name="abx" id="abx_ptz" value="piperacilina-tazobactam">
-                  <label class="note-option drug-other" for="abx_ptz"><i class="fa-solid fa-vial-circle-check"></i>Pip/Tazo<small>80–100 mg/kg (piperacilina) · redosis 2 h</small></label>
+                  <label class="drug-card drug-other" for="abx_ptz"><span class="drug-label-content"><span class="drug-label-title">Pip/Tazo</span><span class="drug-label-subtitle">80–100 mg/kg (piperacilina) · redosis 2 h</span></span></label>
                 </div>
               </div>
             </div>
@@ -157,25 +153,27 @@ $abx_rows = array(
               <strong>Advertencia de validez:</strong> <span id="validityWarningText"></span>
             </div>
 
-            <div class="note-summary-box abx-summary-box mb-3">
-              <div class="note-summary-box-title">Resumen</div>
-              <div id="summaryNarrative" class="note-summary-box-text">Ingresa el peso y selecciona un antibiótico para ver el resumen clínico rápido.</div>
-              <div class="note-summary-grid-2">
-                <div class="note-summary-item">
-                  <div class="note-summary-k">Peso usado</div>
-                  <div id="summaryPeso" class="note-summary-v">No ingresado</div>
-                </div>
-                <div class="note-summary-item">
-                  <div class="note-summary-k">Antibiótico</div>
-                  <div id="summaryAbx" class="note-summary-v">Cefazolina</div>
-                </div>
-                <div class="note-summary-item">
-                  <div class="note-summary-k">Regla</div>
-                  <div id="summaryRule" class="note-summary-v">30 mg/kg</div>
-                </div>
-                <div class="note-summary-item">
-                  <div class="note-summary-k">Redosis</div>
-                  <div id="summaryRedose" class="note-summary-v">4 h</div>
+            <div class="note-card mb-3">
+              <div class="note-card-body">
+                <div class="note-card-title">Resumen</div>
+                <div id="summaryNarrative" class="note-summary-box-text mb-3">Ingresa el peso y selecciona un antibiótico para ver el resumen clínico rápido.</div>
+                <div class="note-result-grid-2">
+                  <div class="note-result-card">
+                    <div class="note-result-card-label">Peso usado</div>
+                    <div id="summaryPeso" class="note-result-card-value">No ingresado</div>
+                  </div>
+                  <div class="note-result-card">
+                    <div class="note-result-card-label">Antibiótico</div>
+                    <div id="summaryAbx" class="note-result-card-value">Cefazolina</div>
+                  </div>
+                  <div class="note-result-card">
+                    <div class="note-result-card-label">Regla</div>
+                    <div id="summaryRule" class="note-result-card-value">30 mg/kg</div>
+                  </div>
+                  <div class="note-result-card">
+                    <div class="note-result-card-label">Redosis</div>
+                    <div id="summaryRedose" class="note-result-card-value">4 h</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -216,7 +214,7 @@ $abx_rows = array(
         <div class="section-card">
           <div class="p-3 p-md-4">
             <div class="section-title mb-3">Tabla de referencia rápida</div>
-            <div class="note-mint mb-3">
+            <div class="abx-reference-box mb-3">
               <strong>Lectura rápida:</strong> la dosis pediátrica se expresa en <strong>mg/kg</strong> y, cuando corresponde, <strong>no debe exceder la dosis máxima adulta</strong>.
             </div>
             <div class="abx-table-card">

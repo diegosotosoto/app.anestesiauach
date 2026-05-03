@@ -16,13 +16,13 @@ $referencias = array(
 $icono_apunte = "<i class='fa-solid fa-truck-medical pe-3 pt-2'></i>";
 $titulo_apunte = "Dosis de Emergencia Pediátrica";
 
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=1">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=1"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
@@ -56,20 +56,6 @@ require("../head.php");
             margin:0 auto;
           }
 
-          .note-hero .note-hero-badge{
-            display:inline-flex;
-            align-items:center;
-            justify-content:center;
-            min-width:86px;
-            height:34px;
-            border-radius:.75rem;
-            background:rgba(255,255,255,.16);
-            color:#fff;
-            font-weight:700;
-            font-size:.82rem;
-            border:1px solid rgba(255,255,255,.16);
-          }
-
           .section-card{
             background:var(--surface);
             border:1px solid rgba(214,223,237,.7);
@@ -90,11 +76,6 @@ require("../head.php");
             color:var(--muted);
             margin-bottom:.85rem;
             font-weight:700;
-          }
-
-          .section-subtle{
-            font-size:.88rem;
-            color:var(--muted);
           }
 
           .info-toggle-btn{
@@ -158,11 +139,6 @@ require("../head.php");
             border-color:#7d98df;
           }
 
-          .unit-btn-group{
-            display:flex;
-            gap:.45rem;
-          }
-
           .unit-btn{
             width:46px;
             height:42px;
@@ -185,42 +161,6 @@ require("../head.php");
             background:#fff3d8;
             color:#9a5a00;
             border-color:#e3be69;
-          }
-
-          .summary-grid{
-            display:grid;
-            grid-template-columns:repeat(4,1fr);
-            gap:.75rem;
-          }
-
-          .summary-chip{
-            background:linear-gradient(180deg,#ffffff,#f8fbff);
-            border:1px solid var(--line);
-            border-radius:1rem;
-            padding:.85rem .9rem;
-            min-height:84px;
-          }
-
-          .summary-k{
-            font-size:.74rem;
-            letter-spacing:.07em;
-            text-transform:uppercase;
-            color:var(--muted);
-            margin-bottom:.35rem;
-            font-weight:700;
-          }
-
-          .summary-v{
-            font-size:1.05rem;
-            font-weight:800;
-            color:var(--text);
-            line-height:1.15;
-          }
-
-          .summary-s{
-            font-size:.8rem;
-            color:var(--muted);
-            margin-top:.2rem;
           }
 
           .results-grid{
@@ -247,7 +187,7 @@ require("../head.php");
             justify-content:space-between;
             gap:.8rem;
             padding:.72rem .8rem;
-            background:#fff;
+            background:transparent;
             border:1px solid #e6edf7;
             border-radius:.85rem;
             margin-bottom:.6rem;
@@ -259,20 +199,6 @@ require("../head.php");
 
           .result-left{
             min-width:0;
-          }
-
-          .result-name{
-            font-weight:700;
-            color:var(--text);
-            line-height:1.15;
-          }
-
-          .result-name-tag{
-            display:inline-block;
-            padding:.18rem .5rem;
-            border-radius:.55rem;
-            border:1px solid rgba(31,42,55,.08);
-            line-height:1.15;
           }
 
           .result-note{
@@ -304,40 +230,6 @@ require("../head.php");
             color:#22324d;
           }
 
-          .tip-list{
-            display:grid;
-            grid-template-columns:repeat(3,1fr);
-            gap:.8rem;
-          }
-
-          .tip-card{
-            border:1px solid var(--line);
-            border-radius:1rem;
-            background:#fff;
-            padding:.9rem;
-            height:100%;
-          }
-
-          .tip-title{
-            font-size:.82rem;
-            text-transform:uppercase;
-            letter-spacing:.06em;
-            color:var(--muted);
-            margin-bottom:.45rem;
-            font-weight:700;
-          }
-
-          .tip-card ul{
-            padding-left:1rem;
-            margin-bottom:0;
-          }
-
-          .tip-card li{
-            margin-bottom:.35rem;
-            color:#334155;
-            font-size:.88rem;
-          }
-
           .print-bar{
             display:flex;
             justify-content:center;
@@ -363,43 +255,18 @@ require("../head.php");
             font-size:.83rem;
           }
 
-          @media (max-width: 992px){
-            .summary-grid{
-              grid-template-columns:repeat(2,1fr);
-            }
-            .tip-list{
-              grid-template-columns:1fr;
-            }
-          }
-
           @media (max-width: 768px){
             .results-grid{
-              grid-template-columns:1fr;
-            }
-          }
-
-          @media (max-width: 576px){
-            .summary-grid{
-              grid-template-columns:1fr 1fr;
-            }
-            .hero-badge{
-              min-width:auto;
-            }
-            .info-card-head{
-              align-items:flex-start;
+              grid-template-columns:repeat(2,1fr);
             }
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero mb-3">
-          <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
-            <div>
-              <div class="note-hero-kicker">APP CLÍNICA · CÁLCULO AUTOMÁTICO</div>
-              <h2>Dosis de Emergencia Pediátrica</h2>
-              <div class="note-hero-subtitle">Dosis útiles, parámetros fisiológicos orientativos y exportación directa a PDF para impresión o archivo.</div>
-            </div>
-            <div class="note-hero-badge">Pediatría</div>
-          </div>
+          <div class="note-hero-kicker">APP CLÍNICA · CÁLCULO AUTOMÁTICO</div>
+          <h2>Dosis de Emergencia Pediátrica</h2>
+          <div class="note-hero-subtitle">Dosis útiles, parámetros fisiológicos orientativos y exportación directa a PDF para impresión o archivo.</div>
         </div>
 
         <div class="info-box mb-3">
@@ -428,7 +295,7 @@ require("../head.php");
           </div>
         </div>
 
-        <form id="formPDF" method="post" action="https://anestesiauach.cl/pdf/emergencia_ped_pdf.php" target="_blank">
+        <form id="formPDF" method="post" action="../pdf/emergencia_ped_pdf.php" target="_blank" novalidate>
 
           <div class="section-card">
             <div class="section-inner">
@@ -458,7 +325,7 @@ require("../head.php");
                 <div class="col-12 col-md-4">
                   <div class="control-box">
                     <label class="field-label">Edad</label>
-                    <div class="row g-2 align-items-stretch">
+                    <div class="row g-2">
                       <div class="col-8">
                         <div class="input-group" id="edadInput">
                           <input type="text" inputmode="decimal" id="edad" name="edad" class="form-control input-clean calc-trigger" placeholder="Edad">
@@ -467,7 +334,7 @@ require("../head.php");
                         </div>
                       </div>
                       <div class="col-4">
-                        <div class="unit-btn-group justify-content-end">
+                        <div class="justify-content-end">
                           <button class="unit-btn active-years" id="btnYears" type="button" title="Edad en años">A</button>
                           <button class="unit-btn" id="btnMonths" type="button" title="Edad en meses">M</button>
                         </div>
@@ -484,22 +351,22 @@ require("../head.php");
 <div class="note-summary-box mb-3">
   <div class="note-summary-box-title">Resumen del paciente</div>
   <div id="summaryNarrative" class="note-summary-box-text">Ingresa peso, talla y edad para resumir el contexto del paciente.</div>
-  <div class="note-summary-grid-2">
-    <div class="note-summary-item">
-      <div class="note-summary-k">Peso</div>
-      <div id="summaryWeight" class="note-summary-v">-</div>
+  <div class="note-result-grid-2 mt-2">
+    <div class="note-result-card">
+      <div class="note-result-card-label">Peso</div>
+      <div id="summaryWeight" class="note-result-card-value">-</div>
     </div>
-    <div class="note-summary-item">
-      <div class="note-summary-k">Edad</div>
-      <div id="summaryAge" class="note-summary-v">-</div>
+    <div class="note-result-card">
+      <div class="note-result-card-label">Edad</div>
+      <div id="summaryAge" class="note-result-card-value">-</div>
     </div>
-    <div class="note-summary-item">
-      <div class="note-summary-k">Categoría</div>
-      <div id="summaryCategory" class="note-summary-v">-</div>
+    <div class="note-result-card">
+      <div class="note-result-card-label">Categoría</div>
+      <div id="summaryCategory" class="note-result-card-value">-</div>
     </div>
-    <div class="note-summary-item">
-      <div class="note-summary-k">Contexto</div>
-      <div id="summaryContext" class="note-summary-v">-</div>
+    <div class="note-result-card">
+      <div class="note-result-card-label">Contexto</div>
+      <div id="summaryContext" class="note-result-card-value">-</div>
     </div>
   </div>
 </div>
@@ -508,7 +375,7 @@ require("../head.php");
             <div class="section-inner">
               <div class="section-title">Exportar</div>
                 <div class="print-bar justify-content-center">
-                  <button type="button" class="btn btn-primary shadow-sm btn-pdf" onclick="envioFormPDF()">
+                  <button type="submit" class="btn btn-app-primary btn-pdf">
                     <i class="fa-solid fa-file-pdf pe-2"></i>Imprimir PDF
                   </button>
                 </div>
@@ -619,23 +486,23 @@ require("../head.php");
 
               <div class="results-grid">
                 <div class="stack-card danger">
-                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-atropine">Atropina</div><div class="result-note">Bradicardia sintomática</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="atropina" readonly><span class="input-group-text">mg</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-other">Bicarbonato 8%</div><div class="result-note">No usar de rutina en PCR</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="bicarbonato" readonly><span class="input-group-text">mL</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-vasoactive">Epinefrina (PCR)</div><div class="result-note">Verificar concentración antes de administrar</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="epinefrina" readonly><span class="input-group-text">mg</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-other">Calcio cloruro 10%</div><div class="result-note">Preferir vía segura; mayor irritación tisular</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="calcioCl" readonly><span class="input-group-text">mg</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-other">Calcio gluconato 10%</div><div class="result-note">Menos irritante que CaCl</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="calcioGl" readonly><span class="input-group-text">mg</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-other">Adenosina</div><div class="result-note">Bolo rápido + flush inmediato</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="adenosina" readonly><span class="input-group-text">mg</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-other">Amiodarona</div><div class="result-note">Taquiarritmias seleccionadas</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="amiodarona" readonly><span class="input-group-text">mg</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-local">Lidocaína</div><div class="result-note">Alternativa según contexto</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="lidocaina" readonly><span class="input-group-text">mg</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="drug-label drug-atropine"><div class="drug-label-content"><div class="drug-label-title">Atropina</div></div></div><div class="result-note">Bradicardia sintomática</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="atropina" readonly><span class="input-group-text">mg</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="drug-label drug-other"><div class="drug-label-content"><div class="drug-label-title">Bicarbonato 8%</div></div></div><div class="result-note">No usar de rutina en PCR</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="bicarbonato" readonly><span class="input-group-text">mL</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="drug-label drug-vasoactive"><div class="drug-label-content"><div class="drug-label-title">Epinefrina (PCR)</div></div></div><div class="result-note">Verificar concentración antes de administrar</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="epinefrina" readonly><span class="input-group-text">mg</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="drug-label drug-other"><div class="drug-label-content"><div class="drug-label-title">Calcio cloruro 10%</div></div></div><div class="result-note">Preferir vía segura; mayor irritación tisular</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="calcioCl" readonly><span class="input-group-text">mg</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="drug-label drug-other"><div class="drug-label-content"><div class="drug-label-title">Calcio gluconato 10%</div></div></div><div class="result-note">Menos irritante que CaCl</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="calcioGl" readonly><span class="input-group-text">mg</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="drug-label drug-other"><div class="drug-label-content"><div class="drug-label-title">Adenosina</div></div></div><div class="result-note">Bolo rápido + flush inmediato</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="adenosina" readonly><span class="input-group-text">mg</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="drug-label drug-other"><div class="drug-label-content"><div class="drug-label-title">Amiodarona</div></div></div><div class="result-note">Taquiarritmias seleccionadas</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="amiodarona" readonly><span class="input-group-text">mg</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="drug-label drug-local"><div class="drug-label-content"><div class="drug-label-title">Lidocaína</div></div></div><div class="result-note">Alternativa según contexto</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="lidocaina" readonly><span class="input-group-text">mg</span></div></div>
                 </div>
 
                 <div class="stack-card warn">
-                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-neuromuscular">Rocuronio (2 DE95)</div><div class="result-note">Intubación</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="rocuronio" readonly><span class="input-group-text">mg</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-inductor">Midazolam</div><div class="result-note">Valorar contexto hemodinámico</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="midazolam" readonly><span class="input-group-text">mg</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-opioid">Fentanyl (Inducción)</div><div class="result-note">Inducción</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="fentaInd" readonly><span class="input-group-text">µg</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-opioid">Fentanyl (analgesia)</div><div class="result-note">Titular según dolor y contexto</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="fentaAna" readonly><span class="input-group-text">µg</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-opioid">Morfina</div><div class="result-note">Vigilar depresión respiratoria</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="morfina" readonly><span class="input-group-text">mg</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-other">Glucosa 30%</div><div class="result-note">Corregir hipoglicemia con confirmación clínica</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="glucosa" readonly><span class="input-group-text">mL</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="drug-label drug-neuromuscular"><div class="drug-label-content"><div class="drug-label-title">Rocuronio (2 DE95)</div></div></div><div class="result-note">Intubación</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="rocuronio" readonly><span class="input-group-text">mg</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="drug-label drug-inductor"><div class="drug-label-content"><div class="drug-label-title">Midazolam</div></div></div><div class="result-note">Valorar contexto hemodinámico</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="midazolam" readonly><span class="input-group-text">mg</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="drug-label drug-opioid"><div class="drug-label-content"><div class="drug-label-title">Fentanyl (Inducción)</div></div></div><div class="result-note">Inducción</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="fentaInd" readonly><span class="input-group-text">µg</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="drug-label drug-opioid"><div class="drug-label-content"><div class="drug-label-title">Fentanyl (analgesia)</div></div></div><div class="result-note">Titular según dolor y contexto</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="fentaAna" readonly><span class="input-group-text">µg</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="drug-label drug-opioid"><div class="drug-label-content"><div class="drug-label-title">Morfina</div></div></div><div class="result-note">Vigilar depresión respiratoria</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="morfina" readonly><span class="input-group-text">mg</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="drug-label drug-other"><div class="drug-label-content"><div class="drug-label-title">Glucosa 30%</div></div></div><div class="result-note">Corregir hipoglicemia con confirmación clínica</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="glucosa" readonly><span class="input-group-text">mL</span></div></div>
                 </div>
               </div>
             </div>
@@ -646,8 +513,10 @@ require("../head.php");
               <div class="section-title">Reversión</div>
               <div class="results-grid">
                 <div class="stack-card blue">
-                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-reversal-opioid">Naloxona</div><div class="result-note">Reversión de opioides; evitar retiro brusco innecesario</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="naloxona" readonly><span class="input-group-text">µg</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-reversal-inductor">Flumazenil</div><div class="result-note">Precaución en pacientes con riesgo convulsivo</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="flumazenil" readonly><span class="input-group-text">µg</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="drug-label drug-reversal-opioid"><div class="drug-label-content"><div class="drug-label-title">Naloxona</div></div></div><div class="result-note">Reversión de opioides; evitar retiro brusco innecesario</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="naloxona" readonly><span class="input-group-text">µg</span></div></div>
+                </div>
+                <div class="stack-card blue">
+                  <div class="result-row"><div class="result-left"><div class="drug-label drug-reversal-inductor"><div class="drug-label-content"><div class="drug-label-title">Flumazenil</div></div></div><div class="result-note">Precaución en pacientes con riesgo convulsivo</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="flumazenil" readonly><span class="input-group-text">µg</span></div></div>
                 </div>
               </div>
             </div>
@@ -659,54 +528,54 @@ require("../head.php");
 
               <div class="results-grid">
                 <div class="stack-card danger">
-                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-other">Cardioversión 1</div><div class="result-note">Energía inicial orientativa</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="cardiov" readonly><span class="input-group-text">J</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-other">Desfibrilación 1</div><div class="result-note">Primera descarga</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="desfibr" readonly><span class="input-group-text">J</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-other">Desfibrilación 2–3</div><div class="result-note">Escalamiento posterior</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="desfibr2" readonly><span class="input-group-text">J</span></div></div>
-                  <div class="result-row"><div class="result-left"><div class="result-name result-name-tag drug-other">Desfibrilación 2–3</div><div class="result-note">Escalamiento posterior</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="desfibr2" readonly><span class="input-group-text">J</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="drug-label drug-other"><div class="drug-label-content"><div class="drug-label-title">Cardioversión 1</div></div></div><div class="result-note">Energía inicial orientativa</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="cardiov" readonly><span class="input-group-text">J</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="drug-label drug-other"><div class="drug-label-content"><div class="drug-label-title">Desfibrilación 1</div></div></div><div class="result-note">Primera descarga</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="desfibr" readonly><span class="input-group-text">J</span></div></div>
+                </div>
+                <div class="stack-card danger">
+                  <div class="result-row"><div class="result-left"><div class="drug-label drug-other"><div class="drug-label-content"><div class="drug-label-title">Desfibrilación 2–3</div></div></div><div class="result-note">Escalamiento posterior</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="desfibr2" readonly><span class="input-group-text">J</span></div></div>
+                  <div class="result-row"><div class="result-left"><div class="drug-label drug-other"><div class="drug-label-content"><div class="drug-label-title">Desfibrilación 2–3</div></div></div><div class="result-note">Escalamiento posterior</div></div><div class="result-value-wrap input-group input-group-sm"><input class="form-control" type="number" id="desfibr2" readonly><span class="input-group-text">J</span></div></div>
                 </div>
               </div>
             </div>
           </div>
         </form>
 
-        <div class="section-card">
-          <div class="section-inner">
-            <div class="section-title">Tips docentes y de seguridad</div>
+          <div class="section-card">
+            <div class="section-inner">
+              <div class="section-title">Tips docentes y de seguridad</div>
 
-            <div class="tip-list">
-              <div class="tip-card">
-                <div class="tip-title">Seguridad farmacológica</div>
-                <ul>
-                  <li>Confirmar siempre si la dosis está en <strong>mg, µg o mL</strong>.</li>
-                  <li>Antes de usar epinefrina, verificar <strong>concentración y dilución</strong>.</li>
-                  <li>Si el contexto es crítico, idealmente hacer <strong>doble chequeo verbal</strong>.</li>
-                </ul>
+              <div class="mb-3">
+                <div class="fw-semibold mb-2">Seguridad farmacológica</div>
+                <div class="note-chip-list">
+                  <span class="note-chip">Confirmar siempre si la dosis está en <strong>mg, µg o mL</strong>.</span>
+                  <span class="note-chip">Antes de usar epinefrina, verificar <strong>concentración y dilución</strong>.</span>
+                  <span class="note-chip">Si el contexto es crítico, idealmente hacer <strong>doble chequeo verbal</strong>.</span>
+                </div>
               </div>
 
-              <div class="tip-card">
-                <div class="tip-title">Interpretación clínica</div>
-                <ul>
-                  <li>La calculadora orienta, pero no reemplaza el juicio clínico.</li>
-                  <li>La PA normal mostrada es para <strong>vigilia y reposo</strong>.</li>
-                  <li>En anestesia o sueño profundo, una PA hasta 20% menor puede ser esperable.</li>
-                </ul>
+              <div class="mb-3">
+                <div class="fw-semibold mb-2">Interpretación clínica</div>
+                <div class="note-chip-list">
+                  <span class="note-chip">La calculadora orienta, pero no reemplaza el juicio clínico.</span>
+                  <span class="note-chip">La PA normal mostrada es para <strong>vigilia y reposo</strong>.</span>
+                  <span class="note-chip">En anestesia o sueño profundo, una PA hasta 20% menor puede ser esperable.</span>
+                </div>
               </div>
 
-              <div class="tip-card">
-                <div class="tip-title">Docencia práctica</div>
-                <ul>
-                  <li>Usar el apunte como apoyo, no como sustituto de preparación previa.</li>
-                  <li>En simulación, insistir en “<strong>indicación + dosis + vía + concentración</strong>”.</li>
-                  <li>Para adenosina, entrenar siempre la secuencia: bolo rápido + flush inmediato.</li>
-                </ul>
+              <div class="mb-3">
+                <div class="fw-semibold mb-2">Docencia práctica</div>
+                <div class="note-chip-list">
+                  <span class="note-chip">Usar el apunte como apoyo, no como sustituto de preparación previa.</span>
+                  <span class="note-chip"><span>En simulación, insistir en "<strong>indicación + dosis + vía + concentración</strong>".</span></span>
+                  <span class="note-chip">Para adenosina, entrenar siempre la secuencia: bolo rápido + flush inmediato.</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div class="footer-note">
-          Los cálculos se actualizan automáticamente. El formulario conserva el mismo identificador y la misma acción original para exportación PDF.
-        </div>
+          <div class="footer-note">
+            Los cálculos se actualizan automáticamente. El formulario conserva el mismo identificador y la misma acción original para exportación PDF.
+          </div>
 
       </div>
     </div>

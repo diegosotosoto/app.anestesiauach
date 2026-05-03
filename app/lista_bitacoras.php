@@ -9,92 +9,15 @@ $conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
 $conexion->set_charset("utf8");
 
 //VARIABLES
-$boton_toggler="<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity: .1;' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler="<a class='d-sm-block d-sm-none admin-back-btn' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar="<span class='text-white'>Bitácora</span>";
-$boton_navbar="<button class='btn shadow-sm border-light' style='--bs-border-opacity: .1;' type='submit' form='form_ingreso_bit' value='Submit'><div class='text-white'>Guardar</div></button>";
+$boton_navbar="<button class='btn btn-app-primary navbar-save-btn' type='submit' form='form_ingreso_bit' value='Submit'>Guardar</button>";
 
 //Carga Head de la página
 require("head.php");
 ?>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
-
-<style>
-  .bitacora-shell{
-    max-width:980px;
-    margin:0 auto;
-  }
-
-  .bitacora-topbar{
-    background:linear-gradient(135deg, #27458f, #3559b7);
-    color:#fff;
-    border-radius:1.25rem;
-    box-shadow:0 8px 24px rgba(0,0,0,.06);
-    padding:1.15rem 1.25rem;
-    margin-bottom:1rem;
-  }
-
-  .bitacora-topbar h1{
-    color:#fff;
-  }
-
-  .subtle{
-    font-size:.92rem;
-  }
-
-  .pill{
-    display:inline-block;
-    padding:.25rem .6rem;
-    border-radius:999px;
-    font-size:.8rem;
-    font-weight:600;
-  }
-
-  .bitacora-tabs{
-    margin-bottom:1rem;
-  }
-
-  .bitacora-tabs .nav-link{
-    border-radius:.85rem;
-    margin-right:.5rem;
-    color:#3559b7;
-  }
-
-  .bitacora-tabs .nav-link.active{
-    background:#3559b7;
-    color:#fff;
-    border-color:#3559b7;
-  }
-
-  .bitacora-tabs span.nav-link{
-    display:block;
-    cursor:default;
-  }
-
-  .bitacora-card{
-    border:0;
-    border-radius:1rem;
-    box-shadow:0 8px 24px rgba(0,0,0,.06);
-    background:#fff;
-    overflow:hidden;
-  }
-
-  .bitacora-card-header{
-    background:linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);
-    border-bottom:1px solid #e9eef5;
-    padding:1rem 1.1rem;
-  }
-
-  .bitacora-card-body{
-    padding:1.2rem 1.1rem 1.25rem 1.1rem;
-  }
-
-  .empty-state{
-    text-align:center;
-    color:#6c757d;
-    padding:2rem 1rem;
-  }
-</style>
 
 <div class="apunte-surface">
   <div class="container-fluid px-0 px-md-2">
@@ -199,7 +122,7 @@ if(isset($_POST['rut_b']) && $_POST['rut_b'] !== ''){
       <div class="bitacora-card">
         <div class="bitacora-card-header">
           <h4 class='mb-1 fw-bold pt-2'>Bitácora de</h4>
-          <div class='text-black-50 pb-2 pt-1' style='font-size: 14px'><?php echo $_COOKIE['hkjh41lu4l1k23jhlkj13']; ?></div>
+          <div class='text-black-50 pb-2 pt-1 bitacora-muted-small'><?php echo $_COOKIE['hkjh41lu4l1k23jhlkj13']; ?></div>
         </div>
 
         <div class="bitacora-card-body">

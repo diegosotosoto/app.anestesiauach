@@ -20,7 +20,7 @@ if($chk_alerg_med == '1' or $chk_alerg_alim == '1' or $chk_alerg_latex == '1'){
 }
 
 ?>
-	<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><div class="col-9"><img class='btn-imagen' src='images/IMG_3987.PNG'/>Datos Personales</div></li>
+	<li class='list-group-item epa-section-title'><div class="col-9"><img class='btn-imagen' src='images/IMG_3987.PNG'/>Datos Personales</div></li>
 	<li class='list-group-item'>
 
 <?php
@@ -258,7 +258,7 @@ function generarAccordion($icono, $titulo, $contenido, $valor_elementos=100) {
     // Generar el texto con el título, contenido y número de elemento
     $texto = "<div class='accordion-item'>
 		    <h2 class='accordion-header' id='headingOne".$nE."'>
-	      <button class='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#collapseOne".$nE."' aria-expanded='false' aria-controls='collapseOne".$nE."'>
+	      <button class='accordion-button collapsed epa-accordion-button' type='button' data-bs-toggle='collapse' data-bs-target='#collapseOne".$nE."' aria-expanded='false' aria-controls='collapseOne".$nE."'>
 	      	<i class='".$icono." mt-0 ps-2 pe-4'></i>"
 	      	.$titulo.
 	      	"".
@@ -335,7 +335,7 @@ $array_imc= ["IMC",false,"imc","",$imc,"step='0.1'",true,"Kg/mt2"];
 		<div class="accordion" id="eval_pre_anest">
             <div class='accordion-item'>
               <h2 class='accordion-header' id='headingOne'>
-                <button class='accordion-button collapsed pt-3 pb-3 fs-6' type='button' data-bs-toggle='collapse' data-bs-target='#collapseOne' aria-expanded='false' aria-controls='collapseOne' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'>
+                <button class='accordion-button collapsed pt-3 pb-3 fs-6 epa-accordion-button' type='button' data-bs-toggle='collapse' data-bs-target='#collapseOne' aria-expanded='false' aria-controls='collapseOne'>
                  	<div class="mx-auto"><img class='btn-imagen' src='images/IMG_3992.PNG'/>Signos Vitales</div>
                 </button>
               </h2>
@@ -382,7 +382,7 @@ echo generarInputGral(...$array_temp);
 
             <div class='accordion-item'>
               <h2 class='accordion-header' id='heading2'>
-                <button class='accordion-button collapsed pt-3 pb-3 fs-6' type='button' data-bs-toggle='collapse' data-bs-target='#collapse2' aria-expanded='false' aria-controls='collapse2' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'>
+                <button class='accordion-button collapsed pt-3 pb-3 fs-6 epa-accordion-button' type='button' data-bs-toggle='collapse' data-bs-target='#collapse2' aria-expanded='false' aria-controls='collapse2'>
                  	<div class="mx-auto"><img class='btn-imagen' src='images/IMG_3976.PNG'/>Diagnóstico (*)</div>
                 </button>
               </h2>
@@ -418,7 +418,7 @@ echo generarSelect("Riesgo", true, "riesgo", $options_riesgo, $riesgo_original, 
 
             <div class='accordion-item'>
               <h2 class='accordion-header' id='heading21'>
-                <button class='accordion-button collapsed pt-3 pb-3 fs-6' type='button' data-bs-toggle='collapse' data-bs-target='#collapse21' aria-expanded='false' aria-controls='collapse21' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'>
+                <button class='accordion-button collapsed pt-3 pb-3 fs-6 epa-accordion-button' type='button' data-bs-toggle='collapse' data-bs-target='#collapse21' aria-expanded='false' aria-controls='collapse21'>
                  	<div class="mx-auto"><img class='btn-imagen' src='images/IMG_3980.PNG'/>Cirugías Previas</div>
                 </button>
               </h2>
@@ -465,7 +465,7 @@ echo generarSelect("Riesgo", true, "riesgo", $options_riesgo, $riesgo_original, 
 		<!– ANTECEDENTES –>
             <div class='accordion-item'>
               <h2 class='accordion-header' id='heading3'>
-                <button class='accordion-button collapsed pt-3 pb-3 fs-6' type='button' data-bs-toggle='collapse' data-bs-target='#collapse3' aria-expanded='false' aria-controls='collapse3' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'>
+                <button class='accordion-button collapsed pt-3 pb-3 fs-6 epa-accordion-button' type='button' data-bs-toggle='collapse' data-bs-target='#collapse3' aria-expanded='false' aria-controls='collapse3'>
                  	<div class="mx-auto"><img class='btn-imagen' src='images/IMG_3977.PNG'/>Antecedentes / Sistemas</div>
                 </button>
               </h2>
@@ -916,7 +916,7 @@ echo generarAccordion($ico_gine,$tit_gine,$cont_gine,$array_gine);
 		<!– ESTADO ACTUAL –>
             <div class='accordion-item'>
               <h2 class='accordion-header' id='heading22'>
-                <button class='accordion-button collapsed pt-3 pb-3 fs-6' type='button' data-bs-toggle='collapse' data-bs-target='#collapse22' aria-expanded='false' aria-controls='collapse22' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'>
+                <button class='accordion-button collapsed pt-3 pb-3 fs-6 epa-accordion-button' type='button' data-bs-toggle='collapse' data-bs-target='#collapse22' aria-expanded='false' aria-controls='collapse22'>
                  	<div class="mx-auto"><img class='btn-imagen' src='images/IMG_4231.PNG'/>Estado Actual / Hábitos</div>
                 </button>
               </h2>
@@ -1070,7 +1070,7 @@ echo generarCheckDoble('Drogas', 'chk_drogas',$chk_drogas, $is_disabled);
 
             <div class='accordion-item'>
               <h2 class='accordion-header' id='heading31'>
-                <button class='accordion-button collapsed pt-3 pb-3 fs-6' type='button' data-bs-toggle='collapse' data-bs-target='#collapse31' aria-expanded='false' aria-controls='collapse31' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'>
+                <button class='accordion-button collapsed pt-3 pb-3 fs-6 epa-accordion-button' type='button' data-bs-toggle='collapse' data-bs-target='#collapse31' aria-expanded='false' aria-controls='collapse31'>
                  	<div class="mx-auto"><img class='btn-imagen' src='images/IMG_3988.PNG'/>Indicaciones Actuales</div>
                 </button>
               </h2>
@@ -1125,7 +1125,7 @@ echo generarInputGral(...$array_indic6);
 
 
 
-		<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><div class="col-9"><img class='btn-imagen' src='images/IMG_3982.PNG'/> Alergias (*)</div></li>
+		<li class='list-group-item epa-section-title'><div class="col-9"><img class='btn-imagen' src='images/IMG_3982.PNG'/> Alergias (*)</div></li>
 
 
 <?php
@@ -1269,7 +1269,7 @@ echo generarCheckDoble('Látex', 'chk_alerg_latex',$chk_alerg_latex,$is_disabled
 
             <div class='accordion-item'>
               <h2 class='accordion-header' id='heading4'>
-                <button class='accordion-button collapsed pt-3 pb-3 fs-6' type='button' data-bs-toggle='collapse' data-bs-target='#collapse4' aria-expanded='false' aria-controls='collapse4' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'>
+                <button class='accordion-button collapsed pt-3 pb-3 fs-6 epa-accordion-button' type='button' data-bs-toggle='collapse' data-bs-target='#collapse4' aria-expanded='false' aria-controls='collapse4'>
                  	<div class="mx-auto"><img class='btn-imagen' src='images/IMG_3987.PNG'/>Exámen Físico</div>
                 </button>
               </h2>
@@ -1328,7 +1328,7 @@ echo generarSelect("Dolor (EVA)", false, "eva", $options_dolor_eva,$eva_original
 		<!– EVALUACIÓN DE VÍA AÉREA>
         <div class='accordion-item'>
           <h2 class='accordion-header' id='heading5'>
-            <button class='accordion-button collapsed pt-3 pb-3 fs-6' type='button' data-bs-toggle='collapse' data-bs-target='#collapse5' aria-expanded='false' aria-controls='collapse5' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'>
+            <button class='accordion-button collapsed pt-3 pb-3 fs-6 epa-accordion-button' type='button' data-bs-toggle='collapse' data-bs-target='#collapse5' aria-expanded='false' aria-controls='collapse5'>
              	<div class="mx-auto"><img class='btn-imagen' src='images/IMG_3986.PNG'/>Vía Aérea (*)</div>
             </button>
           </h2>
@@ -1413,7 +1413,7 @@ $fecha_exs_real = transformaInput($fecha_exs);
 		<!– EXÁMENES–>
 	        <div class='accordion-item'>
 	          <h2 class='accordion-header' id='heading6'>
-	            <button class='accordion-button collapsed pt-3 pb-3 fs-6' type='button' data-bs-toggle='collapse' data-bs-target='#collapse6' aria-expanded='false' aria-controls='collapse6' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'>
+	            <button class='accordion-button collapsed pt-3 pb-3 fs-6 epa-accordion-button' type='button' data-bs-toggle='collapse' data-bs-target='#collapse6' aria-expanded='false' aria-controls='collapse6'>
 	             	<div class="mx-auto"><img class='btn-imagen' src='images/IMG_3990.PNG'/>Exámenes</div>
 	            </button>
 	          </h2>
@@ -1499,7 +1499,7 @@ echo generarInputGral(...$array_ecg_otros);
 		<!– EXÁMENES–>
 
 		<!– ASA->
-		<li class='list-group-item' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'><div class="col-9"><img class='btn-imagen' src='images/IMG_3991.PNG'/> Clasificación ASA (*)</div></li>
+		<li class='list-group-item epa-section-title'><div class="col-9"><img class='btn-imagen' src='images/IMG_3991.PNG'/> Clasificación ASA (*)</div></li>
 
 
 		<li class='list-group-item'>
@@ -1534,7 +1534,7 @@ echo generarInputGral(...$array_ecg_otros);
 		<!– RESERVAS->
 	        <div class='accordion-item'>
 	          <h2 class='accordion-header' id='heading7'>
-	            <button class='accordion-button collapsed pt-3 pb-3 fs-6' type='button' data-bs-toggle='collapse' data-bs-target='#collapse7' aria-expanded='false' aria-controls='collapse7' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%);'>
+	            <button class='accordion-button collapsed pt-3 pb-3 fs-6 epa-accordion-button' type='button' data-bs-toggle='collapse' data-bs-target='#collapse7' aria-expanded='false' aria-controls='collapse7'>
 	             	<div class="mx-auto"><img class='btn-imagen' src='images/IMG_3981.PNG'/>Plan / Indicaciones (*)</div>
 	            </button>
 	          </h2>
@@ -1603,7 +1603,7 @@ echo $reservas_dc1;
 </div>
 
 		<!– RESERVAS->
-			<li class='list-group-item mb-4' style='background-color: #e9effb; background-image: linear-gradient(0deg, #e9effb 0%, #ffffff 40%, #ffffff 100%'>
+			<li class='list-group-item epa-section-title mb-4'>
 		    <div class='col-9 py-2'><img class='btn-imagen' src='images/IMG_3977.PNG'/>Observaciones / Comentarios</div>
 
 

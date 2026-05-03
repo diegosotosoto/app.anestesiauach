@@ -1,0 +1,52 @@
+/* Modulo Pacientes Dolor */
+.pain-card,
+.pain-form-card,
+.pain-patient-card,
+.pain-section-title{
+  background:var(--app-card);
+  color:var(--app-text);
+  border-color:var(--app-border);
+}
+
+body.theme-dark .pain-card,
+body.theme-dark .pain-form-card,
+body.theme-dark .pain-patient-card,
+body.theme-dark .pain-section-title{
+  background:var(--app-card) !important;
+  color:var(--app-text) !important;
+  border-color:var(--app-border) !important;
+}
+
+body.theme-dark .was-validated .form-control:valid,
+body.theme-dark .was-validated .form-control:invalid,
+body.theme-dark .form-control.is-valid,
+body.theme-dark .form-control.is-invalid,
+body.theme-dark .was-validated .form-select:valid,
+body.theme-dark .was-validated .form-select:invalid,
+body.theme-dark .form-select.is-valid,
+body.theme-dark .form-select.is-invalid{
+  background-image:none !important;
+  background-repeat:no-repeat !important;
+  background-position:right .75rem center !important;
+  background-size:1rem 1rem !important;
+}
+
+body.theme-dark .was-validated .form-control:valid,
+body.theme-dark .form-control.is-valid,
+body.theme-dark .was-validated .form-select:valid,
+body.theme-dark .form-select.is-valid{
+  border-color:var(--app-success) !important;
+  box-shadow:0 0 0 1px rgba(22,163,74,.18) inset !important;
+}
+
+body.theme-dark .was-validated .form-control:invalid,
+body.theme-dark .form-control.is-invalid,
+body.theme-dark .was-validated .form-select:invalid,
+body.theme-dark .form-select.is-invalid{
+  border-color:var(--app-danger) !important;
+  box-shadow:0 0 0 1px rgba(220,38,38,.2) inset !important;
+}
+
+body.theme-dark .invalid-feedback{
+  color:#fca5a5 !important;
+}

@@ -159,12 +159,19 @@ $calculos2 = array(
 // ===============================
 // PDF
 // ===============================
-require('../pdf/tfpdf.php');
+require_once __DIR__ . '/tfpdf.php';
 
 class PDF extends tFPDF {
 
     function Header() {
-        $this->Image('../app/images/austral_b.png', 16, 8, 14, 16);
+        $logoPath = __DIR__ . '/../images/austral_b.png';
+        if (!is_file($logoPath)) {
+            $logoPath = __DIR__ . '/../app/images/austral_b.png';
+        }
+
+        if (is_file($logoPath)) {
+            $this->Image($logoPath, 16, 8, 14, 16);
+        }
 
         $this->SetTextColor(85, 95, 110);
         $this->SetFont('DejaVu','',7.5);

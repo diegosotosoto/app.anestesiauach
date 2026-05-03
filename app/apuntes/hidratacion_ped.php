@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "Hidratación pediátrica";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "Apunte interactivo para estimar una estrategia inicial de fluidoterapia intraoperatoria pediátrica. Separa mantención basal y pérdidas por exposición quirúrgica, y agrega sugerencias docentes para fiebre, sangrado, diuresis y riesgo de hipoglicemia.";
@@ -17,7 +17,7 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=1">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=1"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
@@ -88,46 +88,6 @@ require("../head.php");
           }
           .fluid-plan-line:last-child{margin-bottom:0;}
 
-          .fluid-safety-list{
-            display:grid;
-            gap:.75rem;
-          }
-          .fluid-safety-item{
-            display:flex;
-            align-items:flex-start;
-            gap:.8rem;
-            border:1px solid #ead38a;
-            border-radius:1rem;
-            background:#fff9e8;
-            padding:.95rem 1rem;
-          }
-          .fluid-safety-mark{
-            flex:0 0 auto;
-            width:34px;
-            height:34px;
-            border-radius:999px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            background:#f4c542;
-            color:#fff;
-            margin-top:.08rem;
-          }
-          .fluid-safety-copy{min-width:0;flex:1;}
-          .fluid-safety-title{
-            font-size:1rem;
-            font-weight:800;
-            line-height:1.22;
-            color:var(--note-text);
-            margin-bottom:.15rem;
-          }
-          .fluid-safety-note{
-            margin:0;
-            font-size:.9rem;
-            line-height:1.4;
-            color:var(--note-muted);
-          }
-
           @media (max-width:992px){
             .fluid-choice-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
           }
@@ -140,6 +100,7 @@ require("../head.php");
             .fluid-choice-grid.fluid-exp-grid{grid-template-columns:1fr;}
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · PEDIATRÍA · FLUIDOTERAPIA</div>
@@ -252,25 +213,27 @@ require("../head.php");
           </div>
         </div>
 
-        <div class="note-summary-box mb-3">
-          <div class="note-summary-box-title">Resumen</div>
-          <div id="summaryNarrative" class="note-summary-box-text">Ingresa peso para calcular mantención basal, pérdida por exposición y aporte horario orientativo.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item">
-              <div class="note-summary-k">Peso</div>
-              <div id="resPeso" class="note-summary-v">-</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Rango etáreo</div>
-              <div id="resEdad" class="note-summary-v">RN</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Exposición</div>
-              <div id="resExp" class="note-summary-v">Mínima</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Riesgo glucosa</div>
-              <div id="resGlucosa" class="note-summary-v">Alto / valorar</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-card-title">Resumen</div>
+            <div id="summaryNarrative" class="note-summary-box-text mb-3">Ingresa peso para calcular mantención basal, pérdida por exposición y aporte horario orientativo.</div>
+            <div class="note-result-grid-2">
+              <div class="note-result-card">
+                <div class="note-result-card-label">Peso</div>
+                <div id="resPeso" class="note-result-card-value">-</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Rango etáreo</div>
+                <div id="resEdad" class="note-result-card-value">RN</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Exposición</div>
+                <div id="resExp" class="note-result-card-value">Mínima</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Riesgo glucosa</div>
+                <div id="resGlucosa" class="note-result-card-value">Alto / valorar</div>
+              </div>
             </div>
           </div>
         </div>
@@ -307,33 +270,33 @@ require("../head.php");
         <div class="note-card mb-3">
           <div class="note-card-body">
             <div class="note-section-label">Sugerencias de manejo</div>
-            <div class="fluid-safety-list">
-              <div class="fluid-safety-item">
-                <div class="fluid-safety-mark"><i class="fa-solid fa-temperature-high"></i></div>
-                <div class="fluid-safety-copy">
-                  <div class="fluid-safety-title">Pérdidas por fiebre</div>
-                  <p class="fluid-safety-note">Como referencia práctica, considerar alrededor de 10% del mantenimiento por cada °C sobre 37. Reinterpretar según contexto y duración quirúrgica.</p>
+            <div class="note-warning-list">
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-temperature-high"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Pérdidas por fiebre</div>
+                  <p class="note-warning-note">Como referencia práctica, considerar alrededor de 10% del mantenimiento por cada °C sobre 37. Reinterpretar según contexto y duración quirúrgica.</p>
                 </div>
               </div>
-              <div class="fluid-safety-item">
-                <div class="fluid-safety-mark"><i class="fa-solid fa-droplet"></i></div>
-                <div class="fluid-safety-copy">
-                  <div class="fluid-safety-title">Pérdidas por sangrado</div>
-                  <p class="fluid-safety-note">El sangrado se maneja por separado con plan específico de reposición según magnitud, velocidad, volemia estimada, Hb/Hto y condición clínica.</p>
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-droplet"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Pérdidas por sangrado</div>
+                  <p class="note-warning-note">El sangrado se maneja por separado con plan específico de reposición según magnitud, velocidad, volemia estimada, Hb/Hto y condición clínica.</p>
                 </div>
               </div>
-              <div class="fluid-safety-item">
-                <div class="fluid-safety-mark"><i class="fa-solid fa-filter"></i></div>
-                <div class="fluid-safety-copy">
-                  <div class="fluid-safety-title">Diuresis</div>
-                  <p class="fluid-safety-note">No perseguir diuresis “bonita” con volumen automático. La antidiuresis puede ser respuesta fisiológica al trauma quirúrgico.</p>
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-filter"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Diuresis</div>
+                  <p class="note-warning-note">No perseguir diuresis "bonita" con volumen automático. La antidiuresis puede ser respuesta fisiológica al trauma quirúrgico.</p>
                 </div>
               </div>
-              <div class="fluid-safety-item">
-                <div class="fluid-safety-mark"><i class="fa-solid fa-cubes-stacked"></i></div>
-                <div class="fluid-safety-copy">
-                  <div class="fluid-safety-title">Glucosa e hipoglicemia</div>
-                  <p class="fluid-safety-note">RN, prematuros, PEG, hijos de madre diabética, NPT, hipercatabolismo y falla hepática requieren mayor vigilancia y control de glicemia.</p>
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-cubes-stacked"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Glucosa e hipoglicemia</div>
+                  <p class="note-warning-note">RN, prematuros, PEG, hijos de madre diabética, NPT, hipercatabolismo y falla hepática requieren mayor vigilancia y control de glicemia.</p>
                 </div>
               </div>
             </div>

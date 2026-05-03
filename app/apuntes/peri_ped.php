@@ -1,9 +1,9 @@
 <?php
 $titulo_pagina = "Peridural pediátrica / PCA";
 $navbar_titulo = "Apuntes";
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark' style='width:80px; height:40px; --bs-border-opacity:.1;' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='../apuntes.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white'>Apuntes</span>";
-$boton_navbar = "<button class='navbar-toggler text-white shadow-sm' onclick='toggleInfo()' style='width:50px; height:40px; --bs-border-opacity:.1;' type='button'><i class='fa-solid fa-circle-info'></i></button>";
+$boton_navbar = "<button class='app-nav-action' onclick='toggleInfo()' type='button' aria-label='Información'><i class='fa-solid fa-circle-info'></i></button>";
 
 $titulo_info = "Utilidad clínica";
 $descripcion_info = "Apunte interactivo para cálculo docente de carga inicial, top-up y PCA epidural postoperatoria en pediatría. Integra peso, rango etáreo y nivel epidural para ajustar dosis, volumen y advertencias de seguridad.";
@@ -18,7 +18,7 @@ $referencias = array(
 
 require("../head.php");
 ?>
-<link rel="stylesheet" href="css/clinical-note-system.css?v=2">
+<link rel="stylesheet" href="css/clinical-note-system.css?v=<?= @filemtime($app_root_dir . '/apuntes/css/clinical-note-system.css') ?: time() ?>">
 <script src="js/clinical-note-system.js?v=2"></script>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
@@ -85,65 +85,6 @@ require("../head.php");
             color:var(--note-muted);
             margin:0;
             font-weight:600;
-          }
-
-          .peri-drug-chip{
-            display:inline-block;
-            padding:.22rem .48rem;
-            border-radius:.6rem;
-            font-weight:800;
-            border:1px solid rgba(31,42,55,.12);
-            line-height:1.1;
-            color:#111827;
-            background:var(--drug-local);
-          }
-
-          .peri-action-list{
-            display:grid;
-            gap:.75rem;
-          }
-
-          .peri-action-item{
-            display:flex;
-            align-items:flex-start;
-            gap:.65rem;
-            border:1px solid #d9e2ef;
-            border-radius:1rem;
-            background:#fff;
-            padding:.75rem .85rem;
-          }
-
-          .peri-action-mark{
-            flex:0 0 auto;
-            width:30px;
-            height:30px;
-            border-radius:999px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            color:#fff;
-            margin-top:.08rem;
-          }
-
-          .peri-action-mark.ok{background:#2ea663;}
-          .peri-action-mark.mid{background:#f4c542;}
-          .peri-action-mark.high{background:#d92d20;}
-
-          .peri-action-copy{min-width:0;flex:1;}
-
-          .peri-action-title{
-            font-size:.95rem;
-            font-weight:800;
-            line-height:1.18;
-            color:var(--note-text);
-            margin-bottom:.1rem;
-          }
-
-          .peri-action-note{
-            margin:0;
-            font-size:.82rem;
-            line-height:1.32;
-            color:var(--note-muted);
           }
 
           .peri-plan-line{
@@ -222,6 +163,7 @@ require("../head.php");
             }
           }
         </style>
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · ANESTESIA REGIONAL · PEDIATRÍA</div>
@@ -266,7 +208,7 @@ require("../head.php");
 
               <div class="note-input-group">
                 <label class="note-label">Solución para carga / top-up</label>
-                <div class="note-summary-v"><span class="peri-drug-chip p-3">Levobupivacaína 0,25%</span></div>
+                <div class="note-summary-v"><span class="drug-label drug-local drug-label-sm"><span class="drug-label-title">Levobupivacaína 0,25%</span></span></div>
                 <div class="note-result-secondary">2,5 mg/mL</div>
               </div>
             </div>
@@ -337,25 +279,27 @@ require("../head.php");
           </div>
         </div>
 
-        <div class="note-summary-box mb-3">
-          <div class="note-summary-box-title">Resumen</div>
-          <div id="summaryNarrative" class="note-summary-box-text">Ingresa peso para calcular carga inicial, top-up y programación PCA epidural.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item">
-              <div class="note-summary-k">Peso</div>
-              <div id="summaryWeight" class="note-summary-v">-</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Nivel epidural</div>
-              <div id="summaryLevel" class="note-summary-v">Lumbar</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Rango etáreo</div>
-              <div id="summaryAge" class="note-summary-v">RN</div>
-            </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Anestésico local</div>
-              <div id="summaryDrug" class="note-summary-v">Levo 0,25% / 0,1%</div>
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-card-title">Resumen</div>
+            <div id="summaryNarrative" class="note-summary-box-text mb-3">Ingresa peso para calcular carga inicial, top-up y programación PCA epidural.</div>
+            <div class="note-result-grid-2">
+              <div class="note-result-card">
+                <div class="note-result-card-label">Peso</div>
+                <div id="summaryWeight" class="note-result-card-value">-</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Nivel epidural</div>
+                <div id="summaryLevel" class="note-result-card-value">Lumbar</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Rango etáreo</div>
+                <div id="summaryAge" class="note-result-card-value">RN</div>
+              </div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Anestésico local</div>
+                <div id="summaryDrug" class="note-result-card-value">Levo 0,25% / 0,1%</div>
+              </div>
             </div>
           </div>
         </div>
@@ -376,16 +320,16 @@ require("../head.php");
         <div id="topupBox" class="peri-topup-card mb-3">
           <div class="note-card-title" id="topupTitle">Top-up conservador en RN / 1–4 meses</div>
           <div id="topupText" class="note-muted mb-3">En lactantes pequeños, el Tmax de bupivacaína / levobupivacaína / ropivacaína es más tardío. Evita redosificación precoz.</div>
-          <div class="note-summary-grid-2">
-            <div class="note-summary-item">
-              <div class="note-summary-k">Opción A</div>
-              <div id="topupA" class="note-summary-v">-</div>
-              <div class="note-result-secondary">1/3 de carga inicial; no antes de 45 min</div>
+          <div class="note-result-grid-2">
+            <div class="note-result-card">
+              <div class="note-result-card-label">Opción A</div>
+              <div id="topupA" class="note-result-card-value">-</div>
+              <div class="note-result-card-note">1/3 de carga inicial; no antes de 45 min</div>
             </div>
-            <div class="note-summary-item">
-              <div class="note-summary-k">Opción B</div>
-              <div id="topupB" class="note-summary-v">-</div>
-              <div class="note-result-secondary">1/2 de carga inicial; no antes de 90 min</div>
+            <div class="note-result-card">
+              <div class="note-result-card-label">Opción B</div>
+              <div id="topupB" class="note-result-card-value">-</div>
+              <div class="note-result-card-note">1/2 de carga inicial; no antes de 90 min</div>
             </div>
           </div>
         </div>
@@ -397,30 +341,30 @@ require("../head.php");
             <div class="note-warning mb-3">
               <strong>Esquema docente:</strong>
               <div class="mt-2">
-                PCA calculada con <span class="peri-drug-chip">bupivacaína / levobupivacaína 0,1%</span> = 1 mg/mL. De la dosis máxima por hora: 2/3 como infusión continua y 1/3 como bolo. Límite de infusión: 5 mL/h. Lockout habitual: 30 min.
+                PCA calculada con <span class="drug-label drug-local drug-label-sm"><span class="drug-label-title">bupivacaína / levobupivacaína 0,1%</span></span> = 1 mg/mL. De la dosis máxima por hora: 2/3 como infusión continua y 1/3 como bolo. Límite de infusión: 5 mL/h. Lockout habitual: 30 min.
               </div>
             </div>
 
-            <div class="peri-program-grid">
-              <div class="peri-program-card">
-                <div class="peri-program-label">Dosis máxima</div>
-                <div id="pcaMaxHour" class="peri-program-value">-</div>
-                <div class="peri-program-note">mg/h</div>
+            <div class="note-result-grid-2">
+              <div class="note-result-card">
+                <div class="note-result-card-label">Dosis máxima</div>
+                <div id="pcaMaxHour" class="note-result-card-value">-</div>
+                <div class="note-result-card-note">mg/h</div>
               </div>
-              <div class="peri-program-card">
-                <div class="peri-program-label">Infusión</div>
-                <div id="pcaInfusion" class="peri-program-value">-</div>
-                <div class="peri-program-note">2/3 de dosis máxima</div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Infusión</div>
+                <div id="pcaInfusion" class="note-result-card-value">-</div>
+                <div class="note-result-card-note">2/3 de dosis máxima</div>
               </div>
-              <div class="peri-program-card">
-                <div class="peri-program-label">Bolo PCA</div>
-                <div id="pcaBolus" class="peri-program-value">-</div>
-                <div class="peri-program-note">1/3 de dosis máxima</div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Bolo PCA</div>
+                <div id="pcaBolus" class="note-result-card-value">-</div>
+                <div class="note-result-card-note">1/3 de dosis máxima</div>
               </div>
-              <div class="peri-program-card">
-                <div class="peri-program-label">Lockout</div>
-                <div class="peri-program-value">30 min</div>
-                <div class="peri-program-note">habitual</div>
+              <div class="note-result-card">
+                <div class="note-result-card-label">Lockout</div>
+                <div class="note-result-card-value">30 min</div>
+                <div class="note-result-card-note">habitual</div>
               </div>
             </div>
           </div>
@@ -446,12 +390,12 @@ require("../head.php");
         <div class="note-card mb-3">
           <div class="note-card-body">
             <div class="note-section-label">Conducta práctica</div>
-            <div id="actionList" class="peri-action-list">
-              <div class="peri-action-item">
-                <div class="peri-action-mark mid"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <div class="peri-action-copy">
-                  <div class="peri-action-title">Ingresa peso para calcular</div>
-                  <p class="peri-action-note">La programación se expresa en mL, pero el límite de seguridad se entiende en mg/kg/h y edad.</p>
+            <div id="actionList" class="note-warning-list">
+              <div class="note-warning-item">
+                <div class="note-warning-icon"><i class="fa-solid fa-check"></i></div>
+                <div class="note-warning-copy">
+                  <div class="note-warning-title">Ingresa peso para calcular</div>
+                  <p class="note-warning-note">La programación se expresa en mL, pero el límite de seguridad se entiende en mg/kg/h y edad.</p>
                 </div>
               </div>
             </div>
@@ -565,12 +509,11 @@ require("../head.php");
   function renderActions(items){
     const box = document.getElementById('actionList');
     box.innerHTML = items.map(function(item){
-      const icon = item[0] === 'ok' ? 'fa-check' : (item[0] === 'mid' ? 'fa-triangle-exclamation' : 'fa-bolt');
-      return '<div class="peri-action-item">' +
-        '<div class="peri-action-mark ' + item[0] + '"><i class="fa-solid ' + icon + '"></i></div>' +
-        '<div class="peri-action-copy">' +
-          '<div class="peri-action-title">' + item[1] + '</div>' +
-          '<p class="peri-action-note">' + item[2] + '</p>' +
+      return '<div class="note-warning-item">' +
+        '<div class="note-warning-icon"><i class="fa-solid fa-check"></i></div>' +
+        '<div class="note-warning-copy">' +
+          '<div class="note-warning-title">' + item[1] + '</div>' +
+          '<p class="note-warning-note">' + item[2] + '</p>' +
         '</div>' +
       '</div>';
     }).join('');

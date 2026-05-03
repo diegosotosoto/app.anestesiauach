@@ -149,7 +149,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     }
 }
 
-$boton_toggler = "<a class='d-sm-block d-sm-none btn text-white shadow-sm border-dark admin-back-btn' style='--bs-border-opacity:.1;' href='index.php'><i class='fa fa-chevron-left me-1'></i>Atrás</a>";
+$boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 $titulo_navbar = "<span class='text-white d-sm-block d-sm-none'>Gestión Usuarios</span>";
 $boton_navbar = "<a></a><a></a>";
 
@@ -198,192 +198,8 @@ if($tab_users){
 }
 ?>
 
-<style>
-.user-shell{
-    max-width:1100px;
-    margin:0 auto;
-}
-
-.user-card{
-    background:#fff;
-    border:1px solid #dfe7f2;
-    border-radius:18px;
-    box-shadow:0 8px 24px rgba(0,0,0,.06);
-    padding:1rem 1.1rem;
-    margin-bottom:1rem;
-}
-
-.user-title{
-    font-size:1.25rem;
-    font-weight:800;
-    color:#1f2a37;
-}
-
-.user-subtle{
-    color:#6b7280;
-    font-size:.92rem;
-}
-
-.user-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(135px, 1fr));
-    gap:12px;
-}
-
-.user-stat{
-    background:linear-gradient(0deg, #e9effb 0%, #ffffff 42%, #ffffff 100%);
-    border:1px solid #dfe7f2;
-    border-radius:16px;
-    padding:1rem;
-}
-
-.user-stat-num{
-    font-size:1.55rem;
-    font-weight:800;
-    color:#244aa5;
-}
-
-.user-stat-label{
-    color:#4b5563;
-    font-weight:700;
-    line-height:1.2;
-}
-
-.user-search-card{
-    display:flex;
-    gap:12px;
-    align-items:center;
-}
-
-.user-search-icon{
-    width:44px;
-    height:44px;
-    border-radius:14px;
-    background:#eef4ff;
-    color:#2f63d8;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex:0 0 44px;
-}
-
-.user-form-grid{
-    display:grid;
-    grid-template-columns:1.15fr 1.15fr 1fr;
-    gap:12px;
-    align-items:end;
-}
-
-.user-label{
-    font-weight:700;
-    color:#1f2a37;
-    margin-bottom:.35rem;
-}
-
-.user-role-grid{
-    display:grid;
-    grid-template-columns:repeat(3, minmax(0, 1fr));
-    gap:10px;
-    margin-top:14px;
-}
-
-.user-check{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    border:1px solid #dfe7f2;
-    border-radius:14px;
-    background:#f8fafc;
-    padding:.72rem .85rem;
-    font-weight:700;
-    color:#344054;
-}
-
-.resident-year-wrap{
-    display:none;
-    margin-top:12px;
-    border:1px solid #dfe7f2;
-    border-radius:16px;
-    background:#f8fafc;
-    padding:.9rem 1rem;
-}
-
-.resident-year-wrap.is-visible{
-    display:block;
-}
-
-.resident-year-inner{
-    max-width:260px;
-}
-
-
-.user-actions{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    justify-content:flex-end;
-    align-items:center;
-    margin-top:14px;
-}
-
-.user-status-pill{
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    border-radius:999px;
-    padding:.28rem .65rem;
-    font-size:.82rem;
-    font-weight:800;
-}
-
-.user-status-ok{
-    background:#e8f7ef;
-    color:#087443;
-}
-
-.user-status-pending{
-    background:#fff7e6;
-    color:#9a6a00;
-}
-
-.user-delete-warning{
-    background:#fff1f2;
-    border:1px solid #fecdd3;
-    color:#991b1b;
-    border-radius:16px;
-    padding:.9rem 1rem;
-    line-height:1.45;
-}
-
-.admin-back-btn{
-    width:auto !important;
-    height:44px !important;
-    min-height:44px !important;
-    padding:0 14px !important;
-    border-radius:14px !important;
-    font-size:1rem !important;
-    line-height:1 !important;
-}
-
-@media (max-width: 991.98px){
-    .user-grid,
-    .user-form-grid,
-    .user-role-grid{
-        grid-template-columns:1fr;
-    }
-
-    .user-actions{
-        justify-content:stretch;
-    }
-
-    .user-actions .btn{
-        width:100%;
-    }
-}
-</style>
-
-<div class="col col-sm-9 col-xl-9 pb-5">
-    <div class="container-fluid user-shell">
+<div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
+    <main class="admin-page user-shell">
 
         <?php if($mensaje_error !== ''){ ?>
             <div class="alert alert-danger alert-dismissible fade show">
@@ -399,15 +215,12 @@ if($tab_users){
             </div>
         <?php } ?>
 
-        <div class="user-card">
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-                <div>
-                    <div class="user-title">Gestión de Usuarios</div>
-                    <div class="user-subtle">Administra permisos, verificación, roles, año de residencia y acceso de usuarios de la app.</div>
-                </div>
-
-            </div>
-        </div>
+        <section class="app-hero app-hero-admin admin-header-card mb-3">
+            <div class="app-hero-kicker">Administración</div>
+            <h2>Gestión de Usuarios</h2>
+            <p>Administra permisos, verificación, roles, año de beca y acceso de usuarios de la app.</p>
+            <span class="app-hero-pill">Solo administradores</span>
+        </section>
 
         <div class="user-grid mb-3">
             <div class="user-stat">
@@ -513,11 +326,11 @@ if($tab_users){
                         </div>
 
                         <div class="user-actions">
-                            <button class="btn btn-primary" type="submit">
+                            <button class="btn btn-app-primary" type="submit">
                                 <i class="fa-solid fa-floppy-disk me-1"></i> Guardar
                             </button>
 
-                            <button class="btn btn-outline-danger user-delete-btn" type="button"
+                            <button class="btn btn-app-danger user-delete-btn" type="button"
                                 data-email="<?= h($email) ?>"
                                 data-name="<?= h($user) ?>"
                                 <?= $is_self ? 'disabled title="No puedes borrar tu propio usuario"' : '' ?>>
@@ -528,7 +341,7 @@ if($tab_users){
                 </div>
             <?php } ?>
         </div>
-    </div>
+    </main>
 </div>
 
 <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-hidden="true">
@@ -546,12 +359,12 @@ if($tab_users){
                 <p class="mb-0"><strong>Email:</strong> <span id="deleteUserEmail"></span></p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">RECHAZAR</button>
+                <button type="button" class="btn btn-app-secondary" data-bs-dismiss="modal">RECHAZAR</button>
                 <form action="gestion_usuarios.php" method="post" class="m-0">
                     <input type="hidden" name="accion" value="borrar_usuario">
                     <input type="hidden" name="email_delete" id="deleteEmailInput" value="">
                     <input type="hidden" name="confirm_delete" value="CONFIRMAR">
-                    <button type="submit" class="btn btn-danger">CONFIRMAR eliminación</button>
+                    <button type="submit" class="btn btn-app-danger">CONFIRMAR eliminación</button>
                 </form>
             </div>
         </div>
