@@ -582,7 +582,7 @@
 
   @media (max-width: 549px){
     .app-main-col{
-      padding-top:18px !important;
+      padding-top:6px !important;
       padding-bottom:18px !important;
     }
 
@@ -619,7 +619,7 @@
 
     .apunte-surface{
       min-height:auto;
-      padding:10px 0 20px 0;
+      padding:4px 0 20px 0;
       border-radius:0;
       box-shadow:none;
       border:0;
@@ -1027,6 +1027,34 @@ background:var(--app-gradient) !important;
   .notif-dropdown-wrap.notif-dropdown-open-end .notif-dropdown-menu{
     left:auto!important;
     right:0!important;
+  }
+}
+
+@media (max-width:767.98px){
+  .app-shell-left{
+    padding-bottom:0!important;
+    margin-bottom:0!important;
+  }
+
+  .app-shell-left .navbar{
+    padding-bottom:0!important;
+    margin-bottom:0!important;
+  }
+
+  .app-shell-left .navbar > .container-fluid{
+    padding-bottom:0!important;
+    margin-bottom:0!important;
+  }
+
+  .app-main-col{
+    padding-top:13px!important;
+    margin-top:0!important;
+  }
+
+  .apunte-surface,
+  .dashboard-surface{
+    padding-top:9px!important;
+    margin-top:0!important;
   }
 }
 

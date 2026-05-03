@@ -26,7 +26,7 @@ $boton_toggler="<form action='vista_paciente.php' method='post'><button class='d
 
 $titulo_navbar="";
 
-$boton_navbar="<button class='btn btn-app-primary navbar-save-btn' type='submit' name='editar' value='Submit' onclick='envioForm_ed_pacte()'>Guardar</button>";
+$boton_navbar="<button class='btn btn-app-primary navbar-save-btn' type='submit' name='editar' value='Submit' onclick='return envioForm_ed_pacte(event)'>Guardar</button>";
 
 //Carga Head de la página
 require("head.php");
@@ -77,7 +77,7 @@ require("head.php");
 		echo "<div class='mb-1'>FC: ".$fila['ficha']."</div></li>";
 	?>
 
-	<form class='needs-validation' name='form_ed_pacte' id='form_ed_pacte' method='post' action='vista_paciente.php' novalidate>
+	<form class='needs-validation' name='form_ed_pacte' id='form_ed_pacte' method='post' action='vista_paciente.php' onsubmit='return confirmarAltaPaciente();' novalidate>
 		<input type="hidden" name="rut_e" id="rut_e" value="<?php echo $fila['rut'];?>">
 
 			</ul>
@@ -296,7 +296,7 @@ require("head.php");
 <?php
 			    			echo "<span class='float-end'>
 		<div class='pt-1 ps-3 me-3 d-flex justify-content-end'>
-		<button class='btn btn-app-primary pain-action-btn' type='submit' name='editar' value='Submit' onclick='envioForm_ed_pacte()'>Guardar</button>
+		<button class='btn btn-app-primary pain-action-btn' type='submit' name='editar' value='Submit' onclick='return envioForm_ed_pacte(event)'>Guardar</button>
 		</div>
 		</span>"; ?>
 			    </div>
@@ -322,7 +322,30 @@ require("head.php");
 		$conexion->close();
 
 	?>
-<script>function envioForm_ed_pacte() {document.getElementById('form_ed_pacte').submit(); }</script>
+<script>
+function envioForm_ed_pacte(event) {
+	const form = document.getElementById('form_ed_pacte');
+	if (form) {
+		if (event) {
+			event.preventDefault();
+		}
+		if (confirmarAltaPaciente()) {
+			form.submit();
+		}
+	}
+
+	return false;
+}
+
+function confirmarAltaPaciente() {
+	const alta = document.querySelector('input[name="de_alta_e"]');
+	if (!alta || !alta.checked) {
+		return true;
+	}
+
+	return confirm('Está a punto de dar de alta a este paciente. Esta acción no se puede deshacer. ¿Desea continuar?');
+}
+</script>
 
 
 <script>
