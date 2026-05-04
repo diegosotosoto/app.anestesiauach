@@ -30,9 +30,14 @@ body.theme-dark .correos-disclaimer-card,
 body.theme-dark .correo-item,
 body.theme-dark .about-card,
 body.theme-dark .about-feature-card,
-body.theme-dark .about-share-card{
+body.theme-dark .about-share-card,
+body.theme-dark .team-member{
   background:var(--app-card) !important;
   color:var(--app-text) !important;
   border-color:var(--app-border) !important;
   background-image:none !important;
+}
+
+body.theme-dark .team-role{
+  color:var(--app-blue) !important;
 }
