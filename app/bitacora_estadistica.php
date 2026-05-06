@@ -112,13 +112,13 @@ $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
   $select_name="SELECT `nombre_usuario`,`link_minicex`, `ui_icono`, `ui_icono_color`, `admin`  FROM `usuarios_dolor` WHERE `email_usuario` = '$autor_b' ";
   $name_query=$conexion->query($select_name);
   $name_row=$name_query->fetch_assoc();
-  $icono_estadistica = app_render_user_inline_icon($name_row);
+  $icono_estadistica = app_render_user_inline_icon($name_row, 'app-inline-user-icon-large app-inline-user-icon-large-tight');
 
 
 ?>
       <div class="bitacora-summary-card">
         <div class="bitacora-summary-header">
-          <h4 class='mb-1 fw-bold pt-2'>Estadística de <?php echo $icono_estadistica.app_h_text($name_row['nombre_usuario']); ?></h4>
+          <h4 class='mb-1 fw-bold pt-2'>Estadística de <?php echo ' ' . $icono_estadistica . ' ' . app_h_text($name_row['nombre_usuario']); ?></h4>
         </div>
         <div class="bitacora-summary-body">
           <div class="d-flex justify-content-between align-items-center gap-3 flex-wrap">

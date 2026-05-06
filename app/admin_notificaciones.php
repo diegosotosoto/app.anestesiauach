@@ -334,6 +334,7 @@ $grupos_disponibles = [
     'becad_' => 'Becad@ Anestesia',
     'becad_otro' => 'Becad@ Pasante',
     'intern_' => 'Internos',
+    'external_' => 'Externos',
     'todos_alumnos' => 'Todos los alumnos',
     'todos_verificados' => 'Todos los verificados'
 ];
@@ -677,6 +678,9 @@ if(isset($_POST['crear_notificacion']) && $_POST['crear_notificacion'] === '1'){
                     case 'intern_':
                         $where_grupo = "`verified` = 1 AND `intern_` = 1";
                         break;
+                    case 'external_':
+                        $where_grupo = "`verified` = 1 AND `external_` = 1";
+                        break;
                     case 'todos_alumnos':
                         $where_grupo = "`verified` = 1 AND (`becad_` = 1 OR `becad_otro` = 1 OR `intern_` = 1)";
                         break;
@@ -749,7 +753,7 @@ if(isset($_POST['crear_notificacion']) && $_POST['crear_notificacion'] === '1'){
 */
 $usuarios = [];
 $res_usuarios = $conexion->query("
-    SELECT `ID`,`nombre_usuario`,`email_usuario`,`admin`,`staff_`,`intern_`,`becad_`,`becad_otro`
+    SELECT `ID`,`nombre_usuario`,`email_usuario`,`admin`,`staff_`,`intern_`,`becad_`,`becad_otro`,`external_`
     FROM `usuarios_dolor`
     WHERE `verified` = 1
     ORDER BY `nombre_usuario` ASC

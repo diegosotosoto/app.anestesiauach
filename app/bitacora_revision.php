@@ -62,8 +62,10 @@ require("head.php");
       <div class="bitacora-entry-card">
         <div class="bitacora-entry-body">
           <form action='bitacora_estadistica.php' method='post'>
-            <div class="bitacora-field-label">Becados de Anestesia</div>
-            <div class="d-flex justify-content-between align-items-center gap-3 bitacora-inline">
+            <div class="bitacora-field">
+              <div class='bitacora-label-row'>
+                <div class='bitacora-label'>Becados de Anestesia</div>
+              </div>
               <select class="form-select bitacora-select" id="revision" name="revision" required>
                 <option value=""></option>
                 <?php
@@ -75,7 +77,9 @@ require("head.php");
                   }
                 ?>
               </select>
-              <button class='btn btn-app-primary bitacora-action' type='submit' name='editar'>Revisar</button>
+              <div class="d-flex justify-content-end">
+                <button class='btn btn-app-primary bitacora-action mt-3' type='submit' name='editar'>Revisar</button>
+              </div>
             </div>
           </form>
         </div>
@@ -84,8 +88,10 @@ require("head.php");
       <div class="bitacora-entry-card">
         <div class="bitacora-entry-body">
           <form action='bitacora_estad_i.php' method='post'>
-            <div class="bitacora-field-label">Internos y Otros Becados</div>
-            <div class="d-flex justify-content-between align-items-center gap-3 bitacora-inline">
+            <div class="bitacora-field">
+              <div class='bitacora-label-row'>
+                <div class='bitacora-label'>Internos y Otros Becados</div>
+              </div>
               <select class="form-select bitacora-select" id="revision_i" name="revision_i" required>
                 <option value=""></option>
                 <?php
@@ -97,7 +103,9 @@ require("head.php");
                   }
                 ?>
               </select>
-              <button class='btn btn-app-primary bitacora-action' type='submit' name='editar'>Revisar</button>
+              <div class="d-flex justify-content-end">
+                <button class='btn btn-app-primary bitacora-action mt-3' type='submit' name='editar'>Revisar</button>
+              </div>
             </div>
           </form>
         </div>

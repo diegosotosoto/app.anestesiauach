@@ -230,7 +230,7 @@ function app_ui_get_user_icon_config($conexion) {
 
       if (in_array($icono, $iconos_permitidos, true)) {
         $config['icon'] = $icono;
-        $config['admin_icon'] = in_array($icono, app_ui_admin_user_icons(), true);
+        $config['admin_icon'] = $es_admin;
       }
 
       if (array_key_exists($color_key, $colores)) {
@@ -254,7 +254,7 @@ function app_render_user_inline_icon($user_row, $class = 'app-inline-user-icon')
 
   if (in_array($icono, $iconos_permitidos, true)) {
     $config['icon'] = $icono;
-    $config['admin_icon'] = in_array($icono, app_ui_admin_user_icons(), true);
+    $config['admin_icon'] = $es_admin;
   }
 
   if (array_key_exists($color_key, $colores)) {
@@ -448,7 +448,7 @@ if ($is_apuntes_context) {
 	<meta name="theme-color" content="#27458f">
 	<meta http-equiv="Cache-control" content="no-cache">
 	<title>App Anestesia UACH</title>
-	<link rel="icon" type="image/x-icon" href="<?= app_path('images/favicon.ico') ?>">
+	<link rel="icon" type="image/png" href="<?= app_path('images/logo192.png') ?>">
 	<link rel="manifest" href="<?= app_path('manifest.json') ?>"/>
 	<link rel="apple-touch-icon" href="<?= app_path('images/logo192.png') ?>"/>	
     <link href="<?= app_path('css/bootstrap.min.css') ?>" rel="stylesheet"/>
@@ -580,9 +580,11 @@ if ($is_apuntes_context) {
                         if(isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
                           $check_usuario=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
                           $staff_email=$conexion->real_escape_string($check_usuario);
-                          $con_users_b="SELECT `admin`, `staff_`, `intern_`, `becad_`, `becad_otro` FROM `usuarios_dolor` WHERE `email_usuario` = '$check_usuario'";
+                          $con_users_b="SELECT `admin`, `staff_`, `intern_`, `becad_`, `becad_otro`, `external_` FROM `usuarios_dolor` WHERE `email_usuario` = '$check_usuario'";
                           $users_b=$conexion->query($con_users_b);
                           $usuario=$users_b ? $users_b->fetch_assoc() : null;
+
+                          $is_external = $usuario && (int)$usuario['external_'] === 1;
 
 
                           $escribe_badge = "";
@@ -603,29 +605,43 @@ if ($is_apuntes_context) {
                             }
                           }
 
-                          echo "<div class='list-group'>
-                            <a href='".app_path('bitacora.php')."' class='sidebar-wa-btn list-group-item list-group-item-action fs-6'><i class='fa-solid fa-clipboard ps-2 pe-3 fs-3' data-wa-color='#CE2E2E'></i>Bitácora". $escribe_badge ."</a>
-                          </div>";
-
-                          echo "<div class='list-group'>
-                            <a href='".app_path('apuntes.php')."' class='sidebar-wa-btn list-group-item list-group-item-action fs-6'><i class='fa-solid fa-calculator ps-2 pe-3 fs-3' data-wa-color='#FFD700'></i>Cálculos y Apuntes</a>
-                          </div>";
-
+                          if ($is_external) {
                             echo "<div class='list-group'>
-                              <a href='".app_path('calendario.php')."' class='sidebar-wa-btn list-group-item list-group-item-action fs-6'><i class='fa-solid fa-calendar-days ps-2 pe-3 fs-3' data-wa-color='#3587ff'></i>Calendarios</a>
+                              <a href='".app_path('apuntes.php')."' class='sidebar-wa-btn list-group-item list-group-item-action fs-6'><i class='fa-solid fa-calculator ps-2 pe-3 fs-3' data-wa-color='#FFD700'></i>Cálculos y Apuntes</a>
                             </div>";
 
-                          echo "<div class='list-group'>
-                            <a href='".app_path('vista_epa.php')."' class='sidebar-wa-btn list-group-item list-group-item-action fs-6 text-break'><i class='fa-solid fa-clipboard ps-2 pe-3 fs-3' data-wa-color='#FF5A00'></i>E. Preanestésica</a>
-                          </div>";
+                            echo "<div class='list-group'>
+                              <a href='".app_path('links.php')."' class='sidebar-wa-btn list-group-item list-group-item-action fs-6'><i class='fa-solid fa-link ps-2 pe-3 fs-3' data-wa-color='#44B2FF'></i>Links Útiles</a>
+                            </div>";
+                          } else {
+                            echo "<div class='list-group'>
+                              <a href='".app_path('bitacora.php')."' class='sidebar-wa-btn list-group-item list-group-item-action fs-6'><i class='fa-solid fa-clipboard ps-2 pe-3 fs-3' data-wa-color='#CE2E2E'></i>Bitácora". $escribe_badge ."</a>
+                            </div>";
 
-                          echo "<div class='list-group'>
-                            <a href='".app_path('telefonos.php')."' class='sidebar-wa-btn list-group-item list-group-item-action fs-6'><i class='fa-solid fa-phone ps-2 pe-3 fs-3' data-wa-color='#6405d0'></i>Teléfonos Frecuentes</a>
-                          </div>";
+                            echo "<div class='list-group'>
+                              <a href='".app_path('apuntes.php')."' class='sidebar-wa-btn list-group-item list-group-item-action fs-6'><i class='fa-solid fa-calculator ps-2 pe-3 fs-3' data-wa-color='#FFD700'></i>Cálculos y Apuntes</a>
+                            </div>";
 
-                          echo "<div class='list-group'>
-                            <a href='".app_path('correos.php')."' class='sidebar-wa-btn list-group-item list-group-item-action fs-6'><i class='fa-solid fa-envelope ps-2 pe-3 fs-3' data-wa-color='#29A09B'></i>Directorio Correos</a>
-                          </div>";
+                              echo "<div class='list-group'>
+                                <a href='".app_path('calendario.php')."' class='sidebar-wa-btn list-group-item list-group-item-action fs-6'><i class='fa-solid fa-calendar-days ps-2 pe-3 fs-3' data-wa-color='#3587ff'></i>Calendarios</a>
+                                </div>";
+
+                            echo "<div class='list-group'>
+                              <a href='".app_path('vista_epa.php')."' class='sidebar-wa-btn list-group-item list-group-item-action fs-6 text-break'><i class='fa-solid fa-clipboard ps-2 pe-3 fs-3' data-wa-color='#FF5A00'></i>E. Preanestésica</a>
+                            </div>";
+
+                            echo "<div class='list-group'>
+                              <a href='".app_path('telefonos.php')."' class='sidebar-wa-btn list-group-item list-group-item-action fs-6'><i class='fa-solid fa-phone ps-2 pe-3 fs-3' data-wa-color='#6405d0'></i>Teléfonos Frecuentes</a>
+                            </div>";
+
+                            echo "<div class='list-group'>
+                              <a href='".app_path('correos.php')."' class='sidebar-wa-btn list-group-item list-group-item-action fs-6'><i class='fa-solid fa-envelope ps-2 pe-3 fs-3' data-wa-color='#29A09B'></i>Directorio Correos</a>
+                            </div>";
+
+                            echo "<div class='list-group'>
+                              <a href='https://uachcl-my.sharepoint.com/:f:/r/personal/docentes_anestesia_uach_cl/Documents/Reuniones%20Clinicas?e=5%3a1d4a50a99f8747659eaf40e9bd942188&sharingv2=true&fromShare=true&at=9' target='_blank' class='sidebar-wa-btn list-group-item list-group-item-action fs-6'><i class='fa-solid fa-chalkboard-user ps-2 pe-3 fs-3' data-wa-color='#D9027D'></i>Reuniones Clínicas</a>
+                            </div>";
+                          }
 
                         }
                       ?>
@@ -711,10 +727,6 @@ if ($is_apuntes_context) {
                             }
                           }
                         ?>
-                      </div>
-
-                      <div class='list-group'>
-                        <a href='https://uachcl-my.sharepoint.com/:f:/r/personal/docentes_anestesia_uach_cl/Documents/Reuniones%20Clinicas?e=5%3a1d4a50a99f8747659eaf40e9bd942188&sharingv2=true&fromShare=true&at=9' target='_blank' class='sidebar-wa-btn list-group-item list-group-item-action fs-6'><i class='fa-solid fa-chalkboard-user ps-2 pe-3 fs-3' data-wa-color="#D9027D"></i>Reuniones Clínicas</a>
                       </div>
 
                       <div class='list-group'>

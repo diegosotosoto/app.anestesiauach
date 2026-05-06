@@ -10,3 +10,4 @@ app/secure_config/
 app/.DS_Store
 app/.DS_Store
 .htaccessNOT
+app/google_login_config.example.php

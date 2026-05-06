@@ -13,6 +13,21 @@
   $conexion->set_charset("utf8");
 
   $alerta_login = "";
+  $google_client_id = "";
+  $google_config_path = __DIR__ . "/secure_config/google_login_config.php";
+  if(file_exists($google_config_path)){
+    require_once $google_config_path;
+    if(defined('APP_GOOGLE_CLIENT_ID')){
+      $google_client_id = trim((string)APP_GOOGLE_CLIENT_ID);
+    }
+  }
+
+  if(!empty($_GET['google_error'])){
+    $alerta_login = "<div class='alert alert-danger alert-dismissible fade show'>
+      <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
+      <strong>Info!</strong> No fue posible iniciar sesión con Google. Intenta nuevamente o contacta al administrador.
+    </div>";
+  }
 
   //LOGIN NORMAL DE USUARIO YA REGISTRADO
   if(!empty($_POST['email_usuario_v'])){
@@ -207,10 +222,35 @@
           <i class="fa-solid fa-right-to-bracket pe-2"></i>Ingresar
         </button>
       </div>
+
+      <?php if($google_client_id !== ''){ ?>
+        <div class="auth-helper auth-full text-center pt-3 pb-2">o ingresa con Google</div>
+        <div class="google-login-wrap">
+          <div id="g_id_onload"
+              data-client_id="<?= htmlspecialchars($google_client_id, ENT_QUOTES, 'UTF-8') ?>"
+              data-context="signin"
+              data-ux_mode="popup"
+              data-login_uri="google_login_callback.php"
+              data-auto_prompt="false">
+          </div>
+          <div class="g_id_signin"
+              data-type="standard"
+              data-shape="pill"
+              data-theme="outline"
+              data-text="signin_with"
+              data-size="large"
+              data-logo_alignment="left">
+          </div>
+        </div>
+      <?php } ?>
     </div>
   </div>
 </section>
           </form>
+
+          <?php if($google_client_id !== ''){ ?>
+            <script src="https://accounts.google.com/gsi/client" async defer></script>
+          <?php } ?>
 
           <script type="text/javascript">
             function mostrar() {

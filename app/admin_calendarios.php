@@ -262,9 +262,10 @@ if ($resCalendarios) {
 }
 
 $usuarios = array();
-$resUsuarios = $conexion->query("SELECT `ID`, `nombre_usuario`, `email_usuario`, `admin`, `staff_`, `intern_`, `becad_`, `becad_otro`, `anio_residencia`, `verified`
+$resUsuarios = $conexion->query("SELECT `ID`, `nombre_usuario`, `email_usuario`, `admin`, `staff_`, `intern_`, `becad_`, `becad_otro`, `anio_residencia`, `verified`, `external_`
     FROM `usuarios_dolor`
     WHERE `verified` = 1
+      AND (`external_` IS NULL OR `external_` <> 1)
     ORDER BY `becad_` DESC, `anio_residencia` ASC, `nombre_usuario` ASC");
 if ($resUsuarios) {
     while ($row = $resUsuarios->fetch_assoc()) {

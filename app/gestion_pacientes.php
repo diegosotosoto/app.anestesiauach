@@ -249,26 +249,26 @@ $total_altas = intval($stats['altas'] ?? 0);
         <?php endif; ?>
 
         <section class="stats-grid">
-            <div class="stat-card">
+            <a class="stat-card stat-filter-btn <?php echo $filtro_estado === 'todos' ? 'is-active' : ''; ?>" href="gestion_pacientes.php?estado=todos<?php echo $q !== '' ? '&q=' . urlencode($q) : ''; ?>">
                 <div>
                     <div class="stat-value"><?php echo $total_pacientes; ?></div>
                     <div class="stat-label">Total</div>
                 </div>
-            </div>
+            </a>
 
-            <div class="stat-card">
+            <a class="stat-card stat-filter-btn <?php echo $filtro_estado === 'activos' ? 'is-active' : ''; ?>" href="gestion_pacientes.php?estado=activos<?php echo $q !== '' ? '&q=' . urlencode($q) : ''; ?>">
                 <div>
                     <div class="stat-value"><?php echo $total_activos; ?></div>
                     <div class="stat-label">Seguimiento<br>activo</div>
                 </div>
-            </div>
+            </a>
 
-            <div class="stat-card">
+            <a class="stat-card stat-filter-btn <?php echo $filtro_estado === 'alta' ? 'is-active' : ''; ?>" href="gestion_pacientes.php?estado=alta<?php echo $q !== '' ? '&q=' . urlencode($q) : ''; ?>">
                 <div>
                     <div class="stat-value"><?php echo $total_altas; ?></div>
                     <div class="stat-label">De alta</div>
                 </div>
-            </div>
+            </a>
         </section>
 
         <section class="admin-panel">

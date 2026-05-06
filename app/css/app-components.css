@@ -82,6 +82,11 @@
   color: var(--app-blue-dark);
 }
 
+body.theme-dark .app-hero-admin .app-hero-pill{
+  background: rgba(138, 180, 255, .18);
+  color: #dbeafe;
+}
+
 .app-card{
   background: var(--app-card);
   border: 1px solid var(--app-border);
@@ -2378,6 +2383,12 @@
   color: #6b7280;
   font-size: .88rem;
   line-height: 1.45;
+}
+
+.google-login-wrap{
+  display: flex;
+  justify-content: center;
+  width: 100%;
   text-align: center;
 }
 
@@ -2667,10 +2678,6 @@ input[type=number]{
     gap: .8rem;
   }
 
-  .bitacora-action{
-    width: 100%;
-  }
-
   .bitacora-label-row{
     flex-direction: column;
     align-items: flex-start;
@@ -2715,6 +2722,12 @@ input[type=number]{
   .login-form-box .pt-3{
     grid-column: 1 / -1;
     padding-top: 6px !important;
+  }
+
+  .login-form-box .auth-helper,
+  .google-login-wrap{
+    grid-column: 1 / -1;
+    justify-self: center;
   }
 }
 

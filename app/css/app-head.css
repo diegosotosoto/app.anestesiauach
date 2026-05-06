@@ -889,6 +889,8 @@ background:var(--app-gradient) !important;
 .sidebar-desktop-notif-corner-left{left:0;}
 .sidebar-desktop-notif-corner-right{right:0;}
 .app-inline-user-icon{width:28px!important;height:28px!important;min-width:28px!important;border-radius:999px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;color:#fff!important;font-size:.78rem!important;line-height:1!important;margin:0 8px 0 0!important;vertical-align:middle!important;box-shadow:0 4px 10px rgba(39,69,143,.14);}
+.app-inline-user-icon-large{width:46px!important;height:46px!important;min-width:46px!important;border-radius:999px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;color:#fff!important;font-size:1.15rem!important;line-height:1!important;margin:0 16px 0 16px!important;vertical-align:middle!important;box-shadow:0 6px 16px rgba(39,69,143,.14);}
+.app-inline-user-icon-large-tight{margin:0 8px 0 16px!important;}
 .app-inline-user-icon-admin{border:2px solid #f59e0b!important;box-shadow:0 0 0 2px rgba(245,158,11,.22),0 4px 10px rgba(39,69,143,.14)!important;}
 #offcanvasExampleLabel>hr,#offcanvasExampleLabel hr{display:none;}
 #offcanvasExampleLabel .list-group-item-action{position:relative;display:flex!important;align-items:center!important;width:100%!important;min-height:62px;margin:0!important;padding:8px 12px 8px 6px!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:transparent!important;color:#111827!important;text-align:left!important;font-weight:650;line-height:1.2;gap:0;}
@@ -1000,6 +1002,13 @@ background:var(--app-gradient) !important;
   background:var(--app-blue)!important;
   color:#ffffff!important;
   filter:brightness(1.04);
+}
+
+@media (min-width:768px){
+  body:not(.theme-dark):not(.ui-nocturno) .sidebar-wa-user-card .btn-icon-topbar{
+    border:2px solid rgba(255,255,255,.72)!important;
+    box-shadow:0 0 0 3px rgba(255,255,255,.18),0 6px 16px rgba(39,69,143,.14)!important;
+  }
 }
 
 .notif-dropdown-wrap{

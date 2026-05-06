@@ -118,7 +118,7 @@ $es_admin_ui = (int)($usuario['admin'] ?? 0) === 1;
 $iconos_permitidos_usuario = $es_admin_ui ? array_merge(ui_iconos_validos(), ui_iconos_admin_validos()) : ui_iconos_validos();
 $icono_actual = in_array((string)($usuario['ui_icono'] ?? 'fa-user-doctor'), $iconos_permitidos_usuario, true) ? (string)$usuario['ui_icono'] : 'fa-user-doctor';
 $icono_color_actual = in_array((string)($usuario['ui_icono_color'] ?? 'green'), ui_colores_icono_validos(), true) ? (string)$usuario['ui_icono_color'] : 'green';
-$icono_actual_admin = in_array($icono_actual, ui_iconos_admin_validos(), true);
+$icono_actual_admin = $es_admin_ui;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $accion = (string)($_POST['config_action'] ?? '');
@@ -153,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $nav_actual = $nav_post;
                     $icono_actual = $icono_post;
                     $icono_color_actual = $icono_color_post;
-                    $icono_actual_admin = in_array($icono_actual, ui_iconos_admin_validos(), true);
+                    $icono_actual_admin = $es_admin_ui;
                     $mensaje_ok = 'Preferencias de interfaz guardadas.';
                 } else {
                     $mensaje_error = 'No fue posible guardar las preferencias.';
@@ -269,7 +269,7 @@ $usuario = $usuario_configuracion;
             </div>
         </section>
 
-        <form method="post" action="configuracion_ui.php" class="app-card ui-settings-card" autocomplete="off">
+        <form method="post" action="configuracion_ui.php" class="app-card ui-settings-card" id="passwordChangeForm" autocomplete="off">
             <input type="hidden" name="config_action" value="password">
             <div class="app-card-title">
                 <span class="app-icon-circle"><i class="fa-solid fa-key"></i></span>
@@ -279,9 +279,33 @@ $usuario = $usuario_configuracion;
                 </div>
             </div>
             <div class="login-form-box">
-                <div class="mb-3"><label class="form-label text-muted">Contraseña actual</label><input type="password" name="pass_actual" class="form-control login-input" required></div>
-                <div class="mb-3"><label class="form-label text-muted">Nueva contraseña</label><input type="password" name="pass_nueva" class="form-control login-input" required pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*_=+\-?]).{8,12}$"></div>
-                <div class="mb-3"><label class="form-label text-muted">Repetir nueva contraseña</label><input type="password" name="pass_nueva2" class="form-control login-input" required></div>
+                <div class="mb-3">
+                    <label class="form-label text-muted">Contraseña actual</label>
+                    <div class="input-group password-toggle-group">
+                        <input type="password" name="pass_actual" class="form-control login-input" required>
+                        <button class="btn btn-outline-secondary password-toggle-btn" type="button" aria-label="Mostrar contraseña">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-muted">Nueva contraseña</label>
+                    <div class="input-group password-toggle-group">
+                        <input type="password" name="pass_nueva" class="form-control login-input" required pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*_=+\-?]).{8,12}$">
+                        <button class="btn btn-outline-secondary password-toggle-btn" type="button" aria-label="Mostrar contraseña">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label text-muted">Repetir nueva contraseña</label>
+                    <div class="input-group password-toggle-group">
+                        <input type="password" name="pass_nueva2" class="form-control login-input" required>
+                        <button class="btn btn-outline-secondary password-toggle-btn" type="button" aria-label="Mostrar contraseña">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
                 <div class="auth-helper auth-full">Contraseña de 8 a 12 caracteres, incluyendo una mayúscula, un número y un símbolo (!@#$%^&*_=+-)</div>
                 <div class="admin-actions auth-full"><button type="submit" class="btn btn-app-primary"><i class="fa-solid fa-floppy-disk"></i> Cambiar contraseña</button></div>
             </div>
@@ -528,6 +552,23 @@ body.theme-dark .ui-color-square input:checked + span {
     border-color: #93c5fd;
     box-shadow: 0 0 0 3px rgba(147, 197, 253, .2);
 }
+
+.password-toggle-group .login-input {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.password-toggle-btn {
+    border-top-right-radius: 14px;
+    border-bottom-right-radius: 14px;
+    min-width: 48px;
+}
+
+body.theme-dark .password-toggle-btn {
+    background: #172033;
+    color: #dbeafe;
+    border-color: var(--app-border);
+}
 </style>
 
 <script>
@@ -536,6 +577,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const headerAvatar = document.getElementById('uiUserHeaderAvatar');
     const iconInputs = document.querySelectorAll('input[name="ui_icono"]');
     const colorInputs = document.querySelectorAll('input[name="ui_icono_color"]');
+    const isAdmin = <?= $es_admin_ui ? 'true' : 'false' ?>;
 
     function updateAvatarPreview() {
         if (!preview && !headerAvatar) return;
@@ -548,13 +590,13 @@ document.addEventListener('DOMContentLoaded', function() {
         if (preview) {
             preview.style.background = color;
             preview.innerHTML = '<i class="fa-solid ' + icon.replace(/[^a-z0-9-]/gi, '') + '"></i>';
-            preview.classList.toggle('ui-avatar-preview-admin', icon === 'fa-hat-wizard' || icon === 'fa-crown');
+            preview.classList.toggle('ui-avatar-preview-admin', isAdmin);
         }
 
         if (headerAvatar) {
             headerAvatar.style.background = color;
             headerAvatar.innerHTML = '<i class="fa-solid ' + icon.replace(/[^a-z0-9-]/gi, '') + '"></i>';
-            headerAvatar.classList.toggle('ui-user-header-avatar-admin', icon === 'fa-hat-wizard' || icon === 'fa-crown');
+            headerAvatar.classList.toggle('ui-user-header-avatar-admin', isAdmin);
         }
     }
 
@@ -565,6 +607,47 @@ document.addEventListener('DOMContentLoaded', function() {
     colorInputs.forEach(function(input) {
         input.addEventListener('change', updateAvatarPreview);
     });
+
+    document.querySelectorAll('.password-toggle-btn').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const group = this.closest('.password-toggle-group');
+            const input = group ? group.querySelector('input') : null;
+            const icon = this.querySelector('i');
+
+            if (!input || !icon) return;
+
+            const showPassword = input.type === 'password';
+            input.type = showPassword ? 'text' : 'password';
+            icon.classList.toggle('fa-eye', !showPassword);
+            icon.classList.toggle('fa-eye-slash', showPassword);
+            this.setAttribute('aria-label', showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña');
+        });
+    });
+
+    const passwordForm = document.getElementById('passwordChangeForm');
+    if (passwordForm) {
+        const newPassword = passwordForm.querySelector('input[name="pass_nueva"]');
+        const repeatPassword = passwordForm.querySelector('input[name="pass_nueva2"]');
+
+        function validatePasswordMatch() {
+            if (!newPassword || !repeatPassword) return true;
+            const matches = repeatPassword.value === '' || newPassword.value === repeatPassword.value;
+            repeatPassword.setCustomValidity(matches ? '' : 'Las contraseñas no coinciden.');
+            return matches;
+        }
+
+        if (newPassword && repeatPassword) {
+            newPassword.addEventListener('input', validatePasswordMatch);
+            repeatPassword.addEventListener('input', validatePasswordMatch);
+            passwordForm.addEventListener('submit', function(event) {
+                if (!validatePasswordMatch()) {
+                    event.preventDefault();
+                    repeatPassword.reportValidity();
+                    repeatPassword.focus();
+                }
+            });
+        }
+    }
 });
 </script>
 

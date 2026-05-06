@@ -265,6 +265,10 @@ body.theme-dark .epa-accordion-button{
   border-color: var(--app-border) !important;
 }
 
+body.theme-dark .bitacora-summary-body .text-black-50{
+  color: #b6c3d6 !important;
+}
+
 body.theme-dark .bitacora-card-header-danger,
 body.theme-dark .bitacora-entry-header-danger{
   background: #3a1720 !important;
@@ -782,6 +786,11 @@ body.ui-nocturno .notif-dropdown-subtitle{
 body.theme-dark .notif-dropdown-body,
 body.ui-nocturno .notif-dropdown-body{
   background: var(--app-card) !important;
+}
+body.theme-dark #notif-empty-state,
+body.ui-nocturno #notif-empty-state{
+  background: var(--app-card) !important;
+  color: var(--app-muted) !important;
 }
 body.theme-dark .notif-dropdown-footer,
 body.ui-nocturno .notif-dropdown-footer{

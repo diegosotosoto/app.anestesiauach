@@ -10,7 +10,7 @@
 
   require("head.php");
 
-  $consulta_corr="SELECT * FROM `usuarios_dolor` WHERE `verified` = '1' ORDER BY `nombre_usuario` ASC";
+  $consulta_corr="SELECT * FROM `usuarios_dolor` WHERE `verified` = '1' AND (`external_` IS NULL OR `external_` <> '1') ORDER BY `nombre_usuario` ASC";
   $busqueda_corr=$conexion->query($consulta_corr);
 
 ?>
