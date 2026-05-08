@@ -1,19 +1,19 @@
 <?php
-//Ve si está activa la cookie o redirige al login
-if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
-  header('Location: login.php');
-}
-
 //Conexión
 require("conectar.php");
+require_once __DIR__ . '/app_security.php';
 $conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
 $conexion->set_charset("utf8");
 
+app_require_login($conexion, 'login.php');
+
 //redirección segun nivel de usuario
-$check_usuario=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
-$con_users_b="SELECT `admin`, `staff_`, `intern_`, `becad_`, `becad_otro` FROM `usuarios_dolor` WHERE `email_usuario` = '$check_usuario' ";
-$users_b=$conexion->query($con_users_b);
-$usuario=$users_b->fetch_assoc();
+$usuario = app_current_user($conexion);
+if(!$usuario){
+  header('Location: login.php');
+  exit;
+}
+
 if($usuario['admin']==1){
   // CONTINUA
 } elseif ($usuario['staff_']==1) {
@@ -60,7 +60,7 @@ if(!empty($_POST['bitacora_autoriza'])){
 
   if(!empty($_POST['comentarios_b_a'])){
     $comentario_b_a = $conexion->real_escape_string($_POST['comentarios_b_a']);
-    $nombre_feedback = $conexion->real_escape_string(app_decode_text($_COOKIE['hkjh41lu4l1k23jhlkj14']));
+    $nombre_feedback = $conexion->real_escape_string(app_decode_text($usuario['nombre_usuario']));
     $feedback_b = $nombre_feedback.": ".$comentario_b_a;
     $consulta_fb="UPDATE `bitacora_proced` SET `feedback_b`= '$feedback_b' WHERE `id_b`='$id_b'";
     $escribir_fb=$conexion->query($consulta_fb);
@@ -85,7 +85,7 @@ if(!empty($_POST['bitacora_autoriza_i'])){
 
   if(!empty($_POST['comentarios_i_a'])){
     $comentario_i_a = $conexion->real_escape_string($_POST['comentarios_i_a']);
-    $nombre_feedback = $conexion->real_escape_string(app_decode_text($_COOKIE['hkjh41lu4l1k23jhlkj14']));
+    $nombre_feedback = $conexion->real_escape_string(app_decode_text($usuario['nombre_usuario']));
     $feedback_i = $nombre_feedback.": ".$comentario_i_a;
     $consulta_fbi="UPDATE `bitacora_internos` SET `feedback_i`= '$feedback_i' WHERE `id_i`='$id_i'";
     $escribir_fbi=$conexion->query($consulta_fbi);
@@ -122,7 +122,7 @@ if(!empty($_POST['bitacora_autoriza_i'])){
       </ul>
 
 <?php
-$staff = $_COOKIE['hkjh41lu4l1k23jhlkj13'];
+$staff = $usuario['email_usuario'];
 $staff = $conexion->real_escape_string($staff);
 
 $con_users = "SELECT * FROM `bitacora_proced` WHERE `aprobado_staff_b` = '0' AND `staff_b` = '$staff'";

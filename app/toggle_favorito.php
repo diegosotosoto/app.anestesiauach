@@ -1,6 +1,7 @@
 <?php
 
 require("conectar.php");
+require_once __DIR__ . '/app_security.php';
 
 $conexion = new mysqli($db_host, $db_usuario, $db_contra, $db_nombre);
 
@@ -8,77 +9,15 @@ $conexion->set_charset("utf8mb4");
 
 header('Content-Type: application/json; charset=utf-8');
 
-if (!isset($_COOKIE['hkjh41lu4l1k23jhlkj13']) || $_COOKIE['hkjh41lu4l1k23jhlkj13'] === '') {
+$usuario_actual = app_current_user($conexion);
 
+if (!$usuario_actual) {
     http_response_code(401);
-
-    echo json_encode([
-
-        'ok' => false,
-
-        'message' => 'Usuario no autenticado'
-
-    ]);
-
+    echo json_encode(['ok' => false, 'message' => 'Usuario no autenticado']);
     exit;
-
 }
 
-$email_usuario_cookie = trim($_COOKIE['hkjh41lu4l1k23jhlkj13']);
-
-$sql_usuario = "SELECT ID
-
-                FROM usuarios_dolor
-
-                WHERE email_usuario = ?
-
-                  AND verified = 1
-
-                LIMIT 1";
-
-$stmt_usuario = $conexion->prepare($sql_usuario);
-
-if (!$stmt_usuario) {
-
-    http_response_code(500);
-
-    echo json_encode([
-
-        'ok' => false,
-
-        'message' => 'Error preparando usuario'
-
-    ]);
-
-    exit;
-
-}
-
-$stmt_usuario->bind_param("s", $email_usuario_cookie);
-
-$stmt_usuario->execute();
-
-$res_usuario = $stmt_usuario->get_result();
-
-if (!$fila_usuario = $res_usuario->fetch_assoc()) {
-
-    http_response_code(403);
-
-    echo json_encode([
-
-        'ok' => false,
-
-        'message' => 'Usuario inválido'
-
-    ]);
-
-    exit;
-
-}
-
-$usuario_id = (int)$fila_usuario['ID'];
-
-$stmt_usuario->close();
+$usuario_id = (int)$usuario_actual['ID'];
 
 $nota_id = isset($_POST['nota_id']) ? (int)$_POST['nota_id'] : 0;
 

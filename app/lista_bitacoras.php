@@ -1,12 +1,11 @@
 <?php
-//Ve si está activa la cookie o redirige al login
-if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
-  header('Location: login.php');
-}
 //Conexión
 require("conectar.php");
+require_once __DIR__ . '/app_security.php';
 $conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
 $conexion->set_charset("utf8");
+
+app_require_login($conexion, 'login.php');
 
 //VARIABLES
 $boton_toggler="<a class='d-sm-block d-sm-none admin-back-btn' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
@@ -50,7 +49,7 @@ function lista_bitacoras_resuelve_staff_email($conexion, $staff_raw){
 //Guarda la Bitácora
 if(isset($_POST['rut_b']) && $_POST['rut_b'] !== ''){
 
-  $autor_b=strtolower(urldecode($_COOKIE['hkjh41lu4l1k23jhlkj13']));
+  $autor_b=strtolower(urldecode($app_current_user['email_usuario']));
   $rut_b=htmlentities(addslashes(strtoupper($_POST['rut_b'])));
   $ficha_b=htmlentities(addslashes($_POST['ficha_b']));
   $edad_b=htmlentities(addslashes($_POST['edad_b']));

@@ -6,14 +6,12 @@
 
 	//Conexión
 	require("conectar.php");
+	require_once __DIR__ . '/app_security.php';
 	$conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
 	$conexion->set_charset("utf8");
 
 //Saca a los internos y otros becados del area de dolor
-	  $check_usuario=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
-	  $con_users_b="SELECT `intern_`, `becad_otro`   FROM `usuarios_dolor` WHERE `email_usuario` = '$check_usuario'";
-	  $users_b=$conexion->query($con_users_b);
-	  $usuario=$users_b->fetch_assoc();
+	  $usuario = app_current_user($conexion);
 	  if($usuario['intern_']==1 or $usuario['becad_otro']==1){
 	  	header('Location: login.php');
 	  }
@@ -77,7 +75,7 @@
 			$peso_e=htmlentities(addslashes($_POST['peso_e']));
 			$comentarios_e=htmlentities(addslashes($_POST['comentarios_e']));
 			$fecha_edicion_e=date("Y-m-d H:i:s",strtotime('-4 hour'));
-			$editor_e=ucwords(strtolower(app_decode_text($_COOKIE['hkjh41lu4l1k23jhlkj14'])));
+			$editor_e=ucwords(strtolower(app_decode_text($app_current_user['nombre_usuario'])));
 
 
 			if($_POST['de_alta_e']=="on"){

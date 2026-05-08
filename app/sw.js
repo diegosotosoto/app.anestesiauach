@@ -1,4 +1,4 @@
-const CACHE_NAME = "app-static-v3";
+const CACHE_NAME = "app-static-v5";
 
 const STATIC_ASSETS = [
   "/style.css",
@@ -18,12 +18,14 @@ const STATIC_ASSETS = [
   "/css/module-calendarios-notificaciones.css",
   "/css/module-epa.css",
   "/css/module-otros.css",
+  "/css/bitacora-rapido.css",
   "/js/bootstrap.bundle.min.js",
   "/js/jquery-3.6.1.min.js",
   "/js/app-core.js",
   "/images/logo192.png",
   "/images/IMG0001.jpeg",
-  "/images/austral.png"
+  "/images/austral.png",
+  "/bitacora_ingreso.php"
 ];
 
 self.addEventListener("install", (event) => {
@@ -53,10 +55,31 @@ self.addEventListener("fetch", (event) => {
 
   const requestUrl = new URL(event.request.url);
   const isCss = requestUrl.pathname.endsWith(".css");
+  const isPhp = requestUrl.pathname.endsWith(".php");
 
   if (isCss) {
     event.respondWith(
       caches.match(event.request, { ignoreSearch: true }).then((cachedResponse) => {
+        const networkFetch = fetch(event.request)
+          .then((networkResponse) => {
+            if (networkResponse && networkResponse.ok) {
+              const responseClone = networkResponse.clone();
+              caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+            }
+            return networkResponse;
+          })
+          .catch(() => cachedResponse);
+
+        return cachedResponse || networkFetch;
+      })
+    );
+    return;
+  }
+
+  // Stale-while-revalidate para archivos PHP dinámicos
+  if (isPhp) {
+    event.respondWith(
+      caches.match(event.request).then((cachedResponse) => {
         const networkFetch = fetch(event.request)
           .then((networkResponse) => {
             if (networkResponse && networkResponse.ok) {

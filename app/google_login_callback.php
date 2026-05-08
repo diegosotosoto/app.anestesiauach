@@ -6,6 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 require('conectar.php');
 require_once __DIR__ . '/app_text_helpers.php';
+require_once __DIR__ . '/app_security.php';
 
 $config_path = __DIR__ . '/secure_config/google_login_config.php';
 if (!file_exists($config_path)) {
@@ -108,8 +109,7 @@ if (!$user) {
 }
 
 $nombre_cookie = function_exists('app_decode_text') ? app_decode_text($user['nombre_usuario']) : (string)$user['nombre_usuario'];
-setcookie('hkjh41lu4l1k23jhlkj13', $email, time() + 60 * 60 * 24 * 30 * 6, '/');
-setcookie('hkjh41lu4l1k23jhlkj14', $nombre_cookie, time() + 60 * 60 * 24 * 30 * 6, '/');
+app_set_auth_session_for_email($conexion, $email);
 
 $conexion->close();
 header('Location: index.php');

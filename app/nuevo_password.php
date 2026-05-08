@@ -1,15 +1,14 @@
 <?php
-
-  //si existe la cookie se salta el area de login y va al index
-  if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
-  }else{
-    header('Location: index.php');
-  }
-
   //Conexión
   require("conectar.php");
+  require_once __DIR__ . '/app_security.php';
   $conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
   $conexion->set_charset("utf8");
+
+  //si existe la cookie se salta el area de login y va al index
+  if(app_is_authenticated($conexion)){
+    header('Location: index.php');
+  }
 
   $alerta_login = "";
 

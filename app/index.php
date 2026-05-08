@@ -39,7 +39,7 @@
 				$comentarios=htmlentities(addslashes($_POST['comentarios']));
 				$de_alta=0;
 				$fecha_creacion=date("Y-m-d H:i:s",strtotime('-4 hour'));
-				$creador=ucwords(strtolower(app_decode_text($_COOKIE['hkjh41lu4l1k23jhlkj14'])));
+				$creador=ucwords(strtolower(app_decode_text($app_current_user['nombre_usuario'])));
 
 
 				//PRIMERO BUSCA SI EL RUT EXISTE PREVIAMENTE Y ESTA ACTIVO

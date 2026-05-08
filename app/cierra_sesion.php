@@ -1,5 +1,6 @@
 <?php
-setcookie("hkjh41lu4l1k23jhlkj13",$galletita_mail, time()-1);
-setcookie("hkjh41lu4l1k23jhlkj14",$galletita_user, time()-1);
+require_once __DIR__ . "/app_security.php";
+
+app_clear_auth_cookies();
 header('Location: login.php');
 ?>

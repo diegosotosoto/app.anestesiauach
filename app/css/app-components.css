@@ -2223,6 +2223,14 @@ body.theme-dark .app-hero-admin .app-hero-pill{
   color: var(--app-blue);
 }
 
+.pendiente-count{
+  font-weight: 800;
+}
+
+.pendiente-count{
+  color: #f59e0b;
+}
+
 .bitacora-summary-card,
 .bitacora-chart-card{
   border: 0;

@@ -1,11 +1,11 @@
 <?php
+require("conectar.php");
+require_once __DIR__ . '/app_security.php';
 
-if (isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])) {
+if (app_is_authenticated($conexion)) {
     header('Location: index.php');
     exit();
 }
-
-require("conectar.php");
 
 $smtp_config_path = __DIR__ . '/secure_config/smtp_config.php';
 if (file_exists($smtp_config_path)) {

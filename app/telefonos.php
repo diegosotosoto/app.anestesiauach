@@ -1,8 +1,10 @@
 <?php
+require("conectar.php");
+require_once __DIR__ . '/app_security.php';
+$conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
+$conexion->set_charset("utf8");
 
-  if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
-    header('Location: login.php');
-  }
+app_require_login($conexion, 'login.php');
 
   $boton_toggler="<a class='d-sm-block d-sm-none admin-back-btn' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
   $titulo_navbar="<div class='text-white'>Teléfonos</div>";

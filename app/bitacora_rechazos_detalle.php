@@ -1,18 +1,19 @@
 <?php
-  if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
-    header('Location: login.php');
-  }
-
   //Conexión
   require("conectar.php");
+  require_once __DIR__ . '/app_security.php';
   $conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
   $conexion->set_charset("utf8");
 
+  app_require_login($conexion, 'login.php');
+
   //redirección segun nivel de usuario: BECADO
-  $check_usuario=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
-  $con_users_b="SELECT `admin`, `staff_`, `intern_`, `becad_`, `becad_otro` FROM `usuarios_dolor` WHERE `email_usuario` = '$check_usuario' ";
-  $users_b=$conexion->query($con_users_b);
-  $usuario=$users_b->fetch_assoc();
+  $usuario = app_current_user($conexion);
+  if(!$usuario){
+    header('Location: login.php');
+    exit;
+  }
+
   if($usuario['admin']==1){
     header('Location: bitacora_autoriza.php');
   } elseif ($usuario['staff_']==1) {
@@ -41,9 +42,9 @@
       <div class="bitacora-topbar">
         <div class="d-flex justify-content-between align-items-start gap-3">
           <div>
-            <div class="small opacity-75 mb-1">APP clínica • detalle de rechazos</div>
-            <h1 class="h4 mb-2">Detalle de Bitácoras Rechazadas</h1>
-            <div class="subtle text-white-50">Revisa los registros rechazados por un anestesiólogo específico y el feedback entregado para su corrección.</div>
+            <div class="small opacity-75 mb-1">APP clínica • detalle de rechazos y pendientes</div>
+            <h1 class="h4 mb-2">Detalle de Bitácoras</h1>
+            <div class="subtle text-white-50">Revisa los registros rechazados o pendientes por un anestesiólogo específico.</div>
           </div>
           <span class="pill bg-light text-dark">Becado</span>
         </div>
@@ -62,8 +63,9 @@
       </ul>
 
 <?php
-  $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
+  $autor_b=$app_current_user['email_usuario'];
   $staff_b=isset($_POST['staff_email']) ? trim($_POST['staff_email']) : (isset($_POST['nombre_staff']) ? trim($_POST['nombre_staff']) : '');
+  $estado=isset($_POST['estado']) ? trim($_POST['estado']) : 'rechazada';
   $staff_b=$conexion->real_escape_string($staff_b);
   $staff_label=$staff_b;
   if($staff_b){
@@ -77,19 +79,23 @@
   }
 
   if($staff_b){
+    $estado_valor = ($estado == 'rechazada') ? 3 : 0;
+    $estado_label = ($estado == 'rechazada') ? 'Rechazos' : 'Pendientes';
+    $header_class = ($estado == 'rechazada') ? 'bitacora-card-header-danger' : 'bitacora-card-header-warning';
     echo "<div class='bitacora-card'>
-            <div class='bitacora-card-header bitacora-card-header-danger'>
-              <h5 class='mb-1 fw-bold'>Rechazos asociados a ".$staff_label."</h5>
+            <div class='bitacora-card-header ".$header_class."'>
+              <h5 class='mb-1 fw-bold'>".$estado_label." asociados a ".$staff_label."</h5>
             </div>
           </div>";
   }
 
-  $con_users="SELECT * FROM `bitacora_proced` WHERE `aprobado_staff_b` = '3' AND `autor_b` = '$autor_b' AND `staff_b` = '$staff_b' ";
+  $con_users="SELECT * FROM `bitacora_proced` WHERE `aprobado_staff_b` = '$estado_valor' AND `autor_b` = '$autor_b' AND `staff_b` = '$staff_b' ";
   $tab_users=$conexion->query($con_users);
   $sin_bitacoras1=mysqli_num_rows($tab_users);
 
   if($sin_bitacoras1==0){
-    echo "<div class='bitacora-card'><div class='bitacora-card-body'><div class='empty-state'>No se encontraron rechazos para este staff.</div></div></div>";
+    $estado_mensaje = ($estado == 'rechazada') ? 'rechazos' : 'pendientes';
+    echo "<div class='bitacora-card'><div class='bitacora-card-body'><div class='empty-state'>No se encontraron ".$estado_mensaje." para este staff.</div></div></div>";
   }
 
   while($row_user=$tab_users->fetch_assoc()){

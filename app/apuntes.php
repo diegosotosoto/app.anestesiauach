@@ -1,15 +1,5 @@
 <?php
 
-// Validador login temporal por cookie
-
-if (!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])) {
-
-    header('Location: login.php');
-
-    exit;
-
-}
-
 $boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 
 $titulo_navbar = "<div class='text-white'>Cálculos y Apuntes</div>";
@@ -18,52 +8,18 @@ $boton_navbar = "<a></a><a></a>";
 
 require("head.php");
 
+app_require_login($conexion, 'login.php');
+
 ?>
 <?php
 
 /*
 
-  Resolver usuario actual desde cookie de email
+  Resolver usuario actual
 
 */
 
-$usuario_id = 0;
-
-if (isset($_COOKIE['hkjh41lu4l1k23jhlkj13']) && $_COOKIE['hkjh41lu4l1k23jhlkj13'] !== '') {
-
-    $email_usuario_cookie = trim($_COOKIE['hkjh41lu4l1k23jhlkj13']);
-
-    $sql_usuario = "SELECT ID
-
-                    FROM anestes1_hoja_dolor.usuarios_dolor
-
-                    WHERE email_usuario = ?
-
-                      AND verified = 1
-
-                    LIMIT 1";
-
-    $stmt_usuario = $conexion->prepare($sql_usuario);
-
-    if ($stmt_usuario) {
-
-        $stmt_usuario->bind_param("s", $email_usuario_cookie);
-
-        $stmt_usuario->execute();
-
-        $res_usuario = $stmt_usuario->get_result();
-
-        if ($fila_usuario = $res_usuario->fetch_assoc()) {
-
-            $usuario_id = (int)$fila_usuario['ID'];
-
-        }
-
-        $stmt_usuario->close();
-
-    }
-
-}
+$usuario_id = $app_current_user ? (int)$app_current_user['ID'] : 0;
 
 /*
 

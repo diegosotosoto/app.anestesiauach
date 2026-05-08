@@ -1,18 +1,19 @@
 <?php
-  if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
-    header('Location: login.php');
-  }
-
   //Conexión
   require("conectar.php");
+  require_once __DIR__ . '/app_security.php';
   $conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
   $conexion->set_charset("utf8");
 
+  app_require_login($conexion, 'login.php');
+
   //redirección segun nivel de usuario: BECADO
-  $check_usuario=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
-  $con_users_b="SELECT `admin`, `staff_`, `intern_`, `becad_`, `becad_otro` FROM `usuarios_dolor` WHERE `email_usuario` = '$check_usuario' ";
-  $users_b=$conexion->query($con_users_b);
-  $usuario=$users_b->fetch_assoc();
+  $usuario = app_current_user($conexion);
+  if(!$usuario){
+    header('Location: login.php');
+    exit;
+  }
+
   if($usuario['admin']==1){
     header('Location: bitacora_autoriza.php');
   } elseif ($usuario['staff_']==1) {
@@ -63,20 +64,31 @@
 
       <div class="bitacora-card">
         <div class="bitacora-card-header">
-          <h5 class='mb-1 fw-bold'>Rechazos de Bitácora</h5>
+          <div>
+            <h5 class='mb-2 fw-bold'>Rechazos y Pendientes de</h5>
+            <div class="d-flex align-items-center gap-3">
+              <?php
+                $icono_usuario = function_exists('app_render_user_inline_icon') ? app_render_user_inline_icon($usuario, 'app-inline-user-icon-large') : '<div class="staff-option-avatar" style="background:#10b981;"><i class="fa-solid fa-graduation-cap"></i></div>';
+                // Forzar tamaño grande con estilos inline directamente en el elemento i
+                $icono_usuario = str_replace('style="background:', 'style="width:64px!important;height:64px!important;font-size:1.8rem!important;background:', $icono_usuario);
+                $nombre_usuario = function_exists('app_h_text') ? app_h_text($usuario['nombre_usuario']) : htmlspecialchars(html_entity_decode((string)$usuario['nombre_usuario'], ENT_QUOTES | ENT_HTML5, 'UTF-8'), ENT_QUOTES, 'UTF-8');
+              ?>
+              <div class="correo-name fs-3"><?php echo $icono_usuario . '<span class="fw-bold">' . $nombre_usuario . '</span>'; ?></div>
+            </div>
+          </div>
         </div>
 
         <div class="bitacora-card-body">
           <div class="rechazo-list">
             <?php
-              $autor_b=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
+              $autor_b=$app_current_user['email_usuario'];
 
-              $con_users="SELECT bp.`autor_b`, bp.`staff_b`, COUNT(bp.`staff_b`) AS `cantidad`, u.`nombre_usuario` AS `staff_nombre`
+              $con_users="SELECT bp.`autor_b`, bp.`staff_b`, bp.`aprobado_staff_b`, COUNT(bp.`staff_b`) AS `cantidad`, u.`nombre_usuario` AS `staff_nombre`
                           FROM `bitacora_proced` bp
                           LEFT JOIN `usuarios_dolor` u
                             ON u.`email_usuario` = bp.`staff_b`
-                          WHERE bp.`autor_b` = '$autor_b' AND bp.`aprobado_staff_b` = 3
-                          GROUP BY bp.`autor_b`, bp.`staff_b`, u.`nombre_usuario`";
+                          WHERE bp.`autor_b` = '$autor_b' AND (bp.`aprobado_staff_b` = 3 OR bp.`aprobado_staff_b` = 0)
+                          GROUP BY bp.`autor_b`, bp.`staff_b`, bp.`aprobado_staff_b`, u.`nombre_usuario`";
 
               $tab_users=$conexion->query($con_users);
 
@@ -85,8 +97,12 @@
                 while ($row = $tab_users->fetch_assoc()) {
                   $staff_label = !empty($row["staff_nombre"]) ? app_h_text($row["staff_nombre"]) : htmlspecialchars($row["staff_b"], ENT_QUOTES, 'UTF-8');
                   $staff_email = htmlspecialchars($row["staff_b"], ENT_QUOTES, 'UTF-8');
+                  $estado = $row["aprobado_staff_b"] == 3 ? 'rechazada' : 'pendiente';
+                  $estado_label = $row["aprobado_staff_b"] == 3 ? 'Cantidad rechazada' : 'Cantidad pendiente';
+                  $estado_class = $row["aprobado_staff_b"] == 3 ? 'rechazo-count' : 'pendiente-count';
                   echo "<form id='gest".$i."' action='bitacora_rechazos_detalle.php' method='post'>
                           <input type='hidden' name='staff_email' value='".$staff_email."'/>
+                          <input type='hidden' name='estado' value='".$estado."'/>
                           <a href='#' onclick='envioForm".$i."(); return false;' class='rechazo-item not-overlay'>
                             <div class='rechazo-row'>
                               <div>
@@ -95,8 +111,8 @@
                                 <div class='small text-muted'>" . $staff_email . "</div>
                               </div>
                               <div class='text-end'>
-                                <div class='small text-muted'>Cantidad rechazada</div>
-                                <div class='rechazo-count'>" . $row["cantidad"] . "</div>
+                                <div class='small text-muted'>" . $estado_label . "</div>
+                                <div class='".$estado_class."'>" . $row["cantidad"] . "</div>
                               </div>
                             </div>
                           </a>
@@ -109,7 +125,7 @@
                   $i++;
                 }
               } else {
-                echo "<div class='empty-state'>No se encontraron rechazos registrados.</div>";
+                echo "<div class='empty-state'>No se encontraron rechazos ni pendientes registrados.</div>";
               }
             ?>
           </div>

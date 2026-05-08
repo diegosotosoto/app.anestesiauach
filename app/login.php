@@ -1,16 +1,16 @@
 <?php
 
-  //si existe la cookie se salta el area de login y va al index
-  if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
-  }else{
-    header('Location: index.php');
-  }
-
   //Conexión
   require("conectar.php");
   require_once __DIR__ . "/app_text_helpers.php";
+  require_once __DIR__ . "/app_security.php";
   $conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
   $conexion->set_charset("utf8");
+
+  if(app_is_authenticated($conexion)){
+    header('Location: index.php');
+    exit;
+  }
 
   $alerta_login = "";
   $google_client_id = "";
@@ -49,8 +49,7 @@
       if($confirma_pass){
         $galletita_mail=$email_usuario_v;
         $galletita_user=app_decode_text($usuario['nombre_usuario']);
-        setcookie("hkjh41lu4l1k23jhlkj13",$galletita_mail, time()+60*60*24*30*6);
-        setcookie("hkjh41lu4l1k23jhlkj14",$galletita_user, time()+60*60*24*30*6);
+        app_set_auth_session_for_email($conexion, $galletita_mail);
         header('Location: index.php');
       }else{
         $alerta_login = "<div class='alert alert-danger alert-dismissible fade show'>

@@ -1,10 +1,6 @@
-<?php 
-if (!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])) {
-    header('Location: login.php');
-    exit;
-}
-
+<?php
 require("conectar.php");
+require_once __DIR__ . '/app_security.php';
 
 $conexion = new mysqli($db_host, $db_usuario, $db_contra, $db_nombre);
 $conexion->set_charset("utf8");
@@ -17,18 +13,7 @@ if ($conexion->connect_error) {
    SEGURIDAD / ADMIN
 ========================================================= */
 
-$check_usuario = $_COOKIE['hkjh41lu4l1k23jhlkj13'];
-
-$stmt_admin = $conexion->prepare("
-    SELECT `admin`
-    FROM `usuarios_dolor`
-    WHERE `email_usuario` = ?
-    LIMIT 1
-");
-$stmt_admin->bind_param("s", $check_usuario);
-$stmt_admin->execute();
-$res_admin = $stmt_admin->get_result();
-$usuario = $res_admin->fetch_assoc();
+$usuario = app_current_user($conexion);
 
 if (!$usuario || intval($usuario['admin']) !== 1) {
     header('Location: login.php');

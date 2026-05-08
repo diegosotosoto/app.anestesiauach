@@ -1,14 +1,12 @@
 <?php
-
-	//Ve si está activa la cookie o redirige al login
-	if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
-		header('Location: login.php');
-	}
 	//Conexión
 	require("conectar.php");
+	require_once __DIR__ . '/app_security.php';
 	$conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
 	$conexion->set_charset("utf8");
-	
+
+	app_require_login($conexion, 'login.php');
+
 	//Carga Head de la página
 	require("head.php");
 
@@ -39,9 +37,9 @@
       <div class="offcanvas-body">
 
 
-            <div class="" id="offcanvasExampleLabel"><h5><?php echo app_h_text($_COOKIE['hkjh41lu4l1k23jhlkj14']); ?></h5></div>
+            <div class="" id="offcanvasExampleLabel"><h5><?php echo app_h_text($app_current_user['nombre_usuario']); ?></h5></div>
 
-          <div class="text-muted"><?php echo $_COOKIE['hkjh41lu4l1k23jhlkj13']; ?></div>
+          <div class="text-muted"><?php echo $app_current_user['email_usuario']; ?></div>
           <hr>
               <div class="text-primary pt-4 fs-5">
               <i style="margin-left:12px" class="fa-solid fa-clipboard"></i>
@@ -59,15 +57,8 @@
 				<?php 
 
 							//BUSCA SI EL USUARIO ES ADMIN Y AGREGA MENÚ DE ADMIN
-							$email_user=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
-							$consulta_user="SELECT * FROM `usuarios_dolor` WHERE `email_usuario` = '$email_user' AND `admin` = '1'";
-
-							$confirma_user=$conexion->query($consulta_user); 
-
-							if(mysqli_num_rows($confirma_user)==0){//AL NO ENCONRAR REGISTROS DE ADMIN NO AGREGA NADA
-
-							}else{ 
-					
+							$email_user=$app_current_user['email_usuario'];
+							if($app_current_user['admin']==1){
 				              echo "<form id='gest_users' action='gestion_usuarios.php' method='post'><input type='hidden' name='email_user_ad' value='$email_user'/>
 				              <div class='text-primary pt-4 fs-5'>
 				              <i style='margin-left:10px' class='fa-solid fa-users'></i>

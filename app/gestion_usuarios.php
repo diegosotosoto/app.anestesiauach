@@ -1,10 +1,6 @@
 <?php
-if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
-    header('Location: login.php');
-    exit;
-}
-
 require('conectar.php');
+require_once __DIR__ . '/app_security.php';
 $conexion = new mysqli($db_host, $db_usuario, $db_contra, $db_nombre);
 $conexion->set_charset('utf8mb4');
 
@@ -16,35 +12,13 @@ function post_val($key, $default = ''){
     return isset($_POST[$key]) ? trim((string)$_POST[$key]) : $default;
 }
 
-$check_usuario = trim($_COOKIE['hkjh41lu4l1k23jhlkj13']);
-$stmt_admin = $conexion->prepare("SELECT `ID`, `admin`, `nombre_usuario`, `email_usuario` FROM `usuarios_dolor` WHERE `email_usuario` = ? LIMIT 1");
-if(!$stmt_admin){
-    die('Error preparando consulta de usuario.');
-}
-$stmt_admin->bind_param('s', $check_usuario);
-$stmt_admin->execute();
-
-$usuario_admin = null;
-if(method_exists($stmt_admin, 'get_result')){
-    $res_admin = $stmt_admin->get_result();
-    $usuario_admin = $res_admin->fetch_assoc();
-}else{
-    $stmt_admin->bind_result($id_tmp, $admin_tmp, $nombre_tmp, $email_tmp);
-    if($stmt_admin->fetch()){
-        $usuario_admin = array(
-            'ID' => $id_tmp,
-            'admin' => $admin_tmp,
-            'nombre_usuario' => $nombre_tmp,
-            'email_usuario' => $email_tmp
-        );
-    }
-}
-$stmt_admin->close();
-
+$usuario_admin = app_current_user($conexion);
 if(!$usuario_admin || (int)$usuario_admin['admin'] !== 1){
     header('Location: login.php');
     exit;
 }
+
+$check_usuario = trim((string)$usuario_admin['email_usuario']);
 
 $mensaje_ok = '';
 $mensaje_error = '';
@@ -113,7 +87,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 if($stmt_update->execute()){
                     $mensaje_ok = 'Usuario guardado correctamente.';
                     if($email_init === $check_usuario && $email_us !== $check_usuario){
-                        setcookie('hkjh41lu4l1k23jhlkj13', $email_us, time() + (86400 * 30), '/');
+                        app_set_cookie(APP_AUTH_EMAIL_COOKIE, $email_us, time() + APP_AUTH_COOKIE_TTL);
                         $check_usuario = $email_us;
                     }
                 }else{

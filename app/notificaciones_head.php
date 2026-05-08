@@ -3,36 +3,11 @@ $notificaciones_nav = [];
 $total_notificaciones_no_leidas = 0;
 $usuario_id_nav = 0;
 $email_usuario_cookie = null;
+$usuario_nav = function_exists('app_current_user') ? app_current_user($conexion) : null;
 
-if (isset($_COOKIE['hkjh41lu4l1k23jhlkj13']) && $_COOKIE['hkjh41lu4l1k23jhlkj13'] !== '') {
-    $email_usuario_cookie = trim($_COOKIE['hkjh41lu4l1k23jhlkj13']);
-
-    $sql_usuario_nav = "SELECT ID
-                        FROM usuarios_dolor
-                        WHERE email_usuario = ?
-                          AND verified = 1
-                        LIMIT 1";
-
-    $stmt_usuario_nav = $conexion->prepare($sql_usuario_nav);
-
-    if ($stmt_usuario_nav) {
-        $stmt_usuario_nav->bind_param("s", $email_usuario_cookie);
-        $stmt_usuario_nav->execute();
-
-        if (method_exists($stmt_usuario_nav, 'get_result')) {
-            $res_usuario_nav = $stmt_usuario_nav->get_result();
-            if ($fila_usuario_nav = $res_usuario_nav->fetch_assoc()) {
-                $usuario_id_nav = (int)$fila_usuario_nav['ID'];
-            }
-        } else {
-            $stmt_usuario_nav->bind_result($usuario_id_tmp);
-            if ($stmt_usuario_nav->fetch()) {
-                $usuario_id_nav = (int)$usuario_id_tmp;
-            }
-        }
-
-        $stmt_usuario_nav->close();
-    }
+if ($usuario_nav) {
+    $usuario_id_nav = (int)$usuario_nav['ID'];
+    $email_usuario_cookie = trim((string)$usuario_nav['email_usuario']);
 }
 
 if ($usuario_id_nav > 0) {
@@ -147,8 +122,8 @@ if ($usuario_id_nav > 0) {
 |
 */
 
-if (isset($_COOKIE['hkjh41lu4l1k23jhlkj13']) && trim($_COOKIE['hkjh41lu4l1k23jhlkj13']) !== '') {
-    $staff_email_cookie = trim($_COOKIE['hkjh41lu4l1k23jhlkj13']);
+if ($usuario_nav) {
+    $staff_email_cookie = trim((string)$usuario_nav['email_usuario']);
 
     // Pendientes en bitácora de residentes / becados generales
     $pendientes_bitacora_b = 0;

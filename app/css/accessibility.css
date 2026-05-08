@@ -847,3 +847,16 @@ body.theme-dark .notif-btn-secondary:hover,
 body.ui-nocturno .notif-btn-secondary:hover{
   background: rgba(250, 204, 21, 0.15) !important;
 }
+
+/* Dark mode - pain action button */
+body.theme-dark .pain-action-btn,
+body.ui-nocturno .pain-action-btn{
+  background: var(--app-card) !important;
+  border-color: var(--app-border) !important;
+  color: var(--app-text) !important;
+}
+body.theme-dark .pain-action-btn:hover,
+body.ui-nocturno .pain-action-btn:hover{
+  background: var(--app-blue-soft) !important;
+  border-color: var(--app-blue) !important;
+}

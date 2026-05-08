@@ -1,20 +1,14 @@
 <?php
-
-	//Ve si está activa la cookie o redirige al login
-	if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
-		header('Location: login.php');
-	}
 	//Conexión
 	require("conectar.php");
+	require_once __DIR__ . '/app_security.php';
 	$conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
 	$conexion->set_charset("utf8");
 
+	app_require_login($conexion, 'login.php');
 
 //Saca a los internos y otros becados del area de dolor
-	  $check_usuario=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
-	  $con_users_b="SELECT `intern_`, `becad_otro`   FROM `usuarios_dolor` WHERE `email_usuario` = '$check_usuario'";
-	  $users_b=$conexion->query($con_users_b);
-	  $usuario=$users_b->fetch_assoc();
+	  $usuario = app_current_user($conexion);
 	  if($usuario['intern_']==1 or $usuario['becad_otro']==1){
 	  	header('Location: login.php');
 	  }

@@ -1,14 +1,12 @@
 <?php
-if (!isset($_COOKIE['hkjh41lu4l1k23jhlkj13']) || trim((string)$_COOKIE['hkjh41lu4l1k23jhlkj13']) === '') {
-    header('Location: login.php');
-    exit;
-}
-
 require('conectar.php');
 require_once(__DIR__ . '/app_text_helpers.php');
+require_once(__DIR__ . '/app_security.php');
 
 $conexion_ui = new mysqli($db_host, $db_usuario, $db_contra, $db_nombre);
 $conexion_ui->set_charset('utf8mb4');
+
+app_require_login($conexion_ui, 'login.php');
 
 function ui_h($value) {
     return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
@@ -82,7 +80,14 @@ function ui_enviar_mail_password_cambiada($email_usuario) {
     }
 }
 
-$email_usuario = trim((string)$_COOKIE['hkjh41lu4l1k23jhlkj13']);
+$usuario = app_current_user($conexion_ui);
+
+if (!$usuario) {
+    header('Location: login.php');
+    exit;
+}
+
+$email_usuario = trim((string)$usuario['email_usuario']);
 $columna_ui_existe = ui_columna_existe($conexion_ui, 'ui_modo');
 $columna_nav_existe = ui_columna_existe($conexion_ui, 'ui_nav_posicion');
 $columna_icono_existe = ui_columna_existe($conexion_ui, 'ui_icono');
@@ -90,7 +95,6 @@ $columna_icono_color_existe = ui_columna_existe($conexion_ui, 'ui_icono_color');
 $columna_verified_email_existe = ui_columna_existe($conexion_ui, 'verified_email');
 $mensaje_ok = '';
 $mensaje_error = '';
-$usuario = null;
 
 $select_verified_email = $columna_verified_email_existe ? "`verified_email`" : "0 AS `verified_email`";
 $select_ui_modo = $columna_ui_existe ? "`ui_modo`" : "'normal' AS `ui_modo`";
@@ -105,11 +109,6 @@ if ($stmt) {
     $res = $stmt->get_result();
     $usuario = $res->fetch_assoc();
     $stmt->close();
-}
-
-if (!$usuario) {
-    header('Location: login.php');
-    exit;
 }
 
 $modo_actual = in_array((string)($usuario['ui_modo'] ?? 'normal'), ui_modos_validos(), true) ? (string)$usuario['ui_modo'] : 'normal';

@@ -1,14 +1,10 @@
 <?php
-if (!isset($_COOKIE['hkjh41lu4l1k23jhlkj13']) || trim($_COOKIE['hkjh41lu4l1k23jhlkj13']) === '') {
-    header('Location: login.php');
-    exit;
-}
-
 require('conectar.php');
 if (file_exists(__DIR__ . '/app_text_helpers.php')) {
     require_once __DIR__ . '/app_text_helpers.php';
 }
 require_once __DIR__ . '/google-calendar/config.php';
+require_once __DIR__ . '/app_security.php';
 
 $conexion = new mysqli($db_host, $db_usuario, $db_contra, $db_nombre);
 $conexion->set_charset('utf8mb4');
@@ -110,26 +106,14 @@ function calendar_default_color($tipo)
     return $colors[$tipo] ?? '#315bc5';
 }
 
-$emailUsuario = trim($_COOKIE['hkjh41lu4l1k23jhlkj13']);
-$usuario = null;
-
-$stmtUser = $conexion->prepare("SELECT `ID`, `nombre_usuario`, `email_usuario`, `verified`, `admin`, `becad_`, `anio_residencia`
-    FROM `usuarios_dolor`
-    WHERE `email_usuario` = ?
-    LIMIT 1");
-
-if ($stmtUser) {
-    $stmtUser->bind_param('s', $emailUsuario);
-    $stmtUser->execute();
-    $resUser = $stmtUser->get_result();
-    $usuario = $resUser ? $resUser->fetch_assoc() : null;
-    $stmtUser->close();
-}
+$usuario = app_current_user($conexion);
 
 if (!$usuario || (int)$usuario['verified'] !== 1) {
     header('Location: login.php');
     exit;
 }
+
+$emailUsuario = trim((string)$usuario['email_usuario']);
 
 $usuarioId = (int)$usuario['ID'];
 $esBecado = (int)$usuario['becad_'] === 1;

@@ -1,0 +1,630 @@
+/* Bitácora Rápido - Optimizaciones para ingreso rápido */
+
+/* ===== 1. VALIDACIÓN INMEDIATA DEL RUT ===== */
+.bitacora-input-rut {
+  position: relative;
+}
+
+.bitacora-input-rut.is-validating {
+  border-color: #0d6efd;
+}
+
+.bitacora-input-rut.is-invalid {
+  border-color: #dc3545 !important;
+  background-color: #fff5f5;
+}
+
+.bitacora-input-rut.is-valid {
+  border-color: #198754 !important;
+  background-color: #f0fff4;
+}
+
+.rut-validation-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.1rem;
+  pointer-events: none;
+}
+
+.rut-validation-icon.invalid {
+  color: #dc3545;
+}
+
+.rut-validation-icon.valid {
+  color: #198754;
+}
+
+.rut-feedback {
+  font-size: .75rem;
+  margin-top: .25rem;
+  display: none;
+}
+
+.rut-feedback.show {
+  display: block;
+}
+
+.rut-feedback.invalid {
+  color: #dc3545;
+}
+
+.rut-feedback.valid {
+  color: #198754;
+}
+
+/* ===== 2. BOTONES DE RANGO ETÁREO ===== */
+.edad-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.edad-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 8px;
+  border: 2px solid var(--app-border, #dfe7f2);
+  border-radius: var(--app-radius-md, .95rem);
+  background: var(--app-card, #ffffff);
+  color: var(--app-text, #334155);
+  cursor: pointer;
+  transition: all .15s ease;
+  min-height: 72px;
+}
+
+.edad-btn:hover {
+  border-color: var(--app-blue, #2563eb);
+  background: rgba(37, 99, 235, 0.05);
+}
+
+.edad-btn.is-selected {
+  border-color: var(--app-blue, #2563eb);
+  background: var(--app-blue, #2563eb);
+  color: #ffffff;
+}
+
+.edad-btn i {
+  font-size: 1.4rem;
+}
+
+.edad-btn span {
+  font-size: .7rem;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* Dark mode para botones edad */
+body.theme-dark .edad-btn {
+  background: var(--app-card, #1e293b);
+  border-color: var(--app-border, #334155);
+  color: var(--app-text, #e2e8f0);
+}
+
+body.theme-dark .edad-btn:hover {
+  border-color: var(--app-blue, #3b82f6);
+  background: rgba(59, 130, 246, 0.15);
+}
+
+body.theme-dark .edad-btn.is-selected {
+  background: var(--app-blue, #3b82f6);
+  color: #ffffff;
+}
+
+/* ===== 4. BUSCADOR DE STAFF ===== */
+.staff-search-container {
+  position: relative;
+}
+
+.staff-search-input {
+  width: 100%;
+  min-height: 52px;
+  border-radius: .95rem;
+  border: 1px solid #dfe7f2;
+  padding: .75rem 1rem;
+  font-size: 1rem;
+}
+
+.staff-search-input:focus {
+  outline: none;
+  border-color: var(--app-blue, #2563eb);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.staff-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  background: var(--app-card, #ffffff);
+  border: 1px solid var(--app-border, #dfe7f2);
+  border-radius: var(--app-radius-md, .95rem);
+  box-shadow: var(--app-shadow, 0 4px 20px rgba(0,0,0,0.1));
+  max-height: 250px;
+  overflow-y: auto;
+  z-index: 1000;
+  display: none;
+}
+
+.staff-dropdown.show {
+  display: block;
+}
+
+.staff-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background .1s ease;
+  border-bottom: 1px solid var(--app-border, #f1f5f9);
+}
+
+.staff-option:last-child {
+  border-bottom: none;
+}
+
+.staff-option:hover,
+.staff-option.is-highlighted {
+  background: rgba(37, 99, 235, 0.08);
+}
+
+.staff-option-avatar {
+  width: 60px !important;
+  height: 60px !important;
+  border-radius: 50%;
+  background: var(--app-blue, #2563eb);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.5rem !important;
+}
+
+.staff-option-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.staff-option-name {
+  font-weight: 600;
+  font-size: .95rem;
+  color: var(--app-text, #334155);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.staff-option-email {
+  font-size: .8rem;
+  color: var(--app-muted, #64748b);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.staff-option-check {
+  color: var(--app-blue, #2563eb);
+  font-size: 1.1rem;
+  opacity: 0;
+}
+
+.staff-option.is-selected .staff-option-check {
+  opacity: 1;
+}
+
+.staff-selected-display {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(37, 99, 235, 0.08);
+  border-radius: var(--app-radius-md, .95rem);
+  margin-top: 8px;
+}
+
+.staff-selected-display.hidden {
+  display: none;
+}
+
+/* Dark mode para staff search */
+body.theme-dark .staff-dropdown {
+  background: var(--app-card, #1e293b);
+  border-color: var(--app-border, #334155);
+}
+
+body.theme-dark .staff-option {
+  border-color: var(--app-border, #334155);
+}
+
+body.theme-dark .staff-option:hover,
+body.theme-dark .staff-option.is-highlighted {
+  background: rgba(59, 130, 246, 0.15);
+}
+
+body.theme-dark .staff-option-name {
+  color: var(--app-text, #e2e8f0);
+}
+
+body.theme-dark .staff-option-email {
+  color: var(--app-muted, #94a3b8);
+}
+
+body.theme-dark .staff-selected-display {
+  background: rgba(59, 130, 246, 0.15);
+}
+
+/* ===== 5. CHIPS DE RESUMEN ===== */
+.resumen-chips-container {
+  background: var(--app-card, #ffffff);
+  border: 1px solid var(--app-border, #dfe7f2);
+  border-radius: var(--app-radius-md, .95rem);
+  padding: 16px;
+  margin-bottom: 1rem;
+}
+
+.resumen-chips-title {
+  font-size: .75rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--app-muted, #64748b);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.resumen-chips-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.resumen-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(37, 99, 235, 0.1);
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  border-radius: 999px;
+  font-size: .85rem;
+  color: var(--app-blue, #2563eb);
+}
+
+.resumen-chip i {
+  font-size: .8rem;
+}
+
+.resumen-chip.empty {
+  background: rgba(100, 116, 139, 0.1);
+  border-color: rgba(100, 116, 139, 0.2);
+  color: var(--app-muted, #64748b);
+}
+
+.resumen-chip.empty::before {
+  content: '—';
+  margin-right: 4px;
+}
+
+/* Dark mode para chips */
+body.theme-dark .resumen-chips-container {
+  background: var(--app-card, #1e293b);
+  border-color: var(--app-border, #334155);
+}
+
+body.theme-dark .resumen-chip {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.3);
+  color: var(--app-blue, #60a5fa);
+}
+
+body.theme-dark .resumen-chip.empty {
+  background: rgba(148, 163, 184, 0.1);
+  border-color: rgba(148, 163, 184, 0.2);
+  color: var(--app-muted, #94a3b8);
+}
+
+/* ===== ANIMACIONES ===== */
+@keyframes chipAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.resumen-chip {
+  animation: chipAppear .2s ease;
+}
+
+/* ===== VALIDACIÓN GENERAL ===== */
+.bitacora-field.is-invalid .bitacora-label {
+  color: #dc3545;
+}
+
+.bitacora-field.is-invalid .form-control,
+.bitacora-field.is-invalid .form-select,
+.bitacora-field.is-invalid .staff-search-input {
+  border-color: #dc3545 !important;
+  background-color: #fff5f5;
+}
+
+/* ===== COMBOBOX ESTILOS ===== */
+.staff-search-container {
+  position: relative;
+}
+
+.input-group {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+}
+
+.input-group .staff-search-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.input-group .btn {
+  flex-shrink: 0;
+  padding: 12px 16px;
+}
+
+.staff-search-input {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: .95rem;
+  border: 2px solid var(--app-border, #e2e8f0);
+  border-radius: var(--app-radius-md, .95rem);
+  background: var(--app-card, #ffffff);
+  color: var(--app-text, #1e293b);
+  transition: all .2s ease;
+}
+
+.staff-search-input:focus {
+  outline: none;
+  border-color: var(--app-blue, #2563eb);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.staff-search-input::placeholder {
+  color: var(--app-muted, #94a3b8);
+}
+
+.staff-helper-text {
+  font-size: .8rem;
+  color: var(--app-muted, #64748b);
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+body.theme-dark .staff-helper-text {
+  color: var(--app-muted, #94a3b8);
+}
+
+.combobox-container {
+  position: relative;
+}
+
+.combobox-input {
+  width: 100%;
+  min-height: 52px;
+  border-radius: .95rem;
+  border: 1px solid var(--app-border, #dfe7f2);
+  padding: .75rem 1rem;
+  font-size: 1rem;
+  background: var(--app-card, #ffffff);
+  color: var(--app-text, #334155);
+}
+
+.combobox-input:focus {
+  outline: none;
+  border-color: var(--app-blue, #2563eb);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+body.theme-dark .combobox-input {
+  background: var(--app-card, #1e293b);
+  border-color: var(--app-border, #334155);
+  color: var(--app-text, #e2e8f0);
+}
+
+body.theme-dark .combobox-input:focus {
+  border-color: var(--app-blue, #3b82f6);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* ===== BOTONES DE PRELLENADO RÁPIDO ===== */
+.prellenado-section {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--app-border, #e2e8f0);
+}
+
+.prellenado-label {
+  font-size: .75rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--app-muted, #64748b);
+  margin-bottom: .75rem;
+  font-weight: 600;
+}
+
+.prellenado-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 1rem;
+}
+
+.prellenado-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 12px 8px;
+  border: 2px solid var(--app-border, #dfe7f2);
+  border-radius: var(--app-radius-md, .95rem);
+  background: var(--app-card, #ffffff);
+  color: var(--app-text, #334155);
+  cursor: pointer;
+  transition: all .15s ease;
+  min-height: 80px;
+}
+
+.prellenado-btn:hover {
+  border-color: var(--app-blue, #2563eb);
+  background: rgba(37, 99, 235, 0.05);
+  transform: translateY(-1px);
+}
+
+.prellenado-btn:active {
+  transform: translateY(0);
+}
+
+.prellenado-btn.is-selected {
+  border-color: var(--app-blue, #2563eb) !important;
+  background: var(--app-blue, #2563eb) !important;
+  color: #ffffff !important;
+}
+
+.prellenado-btn.is-selected i {
+  color: #ffffff !important;
+}
+
+.prellenado-btn.is-selected small {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.prellenado-btn i {
+  font-size: 1.3rem;
+}
+
+.prellenado-btn span {
+  font-size: .85rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.prellenado-btn small {
+  font-size: .65rem;
+  color: var(--app-muted, #64748b);
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* Dark mode para botones prellenado */
+body.theme-dark .prellenado-btn {
+  background: var(--app-card, #1e293b);
+  border-color: var(--app-border, #334155);
+  color: var(--app-text, #e2e8f0);
+}
+
+body.theme-dark .prellenado-btn:hover {
+  border-color: var(--app-blue, #3b82f6);
+  background: rgba(59, 130, 246, 0.15);
+}
+
+body.theme-dark .prellenado-btn.is-selected {
+  background: var(--app-blue, #3b82f6) !important;
+  color: #ffffff !important;
+}
+
+body.theme-dark .prellenado-btn.is-selected i {
+  color: #ffffff !important;
+}
+
+body.theme-dark .prellenado-btn.is-selected small {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+body.theme-dark .prellenado-btn small {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.btn-pre-enviar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--app-radius-md, .95rem);
+  font-weight: 600;
+  font-size: .95rem;
+  cursor: pointer;
+  transition: all .15s ease;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+}
+
+.btn-pre-enviar:hover {
+  background: linear-gradient(135deg, #1d4ed8, #2563eb);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+}
+
+.btn-pre-enviar:active {
+  transform: translateY(0);
+}
+
+/* Dark mode para prellenado */
+body.theme-dark .prellenado-section {
+  border-color: var(--app-border, #334155);
+}
+
+body.theme-dark .prellenado-btn {
+  background: var(--app-card, #1e293b);
+  border-color: var(--app-border, #334155);
+  color: var(--app-text, #e2e8f0);
+}
+
+body.theme-dark .prellenado-btn:hover {
+  border-color: var(--app-blue, #3b82f6);
+  background: rgba(59, 130, 246, 0.15);
+}
+
+body.theme-dark .prellenado-btn i {
+  color: var(--app-blue, #60a5fa);
+}
+
+body.theme-dark .prellenado-btn small {
+  color: var(--app-muted, #94a3b8);
+}
+
+/* ===== ANIMACIONES PARA TOAST ===== */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+}

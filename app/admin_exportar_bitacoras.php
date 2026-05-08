@@ -1,37 +1,10 @@
 <?php
-if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
-    header('Location: login.php');
-    exit;
-}
-
 require('conectar.php');
+require_once __DIR__ . '/app_security.php';
 $conexion = new mysqli($db_host, $db_usuario, $db_contra, $db_nombre);
 $conexion->set_charset('utf8mb4');
 
-$check_usuario = trim($_COOKIE['hkjh41lu4l1k23jhlkj13']);
-$stmt_admin = $conexion->prepare("SELECT `ID`, `admin`, `nombre_usuario`, `email_usuario` FROM `usuarios_dolor` WHERE `email_usuario` = ? LIMIT 1");
-if(!$stmt_admin){
-    die('Error preparando consulta de usuario.');
-}
-$stmt_admin->bind_param('s', $check_usuario);
-$stmt_admin->execute();
-
-$usuario = null;
-if(method_exists($stmt_admin, 'get_result')){
-    $res_admin = $stmt_admin->get_result();
-    $usuario = $res_admin->fetch_assoc();
-}else{
-    $stmt_admin->bind_result($id_tmp, $admin_tmp, $nombre_tmp, $email_tmp);
-    if($stmt_admin->fetch()){
-        $usuario = [
-            'ID' => $id_tmp,
-            'admin' => $admin_tmp,
-            'nombre_usuario' => $nombre_tmp,
-            'email_usuario' => $email_tmp
-        ];
-    }
-}
-$stmt_admin->close();
+$usuario = app_current_user($conexion);
 
 if(!$usuario || (int)$usuario['admin'] !== 1){
     header('Location: login.php');

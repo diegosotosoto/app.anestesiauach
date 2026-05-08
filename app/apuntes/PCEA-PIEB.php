@@ -467,7 +467,7 @@ require("../head.php");
     const fentStock = 50;
     const bupiStock = 5;
 
-    if(!finalVolume || finalVolume <= 0 || !fentFinal || fentFinal <= 0 || !bupiStock || bupiStock <= 0){
+    if(!finalVolume || finalVolume <= 0 || fentFinal === null || fentFinal < 0 || !bupiStock || bupiStock <= 0){
       setText('summaryNarrative', 'Ingresa volumen final y concentraciones disponibles para calcular la preparación.');
       setText('summaryVolume', '-');
       setText('summaryBupiConc', '-');
@@ -496,23 +496,37 @@ require("../head.php");
     const bupiPercent = (bupiStock / 10);
     const finalBagText = finalVolume === 100 ? 'un matraz de 100 mL' : 'un matraz con volumen final ajustado';
 
-    setText('summaryNarrative', 'Solución final ' + fmt(finalVolume,0) + ' mL: bupivacaína 0,0625% + fentanyl 2 mcg/mL. Retirar ' + fmt(removeMl,1) + ' mL y reponer con los aditivos.');
+    const fentDisplay = fentFinal === 0 ? '0 mcg/mL (sin fentanyl)' : fmt(fentFinal,0) + ' mcg/mL';
+    setText('summaryNarrative', 'Solución final ' + fmt(finalVolume,0) + ' mL: bupivacaína 0,0625% + fentanyl ' + fentDisplay + '. Retirar ' + fmt(removeMl,1) + ' mL y reponer con los aditivos.');
     setText('summaryVolume', fmt(finalVolume,0) + ' mL');
     setText('summaryBupiConc', '0,0625%');
-    setText('summaryFentConc', '2 mcg/mL');
+    setText('summaryFentConc', fentDisplay);
     setText('summaryProgram', '0 · 9/10 · 45/60');
 
     setText('bupiResult', fmt(bupiMl,1) + ' mL');
     setText('bupiNote', 'Equivale a ' + fmt(totalBupiMg,1) + ' mg de bupivacaína.');
-    setText('fentResult', fmt(fentMl,1) + ' mL');
-    setText('fentNote', 'Equivale a ' + fmt(totalFentMcg,0) + ' mcg de fentanyl.');
+    if(fentFinal === 0){
+      setText('fentResult', '0 mL');
+      setText('fentNote', 'Sin fentanyl.');
+    }else{
+      setText('fentResult', fmt(fentMl,1) + ' mL');
+      setText('fentNote', 'Equivale a ' + fmt(totalFentMcg,0) + ' mcg de fentanyl.');
+    }
 
     setText('mainRecipe', 'Retirar ' + fmt(removeMl,1) + ' mL del matraz');
-    setText('mainSoft', 'Agregar ' + fmt(bupiMl,1) + ' mL de bupivacaína y ' + fmt(fentMl,1) + ' mL de fentanyl para mantener ' + fmt(finalVolume,0) + ' mL finales.');
+    if(fentFinal === 0){
+      setText('mainSoft', 'Agregar ' + fmt(bupiMl,1) + ' mL de bupivacaína para mantener ' + fmt(finalVolume,0) + ' mL finales.');
+    }else{
+      setText('mainSoft', 'Agregar ' + fmt(bupiMl,1) + ' mL de bupivacaína y ' + fmt(fentMl,1) + ' mL de fentanyl para mantener ' + fmt(finalVolume,0) + ' mL finales.');
+    }
 
     setText('stepRemove', 'Extraer ' + fmt(removeMl,1) + ' mL desde ' + finalBagText + '.');
     setText('stepBupi', 'Agregar ' + fmt(bupiMl,1) + ' mL de bupivacaína ' + fmt(bupiPercent,3) + '% (' + fmt(totalBupiMg,1) + ' mg).');
-    setText('stepFent', 'Agregar ' + fmt(totalFentMcg,0) + ' mcg de fentanyl (' + fmt(fentMl,1) + ' mL si la ampolla es ' + fmt(fentStock,0) + ' mcg/mL).');
+    if(fentFinal === 0){
+      setText('stepFent', 'No agregar fentanyl (solución sin opioide).');
+    }else{
+      setText('stepFent', 'Agregar ' + fmt(totalFentMcg,0) + ' mcg de fentanyl (' + fmt(fentMl,1) + ' mL si la ampolla es ' + fmt(fentStock,0) + ' mcg/mL).');
+    }
   }
 
   finalVolumeInput.addEventListener('input', updatePIEB);

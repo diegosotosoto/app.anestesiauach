@@ -1,5 +1,6 @@
 <?php
 require("../conectar.php");
+require_once __DIR__ . "/../app_security.php";
 $conexion = new mysqli($db_host, $db_usuario, $db_contra, $db_nombre);
 $conexion->set_charset("utf8mb4");
 
@@ -11,52 +12,15 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-if (!isset($_COOKIE['hkjh41lu4l1k23jhlkj13']) || trim($_COOKIE['hkjh41lu4l1k23jhlkj13']) === '') {
+$usuario_actual = app_current_user($conexion);
+
+if (!$usuario_actual) {
     http_response_code(401);
     echo json_encode(['ok' => false, 'message' => 'No autenticado']);
     exit;
 }
 
-$email_usuario_cookie = trim($_COOKIE['hkjh41lu4l1k23jhlkj13']);
-
-$stmtUser = $conexion->prepare("
-    SELECT ID
-    FROM usuarios_dolor
-    WHERE email_usuario = ?
-      AND verified = 1
-    LIMIT 1
-");
-
-if (!$stmtUser) {
-    http_response_code(500);
-    echo json_encode(['ok' => false, 'message' => 'Error usuario']);
-    exit;
-}
-
-$stmtUser->bind_param("s", $email_usuario_cookie);
-$stmtUser->execute();
-
-$usuario_id = 0;
-
-if (method_exists($stmtUser, 'get_result')) {
-    $resUser = $stmtUser->get_result();
-    if ($rowUser = $resUser->fetch_assoc()) {
-        $usuario_id = (int)$rowUser['ID'];
-    }
-} else {
-    $stmtUser->bind_result($usuario_id_tmp);
-    if ($stmtUser->fetch()) {
-        $usuario_id = (int)$usuario_id_tmp;
-    }
-}
-
-$stmtUser->close();
-
-if ($usuario_id <= 0) {
-    http_response_code(403);
-    echo json_encode(['ok' => false, 'message' => 'Usuario inválido']);
-    exit;
-}
+$usuario_id = (int)$usuario_actual['ID'];
 
 $destinatario_id = isset($_POST['destinatario_id']) ? (int)$_POST['destinatario_id'] : 0;
 $accion = trim($_POST['accion'] ?? '');

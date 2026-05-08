@@ -1,13 +1,9 @@
 <?php
-if (!isset($_COOKIE['hkjh41lu4l1k23jhlkj13']) || trim($_COOKIE['hkjh41lu4l1k23jhlkj13']) === '') {
-    header('Location: login.php');
-    exit;
-}
-
 require('conectar.php');
 if (file_exists(__DIR__ . '/app_text_helpers.php')) {
     require_once __DIR__ . '/app_text_helpers.php';
 }
+require_once __DIR__ . '/app_security.php';
 
 $conexion = new mysqli($db_host, $db_usuario, $db_contra, $db_nombre);
 $conexion->set_charset('utf8mb4');
@@ -90,27 +86,14 @@ function tipo_label($tipo)
     return $labels[$tipo] ?? strtoupper((string)$tipo);
 }
 
-$emailUsuario = trim($_COOKIE['hkjh41lu4l1k23jhlkj13']);
-$usuarioAdmin = null;
-
-$stmtAdmin = $conexion->prepare("SELECT `ID`, `admin`, `nombre_usuario`, `email_usuario`
-    FROM `usuarios_dolor`
-    WHERE `email_usuario` = ?
-    LIMIT 1");
-
-if ($stmtAdmin) {
-    $stmtAdmin->bind_param('s', $emailUsuario);
-    $stmtAdmin->execute();
-    $resAdmin = $stmtAdmin->get_result();
-    $usuarioAdmin = $resAdmin ? $resAdmin->fetch_assoc() : null;
-    $stmtAdmin->close();
-}
+$usuarioAdmin = app_current_user($conexion);
 
 if (!$usuarioAdmin || (int)$usuarioAdmin['admin'] !== 1) {
     header('Location: login.php');
     exit;
 }
 
+$emailUsuario = trim((string)$usuarioAdmin['email_usuario']);
 $mensajeOk = '';
 $mensajeError = '';
 $tiposValidos = array('general', 'r1', 'r2', 'r3', 'staff', 'turnos', 'examenes', 'rotaciones', 'classroom', 'personal');

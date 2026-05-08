@@ -76,10 +76,14 @@ function app_page_module_css_files() {
 
 require($app_root_dir . "/conectar.php");
 require_once($app_root_dir . "/app_text_helpers.php");
+require_once($app_root_dir . "/app_security.php");
 
 $conexion = new mysqli($db_host, $db_usuario, $db_contra, $db_nombre);
 
 $conexion->set_charset("utf8mb4");
+
+$app_current_user = app_current_user($conexion);
+$app_current_user_email = $app_current_user ? trim((string)$app_current_user['email_usuario']) : '';
 
 require($app_root_dir . "/notificaciones_head.php");
 
@@ -146,99 +150,51 @@ function app_ui_user_icon_colors() {
 
 function app_ui_get_user_mode($conexion) {
   $ui_modo = 'normal';
+  global $app_current_user;
 
-  if (!isset($_COOKIE['hkjh41lu4l1k23jhlkj13']) || trim((string)$_COOKIE['hkjh41lu4l1k23jhlkj13']) === '') {
+  if (!$app_current_user) {
     return $ui_modo;
   }
 
-  if (!app_ui_column_exists($conexion)) {
-    return $ui_modo;
-  }
-
-  $email_usuario = trim((string)$_COOKIE['hkjh41lu4l1k23jhlkj13']);
-  $stmt = $conexion->prepare("SELECT `ui_modo` FROM `usuarios_dolor` WHERE `email_usuario` = ? LIMIT 1");
-
-  if ($stmt) {
-    $stmt->bind_param("s", $email_usuario);
-    $stmt->execute();
-    $res = $stmt->get_result();
-
-    if ($row = $res->fetch_assoc()) {
-      $ui_modo = (string)($row['ui_modo'] ?? 'normal');
-    }
-
-    $stmt->close();
-  }
+  $ui_modo = (string)($app_current_user['ui_modo'] ?? 'normal');
 
   return in_array($ui_modo, app_ui_valid_modes(), true) ? $ui_modo : 'normal';
 }
 
 function app_ui_get_nav_position($conexion) {
   $ui_nav_posicion = 'left';
+  global $app_current_user;
 
-  if (!isset($_COOKIE['hkjh41lu4l1k23jhlkj13']) || trim((string)$_COOKIE['hkjh41lu4l1k23jhlkj13']) === '') {
+  if (!$app_current_user) {
     return $ui_nav_posicion;
   }
 
-  if (!app_ui_nav_column_exists($conexion)) {
-    return $ui_nav_posicion;
-  }
-
-  $email_usuario = trim((string)$_COOKIE['hkjh41lu4l1k23jhlkj13']);
-  $stmt = $conexion->prepare("SELECT `ui_nav_posicion` FROM `usuarios_dolor` WHERE `email_usuario` = ? LIMIT 1");
-
-  if ($stmt) {
-    $stmt->bind_param("s", $email_usuario);
-    $stmt->execute();
-    $res = $stmt->get_result();
-
-    if ($row = $res->fetch_assoc()) {
-      $ui_nav_posicion = (string)($row['ui_nav_posicion'] ?? 'left');
-    }
-
-    $stmt->close();
-  }
+  $ui_nav_posicion = (string)($app_current_user['ui_nav_posicion'] ?? 'left');
 
   return in_array($ui_nav_posicion, ['left', 'right'], true) ? $ui_nav_posicion : 'left';
 }
 
 function app_ui_get_user_icon_config($conexion) {
   $config = ['icon' => 'fa-user-doctor', 'color' => '#2e9b55', 'admin_icon' => false];
+  global $app_current_user;
 
-  if (!isset($_COOKIE['hkjh41lu4l1k23jhlkj13']) || trim((string)$_COOKIE['hkjh41lu4l1k23jhlkj13']) === '') {
+  if (!$app_current_user) {
     return $config;
   }
 
-  if (!app_ui_user_icon_columns_exist($conexion)) {
-    return $config;
+  $icono = (string)($app_current_user['ui_icono'] ?? 'fa-user-doctor');
+  $color_key = (string)($app_current_user['ui_icono_color'] ?? 'green');
+  $colores = app_ui_user_icon_colors();
+  $es_admin = (int)($app_current_user['admin'] ?? 0) === 1;
+  $iconos_permitidos = $es_admin ? array_merge(app_ui_valid_user_icons(), app_ui_admin_user_icons()) : app_ui_valid_user_icons();
+
+  if (in_array($icono, $iconos_permitidos, true)) {
+    $config['icon'] = $icono;
+    $config['admin_icon'] = $es_admin;
   }
 
-  $email_usuario = trim((string)$_COOKIE['hkjh41lu4l1k23jhlkj13']);
-  $stmt = $conexion->prepare("SELECT `ui_icono`, `ui_icono_color`, `admin` FROM `usuarios_dolor` WHERE `email_usuario` = ? LIMIT 1");
-
-  if ($stmt) {
-    $stmt->bind_param("s", $email_usuario);
-    $stmt->execute();
-    $res = $stmt->get_result();
-
-    if ($row = $res->fetch_assoc()) {
-      $icono = (string)($row['ui_icono'] ?? 'fa-user-doctor');
-      $color_key = (string)($row['ui_icono_color'] ?? 'green');
-      $colores = app_ui_user_icon_colors();
-      $es_admin = (int)($row['admin'] ?? 0) === 1;
-      $iconos_permitidos = $es_admin ? array_merge(app_ui_valid_user_icons(), app_ui_admin_user_icons()) : app_ui_valid_user_icons();
-
-      if (in_array($icono, $iconos_permitidos, true)) {
-        $config['icon'] = $icono;
-        $config['admin_icon'] = $es_admin;
-      }
-
-      if (array_key_exists($color_key, $colores)) {
-        $config['color'] = $colores[$color_key];
-      }
-    }
-
-    $stmt->close();
+  if (array_key_exists($color_key, $colores)) {
+    $config['color'] = $colores[$color_key];
   }
 
   return $config;
@@ -371,29 +327,7 @@ if ($is_apuntes_context) {
   ];
 
   if (!in_array($archivo_actual, $archivos_excluidos, true)) {
-    $usuario_id = 0;
-
-    if (isset($_COOKIE['hkjh41lu4l1k23jhlkj13']) && $_COOKIE['hkjh41lu4l1k23jhlkj13'] !== '') {
-      $email_usuario_cookie = trim($_COOKIE['hkjh41lu4l1k23jhlkj13']);
-      $sql_usuario = "SELECT ID
-                      FROM usuarios_dolor
-                      WHERE email_usuario = ?
-                        AND verified = 1
-                      LIMIT 1";
-      $stmt_usuario = $conexion->prepare($sql_usuario);
-
-      if ($stmt_usuario) {
-        $stmt_usuario->bind_param("s", $email_usuario_cookie);
-        $stmt_usuario->execute();
-        $res_usuario = $stmt_usuario->get_result();
-
-        if ($fila_usuario = $res_usuario->fetch_assoc()) {
-          $usuario_id = (int)$fila_usuario['ID'];
-        }
-
-        $stmt_usuario->close();
-      }
-    }
+    $usuario_id = $app_current_user ? (int)$app_current_user['ID'] : 0;
 
     if ($usuario_id > 0) {
       $ruta_actual = 'apuntes/' . $archivo_actual;
@@ -532,7 +466,7 @@ if ($is_apuntes_context) {
 
 
 
-<?php if(isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])): ?>
+<?php if($app_current_user): ?>
   <div class="sidebar-wa-user-card">
     <div class="d-none d-md-flex sidebar-desktop-notif-corner <?= $app_ui_nav_is_right ? 'sidebar-desktop-notif-corner-right' : 'sidebar-desktop-notif-corner-left' ?>" id="notif-slot-desktop"></div>
     <div class="sidebar-user-grid">
@@ -542,10 +476,10 @@ if ($is_apuntes_context) {
 
       <div class="sidebar-user-text-col">
         <h6 class="mb-1">
-          <?= app_head_safe_text($_COOKIE['hkjh41lu4l1k23jhlkj14']) ?>
+          <?= app_head_safe_text($app_current_user['nombre_usuario']) ?>
         </h6>
         <div class="app-user-email text-black-50">
-          <?= app_head_safe_text($_COOKIE['hkjh41lu4l1k23jhlkj13']) ?>
+          <?= app_head_safe_text($app_current_user['email_usuario']) ?>
         </div>
       </div>
 
@@ -577,12 +511,10 @@ if ($is_apuntes_context) {
                       </div>
 
                       <?php
-                        if(isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
-                          $check_usuario=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
+                        if($app_current_user){
+                          $check_usuario=$app_current_user_email;
                           $staff_email=$conexion->real_escape_string($check_usuario);
-                          $con_users_b="SELECT `admin`, `staff_`, `intern_`, `becad_`, `becad_otro`, `external_` FROM `usuarios_dolor` WHERE `email_usuario` = '$check_usuario'";
-                          $users_b=$conexion->query($con_users_b);
-                          $usuario=$users_b ? $users_b->fetch_assoc() : null;
+                          $usuario=$app_current_user;
 
                           $is_external = $usuario && (int)$usuario['external_'] === 1;
 
@@ -648,12 +580,10 @@ if ($is_apuntes_context) {
 
                       <div class="row">
                         <?php
-                          if(isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
-                            $email_user=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
-                            $consulta_user="SELECT * FROM `usuarios_dolor` WHERE `email_usuario` = '$email_user' AND `admin` = '1'";
-                            $confirma_user=$conexion->query($consulta_user);
+                          if($app_current_user){
+                            $email_user=$app_current_user_email;
 
-                            if($confirma_user && mysqli_num_rows($confirma_user)>0){
+                            if((int)($app_current_user['admin'] ?? 0) === 1){
                               $query_badge3="SELECT `verified` FROM `usuarios_dolor` WHERE `verified` = '0'";
                               $consutal_badge3=$conexion->query($query_badge3);
                               $badge3 = $consutal_badge3 ? mysqli_num_rows($consutal_badge3) : 0;
@@ -735,7 +665,7 @@ if ($is_apuntes_context) {
                     </ul>
 
                     <?php
-                      if(isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
+                      if($app_current_user){
                         echo "<ul class='list-group pt-5'>
                           <div class='list-group'>
                             <a href='".app_path('cierra_sesion.php')."' class='sidebar-wa-btn list-group-item list-group-item-action fs-6'><i class='fa-solid fa-door-open ps-2 pe-3 fs-3 text-success'></i>Cerrar sesión</a>

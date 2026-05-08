@@ -1,18 +1,19 @@
 <?php
-//Ve si está activa la cookie o redirige al login
-if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
-  header('Location: login.php');
-}
 //Conexión
 require("conectar.php");
+require_once __DIR__ . '/app_security.php';
 $conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
 $conexion->set_charset("utf8");
 
+app_require_login($conexion, 'login.php');
+
 //redirección segun nivel de usuario
-$check_usuario=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
-$con_users_b="SELECT `admin`, `staff_`, `intern_`, `becad_`, `becad_otro` FROM `usuarios_dolor` WHERE `email_usuario` = '$check_usuario' ";
-$users_b=$conexion->query($con_users_b);
-$usuario=$users_b->fetch_assoc();
+$usuario = app_current_user($conexion);
+if(!$usuario){
+  header('Location: login.php');
+  exit;
+}
+
 if($usuario['admin']==1){
   header('Location: bitacora_autoriza.php');
 } elseif ($usuario['staff_']==1) {
@@ -65,7 +66,7 @@ require("head.php");
       </div>
 
 <?php
-$staff=$conexion->real_escape_string($_COOKIE['hkjh41lu4l1k23jhlkj13']);
+$staff=$conexion->real_escape_string($app_current_user['email_usuario']);
 
 $con_users="SELECT * FROM `bitacora_proced` WHERE `aprobado_staff_b` = '0' AND `staff_b` = '$staff' ";
 $tab_users=$conexion->query($con_users);

@@ -1,8 +1,11 @@
 <?php
 
-  //Ve si está activa la cookie o redirige al login
-  if(!isset($_COOKIE['hkjh41lu4l1k23jhlkj13'])){
-    header('Location: login.php');
-  }
+require_once __DIR__ . '/app_security.php';
+
+require('conectar.php');
+$conexion = new mysqli($db_host, $db_usuario, $db_contra, $db_nombre);
+$conexion->set_charset('utf8mb4');
+
+app_require_login($conexion, 'login.php');
 
 ?>
