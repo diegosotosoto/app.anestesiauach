@@ -9,6 +9,145 @@
 
 	$boton_navbar="<a class='d-sm-block d-sm-none app-nav-action' href='acerca_de.php'><i class='fa-solid fa-question'></i></a>";
 
+// Función para crear notificación de pacientes en Dolor
+function crearNotificacionPacientesDolor($conexion, $usuario_id, $usuario_email) {
+    // Obtener todos los pacientes activos con sus días
+    $sql_pacientes = "SELECT nombre_paciente, rut, fecha_creacion
+                      FROM pacientes
+                      WHERE de_alta = 0
+                        AND fecha_creacion >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+                      ORDER BY fecha_creacion DESC";
+
+    $stmt = $conexion->prepare($sql_pacientes);
+    if (!$stmt) return false;
+
+    $stmt->execute();
+    $pacientes = [];
+    $dias_pacientes = [];
+
+    if (method_exists($stmt, 'get_result')) {
+        $res = $stmt->get_result();
+        while ($row = $res->fetch_assoc()) {
+            $pacientes[] = $row;
+        }
+    } else {
+        $stmt->bind_result($nombre_tmp, $rut_tmp, $fecha_tmp);
+        while ($stmt->fetch()) {
+            $pacientes[] = [
+                'nombre_paciente' => $nombre_tmp,
+                'rut' => $rut_tmp,
+                'fecha_creacion' => $fecha_tmp
+            ];
+        }
+    }
+    $stmt->close();
+
+    // Calcular días para cada paciente
+    foreach ($pacientes as $paciente) {
+        $fecha_creacion = new DateTime($paciente['fecha_creacion']);
+        $fecha_actual = new DateTime();
+        $diferencia = $fecha_creacion->diff($fecha_actual);
+        $dias = $diferencia->days;
+        if ($dias > 0) {
+            $dias_pacientes[] = $dias;
+        }
+    }
+
+    if (empty($dias_pacientes)) return false;
+
+    $total_pacientes = count($dias_pacientes);
+    sort($dias_pacientes);
+    $dias_texto = implode(', ', $dias_pacientes);
+    $mensaje = "Ingresaste {$total_pacientes} paciente(s) en Dolor hace {$dias_texto} día(s).";
+
+    // Verificar si ya existe una notificación similar hoy para este usuario
+    $sql_check = "SELECT n.id
+                  FROM notificaciones n
+                  INNER JOIN notificacion_destinatarios nd ON n.id = nd.notificacion_id
+                  WHERE nd.usuario_id = ?
+                    AND n.titulo = 'Pacientes en Dolor'
+                    AND DATE(n.fecha_inicio) = CURDATE()
+                    AND nd.archivada = 0";
+
+    $stmt_check = $conexion->prepare($sql_check);
+    if (!$stmt_check) return false;
+
+    $stmt_check->bind_param("i", $usuario_id);
+    $stmt_check->execute();
+
+    $existe = false;
+    if (method_exists($stmt_check, 'get_result')) {
+        $res_check = $stmt_check->get_result();
+        if ($res_check->fetch_assoc()) {
+            $existe = true;
+        }
+    } else {
+        $stmt_check->bind_result($id_tmp);
+        if ($stmt_check->fetch()) {
+            $existe = true;
+        }
+    }
+    $stmt_check->close();
+
+    if ($existe) return false; // Ya existe notificación hoy
+
+    // Crear nueva notificación
+    $titulo = "Pacientes en Dolor";
+    $tipo = "info";
+    $alcance = "individual";
+    $url_destino = "hoja_dolor.php";
+    $icono = "fa-solid fa-syringe";
+    $fecha_inicio = date('Y-m-d H:i:s');
+    $fecha_fin = null;
+    $publicada = 1;
+
+    $stmt_notif = $conexion->prepare("
+        INSERT INTO `notificaciones`
+        (`titulo`,`mensaje`,`tipo`,`alcance`,`grupo_destino`,`url_destino`,`icono`,`creada_por`,`publicada`,`fecha_inicio`,`fecha_fin`)
+        VALUES
+        (?,?,?,?,?,?,?,?,?,?,?)
+    ");
+
+    if (!$stmt_notif) return false;
+
+    $stmt_notif->bind_param(
+        "sssssssiiss",
+        $titulo,
+        $mensaje,
+        $tipo,
+        $alcance,
+        null,
+        $url_destino,
+        $icono,
+        $usuario_id,
+        $publicada,
+        $fecha_inicio,
+        $fecha_fin
+    );
+
+    if (!$stmt_notif->execute()) {
+        $stmt_notif->close();
+        return false;
+    }
+
+    $notificacion_id = $stmt_notif->insert_id;
+    $stmt_notif->close();
+
+    // Asignar notificación al usuario
+    $stmt_dest = $conexion->prepare("
+        INSERT INTO `notificacion_destinatarios` (`notificacion_id`,`usuario_id`)
+        VALUES (?,?)
+    ");
+
+    if (!$stmt_dest) return false;
+
+    $stmt_dest->bind_param("ii", $notificacion_id, $usuario_id);
+    $stmt_dest->execute();
+    $stmt_dest->close();
+
+    return true;
+}
+
 //3 Carga Head de la página
 	require("head.php");
 ?>
@@ -70,6 +209,8 @@
 											";
 
 										}else{//NO EXISTE PREVIAMENTE NI FUE DADO DE ALTA
+										    // Crear notificación con todos los pacientes ingresados y sus días
+										    crearNotificacionPacientesDolor($conexion, $app_current_user['ID'], $app_current_user['email_usuario']);
 
 													echo "</br>
 															<div class='alert alert-success alert-dismissible fade show'>
@@ -92,8 +233,8 @@
 													  	</br>
 													  	<form action='editar_paciente.php' method='post'>
 													  	<input type='hidden' name='reactivar' value='yes'>
-													  	<input type='hidden' name='reactivar' value='yes'>
-													  	<input type='hidden' name='reactivar' value='yes'>
+													  	<input type='hidden' name='rut_reactivar' value='".$datos_alta['rut']."'>
+													  	<input type='hidden' name='crear_notificacion_dolor' value='1'>
 
 														  	<button class='btn btn-app-primary' type='submit' name='editar' value='".$datos_alta['rut']."'>Reactivar</button></form>
 													  	</div>

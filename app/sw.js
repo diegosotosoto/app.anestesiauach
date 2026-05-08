@@ -1,4 +1,4 @@
-const CACHE_NAME = "app-static-v5";
+const CACHE_NAME = "app-static-v6";
 
 const STATIC_ASSETS = [
   "/style.css",
@@ -54,30 +54,19 @@ self.addEventListener("fetch", (event) => {
   }
 
   const requestUrl = new URL(event.request.url);
-  const isCss = requestUrl.pathname.endsWith(".css");
-  const isPhp = requestUrl.pathname.endsWith(".php");
+  const pathname = requestUrl.pathname;
 
-  if (isCss) {
-    event.respondWith(
-      caches.match(event.request, { ignoreSearch: true }).then((cachedResponse) => {
-        const networkFetch = fetch(event.request)
-          .then((networkResponse) => {
-            if (networkResponse && networkResponse.ok) {
-              const responseClone = networkResponse.clone();
-              caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
-            }
-            return networkResponse;
-          })
-          .catch(() => cachedResponse);
+  // Cache-first para recursos estáticos (CSS, JS, imágenes)
+  const isStatic = pathname.match(/\.(css|js|png|jpg|jpeg|gif|svg|webp|woff|woff2)$/i);
 
-        return cachedResponse || networkFetch;
-      })
-    );
-    return;
-  }
+  // Network-first para datos críticos (bitácoras, pacientes)
+  const isCriticalData = pathname.match(/(bitacora_ingreso|bitacora_estadistica|bitacora_rechazos|bitacora_autoriza|pacientes)\.php$/i);
 
-  // Stale-while-revalidate para archivos PHP dinámicos
-  if (isPhp) {
+  // Stale-while-revalidate para contenido semi-estático (apuntes, cálculos)
+  const isSemiStatic = pathname.match(/(apuntes|links|telefonos|correos|calendario|vista_epa)\.php$/i);
+
+  if (isStatic) {
+    // Cache-first: servir del cache, actualizar en background
     event.respondWith(
       caches.match(event.request).then((cachedResponse) => {
         const networkFetch = fetch(event.request)
@@ -96,6 +85,43 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  if (isCriticalData) {
+    // Network-first: siempre frescos, fallback al cache
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.ok) {
+            const responseClone = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+          }
+          return networkResponse;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  if (isSemiStatic) {
+    // Stale-while-revalidate: servir cache inmediato, actualizar en background
+    event.respondWith(
+      caches.match(event.request).then((cachedResponse) => {
+        const networkFetch = fetch(event.request)
+          .then((networkResponse) => {
+            if (networkResponse && networkResponse.ok) {
+              const responseClone = networkResponse.clone();
+              caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+            }
+            return networkResponse;
+          })
+          .catch(() => cachedResponse);
+
+        return cachedResponse || networkFetch;
+      })
+    );
+    return;
+  }
+
+  // Default: network-first con fallback al cache
   event.respondWith(
     fetch(event.request).catch(() => caches.match(event.request))
   );

@@ -287,7 +287,7 @@ function app_head_render_notificaciones_widget($notificaciones_nav, $total_notif
                     <?php endif; ?>
 
                     <?php if (!empty($notif['es_sistema'])): ?>
-                      <button type="button" class="btn btn-sm notif-btn-secondary notif-hide-local-btn">
+                      <button type="button" class="btn btn-sm notif-btn-secondary notif-hide-local-btn" data-titulo="<?= htmlspecialchars($notif['titulo']) ?>">
                         Descartar
                       </button>
                     <?php endif; ?>
@@ -791,7 +791,7 @@ document.addEventListener('click', function(e){
 <script>
 const notifAjaxUrl = '<?= app_path('notificacion_accion_ajax.php') ?>';
 
-document.addEventListener('click', function(e) {
+document.addEventListener('click', async function(e) {
   const hideBtn = e.target.closest('.notif-hide-local-btn');
   if (!hideBtn) return;
 
@@ -801,12 +801,42 @@ document.addEventListener('click', function(e) {
   const item = e.target.closest('.notif-item');
   if (!item) return;
 
-  item.remove();
+  const titulo = hideBtn.dataset.titulo;
+  const destinatarioId = item.dataset.destinatarioId;
 
-  const badge = document.getElementById('notif-badge');
-  const currentTotal = badge ? parseInt(badge.textContent, 10) || 0 : 0;
-  actualizarBadgeNotificaciones(Math.max(0, currentTotal - 1));
-  asegurarEstadoVacioNotificaciones();
+  // Si es notificación de Pacientes en Dolor, archivar en base de datos
+  if (titulo === 'Pacientes en Dolor' && destinatarioId && !destinatarioId.startsWith('auto_')) {
+    try {
+      const body = new URLSearchParams();
+      body.append('destinatario_id', destinatarioId);
+      body.append('accion', 'archivar');
+
+      const response = await fetch(notifAjaxUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: body
+      });
+
+      if (response.ok) {
+        item.remove();
+        const badge = document.getElementById('notif-badge');
+        const currentTotal = badge ? parseInt(badge.textContent, 10) || 0 : 0;
+        actualizarBadgeNotificaciones(Math.max(0, currentTotal - 1));
+        asegurarEstadoVacioNotificaciones();
+      }
+    } catch (error) {
+      console.error('Error al archivar notificación:', error);
+    }
+  } else {
+    // Para notificaciones del sistema, solo ocultar localmente
+    item.remove();
+    const badge = document.getElementById('notif-badge');
+    const currentTotal = badge ? parseInt(badge.textContent, 10) || 0 : 0;
+    actualizarBadgeNotificaciones(Math.max(0, currentTotal - 1));
+    asegurarEstadoVacioNotificaciones();
+  }
 });
 
 document.addEventListener('click', async function(e) {

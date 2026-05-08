@@ -216,6 +216,7 @@ if ($usuario_nav) {
         ];
     }
 
+
     if (!empty($notificaciones_sistema)) {
         $notificaciones_nav = array_merge($notificaciones_sistema, $notificaciones_nav);
         $total_notificaciones_no_leidas += count($notificaciones_sistema);
