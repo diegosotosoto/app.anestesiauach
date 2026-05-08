@@ -209,7 +209,7 @@ function app_current_user_from_token($conexion) {
     }
 
     $token_hash = app_auth_token_hash($_COOKIE[APP_AUTH_TOKEN_COOKIE]);
-    $stmt = $conexion->prepare("SELECT u.`ID`, u.`nombre_usuario`, u.`email_usuario`, u.`admin`, u.`staff_`, u.`intern_`, u.`becad_`, u.`becad_otro`, u.`external_`, u.`ui_modo`, u.`ui_nav_posicion`, u.`ui_icono`, u.`ui_icono_color`
+    $stmt = $conexion->prepare("SELECT u.`ID`, u.`nombre_usuario`, u.`email_usuario`, u.`admin`, u.`staff_`, u.`intern_`, u.`becad_`, u.`becad_otro`, u.`external_`, u.`ui_modo`, u.`ui_nav_posicion`, u.`ui_icono`, u.`ui_icono_color`, u.`verified`
         FROM `app_auth_sessions` s
         INNER JOIN `usuarios_dolor` u ON u.`ID` = s.`user_id`
         WHERE s.`token_hash` = ?
@@ -230,7 +230,7 @@ function app_current_user_from_token($conexion) {
         $res = $stmt->get_result();
         $usuario = $res ? $res->fetch_assoc() : null;
     } else {
-        $stmt->bind_result($id_tmp, $nombre_tmp, $email_tmp, $admin_tmp, $staff_tmp, $intern_tmp, $becad_tmp, $becad_otro_tmp, $external_tmp, $ui_modo_tmp, $ui_nav_tmp, $ui_icono_tmp, $ui_color_tmp);
+        $stmt->bind_result($id_tmp, $nombre_tmp, $email_tmp, $admin_tmp, $staff_tmp, $intern_tmp, $becad_tmp, $becad_otro_tmp, $external_tmp, $ui_modo_tmp, $ui_nav_tmp, $ui_icono_tmp, $ui_color_tmp, $verified_tmp);
         if ($stmt->fetch()) {
             $usuario = array(
                 'ID' => $id_tmp,
@@ -245,7 +245,8 @@ function app_current_user_from_token($conexion) {
                 'ui_modo' => $ui_modo_tmp,
                 'ui_nav_posicion' => $ui_nav_tmp,
                 'ui_icono' => $ui_icono_tmp,
-                'ui_icono_color' => $ui_color_tmp
+                'ui_icono_color' => $ui_color_tmp,
+                'verified' => $verified_tmp
             );
         }
     }
@@ -284,7 +285,7 @@ function app_current_user($conexion) {
         return null;
     }
 
-    $stmt = $conexion->prepare("SELECT `ID`, `nombre_usuario`, `email_usuario`, `admin`, `staff_`, `intern_`, `becad_`, `becad_otro`, `external_`, `ui_modo`, `ui_nav_posicion`, `ui_icono`, `ui_icono_color`
+    $stmt = $conexion->prepare("SELECT `ID`, `nombre_usuario`, `email_usuario`, `admin`, `staff_`, `intern_`, `becad_`, `becad_otro`, `external_`, `ui_modo`, `ui_nav_posicion`, `ui_icono`, `ui_icono_color`, `verified`
         FROM `usuarios_dolor`
         WHERE `email_usuario` = ?
           AND `verified` = 1
@@ -302,7 +303,7 @@ function app_current_user($conexion) {
         $res = $stmt->get_result();
         $usuario = $res ? $res->fetch_assoc() : null;
     } else {
-        $stmt->bind_result($id_tmp, $nombre_tmp, $email_tmp, $admin_tmp, $staff_tmp, $intern_tmp, $becad_tmp, $becad_otro_tmp, $external_tmp, $ui_modo_tmp, $ui_nav_tmp, $ui_icono_tmp, $ui_color_tmp);
+        $stmt->bind_result($id_tmp, $nombre_tmp, $email_tmp, $admin_tmp, $staff_tmp, $intern_tmp, $becad_tmp, $becad_otro_tmp, $external_tmp, $ui_modo_tmp, $ui_nav_tmp, $ui_icono_tmp, $ui_color_tmp, $verified_tmp);
         if ($stmt->fetch()) {
             $usuario = array(
                 'ID' => $id_tmp,
@@ -317,7 +318,8 @@ function app_current_user($conexion) {
                 'ui_modo' => $ui_modo_tmp,
                 'ui_nav_posicion' => $ui_nav_tmp,
                 'ui_icono' => $ui_icono_tmp,
-                'ui_icono_color' => $ui_color_tmp
+                'ui_icono_color' => $ui_color_tmp,
+                'verified' => $verified_tmp
             );
         }
     }

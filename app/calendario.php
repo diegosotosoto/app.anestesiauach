@@ -106,12 +106,9 @@ function calendar_default_color($tipo)
     return $colors[$tipo] ?? '#315bc5';
 }
 
-$usuario = app_current_user($conexion);
+app_require_login($conexion, 'login.php');
 
-if (!$usuario || (int)$usuario['verified'] !== 1) {
-    header('Location: login.php');
-    exit;
-}
+$usuario = app_current_user($conexion);
 
 $emailUsuario = trim((string)$usuario['email_usuario']);
 

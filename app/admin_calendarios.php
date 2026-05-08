@@ -86,6 +86,8 @@ function tipo_label($tipo)
     return $labels[$tipo] ?? strtoupper((string)$tipo);
 }
 
+app_require_login($conexion, 'login.php');
+
 $usuarioAdmin = app_current_user($conexion);
 
 if (!$usuarioAdmin || (int)$usuarioAdmin['admin'] !== 1) {

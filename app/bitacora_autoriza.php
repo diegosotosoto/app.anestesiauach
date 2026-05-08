@@ -152,6 +152,7 @@ while($row_user=$tab_users->fetch_assoc()){
   echo "<div class='bitacora-entry-header'>";
   echo "<div class='d-flex justify-content-between align-items-start gap-3 flex-wrap'>";
   $icono_autor = app_render_user_inline_icon($rows, 'app-inline-user-icon-large');
+  $icono_autor = str_replace('<i class="app-inline-user-icon-large"', '<i class="app-inline-user-icon-large" style="width:64px;height:64px;font-size:1.8rem!important"', $icono_autor);
   echo "<div><div class='small text-muted'>Becado</div><h5 class='mb-1'>".$icono_autor.app_h_text($rows['nombre_usuario'])."</h5></div>";
   echo "<div class='text-md-end'><div>".$row_user['fecha_b']."</div><div><a class='text-decoration-none' href='https://www.hbvaldivia.cl/core/farmacia/receta/0/".$row_user['rut_b']."' target='_blank'>".$row_user['rut_b']."</a></div><div><a class='text-decoration-none' href='https://www.hbvaldivia.cl/core/farmacia/receta/1/".$row_user['ficha_b']."' target='_blank'>".$row_user['ficha_b']."</a></div></div>";
   echo "</div></div>";
@@ -245,6 +246,7 @@ while($row_int=$tab_internos->fetch_assoc()){
   echo "<div class='bitacora-entry-header bitacora-entry-header-danger'>";
   echo "<div class='d-flex justify-content-between align-items-start gap-3 flex-wrap'>";
   $icono_autor2 = app_render_user_inline_icon($rows2, 'app-inline-user-icon-large');
+  $icono_autor2 = str_replace('<i class="app-inline-user-icon-large"', '<i class="app-inline-user-icon-large" style="width:64px;height:64px;font-size:1.8rem!important"', $icono_autor2);
   echo "<div><div class='small text-muted'>Interno</div><h5 class='mb-1'>".$icono_autor2.app_h_text($rows2['nombre_usuario'])."</h5></div>";
   echo "<div class='text-md-end'><div>".$row_int['fecha_i']."</div><div><a class='text-decoration-none' href='https://www.hbvaldivia.cl/core/farmacia/receta/0/".$row_int['rut_i']."' target='_blank'>".$row_int['rut_i']."</a></div><div><a class='text-decoration-none' href='https://www.hbvaldivia.cl/core/farmacia/receta/1/".$row_int['ficha_i']."' target='_blank'>".$row_int['ficha_i']."</a></div></div>";
   echo "</div></div>";
