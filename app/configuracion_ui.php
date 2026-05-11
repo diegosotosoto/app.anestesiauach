@@ -189,6 +189,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
+
+    if ($accion === 'request_password_reset') {
+        $email_solicitud = (string)($_POST['email_usuario_r'] ?? $email_usuario);
+
+        $chequea_email = "SELECT `email_usuario` FROM `usuarios_dolor` WHERE `email_usuario`= ? AND `verified`= '1'";
+        $stmt_check = $conexion_ui->prepare($chequea_email);
+        if ($stmt_check) {
+            $stmt_check->bind_param('s', $email_solicitud);
+            $stmt_check->execute();
+            $result_check = $stmt_check->get_result();
+            $conteo = $result_check->num_rows;
+            $stmt_check->close();
+
+            if ($conteo == 0) {
+                $mensaje_error = 'Error en el registro, contacta al administrador.';
+            } else {
+                $mensaje_ok = 'Se ha enviado un correo a la cuenta indicada.';
+                echo '<form method="POST" action="mail.php" name="mail_post">';
+                echo '<input type="hidden" name="email_usuario_rec" value="' . htmlspecialchars($email_solicitud) . '">';
+                echo '</form>';
+                echo '<script>window.onload = function(){ document.forms["mail_post"].submit(); }</script>';
+            }
+        }
+    }
 }
 
 $roles = [];
@@ -268,6 +292,7 @@ $usuario = $usuario_configuracion;
             </div>
         </section>
 
+        <?php if ((int)($usuario['verified_email'] ?? 0) === 1): ?>
         <form method="post" action="configuracion_ui.php" class="app-card ui-settings-card" id="passwordChangeForm" autocomplete="off">
             <input type="hidden" name="config_action" value="password">
             <div class="app-card-title">
@@ -309,6 +334,28 @@ $usuario = $usuario_configuracion;
                 <div class="admin-actions auth-full"><button type="submit" class="btn btn-app-primary"><i class="fa-solid fa-floppy-disk"></i> Cambiar contraseña</button></div>
             </div>
         </form>
+        <?php else: ?>
+        <form method="post" action="configuracion_ui.php" class="app-card ui-settings-card" autocomplete="off">
+            <input type="hidden" name="config_action" value="request_password_reset">
+            <div class="app-card-title">
+                <span class="app-icon-circle"><i class="fa-solid fa-key"></i></span>
+                <div>
+                    <h3>Verificar email y cambiar contraseña</h3>
+                    <p>Para cambiar tu contraseña, primero debes verificar tu correo electrónico. Te enviaremos un enlace para crear una nueva contraseña.</p>
+                </div>
+            </div>
+            <div class="login-form-box">
+                <div class="mb-3">
+                    <label class="form-label text-muted">E-Mail</label>
+                    <div class="input-group">
+                        <input type="email" name="email_usuario_r" class="form-control login-input" value="<?= htmlspecialchars($email_usuario) ?>" required>
+                        <span class="input-group-text app-input-addon login-addon"><i class="fa fa-envelope"></i></span>
+                    </div>
+                </div>
+                <div class="admin-actions auth-full"><button type="submit" class="btn btn-app-primary"><i class="fa-solid fa-paper-plane"></i> Enviar enlace de verificación</button></div>
+            </div>
+        </form>
+        <?php endif; ?>
 
         <form method="post" action="configuracion_ui.php" class="app-card ui-settings-card">
             <input type="hidden" name="config_action" value="ui">

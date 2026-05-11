@@ -23,7 +23,7 @@ if (!empty($_POST['email_usuario_rec'])) {
   $pass_usuario_final=htmlentities(addslashes($_POST['pass_usuario']));
   $pass_cifrado_final=password_hash($pass_usuario_final, PASSWORD_DEFAULT);
 
-  $consulta_final="UPDATE `usuarios_dolor` SET `password`='$pass_cifrado_final', `token_rec`='', `token_activ`='0', `token_hr`='' WHERE `email_usuario`='$email_usuario_final'";
+  $consulta_final="UPDATE `usuarios_dolor` SET `password`='$pass_cifrado_final', `token_rec`='', `token_activ`='0', `token_hr`='', `verified_email`='1' WHERE `email_usuario`='$email_usuario_final'";
   $escribir_pass=$conexion->query($consulta_final);
 
   echo "
