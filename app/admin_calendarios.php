@@ -95,6 +95,11 @@ if (!$usuarioAdmin || (int)$usuarioAdmin['admin'] !== 1) {
     exit;
 }
 
+if($usuarioAdmin['external_']==1){
+  header('Location: index.php');
+  exit;
+}
+
 $emailUsuario = trim((string)$usuarioAdmin['email_usuario']);
 $mensajeOk = '';
 $mensajeError = '';

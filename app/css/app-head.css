@@ -1083,3 +1083,38 @@ background:var(--app-gradient) !important;
   font-weight:800!important;
   line-height:1!important;
 }
+
+/* Mejorar contraste de btn-close en modos light y dark */
+.offcanvas-header .btn-close,
+.modal-header .btn-close{
+  opacity:0.75;
+}
+
+.offcanvas-header .btn-close:hover,
+.modal-header .btn-close:hover{
+  opacity:1;
+}
+
+/* Modo dark - usar color claro para mejor contraste */
+[data-bs-theme="dark"] .offcanvas-header .btn-close,
+[data-bs-theme="dark"] .modal-header .btn-close{
+  filter:invert(1);
+  opacity:0.85;
+}
+
+[data-bs-theme="dark"] .offcanvas-header .btn-close:hover,
+[data-bs-theme="dark"] .modal-header .btn-close:hover{
+  filter:invert(1);
+  opacity:1;
+}
+
+/* Para sidebar con fondo oscuro */
+.bg-sidebar .btn-close{
+  filter:invert(1);
+  opacity:0.85;
+}
+
+.bg-sidebar .btn-close:hover{
+  filter:invert(1);
+  opacity:1;
+}

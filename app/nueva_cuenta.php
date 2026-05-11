@@ -60,7 +60,7 @@
             <div class="login-card-body">
 
                 <div class="mb-3">
-                  <label class="form-label text-muted">Nombre y apellido</label>
+                  <label class="form-label text-muted pb-0 mb-0">Nombre y Apellido</label><div class="auth-helper auth-full">(Como aparecerá en registro oficial de la App)</div> 
                   <div class="input-group">
                     <input type="text" name="nombre_usuario" class="form-control login-input" pattern='[a-zA-ZñÑáéíóúÁÉÍÓÚ\s]{2,}' required>
                     <span class="input-group-text app-input-addon login-addon"><i class="fa fa-user"></i></span>
@@ -78,7 +78,7 @@
                 <div class="mb-3">
                   <label class="form-label text-muted">Contraseña</label>
                   <div class="input-group">
-                    <input type="password" name="pass_usuario" id="pass_usuario" class="form-control login-input" required pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*_=+\-?]).{8,12}$" aria-describedby="button-addon2">
+                    <input type="password" name="pass_usuario" id="pass_usuario" class="form-control login-input" required pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*_=+\-?]).{8,50}$" aria-describedby="button-addon2">
                     <button class="btn login-toggle" type="button" id="button-addon2" onclick="mostrar()"><i id="icono" class="fa-solid fa-eye"></i></button>
                     <span class="input-group-text app-input-addon login-addon"><i class="fa fa-key"></i></span>
                   </div>
@@ -97,10 +97,64 @@
                 </div>
 
                 <div class="auth-helper auth-full">
-                  Contraseña de 8 a 12 caracteres, incluyendo una mayúscula, un número y un símbolo (!@#$%^&*_=+-)
+                  Contraseña mayor de 8 caracteres, incluyendo una mayúscula, un número y un símbolo (!@#$%^&*_=+-)
                 </div>
                 <div class="py-3"></div>
-                <div class="mb-3 auth-full">            <div class="about-closing">
+
+                <div class="mb-4 auth-full">
+                  <div class="about-closing">
+                    <strong>Icono de usuario</strong>
+                  </div>
+                  <p class="text-muted small">Elige el icono y color que se mostrará en tu perfil.</p>
+                  
+                  <div class="ui-avatar-picker">
+                    <div id="uiAvatarPreview" class="ui-avatar-preview" style="background: #2e9b55;">
+                      <i class="fa-solid fa-user-doctor"></i>
+                    </div>
+                    
+                    <div class="ui-avatar-options">
+                      <div class="ui-avatar-group" role="radiogroup" aria-label="Icono de usuario">
+                        <?php
+                        $iconos_opciones = ['fa-user', 'fa-user-astronaut', 'fa-user-doctor', 'fa-user-graduate', 'fa-user-ninja', 'fa-user-tie', 'fa-person-dress', 'fa-snowman', 'fa-head-side-mask', 'fa-skull', 'fa-poo', 'fa-user-secret', 'fa-brain', 'fa-ghost', 'fa-cat', 'fa-dog', 'fa-spider', 'fa-horse-head'];
+                        foreach ($iconos_opciones as $icono_opcion): ?>
+                          <label class="ui-avatar-square">
+                            <input type="radio" name="ui_icono" value="<?= htmlspecialchars($icono_opcion) ?>" <?= $icono_opcion === 'fa-user-doctor' ? 'checked' : '' ?>>
+                            <span><i class="fa-solid <?= htmlspecialchars($icono_opcion) ?>"></i></span>
+                          </label>
+                        <?php endforeach; ?>
+                      </div>
+
+                      <div class="ui-color-group" role="radiogroup" aria-label="Color del icono de usuario">
+                        <?php
+                        $colores_opciones = [
+                          'blue' => '#1f5fbf',
+                          'green' => '#2e9b55',
+                          'red' => '#ce2e2e',
+                          'yellow' => '#d4a900',
+                          'orange' => '#ff5a00',
+                          'purple' => '#6405d0',
+                          'teal' => '#29a09b',
+                          'pink' => '#d9027d',
+                          'cyan' => '#0ea5e9',
+                          'indigo' => '#f9a8d4',
+                          'slate' => '#475569',
+                          'black' => '#111827'
+                        ];
+                        foreach ($colores_opciones as $color_key => $color_hex): ?>
+                          <label class="ui-color-square">
+                            <input type="radio" name="ui_icono_color" value="<?= htmlspecialchars($color_key) ?>" data-color="<?= htmlspecialchars($color_hex) ?>" <?= $color_key === 'green' ? 'checked' : '' ?>>
+                            <span style="background: <?= htmlspecialchars($color_hex) ?>;"></span>
+                          </label>
+                        <?php endforeach; ?>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+
+                <div class="mb-3 auth-full">            
+                  <div class="about-closing">
                   <strong>Términos y condiciones</strong></div>
                   <textarea class="form-control auth-terms opacity-75" id="terms_conditions" rows="6" readonly>
 Al utilizar nuestra aplicación web progresiva "Anestesia UACh", aceptas los siguientes términos y condiciones:
@@ -120,6 +174,8 @@ Al utilizar nuestra aplicación web progresiva "Anestesia UACh", aceptas los sig
 Si tienes alguna pregunta o inquietud con respecto a estos términos y condiciones, no dudes en contactarnos.
                   </textarea>
                 </div>
+
+
 
                 <div class="pt-3 text-center auth-full">
                   <button type="submit" name="registro" class="btn btn-app-primary login-submit">
@@ -177,6 +233,136 @@ function mostrar2() {
     }, false)
   })
 })()
+</script>
+
+<style>
+.ui-avatar-picker {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-top: .75rem;
+    flex-direction: row;
+}
+
+.ui-avatar-options {
+    display: grid;
+    gap: .7rem;
+    width: 100%;
+}
+
+.ui-avatar-group,
+.ui-color-group {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .35rem;
+}
+
+.ui-avatar-square,
+.ui-color-square {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    cursor: pointer;
+}
+
+.ui-avatar-square input,
+.ui-color-square input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+}
+
+.ui-avatar-square span,
+.ui-color-square span {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 7px;
+    border: 2px solid rgba(15, 23, 42, .16);
+    box-shadow: 0 1px 4px rgba(15, 23, 42, .12);
+    transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+
+.ui-avatar-square span {
+    background: #f8fafc;
+    color: #14345f;
+    font-size: 1.15rem;
+}
+
+.ui-color-square span {
+    color: #111827;
+}
+
+.ui-avatar-square input:checked + span,
+.ui-color-square input:checked + span {
+    border-color: #111827;
+    box-shadow: 0 0 0 3px rgba(17, 24, 39, .18);
+    transform: translateY(-1px);
+}
+
+.ui-color-square input:checked + span::after {
+    content: "\f00c";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 1.05rem;
+    color: #111827;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, .45);
+}
+
+.ui-avatar-preview {
+    width: 86px;
+    height: 86px;
+    aspect-ratio: 1/1;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    color: #ffffff;
+    font-size: 2.6rem;
+    box-shadow: 0 16px 30px rgba(15, 23, 42, .22);
+    flex: 0 0 auto;
+}
+
+body.theme-dark .ui-avatar-square span {
+    background: #0f172a;
+    color: #dbeafe;
+    border-color: rgba(147, 197, 253, .28);
+}
+
+body.theme-dark .ui-avatar-square input:checked + span,
+body.theme-dark .ui-color-square input:checked + span {
+    border-color: #93c5fd;
+    box-shadow: 0 0 0 3px rgba(147, 197, 253, .2);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const preview = document.getElementById('uiAvatarPreview');
+    const iconInputs = document.querySelectorAll('input[name="ui_icono"]');
+    const colorInputs = document.querySelectorAll('input[name="ui_icono_color"]');
+
+    function updateAvatarPreview() {
+        if (!preview) return;
+
+        const selectedIcon = document.querySelector('input[name="ui_icono"]:checked');
+        const selectedColor = document.querySelector('input[name="ui_icono_color"]:checked');
+        const icon = selectedIcon ? selectedIcon.value : 'fa-user-doctor';
+        const color = selectedColor ? selectedColor.dataset.color : '#2e9b55';
+
+        preview.style.background = color;
+        preview.innerHTML = '<i class="fa-solid ' + icon.replace(/[^a-z0-9-]/gi, '') + '"></i>';
+    }
+
+    iconInputs.forEach(function(input) {
+        input.addEventListener('change', updateAvatarPreview);
+    });
+
+    colorInputs.forEach(function(input) {
+        input.addEventListener('change', updateAvatarPreview);
+    });
+});
 </script>
 
 <?php

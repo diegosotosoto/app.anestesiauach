@@ -14,6 +14,11 @@ if(!$usuario){
   exit;
 }
 
+if($usuario['external_']==1){
+  header('Location: index.php');
+  exit;
+}
+
 if($usuario['admin']==1){
   // CONTINUA
 } elseif ($usuario['staff_']==1) {
@@ -179,30 +184,13 @@ while($row_user=$tab_users->fetch_assoc()){
   echo "<div class='bitacora-feedback-label pt-2'>Comentarios del becado</div>";
   echo "<div class='bitacora-comments'>".$row_user['comentarios_b']."</div>";
   echo "<div class='bitacora-feedback-label pt-3'>Agregar feedback</div>";
-  echo "<textarea class='form-control bitacora-feedback' maxlength='200' rows='3' name='comentarios_b_a' id='comentarios_b_a'></textarea>";
+  echo "<textarea class='form-control bitacora-feedback' maxlength='200' rows='3' name='comentarios_b_a' id='comentarios_b_a_".$row_user['id_b']."'></textarea>";
   echo "<div class='bitacora-actions'>
           <button class='btn btn-app-primary' type='submit' name='submit_b' value='1'>Autorizar</button>
-          <button type='button' class='btn btn-app-danger' data-bs-toggle='modal' data-bs-target='#".$modalId."'>Rechazar</button>
+          <button type='button' class='btn btn-app-danger' onclick='confirmarRechazoBecado(".$row_user['id_b'].")'>Rechazar</button>
         </div>";
 
-  echo "</div></div>";
-
-  echo "<div class='modal fade' id='".$modalId."' tabindex='-1' aria-labelledby='".$modalId."Label' aria-hidden='true'>
-          <div class='modal-dialog'>
-            <div class='modal-content'>
-              <div class='modal-header'>
-                <h5 class='modal-title' id='".$modalId."Label'>Confirmar rechazo</h5>
-                <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
-              </div>
-              <div class='modal-body'>
-                ¿Estás seguro de que deseas rechazar? Se notificará al becado del rechazo para su corrección.
-              </div>
-              <div class='modal-footer'>
-                <button type='submit' name='submit_b' value='3' class='btn btn-app-danger'>Sí, rechazar</button>
-              </div>
-            </div>
-          </div>
-        </div></form>";
+  echo "</div></div></form>";
 }
 
 //Bitácora de internos
@@ -271,32 +259,85 @@ while($row_int=$tab_internos->fetch_assoc()){
   echo "<div class='bitacora-feedback-label pt-2'>Comentarios del interno</div>";
   echo "<div class='bitacora-comments'>".$row_int['comentarios_i']."</div>";
   echo "<div class='bitacora-feedback-label pt-3'>Agregar feedback</div>";
-  echo "<textarea class='form-control bitacora-feedback' maxlength='200' rows='3' name='comentarios_i_a' id='comentarios_i_a'></textarea>";
+  echo "<textarea class='form-control bitacora-feedback' maxlength='200' rows='3' name='comentarios_i_a' id='comentarios_i_a_".$row_int['id_i']."'></textarea>";
   echo "<div class='bitacora-actions'>
           <button class='btn btn-app-primary' type='submit' name='submit_i' value='1'>Autorizar</button>
-          <button type='button' class='btn btn-app-danger' data-bs-toggle='modal' data-bs-target='#".$modalId."'>Rechazar</button>
+          <button type='button' class='btn btn-app-danger' onclick='confirmarRechazoInterno(".$row_int['id_i'].")'>Rechazar</button>
         </div>";
 
-  echo "</div></div>";
-
-  echo "<div class='modal fade' id='".$modalId."' tabindex='-1' aria-labelledby='".$modalId."Label' aria-hidden='true'>
-          <div class='modal-dialog'>
-            <div class='modal-content'>
-              <div class='modal-header'>
-                <h5 class='modal-title' id='".$modalId."Label'>Confirmar rechazo</h5>
-                <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
-              </div>
-              <div class='modal-body'>
-                ¿Estás seguro de que deseas rechazar? Se notificará al interno del rechazo para su corrección.
-              </div>
-              <div class='modal-footer'>
-                <button type='submit' name='submit_i' value='3' class='btn btn-app-danger'>Sí, rechazar</button>
-              </div>
-            </div>
-          </div>
-        </div></form>";
+  echo "</div></div></form>";
 }
 ?>
+
+<script>
+function confirmarRechazoBecado(id) {
+  if (!confirm('¿Estás seguro de que deseas rechazar? Se notificará al becado del rechazo para su corrección.')) {
+    return;
+  }
+
+  var form = document.createElement('form');
+  form.method = 'POST';
+  form.action = 'bitacora_autoriza.php';
+
+  var inputId = document.createElement('input');
+  inputId.type = 'hidden';
+  inputId.name = 'bitacora_autoriza';
+  inputId.value = id;
+  form.appendChild(inputId);
+
+  var inputSubmit = document.createElement('input');
+  inputSubmit.type = 'hidden';
+  inputSubmit.name = 'submit_b';
+  inputSubmit.value = '3';
+  form.appendChild(inputSubmit);
+
+  var comentariosField = document.getElementById('comentarios_b_a_' + id);
+  if (comentariosField && comentariosField.value) {
+    var inputComentarios = document.createElement('input');
+    inputComentarios.type = 'hidden';
+    inputComentarios.name = 'comentarios_b_a';
+    inputComentarios.value = comentariosField.value;
+    form.appendChild(inputComentarios);
+  }
+
+  document.body.appendChild(form);
+  form.submit();
+}
+
+function confirmarRechazoInterno(id) {
+  if (!confirm('¿Estás seguro de que deseas rechazar? Se notificará al interno del rechazo para su corrección.')) {
+    return;
+  }
+
+  var form = document.createElement('form');
+  form.method = 'POST';
+  form.action = 'bitacora_autoriza.php';
+
+  var inputId = document.createElement('input');
+  inputId.type = 'hidden';
+  inputId.name = 'bitacora_autoriza_i';
+  inputId.value = id;
+  form.appendChild(inputId);
+
+  var inputSubmit = document.createElement('input');
+  inputSubmit.type = 'hidden';
+  inputSubmit.name = 'submit_i';
+  inputSubmit.value = '3';
+  form.appendChild(inputSubmit);
+
+  var comentariosField = document.getElementById('comentarios_i_a_' + id);
+  if (comentariosField && comentariosField.value) {
+    var inputComentarios = document.createElement('input');
+    inputComentarios.type = 'hidden';
+    inputComentarios.name = 'comentarios_i_a';
+    inputComentarios.value = comentariosField.value;
+    form.appendChild(inputComentarios);
+  }
+
+  document.body.appendChild(form);
+  form.submit();
+}
+</script>
 
     </div>
   </div>

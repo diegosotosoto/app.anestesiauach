@@ -10,10 +10,10 @@
 	$conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
 	$conexion->set_charset("utf8");
 
-	//Saca a los internos y otros becados del area de vpa
+	//Saca a los internos, otros becados y usuarios externos del area de vpa
 	  $usuario = app_current_user($conexion);
-	  if($usuario['intern_']==1 or $usuario['becad_otro']==1){
-	  	header('Location: login.php');
+	  if($usuario['intern_']==1 or $usuario['becad_otro']==1 or $usuario['external_']==1){
+	  	header('Location: index.php');
 	  }
  
 //VARIABLES

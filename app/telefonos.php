@@ -6,6 +6,12 @@ $conexion->set_charset("utf8");
 
 app_require_login($conexion, 'login.php');
 
+$usuario = app_current_user($conexion);
+if($usuario['external_']==1){
+  header('Location: index.php');
+  exit;
+}
+
   $boton_toggler="<a class='d-sm-block d-sm-none admin-back-btn' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
   $titulo_navbar="<div class='text-white'>Teléfonos</div>";
   $boton_navbar="<a></a><a></a>";

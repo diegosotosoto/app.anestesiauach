@@ -337,4 +337,19 @@ function app_require_login($conexion, $login_path = 'login.php') {
         header('Location: ' . $login_path);
         exit;
     }
+    
+    // Verificar si el usuario tiene nombre completo (no vacío)
+    // Solo redirigir a completar_perfil.php si NO estamos ya en esa página
+    $current_page = basename($_SERVER['PHP_SELF']);
+    if ($current_page !== 'completar_perfil.php' && $current_page !== 'login.php') {
+        $usuario = app_current_user($conexion);
+        if ($usuario) {
+            $nombre_usuario = trim((string)($usuario['nombre_usuario'] ?? ''));
+            if ($nombre_usuario === '' || $nombre_usuario === null) {
+                // Usuario sin nombre - redirigir a completar perfil
+                header('Location: completar_perfil.php');
+                exit;
+            }
+        }
+    }
 }

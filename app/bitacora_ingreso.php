@@ -15,6 +15,11 @@ if(!$usuario){
   exit;
 }
 
+if($usuario['external_']==1){
+  header('Location: index.php');
+  exit;
+}
+
 if($usuario['admin']==1){
   header('Location: bitacora_autoriza.php');
 } elseif ($usuario['staff_']==1) {

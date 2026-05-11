@@ -502,7 +502,10 @@ $usuario = $usuario_configuracion;
 .ui-avatar-preview {
     width: 86px;
     height: 86px;
-    border-radius: 18px;
+    aspect-ratio: 1/1;
+    border-radius: 999px;
+    padding: 0;
+    box-sizing: border-box;
     display: grid;
     place-items: center;
     color: #ffffff;
@@ -512,6 +515,8 @@ $usuario = $usuario_configuracion;
 
 .ui-avatar-preview-admin {
     border: 4px solid #f59e0b;
+    padding: 0;
+    box-sizing: border-box;
     box-shadow: 0 0 0 4px rgba(245, 158, 11, .18), 0 16px 30px rgba(15, 23, 42, .22);
 }
 
@@ -519,6 +524,20 @@ $usuario = $usuario_configuracion;
     .ui-avatar-picker {
         align-items: flex-start;
         flex-direction: column;
+    }
+    
+    .ui-avatar-preview {
+        width: 86px;
+        height: 86px;
+        aspect-ratio: 1/1;
+        border-radius: 999px;
+    }
+    
+    .ui-avatar-preview-admin {
+        width: 86px;
+        height: 86px;
+        aspect-ratio: 1/1;
+        border-radius: 999px;
     }
 }
 

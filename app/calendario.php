@@ -110,6 +110,11 @@ app_require_login($conexion, 'login.php');
 
 $usuario = app_current_user($conexion);
 
+if($usuario['external_']==1){
+  header('Location: index.php');
+  exit;
+}
+
 $emailUsuario = trim((string)$usuario['email_usuario']);
 
 $usuarioId = (int)$usuario['ID'];

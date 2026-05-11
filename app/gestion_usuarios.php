@@ -18,6 +18,11 @@ if(!$usuario_admin || (int)$usuario_admin['admin'] !== 1){
     exit;
 }
 
+if($usuario_admin['external_']==1){
+  header('Location: index.php');
+  exit;
+}
+
 $check_usuario = trim((string)$usuario_admin['email_usuario']);
 
 $mensaje_ok = '';

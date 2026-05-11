@@ -206,16 +206,44 @@
   // registro nuevo usuario desde nueva_cuenta.php
   if(!empty($_POST['email_usuario'])){
     $email_usuario=htmlentities(addslashes($_POST['email_usuario']));
-    $nombre_usuario=$conexion->real_escape_string(app_decode_text($_POST['nombre_usuario']));
+    $nombre_usuario_raw=app_decode_text($_POST['nombre_usuario']);
+    // Convertir nombre a minúsculas con primera letra mayúscula
+    $nombre_usuario=mb_convert_case(mb_strtolower($nombre_usuario_raw, 'UTF-8'), MB_CASE_TITLE, 'UTF-8');
+    $nombre_usuario=$conexion->real_escape_string($nombre_usuario);
     $pass_usuario=htmlentities(addslashes($_POST['pass_usuario']));
     $pass_cifrado=password_hash($pass_usuario, PASSWORD_DEFAULT);
+
+    // Obtener icono seleccionado
+    $ui_icono=isset($_POST['ui_icono']) ? htmlentities(addslashes($_POST['ui_icono'])) : 'fa-user-doctor';
+    $ui_icono_color=isset($_POST['ui_icono_color']) ? htmlentities(addslashes($_POST['ui_icono_color'])) : 'green';
+
+    // Verificar si las columnas UI existen
+    $columna_ui_icono_existe=false;
+    $columna_ui_icono_color_existe=false;
+    $res_columnas=$conexion->query("SHOW COLUMNS FROM `usuarios_dolor` LIKE 'ui_icono'");
+    if($res_columnas && $res_columnas->num_rows > 0){
+      $columna_ui_icono_existe=true;
+    }
+    $res_columnas2=$conexion->query("SHOW COLUMNS FROM `usuarios_dolor` LIKE 'ui_icono_color'");
+    if($res_columnas2 && $res_columnas2->num_rows > 0){
+      $columna_ui_icono_color_existe=true;
+    }
 
     $chequea_email="SELECT `email_usuario` FROM `usuarios_dolor` WHERE `email_usuario`= '$email_usuario'";
     $result=$conexion->query($chequea_email);
     $conteo=mysqli_num_rows($result);
 
     if($conteo==0){
-      $nuevo_usuario="INSERT INTO `usuarios_dolor` (`nombre_usuario`, `email_usuario`, `password`, `verified_email`) VALUES ('$nombre_usuario','$email_usuario','$pass_cifrado','0')";
+      // Construir INSERT según las columnas disponibles
+      if($columna_ui_icono_existe && $columna_ui_icono_color_existe){
+        $nuevo_usuario="INSERT INTO `usuarios_dolor` (`nombre_usuario`, `email_usuario`, `password`, `verified_email`, `ui_icono`, `ui_icono_color`) VALUES ('$nombre_usuario','$email_usuario','$pass_cifrado','0','$ui_icono','$ui_icono_color')";
+      }elseif($columna_ui_icono_existe){
+        $nuevo_usuario="INSERT INTO `usuarios_dolor` (`nombre_usuario`, `email_usuario`, `password`, `verified_email`, `ui_icono`) VALUES ('$nombre_usuario','$email_usuario','$pass_cifrado','0','$ui_icono')";
+      }elseif($columna_ui_icono_color_existe){
+        $nuevo_usuario="INSERT INTO `usuarios_dolor` (`nombre_usuario`, `email_usuario`, `password`, `verified_email`, `ui_icono_color`) VALUES ('$nombre_usuario','$email_usuario','$pass_cifrado','0','$ui_icono_color')";
+      }else{
+        $nuevo_usuario="INSERT INTO `usuarios_dolor` (`nombre_usuario`, `email_usuario`, `password`, `verified_email`) VALUES ('$nombre_usuario','$email_usuario','$pass_cifrado','0')";
+      }
       $registro_usuario=$conexion->query($nuevo_usuario);
 
       $alerta_login = "<div class='alert alert-success alert-dismissible fade show'>

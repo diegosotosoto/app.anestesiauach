@@ -1,8 +1,12 @@
 <?php
-//Validador login
+require('conectar.php');
+require_once(__DIR__ . '/app_text_helpers.php');
+require_once(__DIR__ . '/app_security.php');
 
+$conexion = new mysqli($db_host, $db_usuario, $db_contra, $db_nombre);
+$conexion->set_charset('utf8mb4');
 
-//  require("valida_pag.php");   ****   PERMITE QUE LA PÁGINA SEA PÚBLICA   *****
+app_require_login($conexion, 'login.php');
 
 //Variables sin conexion
 $boton_toggler="<a class='d-sm-block d-sm-none admin-back-btn' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";

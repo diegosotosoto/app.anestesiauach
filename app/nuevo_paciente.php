@@ -7,10 +7,10 @@
 
 	app_require_login($conexion, 'login.php');
 
-//Saca a los internos y otros becados del area de dolor
+//Saca a los internos, otros becados y usuarios externos del area de dolor
 	  $usuario = app_current_user($conexion);
-	  if($usuario['intern_']==1 or $usuario['becad_otro']==1){
-	  	header('Location: login.php');
+	  if($usuario['intern_']==1 or $usuario['becad_otro']==1 or $usuario['external_']==1){
+	  	header('Location: index.php');
 	  }
 
 

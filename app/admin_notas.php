@@ -13,6 +13,11 @@
         exit;
     }
 
+    if($usuario['external_']==1){
+      header('Location: index.php');
+      exit;
+    }
+
     // Variables navbar
     $boton_toggler="<a class='d-sm-block d-sm-none admin-back-btn' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
     $titulo_navbar = "<span class='text-white d-sm-block d-sm-none'>Gestión de Notas</span>";

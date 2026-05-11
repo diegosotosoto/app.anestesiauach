@@ -211,20 +211,18 @@ if (method_exists($stmt, 'get_result')) {
 $stmt->close();
 
 if (!$user) {
-    if ($name === '') {
-        $name = $email;
-    }
     $password_hash = password_hash(bin2hex(random_bytes(16)), PASSWORD_DEFAULT);
     $verified = 1;
     $verified_email = 1;
     $external = 1;
+    // NO guardar nombre de Google - usar string vacío para forzar completar perfil
+    $nombre_vacio = '';
     $stmt_insert = $conexion->prepare("INSERT INTO `usuarios_dolor` (`nombre_usuario`, `email_usuario`, `password`, `verified`, `verified_email`, `external_`) VALUES (?, ?, ?, ?, ?, ?)");
     if (!$stmt_insert) {
         header('Location: login.php?google_error=db');
         exit;
     }
-    $name_db = app_decode_text($name);
-    $stmt_insert->bind_param('sssiii', $name_db, $email, $password_hash, $verified, $verified_email, $external);
+    $stmt_insert->bind_param('sssiii', $nombre_vacio, $email, $password_hash, $verified, $verified_email, $external);
     if (!$stmt_insert->execute()) {
         $stmt_insert->close();
         header('Location: login.php?google_error=db');
@@ -232,8 +230,34 @@ if (!$user) {
     }
     $user_id = $stmt_insert->insert_id;
     $stmt_insert->close();
-    $user = array('ID' => $user_id, 'nombre_usuario' => $name_db);
+    $user = array('ID' => $user_id, 'nombre_usuario' => $nombre_vacio);
+
+    // Usuario external_ nuevo - redirigir a completar perfil
+    $nombre_cookie = $email;
+    app_set_auth_session_for_email($conexion, $email);
+    $conexion->close();
+    header('Location: completar_perfil.php');
+    exit;
 } else {
+    // Usuario ya existe - verificar si tiene nombre completo
+    $nombre_usuario = trim((string)($user['nombre_usuario'] ?? ''));
+    if ($nombre_usuario === '' || $nombre_usuario === null) {
+        // Usuario sin nombre - actualizar verified_email y redirigir a completar perfil
+        $stmt_update = $conexion->prepare("UPDATE `usuarios_dolor` SET `verified_email` = 1 WHERE `email_usuario` = ? LIMIT 1");
+        if ($stmt_update) {
+            $stmt_update->bind_param('s', $email);
+            $stmt_update->execute();
+            $stmt_update->close();
+        }
+        
+        $nombre_cookie = $email;
+        app_set_auth_session_for_email($conexion, $email);
+        $conexion->close();
+        header('Location: completar_perfil.php');
+        exit;
+    }
+    
+    // Usuario con nombre - solo actualizar verified_email
     $stmt_update = $conexion->prepare("UPDATE `usuarios_dolor` SET `verified_email` = 1 WHERE `email_usuario` = ? LIMIT 1");
     if (!$stmt_update) {
         header('Location: login.php?google_error=db');
@@ -246,6 +270,23 @@ if (!$user) {
         exit;
     }
     $stmt_update->close();
+    
+    // Recargar usuario desde la base de datos para obtener el nombre actualizado
+    $stmt_reload = $conexion->prepare("SELECT `ID`, `nombre_usuario` FROM `usuarios_dolor` WHERE `email_usuario` = ? LIMIT 1");
+    if ($stmt_reload) {
+        $stmt_reload->bind_param('s', $email);
+        $stmt_reload->execute();
+        if (method_exists($stmt_reload, 'get_result')) {
+            $res = $stmt_reload->get_result();
+            $user = $res ? $res->fetch_assoc() : $user;
+        } else {
+            $stmt_reload->bind_result($id_tmp, $nombre_tmp);
+            if ($stmt_reload->fetch()) {
+                $user = array('ID' => $id_tmp, 'nombre_usuario' => $nombre_tmp);
+            }
+        }
+        $stmt_reload->close();
+    }
 }
 
 $nombre_cookie = function_exists('app_decode_text') ? app_decode_text($user['nombre_usuario']) : (string)$user['nombre_usuario'];

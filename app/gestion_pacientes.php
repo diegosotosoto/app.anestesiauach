@@ -20,6 +20,11 @@ if (!$usuario || intval($usuario['admin']) !== 1) {
     exit;
 }
 
+if($usuario['external_']==1){
+  header('Location: index.php');
+  exit;
+}
+
 /* =========================================================
    VARIABLES NAVBAR
 ========================================================= */

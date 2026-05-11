@@ -20,6 +20,11 @@ if(!$usuario_actual || (int)$usuario_actual['admin'] !== 1){
     exit;
 }
 
+if($usuario_actual['external_']==1){
+  header('Location: index.php');
+  exit;
+}
+
 $usuario_id_actual = (int)$usuario_actual['ID'];
 
 // Variables navbar

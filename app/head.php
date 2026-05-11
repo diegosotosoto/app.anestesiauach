@@ -78,9 +78,11 @@ require($app_root_dir . "/conectar.php");
 require_once($app_root_dir . "/app_text_helpers.php");
 require_once($app_root_dir . "/app_security.php");
 
-$conexion = new mysqli($db_host, $db_usuario, $db_contra, $db_nombre);
-
-$conexion->set_charset("utf8mb4");
+// Reutilizar conexión existente si ya está establecida
+if (!isset($conexion) || !$conexion instanceof mysqli) {
+    $conexion = new mysqli($db_host, $db_usuario, $db_contra, $db_nombre);
+    $conexion->set_charset("utf8mb4");
+}
 
 $app_current_user = app_current_user($conexion);
 $app_current_user_email = $app_current_user ? trim((string)$app_current_user['email_usuario']) : '';
@@ -543,11 +545,15 @@ if ($is_apuntes_context) {
                             </div>";
 
                             echo "<div class='list-group'>
-                              <a href='".app_path('links.php')."' class='sidebar-wa-btn list-group-item list-group-item-action fs-6'><i class='fa-solid fa-link ps-2 pe-3 fs-3' data-wa-color='#44B2FF'></i>Links Útiles</a>
+                              <a href='".app_path('links.php')."' class='sidebar-wa-btn list-group-item list-group-item-action fs-6'><i class='fa-solid fa-link ps-2 pe-3 fs-3' data-wa-color='#0a7d3d'></i>Links Útiles</a>
                             </div>";
                           } else {
                             echo "<div class='list-group'>
                               <a href='".app_path('bitacora.php')."' class='sidebar-wa-btn list-group-item list-group-item-action fs-6'><i class='fa-solid fa-clipboard ps-2 pe-3 fs-3' data-wa-color='#CE2E2E'></i>Bitácora". $escribe_badge ."</a>
+                            </div>";
+
+                            echo "<div class='list-group'>
+                              <a href='".app_path('links.php')."' class='sidebar-wa-btn list-group-item list-group-item-action fs-6'><i class='fa-solid fa-link ps-2 pe-3 fs-3' data-wa-color='#0a7d3d'></i>Links Útiles</a>
                             </div>";
 
                             echo "<div class='list-group'>

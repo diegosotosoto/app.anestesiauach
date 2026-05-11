@@ -269,11 +269,11 @@ function crearNotificacionPacientesDolor($conexion, $usuario_id, $usuario_email)
 
 <?php
 //Saca a los internos y otros becados del area de dolor  $check_usuario=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
-  $con_users_b="SELECT `intern_`, `becad_otro` FROM `usuarios_dolor` WHERE `email_usuario` = '$check_usuario'";
+  $con_users_b="SELECT `intern_`, `becad_otro`, `external_` FROM `usuarios_dolor` WHERE `email_usuario` = '$check_usuario'";
   $users_b=$conexion->query($con_users_b);
   $usuario=$users_b->fetch_assoc();
 
-  if(!($usuario['intern_']==1 or $usuario['becad_otro']==1)){
+  if(!($usuario['intern_']==1 or $usuario['becad_otro']==1 or $usuario['external_']==1)){
     echo "
       <a href='hoja_dolor.php' class='link-tile home-tile home-tile-dolor'>
         <i class='fa-solid fa-syringe fa-2x mb-2'></i>
@@ -284,41 +284,61 @@ function crearNotificacionPacientesDolor($conexion, $usuario_id, $usuario_email)
   }
   ?>
 
+<?php
+  // Mostrar enlaces según tipo de usuario
+  $es_external = ($usuario['external_'] == 1);
+?>
 
       <a href='links.php' class='link-tile home-tile home-tile-links'>
         <i class="fa-solid fa-link fa-2x mb-2"></i>
         <div class='link-title'>Links Útiles</div>
         <div class='link-desc'>Recursos externos clínicos y académicos.</div>
-      </a>  
+      </a>
 
+<?php if (!$es_external): ?>
           <a href="bitacora.php" class="link-tile home-tile home-tile-bitacora">
             <i class="fa-solid fa-clipboard fa-2x mb-2"></i>
-            <div class="link-title">Bitácora Procedimientos</div>
-            <div class="link-desc">Registro docente y validación.</div>
+            <div class='link-title'>Bitácora Procedimientos</div>
+            <div class='link-desc'>Registro docente y validación.</div>
           </a>
+<?php endif; ?>
 
           <a href="apuntes.php" class="link-tile home-tile home-tile-apuntes">
             <i class="fa-solid fa-calculator fa-2x mb-2"></i>
-            <div class="link-title">Cálculos y Apuntes</div>
-            <div class="link-desc">Herramientas rápidas de consulta.</div>
+            <div class='link-title'>Cálculos y Apuntes</div>
+            <div class='link-desc'>Herramientas rápidas de consulta.</div>
           </a>
+
+<?php
+  // Mostrar mensaje de acceso limitado para usuarios externos
+  if ($es_external):
+?>
+        </div>
+    <div class="alert alert-warning alert-dismissible fade show mt-3">
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      <h5 class="alert-heading"><i class="fa-solid fa-triangle-exclamation me-2"></i>Acceso limitado para usuarios externos</h5>
+      <p class="mb-2">Su cuenta actualmente posee acceso restringido a funcionalidades públicas del sitio, incluyendo únicamente los módulos links.php y apuntes.php.</p>
+      <p class="mb-2">Para habilitar el acceso al contenido académico y funcionalidades asociadas al Programa de Anestesiología de la Universidad Austral de Chile, es necesario completar un proceso de validación institucional.</p>
+      <p class="mb-0">Si requiere acceso ampliado, por favor contacte a un administrador de la plataforma para la revisión y autorización correspondiente.</p>
+    </div>
+<?php else: ?>
 
           <a href="telefonos.php" class="link-tile home-tile home-tile-telefonos">
             <i class="fa-solid fa-phone fa-2x mb-2"></i>
-            <div class="link-title">Teléfonos Frecuentes</div>
-            <div class="link-desc">Números clínicos y de apoyo.</div>
+            <div class='link-title'>Teléfonos Frecuentes</div>
+            <div class='link-desc'>Números clínicos y de apoyo.</div>
           </a>
 
           <a href="correos.php" class="link-tile home-tile home-tile-correos">
             <i class="fa-solid fa-envelope fa-2x mb-2"></i>
-            <div class="link-title">Directorio Correos</div>
-            <div class="link-desc">Correos del equipo y residentes.</div>
+            <div class='link-title'>Directorio Correos</div>
+            <div class='link-desc'>Correos del equipo y residentes.</div>
           </a>
 
           <a href="vista_epa.php" class="link-tile home-tile home-tile-epa">
             <i class="fa-solid fa-clipboard fa-2x mb-2"></i>
-            <div class="link-title">Evaluación Preanestésica</div>
-            <div class="link-desc">Versión beta para evaluación clínica.</div>
+            <div class='link-title'>Evaluación Preanestésica</div>
+            <div class='link-desc'>Versión beta para evaluación clínica.</div>
           </a>
 
           <a href="https://uachcl-my.sharepoint.com/:f:/r/personal/docentes_anestesia_uach_cl/Documents/Reuniones%20Clinicas?e=5%3a1d4a50a99f8747659eaf40e9bd942188&sharingv2=true&fromShare=true&at=9" target="_blank" class="link-tile home-tile home-tile-reuniones">
@@ -326,8 +346,7 @@ function crearNotificacionPacientesDolor($conexion, $usuario_id, $usuario_email)
             <div class="link-title">Reuniones Clínicas</div>
             <div class="link-desc">Acceso a material compartido.</div>
           </a>
-
-        </div>
+<?php endif; ?>
 
       </div>
     </div>

@@ -1,4 +1,12 @@
 <?php
+require('conectar.php');
+require_once(__DIR__ . '/app_text_helpers.php');
+require_once(__DIR__ . '/app_security.php');
+
+$conexion = new mysqli($db_host, $db_usuario, $db_contra, $db_nombre);
+$conexion->set_charset('utf8mb4');
+
+app_require_login($conexion, 'login.php');
 
 $boton_toggler = "<a class='d-sm-block d-sm-none admin-back-btn' href='index.php'><i class='fa fa-chevron-left'></i>Atrás</a>";
 
@@ -7,8 +15,6 @@ $titulo_navbar = "<div class='text-white'>Cálculos y Apuntes</div>";
 $boton_navbar = "<a></a><a></a>";
 
 require("head.php");
-
-app_require_login($conexion, 'login.php');
 
 ?>
 <?php
