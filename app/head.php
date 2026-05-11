@@ -984,3 +984,21 @@ function asegurarEstadoVacioNotificaciones() {
   }
 }
 </script>
+
+<!-- Service Worker Registration -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('<?= app_path('sw.js') ?>')
+      .then(function(registration) {
+        console.log('Service Worker registrado con éxito:', registration.scope);
+      })
+      .catch(function(error) {
+        console.log('Error al registrar Service Worker:', error);
+      });
+  });
+}
+</script>
+
+<!-- Offline Connection Handler -->
+<script src="<?= app_path('js/offline-handler.js') ?>"></script>

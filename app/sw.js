@@ -1,4 +1,4 @@
-const CACHE_NAME = "app-static-v6";
+const CACHE_NAME = "app-static-v7";
 
 const STATIC_ASSETS = [
   "/style.css",
@@ -25,7 +25,9 @@ const STATIC_ASSETS = [
   "/images/logo192.png",
   "/images/IMG0001.jpeg",
   "/images/austral.png",
-  "/bitacora_ingreso.php"
+  "/index.php",
+  "/links.php",
+  "/apuntes.php"
 ];
 
 self.addEventListener("install", (event) => {
