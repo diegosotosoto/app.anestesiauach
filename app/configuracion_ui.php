@@ -287,7 +287,6 @@ $usuario = $usuario_configuracion;
             <div class="user-role-grid">
                 <div class="user-check"><strong>Email:</strong> <?= ui_h($usuario['email_usuario'] ?? '') ?></div>
                 <div class="user-check"><strong>Grupo:</strong> <?= ui_h($grupo_usuario) ?></div>
-                <div class="user-check"><strong>Validación admin:</strong> <?= ((int)$usuario['verified'] === 1 ? 'Activa' : 'Pendiente') ?></div>
                 <div class="user-check"><strong>Email verificado:</strong> <?= ((int)($usuario['verified_email'] ?? 0) === 1 ? 'Sí' : 'No') ?></div>
             </div>
         </section>

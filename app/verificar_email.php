@@ -38,7 +38,7 @@
       $hora_actual=time();
 
       if($chk_token_rec==$token_rec_db && $chk_token_activ==1 && $hora_limite>$hora_actual){
-        $consulta_final="UPDATE `usuarios_dolor` SET `token_rec`='', `token_activ`='0', `token_hr`='' WHERE `email_usuario`='$email_usuario_db'";
+        $consulta_final="UPDATE `usuarios_dolor` SET `token_rec`='', `token_activ`='0', `token_hr`='', `verified`='1', `verified_email`='1', `external_`='1' WHERE `email_usuario`='$email_usuario_db'";
         $conexion->query($consulta_final);
         $estado_titulo = 'Correo verificado';
         $estado_icono = 'fa-circle-check';
