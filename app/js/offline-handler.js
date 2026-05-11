@@ -109,13 +109,14 @@
     }
 
     // Handle connection change
-    function handleConnectionChange(toast, isOnline) {
-        updateToast(toast, isOnline);
-
-        if (isOnline) {
+    function handleConnectionChange(toast, isOnline, wasOffline) {
+        // Only show toast if there was a state change
+        if (isOnline && wasOffline) {
+            updateToast(toast, true);
             enableDBDependentLinks();
             setTimeout(() => hideToast(toast), 3000);
-        } else {
+        } else if (!isOnline) {
+            updateToast(toast, false);
             disableDBDependentLinks();
         }
     }
@@ -124,19 +125,34 @@
     function init() {
         const toast = createToast();
         let isOnline = navigator.onLine;
+        let wasOffline = sessionStorage.getItem('wasOffline') === 'true';
 
-        // Initial state
-        handleConnectionChange(toast, isOnline);
+        // Only apply initial state without showing toast
+        if (!isOnline) {
+            handleConnectionChange(toast, false, false);
+            sessionStorage.setItem('wasOffline', 'true');
+        } else {
+            // If online and was offline, show restoration toast
+            if (wasOffline) {
+                handleConnectionChange(toast, true, true);
+                sessionStorage.setItem('wasOffline', 'false');
+            } else {
+                // Just enable links, don't show toast
+                enableDBDependentLinks();
+            }
+        }
 
         // Listen for connection changes
         window.addEventListener('online', () => {
             isOnline = true;
-            handleConnectionChange(toast, true);
+            sessionStorage.setItem('wasOffline', 'false');
+            handleConnectionChange(toast, true, true);
         });
 
         window.addEventListener('offline', () => {
             isOnline = false;
-            handleConnectionChange(toast, false);
+            sessionStorage.setItem('wasOffline', 'true');
+            handleConnectionChange(toast, false, false);
         });
     }
 
