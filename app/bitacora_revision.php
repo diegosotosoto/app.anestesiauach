@@ -119,6 +119,7 @@ require("head.php");
     </div>
   </div>
 </div>
+</div>
 
 <?php
   $conexion->close();

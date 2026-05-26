@@ -1,10 +1,12 @@
 <?php
+date_default_timezone_set('America/Santiago');
 require('conectar.php');
 if (file_exists(__DIR__ . '/app_text_helpers.php')) {
     require_once __DIR__ . '/app_text_helpers.php';
 }
 require_once __DIR__ . '/google-calendar/config.php';
 require_once __DIR__ . '/app_security.php';
+require_once __DIR__ . '/calendario_notificaciones.php';
 
 $conexion = new mysqli($db_host, $db_usuario, $db_contra, $db_nombre);
 $conexion->set_charset('utf8mb4');
@@ -80,6 +82,9 @@ function calendar_tipo_label($tipo)
         'r2' => 'R2',
         'r3' => 'R3',
         'staff' => 'Staff',
+        'docente' => 'Docente',
+        'intern' => 'Interno',
+        'anestesia_programa' => 'Programa Anestesia',
         'turnos' => 'Turnos',
         'examenes' => 'Exámenes',
         'rotaciones' => 'Rotaciones',
@@ -97,11 +102,14 @@ function calendar_default_color($tipo)
         'r2' => '#f59e0b',
         'r3' => '#dc2626',
         'staff' => '#0f766e',
+        'docente' => '#7c3aed',
+        'intern' => '#ec4899',
+        'anestesia_programa' => '#0891b2',
         'turnos' => '#ef4444',
-        'examenes' => '#7c3aed',
-        'rotaciones' => '#8b5cf6',
-        'classroom' => '#2563eb',
-        'personal' => '#0891b2'
+        'examenes' => '#8b5cf6',
+        'rotaciones' => '#06b6d4',
+        'classroom' => '#f97316',
+        'personal' => '#64748b'
     );
     return $colors[$tipo] ?? '#315bc5';
 }
@@ -135,16 +143,30 @@ $tiposBase = array('general');
 if ($esBecado && in_array($anioResidencia, array('1', '2', '3'), true)) {
     $tiposBase[] = 'r' . (int)$anioResidencia;
 }
-if (!$esBecado && $esAdmin) {
+$esStaff = (int)$usuario['staff_'] === 1;
+$esDocente = (int)$usuario['docente_'] === 1;
+$esInterno = (int)$usuario['intern_'] === 1;
+if ($esAdmin || $esStaff) {
     $tiposBase[] = 'staff';
+}
+if ($esDocente) {
+    $tiposBase[] = 'docente';
+}
+if ($esInterno) {
+    $tiposBase[] = 'intern';
+}
+// Calendarios del programa Anestesia: visibles para becados de anestesia y staff
+if ($esBecado || $esStaff) {
+    $tiposBase[] = 'anestesia_programa';
 }
 
 $placeholders = implode(',', array_fill(0, count($tiposBase), '?'));
-$sqlBase = "SELECT `id`, `nombre`, `calendar_id`, `tipo`, $selectColor
+$sqlBase = "SELECT `id`, `nombre`, `calendar_id`, `tipo`, $selectColor,
+        `notif_dias`, `notif_same_day`, `notif_email`, `notif_weekdays`, `notif_hora`
     FROM `calendarios_app`
     WHERE `activo` = 1
       AND `tipo` IN ($placeholders)
-    ORDER BY FIELD(`tipo`, 'general', 'r1', 'r2', 'r3', 'staff'), `nombre` ASC";
+    ORDER BY FIELD(`tipo`, 'general', 'r1', 'r2', 'r3', 'staff', 'docente', 'intern', 'anestesia_programa'), `nombre` ASC";
 
 $stmtBase = $conexion->prepare($sqlBase);
 if (!$stmtBase) {
@@ -169,6 +191,7 @@ if (!$stmtBase) {
 
 $hoy = date('Y-m-d');
 $sqlAsignados = "SELECT c.`id`, c.`nombre`, c.`calendar_id`, c.`tipo`, $selectColor,
+        c.`notif_dias`, c.`notif_same_day`, c.`notif_email`, c.`notif_weekdays`, c.`notif_hora`,
         ca.`fecha_inicio`, ca.`fecha_fin`
     FROM `calendario_asignaciones` ca
     INNER JOIN `calendarios_app` c ON c.`id` = ca.`calendario_id`
@@ -222,6 +245,9 @@ if ($tablaCalendariosExiste && $tablaAsignacionesExiste && count($calendarios) >
             $errores[] = 'No se pudo leer "' . $cal['nombre'] . '": ' . $e->getMessage();
         }
     }
+    
+    // Crear notificaciones inmediatas para eventos próximos
+    cal_notif_procesar_eventos($conexion, $usuarioId, $calendarios, $eventos);
 }
 
 usort($eventos, function ($a, $b) {

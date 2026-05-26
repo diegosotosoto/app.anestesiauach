@@ -342,6 +342,7 @@ function confirmarRechazoInterno(id) {
     </div>
   </div>
 </div>
+</div>
 
 <?php
   $conexion->close();

@@ -1,16 +1,16 @@
 <?php
 	//Conexión
-	require("../app/conectar.php");
-	require_once __DIR__ . '/../app_security.php';
+	require("conectar.php");
+	require_once __DIR__ . '/app_security.php';
 	$conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
 	$conexion->set_charset("utf8");
 
-	app_require_login($conexion, '../login.php');
+	app_require_login($conexion, 'login.php');
 
 //Saca a los internos, otros becados y usuarios externos del area de dolor
 	  $usuario = app_current_user($conexion);
 	  if($usuario['intern_']==1 or $usuario['becad_otro']==1 or $usuario['external_']==1){
-	  	header('Location: ../index.php');
+	  	header('Location: index.php');
 	  }
 
 
@@ -21,8 +21,9 @@
 	<?php
 		$rut_v=htmlentities(addslashes($_POST['rut_v']));
 		$fecha_v=htmlentities(addslashes($_POST['fecha_v']));
+		$fecha_ingreso=isset($_POST['fecha_ingreso']) ? htmlentities(addslashes($_POST['fecha_ingreso'])) : '';
 
-			$boton_toggler="<form method='post' action='listar_visitas.php'><button class='d-sm-block d-sm-none admin-back-btn' type='submit' name='lista_v' value='$rut_v'><i class='fa fa-chevron-left'></i>Atrás</button></form>";
+			$boton_toggler="<form method='post' action='listar_visitas.php'><input type='hidden' name='fecha_ingreso' value='$fecha_ingreso'><button class='d-sm-block d-sm-none admin-back-btn' type='submit' name='lista_v' value='$rut_v'><i class='fa fa-chevron-left'></i>Atrás</button></form>";
 			$titulo_navbar=" ";
 			$boton_navbar="<form method='post' action='https://anestesiauach.cl/pdf/generar_pdf.php' target='_blank');'><input type='hidden' name='fecha_v' value='$fecha_v'><button class='btn btn-app-primary navbar-save-btn' type='submit' name='rut_v' value='$rut_v' aria-label='Exportar PDF'><i class='fa-solid fa-file-pdf'></i></button></form>";
 
@@ -50,6 +51,10 @@
 		$consulta_fc="SELECT `ficha` FROM `pacientes` WHERE `rut` = '$rut_v'";
 		$busqueda_fc=$conexion->query($consulta_fc);
 		$fc=$busqueda_fc->fetch_assoc();
+		if (!$fc) {
+			$busqueda_fc2=$conexion->query("SELECT `ficha` FROM `pacientes_alta` WHERE `rut` = '$rut_v' ORDER BY `fecha_alta` DESC LIMIT 1");
+			$fc=$busqueda_fc2->fetch_assoc();
+		}
 
 		$string_rut = $fila['rut_v'];
 		$parts = explode("-", $string_rut);
@@ -100,7 +105,7 @@
 		}
 		echo "</div></div>";
 		echo "<div class='pain-actions d-none d-sm-flex pt-3'>";
-		echo "<form method='post' action='listar_visitas.php'><button class='admin-back-btn' type='submit' name='lista_v' value='".app_h_text($rut_v)."'><i class='fa fa-chevron-left'></i>Atrás</button></form>";
+		echo "<form method='post' action='listar_visitas.php'><input type='hidden' name='fecha_ingreso' value='".app_h_text($fecha_ingreso)."'><button class='admin-back-btn' type='submit' name='lista_v' value='".app_h_text($rut_v)."'><i class='fa fa-chevron-left'></i>Atrás</button></form>";
 		echo "<form method='post' action='https://anestesiauach.cl/pdf/generar_pdf.php' target='_blank');'><input type='hidden' name='fecha_v' value='".app_h_text($fecha_v)."'><button class='btn btn-app-primary pain-action-btn' type='submit' name='rut_v' value='".app_h_text($rut_v)."' aria-label='Exportar PDF'><i class='fa-solid fa-file-pdf'></i></button></form>";
 		echo "</div></div>";
 		echo "<div class='bitacora-entry-body'>";

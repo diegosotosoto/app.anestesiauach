@@ -169,7 +169,7 @@ body.theme-dark{
   [class*="-option"],
   [class*="-item"],
   [class*="-row"]
-):not([class*="-mark"]):not([class*="-icon"]):not([class*="-badge"]):not(.is-done):not(.note-mobile-detail-row):not(.note-checklist-item-copy):not(.note-checklist-item-title):not(.note-checklist-item-note):not(.note-checklist-item-input:checked + .note-checklist-item):not(.flacc-option):not(.flacc-option-text):not(.flacc-option-points):not(.note-input-group):not(.ob-scalar-pill):not(.esc-tbw):not(.esc-bmi):not(.esc-ibw):not(.esc-ffm):not(.esc-abw):not(.esc-pk):not(.esc-bsa):not(.esc-option-title):not(.esc-option-sub){
+):not([class*="-mark"]):not([class*="-icon"]):not([class*="-badge"]):not(.is-done):not(.note-mobile-detail-row):not(.note-checklist-item-copy):not(.note-checklist-item-title):not(.note-checklist-item-note):not(.note-checklist-item-input:checked + .note-checklist-item):not(.flacc-option):not(.flacc-option-text):not(.flacc-option-points):not(.note-input-group):not(.ob-scalar-pill):not(.esc-tbw):not(.esc-bmi):not(.esc-ibw):not(.esc-ffm):not(.esc-abw):not(.esc-pk):not(.esc-bsa):not(.esc-option-title):not(.esc-option-sub):not(.umss-info-option){
   background:var(--note-soft, #ffffff) !important;
   color:var(--note-text, var(--app-text)) !important;
   border-color:var(--note-line, var(--app-border)) !important;
@@ -206,7 +206,7 @@ body.ui-nocturno .note-shell .cl-grade-option .note-option.note-grade-4{backgrou
   [class*="-item"],
   [class*="-row"],
   [class*="-option"]
-):not([class*="-mark"]):not([class*="-icon"]):not([class*="-badge"]):not(.is-done):not(.note-mobile-detail-row):not(.note-checklist-item-copy):not(.note-checklist-item-title):not(.note-checklist-item-note):not(.note-checklist-item-input:checked + .note-checklist-item):not(.flacc-option):not(.flacc-option-text):not(.flacc-option-points):not(.esc-option-title):not(.esc-option-sub){
+):not([class*="-mark"]):not([class*="-icon"]):not([class*="-badge"]):not(.is-done):not(.note-mobile-detail-row):not(.note-checklist-item-copy):not(.note-checklist-item-title):not(.note-checklist-item-note):not(.note-checklist-item-input:checked + .note-checklist-item):not(.flacc-option):not(.flacc-option-text):not(.flacc-option-points):not(.esc-option-title):not(.esc-option-sub):not(.umss-info-option){
   background:var(--note-soft, #ffffff) !important;
   color:var(--note-text, var(--app-text)) !important;
   border-color:var(--note-line, var(--app-border)) !important;
@@ -514,9 +514,9 @@ body.ui-nocturno .last-shell .note-summary-grid-2 .note-summary-item{
   .reg-option-input:checked + .reg-option
 ){
   background:var(--note-brand-soft, var(--app-blue-soft)) !important;
-  border-color:var(--note-selected, var(--app-blue)) !important;
+  border-color:#1d4ed8 !important;
   color:var(--note-text, var(--app-text)) !important;
-  box-shadow:0 0 0 3px rgba(59,130,246,.18) !important;
+  box-shadow:0 0 0 3px rgba(29,78,216,.42) !important;
 }
 
 .drug-reversal-opioid,
@@ -681,7 +681,7 @@ body.theme-dark .note-shell :where(
   [class*="-option"],
   [class*="-item"],
   [class*="-row"]
-):not([class*="-mark"]):not([class*="-icon"]):not([class*="-badge"]):not(.is-done):not(.note-mobile-detail-row):not(.note-checklist-item-copy):not(.note-checklist-item-title):not(.note-checklist-item-note):not(.note-checklist-item-input:checked + .note-checklist-item):not(.flacc-option):not(.flacc-option-text):not(.flacc-option-points):not(.note-input-group):not(.ob-scalar-pill):not(.esc-tbw):not(.esc-bmi):not(.esc-ibw):not(.esc-ffm):not(.esc-abw):not(.esc-pk):not(.esc-bsa){
+):not([class*="-mark"]):not([class*="-icon"]):not([class*="-badge"]):not(.is-done):not(.note-mobile-detail-row):not(.note-checklist-item-copy):not(.note-checklist-item-title):not(.note-checklist-item-note):not(.note-checklist-item-input:checked + .note-checklist-item):not(.flacc-option):not(.flacc-option-text):not(.flacc-option-points):not(.note-input-group):not(.ob-scalar-pill):not(.esc-tbw):not(.esc-bmi):not(.esc-ibw):not(.esc-ffm):not(.esc-abw):not(.esc-pk):not(.esc-bsa):not(.umss-info-option){
   background:var(--note-soft) !important;
   color:var(--note-text) !important;
   border-color:var(--note-line) !important;
@@ -2879,8 +2879,8 @@ body.ui-nocturno .note-shell .mp-grade-panel.grade-4{background:rgba(239,68,68,.
 }
 
 .note-shell .note-check:checked + .drug-card .drug-label-content{
-  background:rgba(47,128,237,.12) !important;
-  background-color:rgba(47,128,237,.12) !important;
+  background:rgba(47,128,237,.14) !important;
+  background-color:rgba(47,128,237,.14) !important;
 }
 
 .note-shell .steroid-selector-options .note-option{
@@ -3121,9 +3121,13 @@ body.theme-dark .note-shell .note-checklist-pill.active{
   gap:.12rem;
 }
 
+/* FLACC / standard scale: 0=green (good), 1=yellow (moderate), 2=red (severe) */
 .flacc-option-0{background:#e9f8ef !important;}
 .flacc-option-1{background:#fff8db !important;}
 .flacc-option-2{background:#fdecec !important;}
+.flacc-option-3{background:#ffe4e6 !important;}
+.flacc-option-4{background:#ffc9c9 !important;}
+.flacc-option-5{background:#fca5a5 !important;}
 
 body.theme-dark .flacc-option.flacc-option-0,
 body.ui-nocturno .flacc-option.flacc-option-0{background:rgba(47,158,98,.28) !important;}
@@ -3131,6 +3135,12 @@ body.theme-dark .flacc-option.flacc-option-1,
 body.ui-nocturno .flacc-option.flacc-option-1{background:rgba(234,179,8,.28) !important;}
 body.theme-dark .flacc-option.flacc-option-2,
 body.ui-nocturno .flacc-option.flacc-option-2{background:rgba(239,68,68,.32) !important;}
+body.theme-dark .flacc-option.flacc-option-3,
+body.ui-nocturno .flacc-option.flacc-option-3{background:rgba(249,115,22,.28) !important;}
+body.theme-dark .flacc-option.flacc-option-4,
+body.ui-nocturno .flacc-option.flacc-option-4{background:rgba(239,68,68,.32) !important;}
+body.theme-dark .flacc-option.flacc-option-5,
+body.ui-nocturno .flacc-option.flacc-option-5{background:rgba(220,38,38,.35) !important;}
 
 .note-shell.aldrete-shell .flacc-option-0{background:#fdecec !important;}
 .note-shell.aldrete-shell .flacc-option-1{background:#fff8db !important;}
@@ -3143,11 +3153,131 @@ body.ui-nocturno .note-shell.aldrete-shell .flacc-option.flacc-option-1{backgrou
 body.theme-dark .note-shell.aldrete-shell .flacc-option.flacc-option-2,
 body.ui-nocturno .note-shell.aldrete-shell .flacc-option.flacc-option-2{background:rgba(47,158,98,.28) !important;}
 
+/* mYPAS-E 4-item domains: 1=green, 2=yellow, 3=orange, 4=red */
+.mypas-opt-1{background:#e9f8ef !important;border-color:#b7ddc3 !important;}
+.mypas-opt-2{background:#fff8db !important;border-color:#facc15 !important;}
+.mypas-opt-3{background:#ffedd5 !important;border-color:#fb923c !important;}
+.mypas-opt-4{background:#fdecec !important;border-color:#ef4444 !important;}
+
+body.theme-dark .mypas-opt-1,
+body.ui-nocturno .mypas-opt-1{background:rgba(47,158,98,.28) !important;border-color:rgba(47,158,98,.45) !important;}
+body.theme-dark .mypas-opt-2,
+body.ui-nocturno .mypas-opt-2{background:rgba(234,179,8,.28) !important;border-color:rgba(234,179,8,.45) !important;}
+body.theme-dark .mypas-opt-3,
+body.ui-nocturno .mypas-opt-3{background:rgba(251,146,60,.28) !important;border-color:rgba(251,146,60,.45) !important;}
+body.theme-dark .mypas-opt-4,
+body.ui-nocturno .mypas-opt-4{background:rgba(239,68,68,.32) !important;border-color:rgba(239,68,68,.5) !important;}
+
+/* mYPAS-E 5-item domain (Vocalización): 1=green, 2=yellow, 3=orange, 4=orange-red, 5=intense red */
+.mypas-domain-vocal .mypas-opt-1{background:#e9f8ef !important;border-color:#b7ddc3 !important;}
+.mypas-domain-vocal .mypas-opt-2{background:#fff8db !important;border-color:#facc15 !important;}
+.mypas-domain-vocal .mypas-opt-3{background:#ffedd5 !important;border-color:#fb923c !important;}
+.mypas-domain-vocal .mypas-opt-4{background:#fecaca !important;border-color:#f87171 !important;}
+.mypas-domain-vocal .mypas-opt-5{background:#fca5a5 !important;border-color:#ef4444 !important;}
+
+body.theme-dark .mypas-domain-vocal .mypas-opt-1,
+body.ui-nocturno .mypas-domain-vocal .mypas-opt-1{background:rgba(47,158,98,.28) !important;border-color:rgba(47,158,98,.45) !important;}
+body.theme-dark .mypas-domain-vocal .mypas-opt-2,
+body.ui-nocturno .mypas-domain-vocal .mypas-opt-2{background:rgba(234,179,8,.28) !important;border-color:rgba(234,179,8,.45) !important;}
+body.theme-dark .mypas-domain-vocal .mypas-opt-3,
+body.ui-nocturno .mypas-domain-vocal .mypas-opt-3{background:rgba(251,146,60,.28) !important;border-color:rgba(251,146,60,.45) !important;}
+body.theme-dark .mypas-domain-vocal .mypas-opt-4,
+body.ui-nocturno .mypas-domain-vocal .mypas-opt-4{background:rgba(248,113,113,.32) !important;border-color:rgba(248,113,113,.5) !important;}
+body.theme-dark .mypas-domain-vocal .mypas-opt-5,
+body.ui-nocturno .mypas-domain-vocal .mypas-opt-5{background:rgba(239,68,68,.4) !important;border-color:rgba(239,68,68,.6) !important;}
+
+/* Horizontal layout variant - text left, score right, shorter height */
+.flacc-option.flacc-option-row,
+.flacc-score-grid .flacc-option{
+  flex-direction:row;
+  justify-content:space-between;
+  align-items:center;
+  min-height:46px;
+  padding:.35rem .7rem;
+  gap:.5rem;
+}
+.flacc-option.flacc-option-row .flacc-option-text,
+.flacc-score-grid .flacc-option .flacc-option-text{
+  text-align:left;
+  flex:1;
+  margin:0;
+  font-size:.82rem;
+  line-height:1.25;
+}
+.flacc-option.flacc-option-row .flacc-option-points,
+.flacc-score-grid .flacc-option .flacc-option-points{
+  font-size:1rem;
+  font-weight:900;
+  min-width:22px;
+  text-align:center;
+  flex:0 0 auto;
+}
+
 .flacc-option-input:checked + .flacc-option{
-  box-shadow:0 0 0 3px rgba(47,128,237,.14), 0 8px 18px rgba(15,23,42,.10);
-  border:4px solid var(--note-selected);
+  box-shadow:0 0 0 3px rgba(29,78,216,.42);
+  border:3px solid #1d4ed8;
   transform:translateY(-1px);
 }
+
+body.theme-dark .flacc-option-input:checked + .flacc-option,
+body.ui-nocturno .flacc-option-input:checked + .flacc-option{
+  box-shadow:0 0 0 2px rgba(59,130,246,.58);
+  border-color:#3b82f6 !important;
+}
+
+body.theme-dark .analg-option-input:checked + .analg-option,
+body.ui-nocturno .analg-option-input:checked + .analg-option{
+  box-shadow:0 0 0 2px rgba(59,130,246,.58) !important;
+  border-color:#3b82f6 !important;
+}
+
+.umss-info-grid{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:.6rem;
+}
+
+.umss-cell{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  border-radius:.9rem;
+  padding:.6rem .4rem;
+  border:2px solid var(--note-line);
+  min-height:64px;
+}
+
+.umss-cell-num{
+  font-size:1.1rem;
+  font-weight:900;
+  line-height:1;
+}
+
+.umss-cell-lbl{
+  font-size:.78rem;
+  font-weight:600;
+  margin-top:.18rem;
+  line-height:1.1;
+}
+
+.umss-info-0{background:#eef2f7;}
+.umss-info-1{background:#d8f3e2;}
+.umss-info-3{background:#fff1a8;}
+.umss-info-4{background:#f8c7c7;}
+
+body.theme-dark .umss-info-0,
+body.ui-nocturno .umss-info-0{background:rgba(148,163,184,.26);border-color:rgba(148,163,184,.3);}
+
+body.theme-dark .umss-info-1,
+body.ui-nocturno .umss-info-1{background:rgba(34,197,94,.28);border-color:rgba(34,197,94,.35);}
+
+body.theme-dark .umss-info-3,
+body.ui-nocturno .umss-info-3{background:rgba(234,179,8,.32);border-color:rgba(234,179,8,.4);}
+
+body.theme-dark .umss-info-4,
+body.ui-nocturno .umss-info-4{background:rgba(239,68,68,.34);border-color:rgba(239,68,68,.4);}
 
 .note-shell .flacc-option .flacc-option-text{
   font-size:.86rem;

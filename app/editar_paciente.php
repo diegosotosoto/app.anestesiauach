@@ -19,6 +19,7 @@
 
 //Variables sin conexion
 $formulario=$_POST['editar']; //Corresponde al rut del paciente
+$es_reactivacion = isset($_POST['reactivar']) && $_POST['reactivar'] === 'yes';
 
 $boton_toggler="<form action='vista_paciente.php' method='post'><button class='d-sm-block d-sm-none admin-back-btn' type='submit' name='vista' value='$formulario'><i class='fa fa-chevron-left'></i>Atrás</button></form>";
 
@@ -51,13 +52,28 @@ require("head.php");
 
 		$fila=$busqueda3->fetch_assoc();
 
+		// Si viene de reactivación, sobreescribir con los datos nuevos ingresados
+		if ($es_reactivacion) {
+			$fila['unidad_cama']   = $_POST['new_unidad_cama']   ?? $fila['unidad_cama'];
+			$fila['procedimiento'] = $_POST['new_procedimiento'] ?? $fila['procedimiento'];
+			$fila['analgesia']     = $_POST['new_analgesia']     ?? $fila['analgesia'];
+			$fila['nivel']         = $_POST['new_nivel']         ?? $fila['nivel'];
+			$fila['espacio']       = $_POST['new_espacio']       ?? $fila['espacio'];
+			$fila['distancia']     = $_POST['new_distancia']     ?? $fila['distancia'];
+			$fila['solucion']      = $_POST['new_solucion']      ?? $fila['solucion'];
+			$fila['infusion']      = $_POST['new_infusion']      ?? $fila['infusion'];
+			$fila['bolo']          = $_POST['new_bolo']          ?? $fila['bolo'];
+			$fila['lockout']       = $_POST['new_lockout']       ?? $fila['lockout'];
+			$fila['peso']          = $_POST['new_peso']          ?? $fila['peso'];
+			$fila['comentarios']   = $_POST['new_comentarios']   ?? $fila['comentarios'];
+		}
+
 		// Función para crear notificación de pacientes en Dolor
 		function crearNotificacionPacientesDolor($conexion, $usuario_id, $usuario_email) {
 		    // Obtener todos los pacientes activos con sus días
 		    $sql_pacientes = "SELECT nombre_paciente, rut, fecha_creacion
 		                      FROM pacientes
-		                      WHERE de_alta = 0
-		                        AND fecha_creacion >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+		                      WHERE fecha_creacion >= DATE_SUB(NOW(), INTERVAL 30 DAY)
 		                      ORDER BY fecha_creacion DESC";
 
 		    $stmt = $conexion->prepare($sql_pacientes);
@@ -219,6 +235,12 @@ require("head.php");
 
 	<form class='needs-validation' name='form_ed_pacte' id='form_ed_pacte' method='post' action='vista_paciente.php' onsubmit='return confirmarAltaPaciente();' novalidate>
 		<input type="hidden" name="rut_e" id="rut_e" value="<?php echo $fila['rut'];?>">
+		<?php if ($es_reactivacion): ?>
+		<input type="hidden" name="reactivar" value="yes">
+		<input type="hidden" name="nombre_paciente_e" value="<?php echo htmlspecialchars($fila['nombre_paciente']); ?>">
+		<input type="hidden" name="ficha_e" value="<?php echo htmlspecialchars($fila['ficha']); ?>">
+		<input type="hidden" name="fecha_creacion_e" value="<?php echo date('Y-m-d H:i:s'); ?>">
+		<?php endif; ?>
 
 			</ul>
 			<br>

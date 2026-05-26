@@ -1,11 +1,64 @@
 <?php
+date_default_timezone_set('America/Santiago');
+
 //1 Validador login
 	require("valida_pag.php");
+
+// Reactivación de paciente: procesar antes de generar HTML
+if (!empty($_POST['nombre_paciente'])) {
+	require_once("conectar.php");
+	require_once __DIR__ . '/app_security.php';
+	require_once __DIR__ . '/app_text_helpers.php';
+	$_conexion_reactiv = new mysqli($db_host, $db_usuario, $db_contra, $db_nombre);
+	$_conexion_reactiv->set_charset("utf8");
+	$_usuario_reactiv = app_current_user($_conexion_reactiv);
+
+	$_rut_check = htmlentities(addslashes(strtoupper($_POST['rut'])));
+	$_conf_alta  = $_conexion_reactiv->query("SELECT `nombre_paciente`,`ficha`,`rut` FROM `pacientes_alta` WHERE `rut`='$_rut_check' ORDER BY `fecha_alta` DESC LIMIT 1");
+
+	if ($_conf_alta && mysqli_num_rows($_conf_alta) > 0) {
+		// Solo si no existe ya activo
+		$_conf_activo = $_conexion_reactiv->query("SELECT `rut` FROM `pacientes` WHERE `rut`='$_rut_check'");
+		if ($_conf_activo && mysqli_num_rows($_conf_activo) == 0) {
+			$_datos    = $_conf_alta->fetch_assoc();
+			$_nombre_r = $_datos['nombre_paciente'];
+			$_ficha_r  = $_datos['ficha'];
+			$_rut_r    = $_datos['rut'];
+			$_uc       = htmlentities(addslashes($_POST['unidad_cama']));
+			$_proc     = htmlentities(addslashes($_POST['procedimiento']));
+			$_analg    = htmlentities(addslashes($_POST['analgesia']));
+			$_nivel    = htmlentities(addslashes($_POST['nivel']));
+			$_esp      = htmlentities(addslashes($_POST['espacio']));
+			$_dist     = htmlentities(addslashes($_POST['distancia']));
+			$_sol      = htmlentities(addslashes($_POST['solucion']));
+			$_inf      = htmlentities(addslashes($_POST['infusion']));
+			$_bolo     = htmlentities(addslashes($_POST['bolo']));
+			$_lock     = htmlentities(addslashes($_POST['lockout']));
+			$_peso     = htmlentities(addslashes($_POST['peso']));
+			$_coment   = htmlentities(addslashes($_POST['comentarios']));
+			$_fecha_r  = date("Y-m-d H:i:s", strtotime('-4 hour'));
+			$_creador_r = ucwords(strtolower(app_decode_text($_usuario_reactiv['nombre_usuario'])));
+
+			$_sql_r = "INSERT INTO `pacientes`
+				(`nombre_paciente`,`rut`,`ficha`,`unidad_cama`,`procedimiento`,`analgesia`,`nivel`,`espacio`,`distancia`,`solucion`,`infusion`,`bolo`,`lockout`,`peso`,`comentarios`,`fecha_creacion`,`creador`)
+				VALUES
+				('$_nombre_r','$_rut_r','$_ficha_r','$_uc','$_proc','$_analg','$_nivel','$_esp','$_dist','$_sol','$_inf','$_bolo','$_lock','$_peso','$_coment','$_fecha_r','$_creador_r')";
+
+			if ($_conexion_reactiv->query($_sql_r)) {
+				$_conexion_reactiv->close();
+				header('Location: vista_paciente.php?rut=' . urlencode($_rut_r));
+				exit;
+			}
+		}
+	}
+	$_conexion_reactiv->close();
+}
+
 
 //2 Variables
 	$boton_toggler="<a class='navbar-toggler app-nav-toggle' type='button' data-bs-toggle='offcanvas' data-bs-target='#offcanvasNavbar' aria-controls='offcanvasNavbar'><i class='fa-solid fa-bars'></i></a>";
 
- 	$titulo_navbar="<div class='app-navbar-brand app-navbar-brand-compact'><img src='images/austral.png' alt='Universidad Austral de Chile' />Anestesia <small>UACh</small></div>";
+ 	$titulo_navbar="<div class='app-navbar-brand app-navbar-brand-compact'><img src='images/austral.png' alt='Universidad Austral de Chile' />Anestesia <small>UACH</small></div>";
 
 	$boton_navbar="<a class='d-sm-block d-sm-none app-nav-action' href='acerca_de.php'><i class='fa-solid fa-question'></i></a>";
 
@@ -14,8 +67,7 @@ function crearNotificacionPacientesDolor($conexion, $usuario_id, $usuario_email)
     // Obtener todos los pacientes activos con sus días
     $sql_pacientes = "SELECT nombre_paciente, rut, fecha_creacion
                       FROM pacientes
-                      WHERE de_alta = 0
-                        AND fecha_creacion >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+                      WHERE fecha_creacion >= DATE_SUB(NOW(), INTERVAL 30 DAY)
                       ORDER BY fecha_creacion DESC";
 
     $stmt = $conexion->prepare($sql_pacientes);
@@ -176,82 +228,47 @@ function crearNotificacionPacientesDolor($conexion, $usuario_id, $usuario_email)
 				$lockout=htmlentities(addslashes($_POST['lockout']));
 				$peso=htmlentities(addslashes($_POST['peso']));
 				$comentarios=htmlentities(addslashes($_POST['comentarios']));
-				$de_alta=0;
 				$fecha_creacion=date("Y-m-d H:i:s",strtotime('-4 hour'));
 				$creador=ucwords(strtolower(app_decode_text($app_current_user['nombre_usuario'])));
 
 
 				//PRIMERO BUSCA SI EL RUT EXISTE PREVIAMENTE Y ESTA ACTIVO
-				$consulta_conf="SELECT `rut`, `nombre_paciente`,`ficha` FROM `pacientes` WHERE `rut`='$rut' AND `de_alta` = '0'";
+			$consulta_conf="SELECT `rut` FROM `pacientes` WHERE `rut`='$rut'";
+			$confirmar=$conexion->query($consulta_conf);
 
-				$confirmar=$conexion->query($consulta_conf); 
+			if(mysqli_num_rows($confirmar)==0){
 
-				if(mysqli_num_rows($confirmar)==0){
+				// No existe activo: insertar nuevo paciente
+				$consulta_n="INSERT INTO `pacientes` (`nombre_paciente`, `rut`, `ficha`, `unidad_cama`, `procedimiento`, `analgesia`, `nivel`, `espacio`, `distancia`, `solucion`, `infusion`, `bolo`, `lockout`, `peso`, `comentarios`, `fecha_creacion`, `creador`) VALUES ('$nombre_paciente', '$rut', '$ficha', '$unidad_cama', '$procedimiento', '$analgesia', '$nivel', '$espacio', '$distancia', '$solucion', '$infusion', '$bolo', '$lockout', '$peso', '$comentarios', '$fecha_creacion', '$creador')";
 
-				//SEGUNDO BUSCA SI EL RUT EXISTE PREVIAMENTE Y ESTA DADO DE ALTA
-						$consulta_conf_2="SELECT `rut`, `nombre_paciente`,`ficha` FROM `pacientes` WHERE `rut`='$rut' AND `de_alta` = '1'";
+				$escribir=$conexion->query($consulta_n);
 
-						$confirmar_2=$conexion->query($consulta_conf_2); 
-
-						if(mysqli_num_rows($confirmar_2)==0){
-
-									$consulta_n="INSERT INTO `pacientes` (`nombre_paciente`, `rut`, `ficha`, `unidad_cama`, `procedimiento`, `analgesia`, `nivel`, `espacio`, `distancia`, `solucion`, `infusion`, `bolo`, `lockout`, `peso`, `comentarios`, `de_alta`, `fecha_creacion`, `creador`) VALUES ('$nombre_paciente', '$rut', '$ficha', '$unidad_cama', '$procedimiento', '$analgesia', '$nivel', '$espacio', '$distancia', '$solucion', '$infusion', '$bolo', '$lockout', '$peso', '$comentarios', '$de_alta', '$fecha_creacion', '$creador') ";
-
-										$escribir=$conexion->query($consulta_n);
-
-
-										if($escribir==false){
-											echo "
-															<div class='alert alert-danger alert-dismissible fade show'>
-														    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
-														    <strong>Info!</strong> Error en el Guardado. Contacta al Administrador
-														  	</div>
-											";
-
-										}else{//NO EXISTE PREVIAMENTE NI FUE DADO DE ALTA
-										    // Crear notificación con todos los pacientes ingresados y sus días
-										    crearNotificacionPacientesDolor($conexion, $app_current_user['ID'], $app_current_user['email_usuario']);
-
-													echo "</br>
-															<div class='alert alert-success alert-dismissible fade show'>
-														    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
-														    <strong>Info!</strong> Registro Guardado.
-														  	</div>
-											";
-										}
-
-						}else{ // EXISTE Y SE ENCUENTRA DADO DE ALTA
-
-									$datos_alta=$confirmar_2->fetch_assoc();
-
-									echo "
-													<div class='alert alert-warning alert-dismissible fade show'>
-													    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
-													    <strong>Info!</strong> Este Rut ya se encuentra en la base de datos, EN ESTADO DADO DE ALTA.</br>
-													    Nombre: ".$datos_alta['nombre_paciente']."</br> Rut: ".$datos_alta['rut']."</br> Ficha: ".$datos_alta['ficha']."
-													  	</br>Desea Reactivar?
-													  	</br>
-													  	<form action='editar_paciente.php' method='post'>
-													  	<input type='hidden' name='reactivar' value='yes'>
-													  	<input type='hidden' name='rut_reactivar' value='".$datos_alta['rut']."'>
-													  	<input type='hidden' name='crear_notificacion_dolor' value='1'>
-
-														  	<button class='btn btn-app-primary' type='submit' name='editar' value='".$datos_alta['rut']."'>Reactivar</button></form>
-													  	</div>
-									";   ////******   al enviar formulario debe editar al paciente sacarlo del alta y agregar los datos nuevos, excepto la ficha y nombre
-
-						}
-
-
-				}else{ // EXISTE Y SE ENCUENTRA ACTIVO
-							echo "
-									<div class='alert alert-danger alert-dismissible fade show'>
-									    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
-									    <strong>Info!</strong> Este Rut ya se encuentra ACTIVO en la base de datos.
-									  	</div>
-							";
+				if($escribir==false){
+					echo "
+						<div class='alert alert-danger alert-dismissible fade show'>
+						    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
+						    <strong>Info!</strong> Error en el Guardado. Contacta al Administrador
+						</div>
+					";
+				}else{
+					crearNotificacionPacientesDolor($conexion, $app_current_user['ID'], $app_current_user['email_usuario']);
+					echo "</br>
+						<div class='alert alert-success alert-dismissible fade show'>
+						    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
+						    <strong>Info!</strong> Registro Guardado.
+						</div>
+					";
 				}
+
+			}else{ // YA EXISTE ACTIVO
+				echo "
+					<div class='alert alert-danger alert-dismissible fade show'>
+					    <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
+					    <strong>Info!</strong> Este Rut ya se encuentra ACTIVO en la base de datos.
+					</div>
+				";
 			}
+		}
 
   ?>
 
@@ -268,8 +285,8 @@ function crearNotificacionPacientesDolor($conexion, $usuario_id, $usuario_email)
         <div class="links-grid home-grid">
 
 <?php
-//Saca a los internos y otros becados del area de dolor  $check_usuario=$_COOKIE['hkjh41lu4l1k23jhlkj13'];
-  $con_users_b="SELECT `intern_`, `becad_otro`, `external_` FROM `usuarios_dolor` WHERE `email_usuario` = '$check_usuario'";
+//Saca a los internos y otros becados del area de dolor
+  $con_users_b="SELECT `intern_`, `becad_otro`, `external_` FROM `usuarios_dolor` WHERE `email_usuario` = '$app_current_user_email'";
   $users_b=$conexion->query($con_users_b);
   $usuario=$users_b->fetch_assoc();
 
@@ -352,8 +369,9 @@ function crearNotificacionPacientesDolor($conexion, $usuario_id, $usuario_email)
     </div>
   </div>
 </div>
+</div>
 
-<?php 
+<?php
   $conexion->close();
   require("footer.php");
 ?>

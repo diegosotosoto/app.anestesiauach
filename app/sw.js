@@ -1,6 +1,7 @@
-const CACHE_NAME = "app-static-v7";
+const CACHE_NAME = "app-static-v13";
 
 const STATIC_ASSETS = [
+  "/",
   "/style.css",
   "/css/all.css",
   "/css/bootstrap.min.css",
@@ -19,20 +20,79 @@ const STATIC_ASSETS = [
   "/css/module-epa.css",
   "/css/module-otros.css",
   "/css/bitacora-rapido.css",
+  "/css/clinical-note-system.css",
   "/js/bootstrap.bundle.min.js",
   "/js/jquery-3.6.1.min.js",
   "/js/app-core.js",
+  "/js/offline-handler.js",
+  "/js/index.js",
   "/images/logo192.png",
   "/images/IMG0001.jpeg",
   "/images/austral.png",
   "/index.php",
+  "/acerca_de.php",
   "/links.php",
-  "/apuntes.php"
+  "/apuntes.php",
+  "/telefonos.php",
+  "/correos.php",
+  "/apuntes/asa.php",
+  "/apuntes/apfel_ponv.php",
+  "/apuntes/aldrete.php",
+  "/apuntes/caprini.php",
+  "/apuntes/cormack.php",
+  "/apuntes/dasi.php",
+  "/apuntes/deltapp.php",
+  "/apuntes/dilucion_farmacos.php",
+  "/apuntes/dosis_obeso.php",
+  "/apuntes/ecg_monitorizacion_isquemia.php",
+  "/apuntes/emergencia_ped.php",
+  "/apuntes/epidural.php",
+  "/apuntes/escalares.php",
+  "/apuntes/flacc.php",
+  "/apuntes/glasgow.php",
+  "/apuntes/mallampati.php",
+  "/apuntes/perdida_admisible.php",
+  "/apuntes/peri_ped.php",
+  "/apuntes/regional_ped.php",
+  "/apuntes/score_lee.php",
+  "/apuntes/tdl_algoritmo.php",
+  "/apuntes/us_gastrico.php"
 ];
 
 self.addEventListener("install", (event) => {
+  console.log('[SW] Installing, cache name:', CACHE_NAME);
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
+    caches.open(CACHE_NAME).then(async (cache) => {
+      console.log('[SW] Precaching', STATIC_ASSETS.length, 'assets...');
+      
+      // Cachear uno por uno para tolerar fallos individuales
+      let successCount = 0;
+      let failCount = 0;
+      const failedUrls = [];
+      
+      for (const url of STATIC_ASSETS) {
+        try {
+          const response = await fetch(url, { credentials: 'same-origin' });
+          if (response.ok) {
+            await cache.put(url, response);
+            successCount++;
+          } else {
+            console.warn('[SW] Failed to cache (status', response.status, '):', url);
+            failCount++;
+            failedUrls.push(url);
+          }
+        } catch (err) {
+          console.warn('[SW] Failed to cache (error):', url, err.message);
+          failCount++;
+          failedUrls.push(url);
+        }
+      }
+      
+      console.log('[SW] Precaching complete. Success:', successCount, 'Failed:', failCount);
+      if (failedUrls.length > 0) {
+        console.log('[SW] Failed URLs:', failedUrls);
+      }
+    })
   );
   self.skipWaiting();
 });
@@ -65,7 +125,7 @@ self.addEventListener("fetch", (event) => {
   const isCriticalData = pathname.match(/(bitacora_ingreso|bitacora_estadistica|bitacora_rechazos|bitacora_autoriza|pacientes)\.php$/i);
 
   // Stale-while-revalidate para contenido semi-estático (apuntes, cálculos)
-  const isSemiStatic = pathname.match(/(apuntes|links|telefonos|correos|calendario|vista_epa)\.php$/i);
+  const isSemiStatic = pathname.match(/(apuntes|links|telefonos|correos|calendario|vista_epa)\.php$/i) || pathname.match(/^\/apuntes\/.*\.php$/i);
 
   if (isStatic) {
     // Cache-first: servir del cache, actualizar en background
@@ -81,7 +141,18 @@ self.addEventListener("fetch", (event) => {
           })
           .catch(() => cachedResponse);
 
-        return cachedResponse || networkFetch;
+        if (cachedResponse) {
+          console.log('[SW] Static asset from cache:', pathname);
+          networkFetch.catch(() => {}); // Background update
+          return cachedResponse;
+        }
+        
+        return networkFetch.then(response => {
+          if (!response) {
+            return new Response('Error cargando recurso.', { status: 503, statusText: 'Service Unavailable' });
+          }
+          return response;
+        });
       })
     );
     return;
@@ -98,7 +169,15 @@ self.addEventListener("fetch", (event) => {
           }
           return networkResponse;
         })
-        .catch(() => caches.match(event.request))
+        .catch(() => {
+          console.log('[SW] Critical data fallback to cache:', pathname);
+          return caches.match(event.request).then(cached => {
+            if (!cached) {
+              return new Response('Error: Sin conexion y sin cache disponible.', { status: 503 });
+            }
+            return cached;
+          });
+        })
     );
     return;
   }
@@ -115,9 +194,33 @@ self.addEventListener("fetch", (event) => {
             }
             return networkResponse;
           })
-          .catch(() => cachedResponse);
+          .catch((err) => {
+            console.error('[SW] Network fetch failed for:', pathname, err);
+            return cachedResponse;
+          });
 
-        return cachedResponse || networkFetch;
+        // Si tenemos respuesta cacheada, servirla inmediatamente
+        if (cachedResponse) {
+          console.log('[SW] Serving from cache:', pathname);
+          // Actualizar en background (no esperar)
+          networkFetch.catch(err => console.log('[SW] Background update failed:', pathname));
+          return cachedResponse;
+        }
+        
+        // Si no hay cache, esperar el network
+        console.log('[SW] No cache, fetching from network:', pathname);
+        return networkFetch.then(response => {
+          if (!response) {
+            console.error('[SW] Network returned null for:', pathname);
+            // Retornar una respuesta de error en lugar de null
+            return new Response('Error cargando pagina. Verifica tu conexion.', {
+              status: 503,
+              statusText: 'Service Unavailable',
+              headers: { 'Content-Type': 'text/plain' }
+            });
+          }
+          return response;
+        });
       })
     );
     return;
@@ -125,6 +228,49 @@ self.addEventListener("fetch", (event) => {
 
   // Default: network-first con fallback al cache
   event.respondWith(
-    fetch(event.request).catch(() => caches.match(event.request))
+    fetch(event.request)
+      .then(response => {
+        if (!response) {
+          console.error('[SW] Network returned null for:', pathname);
+          return caches.match(event.request).then(cached => {
+            if (cached) return cached;
+            return new Response('Error de red. Sin cache disponible.', { status: 503 });
+          });
+        }
+        return response;
+      })
+      .catch(() => {
+        return caches.match(event.request).then(cached => {
+          if (cached) {
+            console.log('[SW] Default fallback to cache:', pathname);
+            return cached;
+          }
+          console.error('[SW] No cache for:', pathname);
+          return new Response('Sin conexion y sin cache disponible.', { status: 503 });
+        });
+      })
   );
+});
+
+// Debug: Escuchar mensajes para listar cache
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'GET_CACHE_STATUS') {
+    caches.open(CACHE_NAME).then(cache => {
+      cache.keys().then(requests => {
+        const urls = requests.map(r => r.url);
+        console.log('[SW] Cached URLs:', urls);
+        // Responder al cliente
+        event.source.postMessage({
+          type: 'CACHE_STATUS',
+          cachedUrls: urls,
+          total: urls.length
+        });
+      });
+    });
+  }
+  
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    console.log('[SW] Skip waiting received');
+    self.skipWaiting();
+  }
 });

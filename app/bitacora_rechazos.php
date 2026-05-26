@@ -60,6 +60,9 @@
           <a class="nav-link" href="bitacora_ingreso.php">Ingreso</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" href="bitacora_ingreso_old.php">Ingreso (Antiguo)</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="bitacora_estadistica.php">Estadística</a>
         </li>
         <li class="nav-item">
@@ -139,6 +142,7 @@
 
     </div>
   </div>
+</div>
 </div>
 
 <?php

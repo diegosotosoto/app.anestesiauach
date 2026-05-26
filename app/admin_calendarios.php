@@ -38,16 +38,33 @@ function usuario_grupo_key($usr)
 {
     $admin = isset($usr['admin']) ? (int)$usr['admin'] : 0;
     $staff = isset($usr['staff_']) ? (int)$usr['staff_'] : 0;
+    $docente = isset($usr['docente_']) ? (int)$usr['docente_'] : 0;
     $interno = isset($usr['intern_']) ? (int)$usr['intern_'] : 0;
     $becad = isset($usr['becad_']) ? (int)$usr['becad_'] : 0;
     $becadOtro = isset($usr['becad_otro']) ? (int)$usr['becad_otro'] : 0;
-    $anio = isset($usr['anio_residencia']) ? (int)$usr['anio_residencia'] : 0;
+    $nivel = isset($usr['nivel_residencia']) ? $usr['nivel_residencia'] : '';
 
+    // Prioridad: R1, R2, R3 por nivel_residencia
+    if ($nivel === 'r1') {
+        return 'r1';
+    }
+    if ($nivel === 'r2') {
+        return 'r2';
+    }
+    if ($nivel === 'r3') {
+        return 'r3';
+    }
+    // Fallback por becad_ + anio_residencia (compatibilidad)
+    $anio = isset($usr['anio_residencia']) ? (int)$usr['anio_residencia'] : 0;
     if ($becad === 1 || $anio > 0) {
         return 'becados';
     }
     if ($becadOtro === 1 || $interno === 1) {
         return 'becados_pasantes';
+    }
+    // Staff: diferenciar docente vs no-docente
+    if ($staff === 1 && $docente === 1) {
+        return 'docente';
     }
     if ($staff === 1) {
         return 'staff';
@@ -61,9 +78,13 @@ function usuario_grupo_key($usr)
 function usuario_grupo_label($grupo)
 {
     $labels = array(
-        'becados' => 'Becados',
+        'r1' => 'R1',
+        'r2' => 'R2',
+        'r3' => 'R3',
+        'becados' => 'Becados (sin nivel)',
         'becados_pasantes' => 'Becados Pasantes',
-        'staff' => 'Staff',
+        'docente' => 'Docentes',
+        'staff' => 'Staff (no docente)',
         'individual' => 'Individual'
     );
     return $labels[$grupo] ?? 'Individual';
@@ -72,11 +93,14 @@ function usuario_grupo_label($grupo)
 function tipo_label($tipo)
 {
     $labels = array(
-        'general' => 'General',
-        'r1' => 'R1',
-        'r2' => 'R2',
-        'r3' => 'R3',
+        'general' => 'General (todos)',
+        'r1' => 'Residentes R1',
+        'r2' => 'Residentes R2',
+        'r3' => 'Residentes R3',
         'staff' => 'Staff',
+        'docente' => 'Docentes',
+        'intern' => 'Internos',
+        'anestesia_programa' => 'Programa Anestesia (Residentes + Staff)',
         'turnos' => 'Turnos',
         'examenes' => 'Ex&aacute;menes',
         'rotaciones' => 'Rotaciones',
@@ -103,7 +127,24 @@ if($usuarioAdmin['external_']==1){
 $emailUsuario = trim((string)$usuarioAdmin['email_usuario']);
 $mensajeOk = '';
 $mensajeError = '';
-$tiposValidos = array('general', 'r1', 'r2', 'r3', 'staff', 'turnos', 'examenes', 'rotaciones', 'classroom', 'personal');
+$tiposValidos = array('general', 'r1', 'r2', 'r3', 'staff', 'docente', 'intern', 'anestesia_programa', 'turnos', 'examenes', 'rotaciones', 'classroom', 'personal');
+
+// Notification settings labels
+$opcionesNotif = array(
+    'first' => 'Primera notificación',
+    'same_day' => 'El mismo día',
+    'email' => 'También por email'
+);
+
+// Días disponibles para primera notificación (1-7 días)
+$dias_notif_opciones = array(1 => '1 día antes', 2 => '2 días antes', 3 => '3 días antes', 4 => '4 días antes', 5 => '5 días antes', 6 => '6 días antes', 7 => '7 días antes');
+
+// Horas disponibles para envío de email (8:00 a 17:00, días de semana)
+$horas_email_opciones = array();
+for ($h = 8; $h <= 17; $h++) {
+    $hora_str = sprintf('%02d:00', $h);
+    $horas_email_opciones[$hora_str] = $hora_str;
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $accion = post_val('accion');
@@ -114,16 +155,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $calendarId = post_val('calendar_id');
         $tipo = strtolower(post_val('tipo'));
         $activo = isset($_POST['activo']) ? 1 : 0;
+        $notif_dias = isset($_POST['notif_dias']) ? min(7, max(1, (int)$_POST['notif_dias'])) : 2;
+        $notif_same_day = isset($_POST['notif_same_day']) ? 1 : 0;
+        $notif_email = isset($_POST['notif_email']) ? 1 : 0;
+        $notif_weekdays = isset($_POST['notif_weekdays']) ? 1 : 0;
+        $notif_hora = isset($_POST['notif_hora']) ? preg_replace('/[^0-9:]/', '', $_POST['notif_hora']) : '08:00';
+        if (!preg_match('/^([0-9]{2}):([0-9]{2})$/', $notif_hora)) {
+            $notif_hora = '08:00';
+        }
 
         if ($nombre === '' || $calendarId === '' || !in_array($tipo, $tiposValidos, true)) {
             $mensajeError = 'Faltan datos obligatorios o el tipo no es v&aacute;lido.';
         } elseif ($id > 0) {
             $stmt = $conexion->prepare("UPDATE `calendarios_app`
-                SET `nombre` = ?, `calendar_id` = ?, `tipo` = ?, `activo` = ?
+                SET `nombre` = ?, `calendar_id` = ?, `tipo` = ?, `activo` = ?, `notif_dias` = ?, `notif_same_day` = ?, `notif_email` = ?, `notif_weekdays` = ?, `notif_hora` = ?
                 WHERE `id` = ?
                 LIMIT 1");
             if ($stmt) {
-                $stmt->bind_param('sssii', $nombre, $calendarId, $tipo, $activo, $id);
+                $stmt->bind_param('sssiiiiisi', $nombre, $calendarId, $tipo, $activo, $notif_dias, $notif_same_day, $notif_email, $notif_weekdays, $notif_hora, $id);
                 if ($stmt->execute()) {
                     $mensajeOk = 'Calendario actualizado.';
                 } else {
@@ -134,10 +183,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $mensajeError = 'No se pudo preparar el guardado.';
             }
         } else {
-            $stmt = $conexion->prepare("INSERT INTO `calendarios_app` (`nombre`, `calendar_id`, `tipo`, `activo`)
-                VALUES (?, ?, ?, ?)");
+            $stmt = $conexion->prepare("INSERT INTO `calendarios_app` (`nombre`, `calendar_id`, `tipo`, `activo`, `notif_dias`, `notif_same_day`, `notif_email`, `notif_weekdays`, `notif_hora`)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
             if ($stmt) {
-                $stmt->bind_param('sssi', $nombre, $calendarId, $tipo, $activo);
+                $stmt->bind_param('sssiiiiis', $nombre, $calendarId, $tipo, $activo, $notif_dias, $notif_same_day, $notif_email, $notif_weekdays, $notif_hora);
                 if ($stmt->execute()) {
                     $mensajeOk = 'Calendario agregado.';
                 } else {
@@ -155,17 +204,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($id <= 0) {
             $mensajeError = 'No se recibi&oacute; el calendario a eliminar.';
         } else {
-            $stmt = $conexion->prepare("DELETE FROM `calendarios_app` WHERE `id` = ? LIMIT 1");
-            if ($stmt) {
-                $stmt->bind_param('i', $id);
-                if ($stmt->execute()) {
-                    $mensajeOk = 'Calendario eliminado.';
-                } else {
-                    $mensajeError = 'No se pudo eliminar el calendario: ' . $stmt->error;
+            // Obtener el calendar_id de Google Calendar antes de eliminar
+            $stmt_info = $conexion->prepare("SELECT `calendar_id` FROM `calendarios_app` WHERE `id` = ?");
+            if ($stmt_info) {
+                $stmt_info->bind_param('i', $id);
+                $stmt_info->execute();
+                $res_info = $stmt_info->get_result();
+                $calendar_id_google = '';
+                if ($res_info && $row_info = $res_info->fetch_assoc()) {
+                    $calendar_id_google = $row_info['calendar_id'];
                 }
-                $stmt->close();
-            } else {
-                $mensajeError = 'No se pudo preparar la eliminaci&oacute;n.';
+                $stmt_info->close();
+            }
+
+            $conexion->begin_transaction();
+            try {
+                // Eliminar asignaciones de este calendario
+                $stmt_asignaciones = $conexion->prepare("DELETE FROM `calendario_asignaciones` WHERE `calendario_id` = ?");
+                if ($stmt_asignaciones) {
+                    $stmt_asignaciones->bind_param('i', $id);
+                    $stmt_asignaciones->execute();
+                    $stmt_asignaciones->close();
+                }
+
+                // Eliminar notificaciones de calendario de eventos
+                if ($calendar_id_google !== '') {
+                    $stmt_notif_eventos = $conexion->prepare("DELETE FROM `notificaciones_calendario_eventos` WHERE `calendar_id` = ?");
+                    if ($stmt_notif_eventos) {
+                        $stmt_notif_eventos->bind_param('s', $calendar_id_google);
+                        $stmt_notif_eventos->execute();
+                        $stmt_notif_eventos->close();
+                    }
+                }
+
+                // Eliminar el calendario
+                $stmt = $conexion->prepare("DELETE FROM `calendarios_app` WHERE `id` = ? LIMIT 1");
+                if ($stmt) {
+                    $stmt->bind_param('i', $id);
+                    if ($stmt->execute()) {
+                        $conexion->commit();
+                        $mensajeOk = 'Calendario eliminado junto con sus asignaciones y notificaciones de eventos.';
+                    } else {
+                        $conexion->rollback();
+                        $mensajeError = 'No se pudo eliminar el calendario: ' . $stmt->error;
+                    }
+                    $stmt->close();
+                } else {
+                    $conexion->rollback();
+                    $mensajeError = 'No se pudo preparar la eliminaci&oacute;n.';
+                }
+            } catch (Exception $e) {
+                $conexion->rollback();
+                $mensajeError = 'Error al eliminar calendario: ' . $e->getMessage();
             }
         }
     }
@@ -173,17 +263,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($accion === 'guardar_asignacion') {
         $id = (int)post_val('id', '0');
         $usuarioId = (int)post_val('usuario_id', '0');
+        $grupoSeleccionado = post_val('grupo_seleccionado', '');
         $calendarioId = (int)post_val('calendario_id', '0');
         $fechaInicio = post_val('fecha_inicio');
         $fechaFin = post_val('fecha_fin');
         $activo = isset($_POST['activo']) ? 1 : 0;
         $fechaFinDb = $fechaFin !== '' ? $fechaFin : null;
 
-        if ($usuarioId <= 0 || $calendarioId <= 0 || $fechaInicio === '') {
+        // Determinar si es asignación por grupo o individual
+        $esAsignacionPorGrupo = ($grupoSeleccionado !== '' && $grupoSeleccionado !== 'individual' && $usuarioId <= 0);
+
+        if (!$esAsignacionPorGrupo && ($usuarioId <= 0 || $calendarioId <= 0 || $fechaInicio === '')) {
             $mensajeError = 'Faltan datos obligatorios para asignar calendario.';
+        } elseif ($esAsignacionPorGrupo && ($calendarioId <= 0 || $fechaInicio === '')) {
+            $mensajeError = 'Faltan datos obligatorios para asignar calendario por grupo.';
         } elseif ($fechaFin !== '' && strtotime($fechaFin) < strtotime($fechaInicio)) {
             $mensajeError = 'La fecha final no puede ser anterior a la fecha de inicio.';
         } elseif ($id > 0) {
+            // Edición de asignación individual (no se permite editar asignaciones por grupo)
             $stmt = $conexion->prepare("UPDATE `calendario_asignaciones`
                 SET `usuario_id` = ?, `calendario_id` = ?, `fecha_inicio` = ?, `fecha_fin` = ?, `activo` = ?
                 WHERE `id` = ?
@@ -200,18 +297,83 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $mensajeError = 'No se pudo preparar la actualizaci&oacute;n de asignaci&oacute;n.';
             }
         } else {
-            $stmt = $conexion->prepare("INSERT INTO `calendario_asignaciones` (`calendario_id`, `usuario_id`, `fecha_inicio`, `fecha_fin`, `activo`)
-                VALUES (?, ?, ?, ?, ?)");
-            if ($stmt) {
-                $stmt->bind_param('iissi', $calendarioId, $usuarioId, $fechaInicio, $fechaFinDb, $activo);
-                if ($stmt->execute()) {
-                    $mensajeOk = 'Calendario asignado.';
-                } else {
-                    $mensajeError = 'No se pudo crear la asignaci&oacute;n: ' . $stmt->error;
+            // Nueva asignación
+            if ($esAsignacionPorGrupo) {
+                // Asignación por grupo: obtener usuarios del grupo
+                $whereGrupo = '';
+                switch ($grupoSeleccionado) {
+                    case 'r1':
+                        $whereGrupo = "`verified` = 1 AND `nivel_residencia` = 'r1'";
+                        break;
+                    case 'r2':
+                        $whereGrupo = "`verified` = 1 AND `nivel_residencia` = 'r2'";
+                        break;
+                    case 'r3':
+                        $whereGrupo = "`verified` = 1 AND `nivel_residencia` = 'r3'";
+                        break;
+                    case 'becados':
+                        $whereGrupo = "`verified` = 1 AND `becad_` = 1";
+                        break;
+                    case 'becados_pasantes':
+                        $whereGrupo = "`verified` = 1 AND (`becad_otro` = 1 OR `intern_` = 1)";
+                        break;
+                    case 'docente':
+                        $whereGrupo = "`verified` = 1 AND `staff_` = 1 AND `docente_` = 1";
+                        break;
+                    case 'staff':
+                        $whereGrupo = "`verified` = 1 AND `staff_` = 1";
+                        break;
+                    default:
+                        $whereGrupo = "`verified` = 1";
                 }
-                $stmt->close();
+
+                // Excluir usuarios externos
+                $whereGrupo .= " AND (`external_` IS NULL OR `external_` <> 1)";
+
+                $resUsuariosGrupo = $conexion->query("SELECT `ID` FROM `usuarios_dolor` WHERE $whereGrupo");
+                if ($resUsuariosGrupo && $resUsuariosGrupo->num_rows > 0) {
+                    $conexion->begin_transaction();
+                    try {
+                        $stmt = $conexion->prepare("INSERT INTO `calendario_asignaciones` (`calendario_id`, `usuario_id`, `fecha_inicio`, `fecha_fin`, `activo`)
+                            VALUES (?, ?, ?, ?, ?)");
+                        if ($stmt) {
+                            $stmt->bind_param('iissi', $calendarioId, $uid, $fechaInicio, $fechaFinDb, $activo);
+                            $asignacionesCreadas = 0;
+                            while ($row = $resUsuariosGrupo->fetch_assoc()) {
+                                $uid = (int)$row['ID'];
+                                if ($stmt->execute()) {
+                                    $asignacionesCreadas++;
+                                }
+                            }
+                            $stmt->close();
+                            $conexion->commit();
+                            $mensajeOk = "Calendario asignado a $asignacionesCreadas usuarios del grupo.";
+                        } else {
+                            $conexion->rollback();
+                            $mensajeError = 'No se pudo preparar la asignaci&oacute;n por grupo.';
+                        }
+                    } catch (Exception $e) {
+                        $conexion->rollback();
+                        $mensajeError = 'Error al crear asignaciones por grupo: ' . $e->getMessage();
+                    }
+                } else {
+                    $mensajeError = 'No se encontraron usuarios en el grupo seleccionado.';
+                }
             } else {
-                $mensajeError = 'No se pudo preparar la nueva asignaci&oacute;n. Verifica la tabla calendario_asignaciones.';
+                // Asignación individual
+                $stmt = $conexion->prepare("INSERT INTO `calendario_asignaciones` (`calendario_id`, `usuario_id`, `fecha_inicio`, `fecha_fin`, `activo`)
+                    VALUES (?, ?, ?, ?, ?)");
+                if ($stmt) {
+                    $stmt->bind_param('iissi', $calendarioId, $usuarioId, $fechaInicio, $fechaFinDb, $activo);
+                    if ($stmt->execute()) {
+                        $mensajeOk = 'Calendario asignado.';
+                    } else {
+                        $mensajeError = 'No se pudo crear la asignaci&oacute;n: ' . $stmt->error;
+                    }
+                    $stmt->close();
+                } else {
+                    $mensajeError = 'No se pudo preparar la nueva asignaci&oacute;n. Verifica la tabla calendario_asignaciones.';
+                }
             }
         }
     }
@@ -221,17 +383,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($id <= 0) {
             $mensajeError = 'No se recibi&oacute; la asignaci&oacute;n a eliminar.';
         } else {
-            $stmt = $conexion->prepare("DELETE FROM `calendario_asignaciones` WHERE `id` = ? LIMIT 1");
-            if ($stmt) {
-                $stmt->bind_param('i', $id);
-                if ($stmt->execute()) {
-                    $mensajeOk = 'Asignaci&oacute;n eliminada.';
-                } else {
-                    $mensajeError = 'No se pudo eliminar la asignaci&oacute;n: ' . $stmt->error;
+            // Obtener calendario_id de la asignación
+            $stmt_info = $conexion->prepare("SELECT ca.`calendario_id`, c.`calendar_id` 
+                FROM `calendario_asignaciones` ca
+                INNER JOIN `calendarios_app` c ON c.`id` = ca.`calendario_id`
+                WHERE ca.`id` = ?");
+            if ($stmt_info) {
+                $stmt_info->bind_param('i', $id);
+                $stmt_info->execute();
+                $res_info = $stmt_info->get_result();
+                $calendario_id_app = 0;
+                $calendar_id_google = '';
+                if ($res_info && $row_info = $res_info->fetch_assoc()) {
+                    $calendario_id_app = (int)$row_info['calendario_id'];
+                    $calendar_id_google = $row_info['calendar_id'];
                 }
-                $stmt->close();
-            } else {
-                $mensajeError = 'No se pudo preparar la eliminaci&oacute;n de asignaci&oacute;n.';
+                $stmt_info->close();
+            }
+
+            $conexion->begin_transaction();
+            try {
+                // Eliminar notificaciones de eventos de esta asignación
+                if ($calendar_id_google !== '') {
+                    $stmt_notif_eventos = $conexion->prepare("DELETE FROM `notificaciones_calendario_eventos` WHERE `calendar_id` = ?");
+                    if ($stmt_notif_eventos) {
+                        $stmt_notif_eventos->bind_param('s', $calendar_id_google);
+                        $stmt_notif_eventos->execute();
+                        $stmt_notif_eventos->close();
+                    }
+                }
+
+                // Eliminar la asignación
+                $stmt = $conexion->prepare("DELETE FROM `calendario_asignaciones` WHERE `id` = ? LIMIT 1");
+                if ($stmt) {
+                    $stmt->bind_param('i', $id);
+                    if ($stmt->execute()) {
+                        $conexion->commit();
+                        $mensajeOk = 'Asignaci&oacute;n eliminada junto con sus notificaciones de eventos.';
+                    } else {
+                        $conexion->rollback();
+                        $mensajeError = 'No se pudo eliminar la asignaci&oacute;n: ' . $stmt->error;
+                    }
+                    $stmt->close();
+                } else {
+                    $conexion->rollback();
+                    $mensajeError = 'No se pudo preparar la eliminaci&oacute;n.';
+                }
+            } catch (Exception $e) {
+                $conexion->rollback();
+                $mensajeError = 'Error al eliminar asignaci&oacute;n: ' . $e->getMessage();
             }
         }
     }
@@ -239,7 +439,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $calendarios = array();
 $tablaCalendariosExiste = true;
-$resCalendarios = $conexion->query("SELECT `id`, `nombre`, `calendar_id`, `tipo`, `activo`
+$resCalendarios = $conexion->query("SELECT `id`, `nombre`, `calendar_id`, `tipo`, `activo`, `notif_dias`, `notif_same_day`, `notif_email`, `notif_weekdays`, `notif_hora`
     FROM `calendarios_app`
     ORDER BY FIELD(`tipo`, 'general', 'r1', 'r2', 'r3', 'staff', 'turnos', 'examenes', 'rotaciones', 'classroom', 'personal'), `nombre` ASC");
 
@@ -252,11 +452,11 @@ if ($resCalendarios) {
 }
 
 $usuarios = array();
-$resUsuarios = $conexion->query("SELECT `ID`, `nombre_usuario`, `email_usuario`, `admin`, `staff_`, `intern_`, `becad_`, `becad_otro`, `anio_residencia`, `verified`, `external_`
+$resUsuarios = $conexion->query("SELECT `ID`, `nombre_usuario`, `email_usuario`, `admin`, `staff_`, `docente_`, `intern_`, `becad_`, `becad_otro`, `anio_residencia`, `nivel_residencia`, `verified`, `external_`
     FROM `usuarios_dolor`
     WHERE `verified` = 1
       AND (`external_` IS NULL OR `external_` <> 1)
-    ORDER BY `becad_` DESC, `anio_residencia` ASC, `nombre_usuario` ASC");
+    ORDER BY `nivel_residencia` ASC, `becad_` DESC, `anio_residencia` ASC, `nombre_usuario` ASC");
 if ($resUsuarios) {
     while ($row = $resUsuarios->fetch_assoc()) {
         $row['grupo_usuario'] = usuario_grupo_key($row);
@@ -300,11 +500,6 @@ require('head.php');
         <span class="app-hero-pill">Solo administradores</span>
     </section>
 
-    <div class="admin-tabs">
-        <a class="admin-tab" href="#calendarios"><i class="fa-regular fa-calendar me-1"></i>Calendarios fuente</a>
-        <a class="admin-tab" href="#asignaciones"><i class="fa-solid fa-user-clock me-1"></i>Asignaciones temporales</a>
-    </div>
-
     <?php if ($mensajeOk !== '') { ?>
         <div class="alert alert-success"><?= $mensajeOk ?></div>
     <?php } ?>
@@ -323,399 +518,25 @@ require('head.php');
         </div>
     <?php } ?>
 
-    <section id="calendarios" class="card admin-filter-card mb-3">
-        <div class="card-body">
-            <h5 class="admin-section-title"><i class="fa-regular fa-calendar-plus"></i>Agregar calendario fuente</h5>
-            <form method="post">
-                <input type="hidden" name="accion" value="guardar_calendario">
-                <div class="admin-source-grid">
-                    <div>
-                        <label class="admin-form-label">Nombre</label>
-                        <input class="form-control admin-input" name="nombre" placeholder="Classroom Pediatr&iacute;a, R1, Turnos..." required>
-                    </div>
-                    <div>
-                        <label class="admin-form-label">Calendar ID</label>
-                        <input class="form-control admin-input" name="calendar_id" placeholder="xxxx@group.calendar.google.com" required>
-                    </div>
-                    <div>
-                        <label class="admin-form-label">Tipo</label>
-                        <select class="form-select admin-select" name="tipo" required>
-                            <?php foreach ($tiposValidos as $tipo) { ?>
-                                <option value="<?= h($tipo) ?>"><?= tipo_label($tipo) ?></option>
-                            <?php } ?>
-                        </select>
-                    </div>
-                    <div class="admin-active-cell">
-                        <label class="admin-form-label">Activo</label>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" name="activo" checked>
-                        </div>
-                    </div>
-                    <div class="admin-action-cell d-grid">
-                        <button class="btn btn-admin-primary">Agregar</button>
-                    </div>
-                </div>
-            </form>
-            <div class="admin-help-text small mt-2">
-                <strong>Importante:</strong> comparte cada calendario en Google con el email de la cuenta de servicio y permiso &quot;Ver todos los detalles&quot;.
-            </div>
-        </div>
-    </section>
+    <!-- Tabs de navegación con Bootstrap -->
+    <ul class="nav nav-tabs mb-3" id="adminCalendariosTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="calendarios-tab" data-bs-toggle="tab" data-bs-target="#tab-calendarios" type="button" role="tab" aria-controls="tab-calendarios" aria-selected="true">
+                <i class="fa-regular fa-calendar-plus me-1"></i>Calendarios fuente
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="asignaciones-tab" data-bs-toggle="tab" data-bs-target="#tab-asignaciones" type="button" role="tab" aria-controls="tab-asignaciones" aria-selected="false">
+                <i class="fa-solid fa-user-clock me-1"></i>Asignaciones temporales
+            </button>
+        </li>
+    </ul>
 
-    <?php if (count($calendarios) === 0) { ?>
-        <div class="card admin-item-card mb-3">
-            <div class="admin-empty-state">
-                <div class="mb-2"><i class="fa-regular fa-calendar"></i></div>
-                <strong>No hay calendarios registrados.</strong>
-                <div class="small mt-1">Agrega el calendario general y luego los de nivel, Classroom o rotaciones.</div>
-            </div>
-        </div>
-    <?php } ?>
-
-    <?php foreach ($calendarios as $cal) { ?>
-        <div class="card admin-item-card mb-3">
-            <div class="card-body">
-                <div class="admin-item-header">
-                    <div>
-                        <div class="admin-item-title"><?= h($cal['nombre']) ?></div>
-                        <div class="admin-item-meta"><?= h($cal['calendar_id']) ?></div>
-                    </div>
-                    <div class="d-flex gap-2 flex-wrap justify-content-end">
-                        <span class="admin-badge admin-badge-primary"><?= tipo_label($cal['tipo']) ?></span>
-                        <span class="admin-badge <?= (int)$cal['activo'] === 1 ? 'admin-badge-success' : 'admin-badge-muted' ?>">
-                            <?= (int)$cal['activo'] === 1 ? 'Activo' : 'Inactivo' ?>
-                        </span>
-                    </div>
-                </div>
-
-                <form method="post">
-                    <input type="hidden" name="accion" value="guardar_calendario">
-                    <input type="hidden" name="id" value="<?= (int)$cal['id'] ?>">
-                    <div class="admin-source-grid">
-                        <div>
-                            <label class="admin-form-label">Nombre</label>
-                            <input class="form-control admin-input" name="nombre" value="<?= h($cal['nombre']) ?>" required>
-                        </div>
-                        <div>
-                            <label class="admin-form-label">Calendar ID</label>
-                            <input class="form-control admin-input" name="calendar_id" value="<?= h($cal['calendar_id']) ?>" required>
-                        </div>
-                        <div>
-                            <label class="admin-form-label">Tipo</label>
-                            <select class="form-select admin-select" name="tipo" required>
-                                <?php foreach ($tiposValidos as $tipo) { ?>
-                                    <option value="<?= h($tipo) ?>" <?= $cal['tipo'] === $tipo ? 'selected' : '' ?>><?= tipo_label($tipo) ?></option>
-                                <?php } ?>
-                            </select>
-                        </div>
-                        <div class="admin-active-cell">
-                            <label class="admin-form-label">Activo</label>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" name="activo" <?= (int)$cal['activo'] === 1 ? 'checked' : '' ?>>
-                            </div>
-                        </div>
-                        <div class="admin-action-cell d-grid">
-                            <button class="btn btn-admin-primary">Guardar</button>
-                        </div>
-                    </div>
-                </form>
-
-                <form method="post" class="mt-2 text-end">
-                    <input type="hidden" name="accion" value="eliminar_calendario">
-                    <input type="hidden" name="id" value="<?= (int)$cal['id'] ?>">
-                    <button class="btn btn-sm btn-admin-danger" data-confirm="&iquest;Confirmas eliminar este calendario de la app? Tambi&eacute;n se eliminar&aacute;n sus asignaciones. No borra el calendario en Google.">Eliminar</button>
-                </form>
-            </div>
-        </div>
-    <?php } ?>
-
-    <section id="asignaciones" class="card admin-filter-card mb-3 mt-4">
-        <div class="card-body">
-            <h5 class="admin-section-title"><i class="fa-solid fa-user-clock"></i>Asignar calendario temporal</h5>
-            <form method="post">
-                <input type="hidden" name="accion" value="guardar_asignacion">
-                <div class="admin-assignment-grid">
-                    <div class="admin-user-picker admin-grid-full">
-                        <input type="hidden" name="usuario_id" id="asignar_usuario_id" required>
-                        <div class="admin-user-picker-grid">
-                            <div>
-                                <label class="admin-form-label">Grupo</label>
-                                <select class="form-select admin-select" id="asignar_grupo_usuario">
-                                    <option value="becados">Becados</option>
-                                    <option value="becados_pasantes">Becados Pasantes</option>
-                                    <option value="staff">Staff</option>
-                                    <option value="individual">Individual</option>
-                                    <option value="todos">Todos</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="admin-form-label">Buscar por nombre o correo</label>
-                                <input class="form-control admin-input" type="search" id="asignar_buscar_usuario" placeholder="Escribe para filtrar usuarios...">
-                            </div>
-                        </div>
-                        <div class="admin-user-list" id="asignar_lista_usuarios">
-                            <?php foreach ($usuarios as $usr) {
-                                $usrTexto = html_entity_decode((string)$usr['nombre_usuario'], ENT_QUOTES | ENT_HTML5, 'UTF-8') . ' ' . (string)$usr['email_usuario'];
-                            ?>
-                                <button type="button"
-                                        class="admin-user-option"
-                                        data-user-id="<?= (int)$usr['ID'] ?>"
-                                        data-user-group="<?= h($usr['grupo_usuario']) ?>"
-                                        data-user-text="<?= h(app_lower_text($usrTexto, 'UTF-8')) ?>"
-                                        data-user-label="<?= h_nombre($usr['nombre_usuario']) ?> · <?= h($usr['email_usuario']) ?>">
-                                    <div class="admin-user-name"><?= h_nombre($usr['nombre_usuario']) ?></div>
-                                    <div class="admin-user-email"><?= h($usr['email_usuario']) ?><?= (int)$usr['becad_'] === 1 && $usr['anio_residencia'] ? ' · R' . (int)$usr['anio_residencia'] : '' ?></div>
-                                    <span class="admin-user-group-badge"><?= h(usuario_grupo_label($usr['grupo_usuario'])) ?></span>
-                                </button>
-                            <?php } ?>
-                        </div>
-                        <div class="admin-selected-user" id="asignar_usuario_seleccionado">Selecciona un usuario de la lista.</div>
-                    </div>
-                    <div>
-                        <label class="admin-form-label">Calendario</label>
-                        <select class="form-select admin-select" name="calendario_id" required>
-                            <option value="">Seleccionar...</option>
-                            <?php foreach ($calendarios as $cal) { ?>
-                                <option value="<?= (int)$cal['id'] ?>"><?= h($cal['nombre']) ?> · <?= tipo_label($cal['tipo']) ?></option>
-                            <?php } ?>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="admin-form-label">Inicio</label>
-                        <input class="form-control admin-input" type="date" name="fecha_inicio" required>
-                    </div>
-                    <div>
-                        <label class="admin-form-label">Fin</label>
-                        <input class="form-control admin-input" type="date" name="fecha_fin">
-                    </div>
-                    <div class="admin-active-cell">
-                        <label class="admin-form-label">Activo</label>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" name="activo" checked>
-                        </div>
-                    </div>
-                    <div class="admin-action-cell d-grid">
-                        <button class="btn btn-admin-primary">Asignar</button>
-                    </div>
-                </div>
-            </form>
-            <div class="admin-help-text small mt-2">
-                Para Classroom por rotaci&oacute;n, registra primero el calendario como tipo <strong>Classroom</strong> o <strong>Rotaciones</strong>, luego as&iacute;gnalo al residente con fechas.
-            </div>
-        </div>
-    </section>
-
-    <section class="card admin-filter-card mb-3">
-        <div class="card-body">
-            <h5 class="admin-section-title"><i class="fa-solid fa-filter"></i>Filtrar asignaciones</h5>
-            <div class="admin-assignment-filters">
-                <div>
-                    <label class="admin-form-label">Grupo</label>
-                    <select class="form-select admin-select" id="filtro_asignaciones_grupo">
-                        <option value="todos">Todos</option>
-                        <option value="becados">Becados</option>
-                        <option value="becados_pasantes">Becados Pasantes</option>
-                        <option value="staff">Staff</option>
-                        <option value="individual">Individual</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="admin-form-label">Individuo / texto</label>
-                    <input class="form-control admin-input" type="search" id="filtro_asignaciones_texto" placeholder="Filtrar por nombre, correo o calendario...">
-                </div>
-            </div>
-            <div class="admin-filter-summary" id="resumen_filtro_asignaciones"></div>
-        </div>
-    </section>
-    <?php if (count($asignaciones) === 0) { ?>
-        <div class="card admin-item-card mb-3">
-            <div class="admin-empty-state">
-                <div class="mb-2"><i class="fa-solid fa-user-clock"></i></div>
-                <strong>No hay asignaciones temporales.</strong>
-                <div class="small mt-1">Los calendarios tipo general/R1/R2/R3 se muestran por perfil. Classroom, rotaciones y personales deben asignarse aqu&iacute;.</div>
-            </div>
-        </div>
-    <?php } ?>
-
-    <?php foreach ($asignaciones as $asig) { ?>
-        <div class="card admin-item-card admin-assignment-card mb-3" data-user-group="<?= h($asig['grupo_usuario']) ?>" data-user-text="<?= h(app_lower_text(html_entity_decode((string)$asig['nombre_usuario'], ENT_QUOTES | ENT_HTML5, 'UTF-8') . ' ' . (string)$asig['email_usuario'] . ' ' . (string)$asig['calendario_nombre'], 'UTF-8')) ?>">
-            <div class="card-body">
-                <div class="admin-item-header">
-                    <div>
-                        <div class="admin-item-title"><?= h_nombre($asig['nombre_usuario']) ?></div>
-                        <div class="admin-item-meta">
-                            <?= h($asig['email_usuario']) ?> &middot; <?= h($asig['calendario_nombre']) ?>
-                        </div>
-                    </div>
-                    <div class="d-flex gap-2 flex-wrap justify-content-end">
-                        <span class="admin-badge admin-badge-primary"><?= h($asig['grupo_usuario_label']) ?></span>
-                        <span class="admin-badge admin-badge-purple"><?= tipo_label($asig['calendario_tipo']) ?></span>
-                        <span class="admin-badge admin-badge-warning"><?= h($asig['fecha_inicio']) ?> a <?= h($asig['fecha_fin'] ?: 'sin fin') ?></span>
-                        <span class="admin-badge <?= (int)$asig['activo'] === 1 ? 'admin-badge-success' : 'admin-badge-muted' ?>">
-                            <?= (int)$asig['activo'] === 1 ? 'Activo' : 'Inactivo' ?>
-                        </span>
-                    </div>
-                </div>
-
-                <form method="post">
-                    <input type="hidden" name="accion" value="guardar_asignacion">
-                    <input type="hidden" name="id" value="<?= (int)$asig['id'] ?>">
-                    <div class="admin-assignment-grid">
-                        <div>
-                            <label class="admin-form-label">Usuario</label>
-                            <select class="form-select admin-select" name="usuario_id" required>
-                                <?php foreach ($usuarios as $usr) { ?>
-                                    <option value="<?= (int)$usr['ID'] ?>" <?= (int)$asig['usuario_id'] === (int)$usr['ID'] ? 'selected' : '' ?>>
-                                        <?= h_nombre($usr['nombre_usuario']) ?> · <?= h($usr['email_usuario']) ?>
-                                    </option>
-                                <?php } ?>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="admin-form-label">Calendario</label>
-                            <select class="form-select admin-select" name="calendario_id" required>
-                                <?php foreach ($calendarios as $cal) { ?>
-                                    <option value="<?= (int)$cal['id'] ?>" <?= (int)$asig['calendario_id'] === (int)$cal['id'] ? 'selected' : '' ?>><?= h($cal['nombre']) ?> · <?= tipo_label($cal['tipo']) ?></option>
-                                <?php } ?>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="admin-form-label">Inicio</label>
-                            <input class="form-control admin-input" type="date" name="fecha_inicio" value="<?= h($asig['fecha_inicio']) ?>" required>
-                        </div>
-                        <div>
-                            <label class="admin-form-label">Fin</label>
-                            <input class="form-control admin-input" type="date" name="fecha_fin" value="<?= h($asig['fecha_fin']) ?>">
-                        </div>
-                        <div class="admin-active-cell">
-                            <label class="admin-form-label">Activo</label>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" name="activo" <?= (int)$asig['activo'] === 1 ? 'checked' : '' ?>>
-                            </div>
-                        </div>
-                        <div class="admin-action-cell d-grid">
-                            <button class="btn btn-admin-primary">Guardar</button>
-                        </div>
-                    </div>
-                </form>
-
-                <form method="post" class="mt-2 text-end">
-                    <input type="hidden" name="accion" value="eliminar_asignacion">
-                    <input type="hidden" name="id" value="<?= (int)$asig['id'] ?>">
-                    <button class="btn btn-sm btn-admin-danger" data-confirm="&iquest;Confirmas eliminar esta asignaci&oacute;n temporal?">Eliminar</button>
-                </form>
-            </div>
-        </div>
-    <?php } ?>
+    <!-- Contenido de tabs -->
+    <div class="tab-content" id="adminCalendariosTabsContent">
+        <?php include __DIR__ . '/admin_calendarios_tabs_content.php'; ?>
+    </div>
 </main>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('[data-confirm]').forEach(function (btn) {
-        btn.addEventListener('click', function (event) {
-            const msg = btn.getAttribute('data-confirm');
-            if (msg && !confirm(msg)) {
-                event.preventDefault();
-            }
-        });
-    });
-
-    function normalizarTexto(txt) {
-        return (txt || '').toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    }
-
-    const grupoSelect = document.getElementById('asignar_grupo_usuario');
-    const buscarInput = document.getElementById('asignar_buscar_usuario');
-    const usuarioHidden = document.getElementById('asignar_usuario_id');
-    const seleccionado = document.getElementById('asignar_usuario_seleccionado');
-    const userButtons = Array.from(document.querySelectorAll('#asignar_lista_usuarios .admin-user-option'));
-
-    function filtrarUsuariosAsignacion() {
-        if (!grupoSelect || !buscarInput) return;
-        const grupo = grupoSelect.value;
-        const q = normalizarTexto(buscarInput.value);
-        let visibles = 0;
-
-        userButtons.forEach(function (btn) {
-            const group = btn.getAttribute('data-user-group') || 'individual';
-            const text = normalizarTexto(btn.getAttribute('data-user-text') || '');
-            const matchGrupo = grupo === 'todos' || group === grupo || grupo === 'individual';
-            const matchTexto = q === '' || text.includes(q);
-            const mostrar = matchGrupo && matchTexto;
-            btn.style.display = mostrar ? '' : 'none';
-            if (mostrar) visibles++;
-        });
-
-        if (grupo === 'individual') {
-            buscarInput.placeholder = 'Escribe nombre o correo del usuario individual...';
-            buscarInput.focus({preventScroll:true});
-        } else {
-            buscarInput.placeholder = 'Escribe para filtrar usuarios...';
-        }
-
-        if (seleccionado && usuarioHidden && usuarioHidden.value === '') {
-            seleccionado.textContent = visibles > 0 ? 'Selecciona un usuario de la lista.' : 'No hay usuarios para este filtro.';
-        }
-    }
-
-    userButtons.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-            userButtons.forEach(function (b) { b.classList.remove('is-selected'); });
-            btn.classList.add('is-selected');
-            if (usuarioHidden) usuarioHidden.value = btn.getAttribute('data-user-id') || '';
-            if (seleccionado) seleccionado.textContent = 'Seleccionado: ' + (btn.getAttribute('data-user-label') || 'usuario');
-        });
-    });
-
-    if (grupoSelect) grupoSelect.addEventListener('change', function () {
-        if (usuarioHidden) usuarioHidden.value = '';
-        userButtons.forEach(function (b) { b.classList.remove('is-selected'); });
-        filtrarUsuariosAsignacion();
-    });
-    if (buscarInput) buscarInput.addEventListener('input', filtrarUsuariosAsignacion);
-    filtrarUsuariosAsignacion();
-
-    document.querySelectorAll('form').forEach(function (form) {
-        form.addEventListener('submit', function (event) {
-            const accion = form.querySelector('input[name="accion"]');
-            if (accion && accion.value === 'guardar_asignacion' && form.querySelector('#asignar_usuario_id') && usuarioHidden && !usuarioHidden.value) {
-                event.preventDefault();
-                alert('Selecciona un usuario antes de asignar el calendario.');
-            }
-        });
-    });
-
-    const filtroGrupo = document.getElementById('filtro_asignaciones_grupo');
-    const filtroTexto = document.getElementById('filtro_asignaciones_texto');
-    const resumenFiltro = document.getElementById('resumen_filtro_asignaciones');
-    const assignmentCards = Array.from(document.querySelectorAll('.admin-assignment-card'));
-
-    function filtrarAsignaciones() {
-        const grupo = filtroGrupo ? filtroGrupo.value : 'todos';
-        const q = filtroTexto ? normalizarTexto(filtroTexto.value) : '';
-        let visibles = 0;
-
-        assignmentCards.forEach(function (card) {
-            const group = card.getAttribute('data-user-group') || 'individual';
-            const text = normalizarTexto(card.getAttribute('data-user-text') || '');
-            const matchGrupo = grupo === 'todos' || group === grupo;
-            const matchTexto = q === '' || text.includes(q);
-            const mostrar = matchGrupo && matchTexto;
-            card.style.display = mostrar ? '' : 'none';
-            if (mostrar) visibles++;
-        });
-
-        if (resumenFiltro) {
-            resumenFiltro.textContent = visibles + ' asignación(es) visible(s) de ' + assignmentCards.length + '.';
-        }
-    }
-
-    if (filtroGrupo) filtroGrupo.addEventListener('change', filtrarAsignaciones);
-    if (filtroTexto) filtroTexto.addEventListener('input', filtrarAsignaciones);
-    filtrarAsignaciones();
-});
-</script>
-
 
 <?php require('footer.php'); ?>

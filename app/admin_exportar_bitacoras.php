@@ -410,7 +410,7 @@ require('head.php');
                 </div>
 
                 <div class="export-note mt-3">
-                    <strong>Rango de fechas:</strong> si dejas ambos campos vacíos, se exporta todo el histórico. El filtro usa <code>fecha_b</code> para becados/residentes y <code>fecha_i</code> para internos/residentes de otras especialidades.
+                    <strong>Rango de fechas:</strong> si dejas ambos campos vacíos, se exporta todo el histórico.
                 </div>
 
                 <div class="export-actions mt-3">
@@ -423,17 +423,6 @@ require('head.php');
                 </div>
             </form>
         </div>
-
-        <div class="export-card">
-            <div class="export-title mb-2">Formatos disponibles</div>
-            <div class="row g-3">
-                <div class="col-12 col-md-3"><div class="export-note h-100"><strong>CSV</strong><br>Recomendado para Excel, Google Sheets y análisis rápido.</div></div>
-                <div class="col-12 col-md-3"><div class="export-note h-100"><strong>XLS</strong><br>Archivo compatible con Excel sin librerías externas.</div></div>
-                <div class="col-12 col-md-3"><div class="export-note h-100"><strong>JSON</strong><br>Útil para respaldos legibles por sistemas y futuras migraciones.</div></div>
-                <div class="col-12 col-md-3"><div class="export-note h-100"><strong>SQL</strong><br>Genera sentencias INSERT con los datos crudos de las tablas.</div></div>
-            </div>
-        </div>
-
     </main>
 </div>
 

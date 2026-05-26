@@ -141,6 +141,7 @@ if(isset($_POST['rut_b']) && $_POST['rut_b'] !== ''){
     </div>
   </div>
 </div>
+</div>
 
 <?php
   $conexion->close();

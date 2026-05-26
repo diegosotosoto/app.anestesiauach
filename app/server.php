@@ -17,7 +17,7 @@ if (!$usuario || (int)$usuario['intern_'] === 1 || (int)$usuario['becad_otro'] =
 	exit;
 }
 
-$consulta_b = "SELECT `nombre_paciente`, `rut`, `analgesia` FROM `pacientes` WHERE `de_alta` = '0' ORDER BY `nombre_paciente` ASC";
+$consulta_b = "SELECT `nombre_paciente`, `rut`, `analgesia`, `fecha_creacion` FROM `pacientes` ORDER BY `nombre_paciente` ASC";
 $busqueda = $conexion->query($consulta_b);
 
 if (!$busqueda) {
@@ -29,6 +29,14 @@ while($fila = $busqueda->fetch_assoc()){
 	$rut = h_server($fila['rut']);
 	$nombre = h_server($fila['nombre_paciente']);
 	$analgesia = h_server($fila['analgesia']);
+	$fecha_creacion = $fila['fecha_creacion'];
+	$dias_ingreso = '';
+	if($fecha_creacion){
+		$fecha_ing = strtotime($fecha_creacion);
+		$fecha_hoy = strtotime(date('Y-m-d'));
+		$dias_diff = max(1, floor(($fecha_hoy - $fecha_ing) / (60 * 60 * 24)));
+		$dias_ingreso = '<span class="pain-patient-days">Día ' . $dias_diff . '</span>';
+	}
 
 	echo "
 		<form action='vista_paciente.php' method='post' class='pain-patient-form'>
@@ -37,7 +45,7 @@ while($fila = $busqueda->fetch_assoc()){
 					<strong>{$nombre}</strong>
 					<span>{$rut}</span>
 				</span>
-				<span class='pain-patient-meta'>{$analgesia}</span>
+				<span class='pain-patient-meta'>{$analgesia}{$dias_ingreso}</span>
 			</button>
 		</form>
 	";

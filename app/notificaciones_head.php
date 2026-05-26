@@ -8,6 +8,18 @@ $usuario_nav = function_exists('app_current_user') ? app_current_user($conexion)
 if ($usuario_nav) {
     $usuario_id_nav = (int)$usuario_nav['ID'];
     $email_usuario_cookie = trim((string)$usuario_nav['email_usuario']);
+
+    // Sincronizar notificaciones de calendario en cada carga de página
+    $cal_notif_file = __DIR__ . '/calendario_notificaciones.php';
+    if (file_exists($cal_notif_file) && !function_exists('cal_notif_generar_para_usuario')) {
+        require_once $cal_notif_file;
+    }
+    if (function_exists('cal_notif_generar_para_usuario')) {
+        $esBecado_head = (int)$usuario_nav['becad_'] === 1;
+        $esAdmin_head  = (int)$usuario_nav['admin'] === 1;
+        $anioRes_head  = (string)($usuario_nav['anio_residencia'] ?? '');
+        cal_notif_generar_para_usuario($conexion, $usuario_id_nav, $esBecado_head, $esAdmin_head, $anioRes_head, $usuario_nav);
+    }
 }
 
 if ($usuario_id_nav > 0) {

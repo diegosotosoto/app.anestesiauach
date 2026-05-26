@@ -52,8 +52,6 @@
             'a[href*="bitacora"]',
             'a[href*="hoja_dolor"]',
             'a[href*="pacientes"]',
-            'a[href*="telefonos"]',
-            'a[href*="correos"]',
             'a[href*="vista_epa"]',
             'a[href*="calendario"]',
             'a[href*="nuevo_paciente"]',
@@ -68,16 +66,55 @@
             'a[href*="valida_pag"]',
             'a[href*="configuracion_ui"]',
             'a[href*="admin_calendarios"]',
-            'a[href*="vista_visitas"]'
+            'a[href*="vista_visitas"]',
+            'a[href*="reuniones"]',
+            'a[href*="uachcl-my.sharepoint.com"]',
+            'a[href*="admin"]',
+            'a[href*="lista_usuarios"]',
+            'a[href*="usuarios_activos"]',
+            'a[href*="crear_usuario"]'
+        ];
+
+        // Form IDs for admin tools
+        const adminFormIds = [
+            'gest_users',
+            'gest_pacientes',
+            'gest_bitacora',
+            'admin_notas',
+            'admin_notificaciones',
+            'admin_calendarios',
+            'admin_exportar_bitacoras'
         ];
 
         dbDependentSelectors.forEach(selector => {
             document.querySelectorAll(selector).forEach(link => {
+                // Skip tel: links (phone calls work offline)
+                if (link.href && link.href.startsWith('tel:')) {
+                    return;
+                }
+                // Skip admin-back-btn links (back buttons in notes)
+                if (link.classList.contains('admin-back-btn')) {
+                    return;
+                }
                 link.classList.add('offline-disabled');
                 link.style.pointerEvents = 'none';
                 link.style.opacity = '0.5';
                 link.style.filter = 'grayscale(100%)';
             });
+        });
+
+        // Disable admin forms
+        adminFormIds.forEach(formId => {
+            const form = document.getElementById(formId);
+            if (form) {
+                const link = form.querySelector('a');
+                if (link) {
+                    link.classList.add('offline-disabled');
+                    link.style.pointerEvents = 'none';
+                    link.style.opacity = '0.5';
+                    link.style.filter = 'grayscale(100%)';
+                }
+            }
         });
 
         // Add CSS for disabled state
@@ -162,4 +199,79 @@
     } else {
         init();
     }
+
+    // Debug: Exponer funciones globales para debug del cache
+    window.debugCache = {
+        // Verificar qué URLs están cacheadas
+        checkCache: async function() {
+            if (!('serviceWorker' in navigator)) {
+                console.log('Service Worker no soportado');
+                return;
+            }
+            
+            const registration = await navigator.serviceWorker.ready;
+            if (!registration.active) {
+                console.log('Service Worker no está activo');
+                return;
+            }
+            
+            // Enviar mensaje al SW para obtener estado del cache
+            const messageChannel = new MessageChannel();
+            messageChannel.port1.onmessage = (event) => {
+                if (event.data && event.data.type === 'CACHE_STATUS') {
+                    console.log('=== URLs Cacheadas ===');
+                    console.log('Total:', event.data.total);
+                    event.data.cachedUrls.forEach((url, i) => {
+                        console.log(`${i + 1}. ${url}`);
+                    });
+                    
+                    // Verificar específicamente las páginas de apuntes
+                    const apuntesUrls = event.data.cachedUrls.filter(url => url.includes('/apuntes/'));
+                    console.log('\n=== Apuntes Cacheados ===');
+                    console.log('Total apuntes:', apuntesUrls.length);
+                    apuntesUrls.forEach((url, i) => console.log(`${i + 1}. ${url}`));
+                }
+            };
+            
+            registration.active.postMessage({ type: 'GET_CACHE_STATUS' }, [messageChannel.port2]);
+        },
+        
+        // Verificar estado del SW
+        swStatus: async function() {
+            if (!('serviceWorker' in navigator)) {
+                console.log('Service Worker no soportado');
+                return;
+            }
+            
+            const registration = await navigator.serviceWorker.ready;
+            console.log('=== Service Worker Status ===');
+            console.log('Scope:', registration.scope);
+            console.log('Active:', registration.active ? 'Sí' : 'No');
+            console.log('Waiting:', registration.waiting ? 'Sí' : 'No');
+            console.log('Installing:', registration.installing ? 'Sí' : 'No');
+            
+            // Verificar control de páginas
+            const controlled = navigator.serviceWorker.controller !== null;
+            console.log('Controlando esta página:', controlled);
+        },
+        
+        // Forzar recarga del SW
+        forceUpdate: async function() {
+            if (!('serviceWorker' in navigator)) {
+                console.log('Service Worker no soportado');
+                return;
+            }
+            
+            const registration = await navigator.serviceWorker.ready;
+            await registration.update();
+            console.log('Service Worker update solicitado');
+            
+            if (registration.waiting) {
+                console.log('Nuevo SW esperando, activando...');
+                registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+            }
+        }
+    };
+    
+    console.log('Debug cache disponible. Usa: debugCache.checkCache(), debugCache.swStatus(), debugCache.forceUpdate()');
 })();

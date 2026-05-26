@@ -29,9 +29,9 @@ require("../head.php");
     min-width:74px;padding:.38rem .78rem;border-radius:999px;
     background:#eef3ff;color:#3559b7;font-weight:800;font-size:.92rem;
   }
-  .dasi-layout{display:grid;grid-template-columns:1.2fr .8fr;gap:1rem;}
+  .dasi-layout{display:grid;grid-template-columns:1fr;gap:1rem;}
   .dasi-layout .note-input-group{background:transparent !important;border:none !important;padding:0 !important;}
-  .dasi-question-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;}
+  .dasi-question-grid{display:grid;grid-template-columns:1fr;gap:.75rem;}
   .dasi-question-card{
     border:1px solid var(--note-line);background:#fff;border-radius:1rem;padding:.9rem;
     box-shadow:0 4px 14px rgba(15,23,42,.04);
@@ -70,11 +70,7 @@ require("../head.php");
   .dasi-summary-box{background:var(--note-brand-soft);border:1px solid var(--note-brand-soft-border);border-radius:1rem;padding:1rem;}
   .dasi-footer-note{font-size:.84rem;color:var(--note-muted);text-align:center;}
 
-  @media (max-width:980px){
-    .dasi-layout{grid-template-columns:1fr;}
-  }
   @media (max-width:760px){
-    .dasi-question-grid{grid-template-columns:1fr;}
     .dasi-context-options{grid-template-columns:repeat(2,minmax(0,1fr));}
     .dasi-context-options .choice-btn{min-height:80px;font-size:.88rem;}
   }

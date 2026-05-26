@@ -44,8 +44,7 @@ function crearNotificacionPacientesDolorSiNecesaria($conexion, $usuario_id, $usu
     // Obtener todos los pacientes activos con sus días
     $sql_pacientes = "SELECT nombre_paciente, rut, fecha_creacion
                       FROM pacientes
-                      WHERE de_alta = 0
-                        AND fecha_creacion >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+                      WHERE fecha_creacion >= DATE_SUB(NOW(), INTERVAL 30 DAY)
                       ORDER BY fecha_creacion DESC";
 
     $stmt = $conexion->prepare($sql_pacientes);

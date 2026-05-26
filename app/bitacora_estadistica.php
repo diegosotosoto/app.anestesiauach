@@ -93,11 +93,14 @@ echo "
     <a class='nav-link' href='bitacora_ingreso.php'>Ingreso</a>
   </li>
   <li class='nav-item'>
+    <a class='nav-link' href='bitacora_ingreso_old.php'>Ingreso (Antiguo)</a>
+  </li>
+  <li class='nav-item'>
     <span class='nav-link active' aria-current='page'>Estadística</span>
   </li>
   <li class='nav-item'>
     <a class='nav-link' href='bitacora_rechazos.php'>Rechazos</a>
-  </li> 
+  </li>
 </ul>";
 
 }
@@ -206,7 +209,7 @@ $autor_b=$usuario['email_usuario'];
           $neuroaxial_1='Anestesia Espinal';
           $neuroaxial_2='Combinada Espinal-Epidural';
           $neuroaxial_3='Analgesia Epidural Lumbar';
-          $neuroaxial_4='nalgesia Epidural Torácica';
+          $neuroaxial_4='Analgesia Epidural Torácica';
           $neuroaxial_5='Anestesia Caudal';
           $neuroaxial_6='Otro';
 
@@ -310,222 +313,91 @@ $autor_b=$usuario['email_usuario'];
 
         while($estad=$busqueda_est->fetch_assoc()){
 
-          if ($estad['edad_b']==htmlentities(addslashes($edad_1))){
-            $edad_b_1++;
-          }
-          if ($estad['edad_b']==htmlentities(addslashes($edad_2))){
-            $edad_b_2++;
-          }
-          if ($estad['edad_b']==htmlentities(addslashes($edad_3))){
-            $edad_b_3++;
-          }
-          if ($estad['edad_b']==htmlentities(addslashes($edad_4))){
-            $edad_b_4++;
-          }
-          if ($estad['edad_b']==htmlentities(addslashes($edad_5))){
-            $edad_b_5++;
-          }
-          if ($estad['edad_b']==htmlentities(addslashes($edad_6))){
-            $edad_b_6++;
-          }
-          if ($estad['edad_b']==htmlentities(addslashes($edad_7))){
-            $edad_b_7++;
-          }
+          $v_edad         = html_entity_decode($estad['edad_b'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+          $v_procedimiento = html_entity_decode($estad['procedimiento_b'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+          $v_via_aerea    = html_entity_decode($estad['via_aerea_b'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+          $v_vad          = html_entity_decode($estad['vad_b'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+          $v_acceso       = html_entity_decode($estad['acceso_vascular_b'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+          $v_invasivo_eco = html_entity_decode($estad['invasivo_eco_b'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+          $v_invasivo     = html_entity_decode($estad['invasivo_b'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+          $v_cvc          = html_entity_decode($estad['cvc_b'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+          $v_neuroaxial   = html_entity_decode($estad['neuroaxial_b'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+          $v_regional     = html_entity_decode($estad['regional_b'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+          $v_dolor        = html_entity_decode($estad['dolor_b'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
 
+          if ($v_edad==$edad_1){ $edad_b_1++; }
+          if ($v_edad==$edad_2){ $edad_b_2++; }
+          if ($v_edad==$edad_3){ $edad_b_3++; }
+          if ($v_edad==$edad_4){ $edad_b_4++; }
+          if ($v_edad==$edad_5){ $edad_b_5++; }
+          if ($v_edad==$edad_6){ $edad_b_6++; }
+          if ($v_edad==$edad_7){ $edad_b_7++; }
 
-          if ($estad['procedimiento_b']==htmlentities(addslashes($procedimiento_1))){
-            $procedimiento_b_1++;
-          }
-          if ($estad['procedimiento_b']==htmlentities(addslashes($procedimiento_2))){
-            $procedimiento_b_2++;
-          }
-          if ($estad['procedimiento_b']==htmlentities(addslashes($procedimiento_3))){
-            $procedimiento_b_3++;
-          }
-          if ($estad['procedimiento_b']==htmlentities(addslashes($procedimiento_4))){
-            $procedimiento_b_4++;
-          }
-          if ($estad['procedimiento_b']==htmlentities(addslashes($procedimiento_5))){
-            $procedimiento_b_5++;
-          }
-          if ($estad['procedimiento_b']==htmlentities(addslashes($procedimiento_6))){
-            $procedimiento_b_6++;
-          }
-          if ($estad['procedimiento_b']==htmlentities(addslashes($procedimiento_7))){
-            $procedimiento_b_7++;
-          }
-          if ($estad['procedimiento_b']==htmlentities(addslashes($procedimiento_8))){
-            $procedimiento_b_8++;
-          }
-          if ($estad['procedimiento_b']==htmlentities(addslashes($procedimiento_9))){
-            $procedimiento_b_9++;
-          }
-          if ($estad['procedimiento_b']==htmlentities(addslashes($procedimiento_10))){
-            $procedimiento_b_10++;
-          }
-          if ($estad['procedimiento_b']==htmlentities(addslashes($procedimiento_11))){
-            $procedimiento_b_11++;
-          }
-          if ($estad['procedimiento_b']==htmlentities(addslashes($procedimiento_12))){
-            $procedimiento_b_12++;
-          }
-          if ($estad['procedimiento_b']==htmlentities(addslashes($procedimiento_13))){
-            $procedimiento_b_13++;
-          }
+          if ($v_procedimiento==$procedimiento_1){  $procedimiento_b_1++; }
+          if ($v_procedimiento==$procedimiento_2){  $procedimiento_b_2++; }
+          if ($v_procedimiento==$procedimiento_3){  $procedimiento_b_3++; }
+          if ($v_procedimiento==$procedimiento_4){  $procedimiento_b_4++; }
+          if ($v_procedimiento==$procedimiento_5){  $procedimiento_b_5++; }
+          if ($v_procedimiento==$procedimiento_6){  $procedimiento_b_6++; }
+          if ($v_procedimiento==$procedimiento_7){  $procedimiento_b_7++; }
+          if ($v_procedimiento==$procedimiento_8){  $procedimiento_b_8++; }
+          if ($v_procedimiento==$procedimiento_9){  $procedimiento_b_9++; }
+          if ($v_procedimiento==$procedimiento_10){ $procedimiento_b_10++; }
+          if ($v_procedimiento==$procedimiento_11){ $procedimiento_b_11++; }
+          if ($v_procedimiento==$procedimiento_12){ $procedimiento_b_12++; }
+          if ($v_procedimiento==$procedimiento_13){ $procedimiento_b_13++; }
 
+          if ($v_via_aerea==$via_aerea_1){ $via_aerea_b_1++; }
+          if ($v_via_aerea==$via_aerea_2){ $via_aerea_b_2++; }
+          if ($v_via_aerea==$via_aerea_3){ $via_aerea_b_3++; }
+          if ($v_via_aerea==$via_aerea_4){ $via_aerea_b_4++; }
+          if ($v_via_aerea==$via_aerea_5){ $via_aerea_b_5++; }
 
-          if ($estad['via_aerea_b']==htmlentities(addslashes($via_aerea_1))){
-            $via_aerea_b_1++;
-          }
-          if ($estad['via_aerea_b']==htmlentities(addslashes($via_aerea_2))){
-            $via_aerea_b_2++;
-          }
-          if ($estad['via_aerea_b']==htmlentities(addslashes($via_aerea_3))){
-            $via_aerea_b_3++;
-          }
-          if ($estad['via_aerea_b']==htmlentities(addslashes($via_aerea_4))){
-            $via_aerea_b_4++;
-          }
-          if ($estad['via_aerea_b']==htmlentities(addslashes($via_aerea_5))){
-            $via_aerea_b_5++;
-          }
+          if ($v_vad==$vad_1){ $vad_b_1++; }
+          if ($v_vad==$vad_2){ $vad_b_2++; }
+          if ($v_vad==$vad_3){ $vad_b_3++; }
+          if ($v_vad==$vad_4){ $vad_b_4++; }
+          if ($v_vad==$vad_5){ $vad_b_5++; }
+          if ($v_vad==$vad_6){ $vad_b_6++; }
+          if ($v_vad==$vad_7){ $vad_b_7++; }
+          if ($v_vad==$vad_8){ $vad_b_8++; }
+          if ($v_vad==$vad_9){ $vad_b_9++; }
 
+          if ($v_acceso==$acceso_vascular_1){ $acceso_vascular_b_1++; }
+          if ($v_acceso==$acceso_vascular_2){ $acceso_vascular_b_2++; }
+          if ($v_acceso==$acceso_vascular_3){ $acceso_vascular_b_3++; }
+          if ($v_invasivo_eco==$invasivo_eco_1){ $invasivo_eco_b_1++; }
 
+          if ($v_invasivo==$invasivo_1){ $invasivo_b_1++; }
+          if ($v_invasivo==$invasivo_2){ $invasivo_b_2++; }
 
-          if ($estad['vad_b']==htmlentities(addslashes($vad_1))){
-            $vad_b_1++;
-          }
-          if ($estad['vad_b']==htmlentities(addslashes($vad_2))){
-            $vad_b_2++;
-          }
-          if ($estad['vad_b']==htmlentities(addslashes($vad_3))){
-            $vad_b_3++;
-          }
-          if ($estad['vad_b']==htmlentities(addslashes($vad_4))){
-            $vad_b_4++;
-          }
-          if ($estad['vad_b']==htmlentities(addslashes($vad_5))){
-            $vad_b_5++;
-          }
-          if ($estad['vad_b']==htmlentities(addslashes($vad_6))){
-            $vad_b_6++;
-          }
-          if ($estad['vad_b']==htmlentities(addslashes($vad_7))){
-            $vad_b_7++;
-          }
-          if ($estad['vad_b']==htmlentities(addslashes($vad_8))){
-            $vad_b_8++;
-          }
-          if ($estad['vad_b']==htmlentities(addslashes($vad_9))){
-            $vad_b_9++;
-          }
+          if ($v_cvc==$cvc_1){ $cvc_b_1++; }
+          if ($v_cvc==$cvc_2){ $cvc_b_2++; }
+          if ($v_cvc==$cvc_3){ $cvc_b_3++; }
+          if ($v_cvc==$cvc_4){ $cvc_b_4++; }
 
+          if ($v_neuroaxial==$neuroaxial_1){ $neuroaxial_b_1++; }
+          if ($v_neuroaxial==$neuroaxial_2){ $neuroaxial_b_2++; }
+          if ($v_neuroaxial==$neuroaxial_3){ $neuroaxial_b_3++; }
+          if ($v_neuroaxial==$neuroaxial_4){ $neuroaxial_b_4++; }
+          if ($v_neuroaxial==$neuroaxial_5){ $neuroaxial_b_5++; }
+          if ($v_neuroaxial==$neuroaxial_6){ $neuroaxial_b_6++; }
 
+          if ($v_regional==$regional_1){ $regional_b_1++; }
+          if ($v_regional==$regional_2){ $regional_b_2++; }
+          if ($v_regional==$regional_3){ $regional_b_3++; }
+          if ($v_regional==$regional_4){ $regional_b_4++; }
+          if ($v_regional==$regional_5){ $regional_b_5++; }
+          if ($v_regional==$regional_6){ $regional_b_6++; }
+          if ($v_regional==$regional_7){ $regional_b_7++; }
+          if ($v_regional==$regional_8){ $regional_b_8++; }
+          if ($v_regional==$regional_9){ $regional_b_9++; }
 
-          if ($estad['acceso_vascular_b']==htmlentities(addslashes($acceso_vascular_1))){
-            $acceso_vascular_b_1++;
-          }
-          if ($estad['acceso_vascular_b']==htmlentities(addslashes($acceso_vascular_2))){
-            $acceso_vascular_b_2++;
-          }
-          if ($estad['acceso_vascular_b']==htmlentities(addslashes($acceso_vascular_3))){
-            $acceso_vascular_b_3++;
-          }
-          if ($estad['invasivo_eco_b']==htmlentities(addslashes($invasivo_eco_1))){
-            $invasivo_eco_b_1++;
-          }
-
-
-
-          if ($estad['invasivo_b']==htmlentities(addslashes($invasivo_1))){
-            $invasivo_b_1++;
-          }
-          if ($estad['invasivo_b']==htmlentities(addslashes($invasivo_2))){
-            $invasivo_b_2++;
-          }
-
-  
-          if ($estad['cvc_b']==htmlentities(addslashes($cvc_1))){
-            $cvc_b_1++;
-          }
-          if ($estad['cvc_b']==htmlentities(addslashes($cvc_2))){
-            $cvc_b_2++;
-          }
-          if ($estad['cvc_b']==htmlentities(addslashes($cvc_3))){
-            $cvc_b_3++;
-          }
-          if ($estad['cvc_b']==htmlentities(addslashes($cvc_4))){
-            $cvc_b_4++;
-          }
-
-
-
-          if ($estad['neuroaxial_b']==htmlentities(addslashes($neuroaxial_1))){
-            $neuroaxial_b_1++;
-          }
-          if ($estad['neuroaxial_b']==htmlentities(addslashes($neuroaxial_2))){
-            $neuroaxial_b_2++;
-          }
-          if ($estad['neuroaxial_b']==htmlentities(addslashes($neuroaxial_3))){
-            $neuroaxial_b_3++;
-          }
-          if ($estad['neuroaxial_b']==htmlentities(addslashes($neuroaxial_4))){
-            $neuroaxial_b_4++;
-          }
-          if ($estad['neuroaxial_b']==htmlentities(addslashes($neuroaxial_5))){
-            $neuroaxial_b_5++;
-          }
-          if ($estad['neuroaxial_b']==htmlentities(addslashes($neuroaxial_6))){
-            $neuroaxial_b_6++;
-          }
-
-
-
-
-          if ($estad['regional_b']==htmlentities(addslashes($regional_1))){
-            $regional_b_1++;
-          }
-          if ($estad['regional_b']==htmlentities(addslashes($regional_2))){
-            $regional_b_2++;
-          }
-          if ($estad['regional_b']==htmlentities(addslashes($regional_3))){
-            $regional_b_3++;
-          }
-          if ($estad['regional_b']==htmlentities(addslashes($regional_4))){
-            $regional_b_4++;
-          }
-          if ($estad['regional_b']==htmlentities(addslashes($regional_5))){
-            $regional_b_5++;
-          }
-          if ($estad['regional_b']==htmlentities(addslashes($regional_6))){
-            $regional_b_6++;
-          }
-          if ($estad['regional_b']==htmlentities(addslashes($regional_7))){
-            $regional_b_7++;
-          }
-          if ($estad['regional_b']==htmlentities(addslashes($regional_8))){
-            $regional_b_8++;
-          }
-          if ($estad['regional_b']==htmlentities(addslashes($regional_9))){
-            $regional_b_9++;
-          }
-
-
-        if ($estad['dolor_b']==htmlentities(addslashes($dolor_1))){
-            $dolor_b_1++;
-          }
-          if ($estad['dolor_b']==htmlentities(addslashes($dolor_2))){
-            $dolor_b_2++;
-          }
-          if ($estad['dolor_b']==htmlentities(addslashes($dolor_3))){
-            $dolor_b_3++;
-          }
-          if ($estad['dolor_b']==htmlentities(addslashes($dolor_4))){
-            $dolor_b_4++;
-          }
-          if ($estad['dolor_b']==htmlentities(addslashes($dolor_5))){
-            $dolor_b_5++;
-          }
+          if ($v_dolor==$dolor_1){ $dolor_b_1++; }
+          if ($v_dolor==$dolor_2){ $dolor_b_2++; }
+          if ($v_dolor==$dolor_3){ $dolor_b_3++; }
+          if ($v_dolor==$dolor_4){ $dolor_b_4++; }
+          if ($v_dolor==$dolor_5){ $dolor_b_5++; }
 
 
         }
@@ -794,7 +666,7 @@ $autor_b=$usuario['email_usuario'];
         ["VVP", <?php echo $acceso_vascular_b_1;?>, "#009044"],
         ["Midline", <?php echo $acceso_vascular_b_2;?>, "#026edd"],
         ["PICC", <?php echo $acceso_vascular_b_3;?>, "#9b4df1"],        
-        ["Ecografia", <?php echo $invasivo_eco_b_4;?>, "#f7de68"]
+        ["Ecografia", <?php echo $invasivo_eco_b_1;?>, "#f7de68"]
       ]);
 
 

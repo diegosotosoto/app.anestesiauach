@@ -557,6 +557,7 @@ if(isset($_POST['rut_b']) && $_POST['rut_b'] !== ''){
     </div>
   </div>
 </div>
+</div>
 
 <?php
   $conexion->close();
@@ -1098,6 +1099,11 @@ function updateChips() {
               <div class="guide-barcode"></div>
               <div class="guide-rut"></div>
               <div class="guide-ficha"></div>
+              
+              <!-- Botón para alternar cámaras -->
+              <button type="button" id="btn-switch-camera" class="btn-switch-camera" onclick="switchCamera()" title="Cambiar cámara">
+                <i class="fa-solid fa-camera-rotate"></i>
+              </button>
             </div>
           </div>
 
@@ -1169,6 +1175,64 @@ function updateChips() {
   overflow: hidden;
 }
 
+/* Video y canvas dentro del viewport */
+.viewport video,
+.viewport canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Botón para alternar cámaras */
+.btn-switch-camera {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid #3b82f6;
+  color: #3b82f6;
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+.btn-switch-camera:hover {
+  background: #3b82f6;
+  color: white;
+  transform: scale(1.05);
+}
+
+.btn-switch-camera:active {
+  transform: scale(0.95);
+}
+
+.btn-switch-camera:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+body.theme-dark .btn-switch-camera {
+  background: rgba(30, 41, 59, 0.9);
+  border-color: #60a5fa;
+  color: #60a5fa;
+}
+
+body.theme-dark .btn-switch-camera:hover {
+  background: #60a5fa;
+  color: #1e293b;
+}
+
 #camera-container.hidden {
   display: none;
 }
@@ -1209,6 +1273,7 @@ function updateChips() {
   border-radius: 8px;
   pointer-events: none;
   box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.3);
+  z-index: 50;
 }
 
 .guide-barcode::before {
@@ -1230,6 +1295,7 @@ function updateChips() {
   border: 3px solid rgba(0, 123, 255, 0.9);
   border-radius: 8px;
   pointer-events: none;
+  z-index: 50;
 }
 
 .guide-rut::before {
@@ -1251,6 +1317,7 @@ function updateChips() {
   border: 3px solid rgba(40, 167, 69, 0.9);
   border-radius: 8px;
   pointer-events: none;
+  z-index: 50;
 }
 
 .guide-ficha::before {
@@ -1364,6 +1431,8 @@ var resultFound = false;
 var ocrWorker = null;
 var ocrInterval = null;
 var scannerModal = null;
+var availableCameras = []; // Lista de cámaras disponibles
+var currentCameraIndex = 0; // Índice de la cámara actual
 
 // Inicializar modal cuando carga Bootstrap
 document.addEventListener('DOMContentLoaded', function() {
@@ -1427,16 +1496,162 @@ function retryScan() {
   startParallelScanning();
 }
 
-// Iniciar escaneo paralelo: Quagga + OCR
-async function startParallelScanning() {
-  resultFound = false;
-  document.getElementById('ocr-status').textContent = 'Iniciando escaneo paralelo (Barcode + OCR)...';
+// Función para detectar si es dispositivo Samsung
+function isSamsungDevice() {
+  const ua = navigator.userAgent.toLowerCase();
+  return ua.includes('samsung') || 
+         ua.includes('sm-s') || // Modelos Samsung S
+         ua.includes('sm-a') || // Modelos Samsung A
+         ua.includes('sm-n') || // Modelos Samsung Note
+         (ua.includes('android') && /samsung|galaxy/.test(ua));
+}
 
+// Función para seleccionar la mejor cámara trasera (evita ultrawide en Samsung)
+async function getBestBackCamera() {
+  try {
+    // Solicitar permiso temporal para obtener labels de cámaras
+    // Esto es necesario porque enumerateDevices() devuelve labels vacías sin permiso
+    try {
+      const tempStream = await navigator.mediaDevices.getUserMedia({ video: true });
+      tempStream.getTracks().forEach(track => track.stop());
+    } catch (permErr) {
+      console.warn('No se pudo obtener permiso temporal para labels:', permErr);
+    }
+    
+    // Enumerar dispositivos de video disponibles
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const videoDevices = devices.filter(device => device.kind === 'videoinput');
+    
+    // Guardar lista de cámaras disponibles para poder alternar
+    availableCameras = videoDevices;
+    
+    const isSamsung = isSamsungDevice();
+    console.log('Total cámaras:', videoDevices.length, '| Samsung detectado:', isSamsung);
+    console.log('User Agent:', navigator.userAgent.substring(0, 50) + '...');
+    console.log('Cámaras disponibles:', videoDevices.map((d, i) => 
+      `${i}: ${d.label || 'Sin etiqueta'} (ID: ${d.deviceId.substring(0,8)}...)`
+    ).join(', '));
+    
+    if (videoDevices.length === 0) {
+      return null;
+    }
+    
+    // Habilitar/deshabilitar botón de cambio de cámara según cantidad de cámaras
+    const switchBtn = document.getElementById('btn-switch-camera');
+    if (switchBtn) {
+      switchBtn.disabled = videoDevices.length <= 1;
+      switchBtn.style.display = videoDevices.length > 1 ? 'flex' : 'none';
+    }
+    
+    // HEURÍSTICA ESPECÍFICA PARA SAMSUNG con etiquetas vacías
+    // Samsung típicamente: 0=frontal, 1=ultrawide, 2=telephoto, 3=principal
+    const hasEmptyLabels = videoDevices.every(d => !d.label || d.label === '');
+    if (isSamsung && hasEmptyLabels && videoDevices.length >= 4) {
+      console.log('Samsung detectado con etiquetas vacías: seleccionando cámara índice 3 (principal)');
+      return videoDevices[3].deviceId;
+    }
+    
+    // Para iPhone y otros dispositivos con etiquetas vacías, usar facingMode (no índice específico)
+    if (hasEmptyLabels) {
+      console.log('Dispositivo no-Samsung con etiquetas vacías: usando facingMode environment');
+      return null; // null = usar facingMode en lugar de deviceId específico
+    }
+    
+    // Encontrar cámaras traseras por etiqueta
+    const backCameras = videoDevices.filter(device => 
+      device.label && (
+        device.label.toLowerCase().includes('back') || 
+        device.label.toLowerCase().includes('rear') ||
+        device.label.toLowerCase().includes('environment')
+      )
+    );
+    
+    if (backCameras.length === 0) {
+      // Si no hay etiqueta "back", usar facingMode
+      console.log('Sin etiquetas "back": usando facingMode environment');
+      return null;
+    }
+    
+    if (backCameras.length === 1) {
+      console.log('Una sola cámara trasera encontrada:', backCameras[0].label);
+      return backCameras[0].deviceId;
+    }
+    
+    // Múltiples cámaras traseras con etiquetas - seleccionar la que NO sea ultrawide/wide
+    const excludeKeywords = ['ultrawide', 'ultra-wide', 'ultra wide', 'wide', 'macro', 'depth', 'bokeh'];
+    
+    const mainBackCamera = backCameras.find(camera => {
+      const label = camera.label.toLowerCase();
+      return !excludeKeywords.some(keyword => label.includes(keyword));
+    });
+    
+    if (mainBackCamera) {
+      console.log('Seleccionada cámara principal:', mainBackCamera.label);
+      return mainBackCamera.deviceId;
+    }
+    
+    // Si todas tienen palabras excluidas, tomar la segunda cámara trasera (índice 1)
+    if (backCameras.length >= 2) {
+      console.log('Seleccionada cámara trasera índice 1:', backCameras[1].label);
+      return backCameras[1].deviceId;
+    }
+    
+    return backCameras[0].deviceId;
+    
+  } catch (err) {
+    console.error('Error enumerando cámaras:', err);
+    return null;
+  }
+}
+
+// Función para alternar entre cámaras disponibles
+async function switchCamera() {
+  if (availableCameras.length <= 1) {
+    console.log('No hay múltiples cámaras para alternar');
+    return;
+  }
+  
+  // Detener escaneo actual y limpiar
+  stopScanning();
+  clearInterval(ocrInterval);
+  
+  // Limpiar video elements anteriores para evitar acumulación
+  var interactive = document.getElementById('interactive');
+  var oldVideos = interactive.querySelectorAll('video');
+  oldVideos.forEach(function(v) {
+    if (v.srcObject) {
+      v.srcObject.getTracks().forEach(track => track.stop());
+    }
+    v.remove();
+  });
+  
+  // Avanzar al siguiente índice de cámara
+  currentCameraIndex = (currentCameraIndex + 1) % availableCameras.length;
+  
+  const nextCamera = availableCameras[currentCameraIndex];
+  console.log('Cambiando a cámara índice', currentCameraIndex, ':', nextCamera.label || 'Sin etiqueta');
+  
+  document.getElementById('ocr-status').textContent = 'Cambiando a cámara ' + (currentCameraIndex + 1) + ' de ' + availableCameras.length + '...';
+  
+  // Esperar un momento antes de reiniciar
+  await new Promise(resolve => setTimeout(resolve, 800));
+  
+  // Reiniciar escaneo con la nueva cámara
+  resultFound = false;
+  startParallelScanningWithDevice(nextCamera.deviceId);
+}
+
+// Iniciar escaneo con un deviceId específico (usado por switchCamera)
+async function startParallelScanningWithDevice(deviceId) {
+  resultFound = false;
+  
   var constraints = {
     width: { min: 640, ideal: 1280 },
     height: { min: 480, ideal: 720 },
-    facingMode: { exact: "environment" }
+    deviceId: { exact: deviceId }
   };
+  
+  console.log('Iniciando escaneo con cámara específica ID:', deviceId.substring(0, 8) + '...');
 
   Quagga.init({
     inputStream: {
@@ -1452,19 +1667,153 @@ async function startParallelScanning() {
       }
     },
     decoder: {
-      readers: [{
-        format: "code_39_reader",
-        config: {
-          suppressCode128: true
+      readers: [
+        "code_39_reader",
+        "code_39_vin_reader",
+        {
+          format: "code_39_reader",
+          config: {
+            supplements: []
+          }
         }
-      }]
+      ],
+      multiple: false
     },
     locator: {
-      patchSize: "medium",
-      halfSample: true
+      patchSize: "large",
+      halfSample: false,
+      debug: {
+        showCanvas: false,
+        showPatches: false,
+        showFoundPatches: false,
+        showSkeleton: false,
+        showLabels: false,
+        showPatchLabels: false,
+        showRemainingPatchLabels: false,
+        boxFromPatches: {
+          showTransformed: false,
+          showTransformedBox: false,
+          showBB: false
+        }
+      }
     },
-    numOfWorkers: 2,
-    frequency: 10,
+    numOfWorkers: 4,
+    frequency: 20,
+    debug: false,
+    locate: true
+  }, function(err) {
+    if (err) {
+      console.error('Error iniciando Quagga:', err);
+      document.getElementById('ocr-status').textContent = 'Error al iniciar la cámara. Intenta otra cámara.';
+      return;
+    }
+
+    Quagga.start();
+    isScanning = true;
+
+    // Guardar referencia al track para flash
+    var video = document.querySelector('#interactive video');
+    if (video && video.srcObject) {
+      track = video.srcObject.getVideoTracks()[0];
+      console.log('Cámara activa:', track.label || 'Sin etiqueta');
+    }
+
+    document.getElementById('ocr-status').textContent = 'Escaneando con cámara ' + (currentCameraIndex + 1) + ' de ' + availableCameras.length;
+    console.log('Escaneando...');
+
+    // Iniciar OCR en paralelo
+    startParallelOCR();
+  });
+
+  // Registrar callback de detección (solo la primera vez, Quagga acumula callbacks)
+  if (!window.quaggaCallbackRegistered) {
+    Quagga.onDetected(function(result) {
+      if (resultFound) return;
+      var code = result.codeResult.code;
+      var format = result.codeResult.format || 'unknown';
+      console.log('Quagga detectó:', code, 'Formato:', format, 'Longitud:', code.length);
+      document.getElementById('ocr-status').textContent = 'Código detectado: ' + code + ' (Formato: ' + format + ')';
+      handleResult('barcode', code);
+    });
+    window.quaggaCallbackRegistered = true;
+  }
+}
+
+// Iniciar escaneo paralelo: Quagga + OCR
+async function startParallelScanning() {
+  resultFound = false;
+  document.getElementById('ocr-status').textContent = 'Iniciando escaneo paralelo (Barcode + OCR)...';
+
+  // Obtener la mejor cámara trasera
+  const selectedCameraId = await getBestBackCamera();
+  
+  // Preparar constraints según la cámara seleccionada
+  var constraints;
+  if (selectedCameraId) {
+    // Usar deviceId específico para evitar cámara ultrawide
+    constraints = {
+      width: { min: 640, ideal: 1280 },
+      height: { min: 480, ideal: 720 },
+      deviceId: { exact: selectedCameraId }
+    };
+    console.log('Intentando usar cámara específica ID:', selectedCameraId.substring(0, 8) + '...');
+  } else {
+    // Fallback a facingMode si no se pudo enumerar
+    constraints = {
+      width: { min: 640, ideal: 1280 },
+      height: { min: 480, ideal: 720 },
+      facingMode: { exact: "environment" }
+    };
+    console.log('Fallback: usando facingMode environment');
+  }
+
+  Quagga.init({
+    inputStream: {
+      name: "Live",
+      type: "LiveStream",
+      target: document.querySelector('#interactive'),
+      constraints: constraints,
+      area: {
+        top: "0%",
+        right: "0%",
+        left: "0%",
+        bottom: "55%"
+      }
+    },
+    decoder: {
+      readers: [
+        "code_39_reader",
+        "code_39_vin_reader",
+        {
+          format: "code_39_reader",
+          config: {
+            supplements: []
+          }
+        }
+      ],
+      multiple: false
+    },
+    locator: {
+      patchSize: "large",
+      halfSample: false,
+      debug: {
+        showCanvas: false,
+        showPatches: false,
+        showFoundPatches: false,
+        showSkeleton: false,
+        showLabels: false,
+        showPatchLabels: false,
+        showRemainingPatchLabels: false,
+        boxFromPatches: {
+          showTransformed: false,
+          showTransformedBox: false,
+          showBB: false
+        }
+      }
+    },
+    numOfWorkers: 4,
+    frequency: 20,
+    debug: false,
     locate: true
   }, function(err) {
     if (err) {
@@ -1480,21 +1829,27 @@ async function startParallelScanning() {
     var video = document.querySelector('#interactive video');
     if (video && video.srcObject) {
       track = video.srcObject.getVideoTracks()[0];
+      console.log('Cámara activa:', track.label || 'Sin etiqueta');
     }
 
-    console.log('Escaneando con cámara trasera...');
+    console.log('Escaneando...');
 
     // Iniciar OCR en paralelo
     startParallelOCR();
   });
 
-  // Callback cuando se detecta código con Quagga
-  Quagga.onDetected(function(result) {
-    if (resultFound) return;
-    var code = result.codeResult.code;
-    console.log('Quagga detectó:', code);
-    handleResult('barcode', code);
-  });
+  // Callback cuando se detecta código con Quagga (registrar solo una vez)
+  if (!window.quaggaCallbackRegistered) {
+    Quagga.onDetected(function(result) {
+      if (resultFound) return;
+      var code = result.codeResult.code;
+      var format = result.codeResult.format || 'unknown';
+      console.log('Quagga detectó:', code, 'Formato:', format, 'Longitud:', code.length);
+      document.getElementById('ocr-status').textContent = 'Código detectado: ' + code + ' (Formato: ' + format + ')';
+      handleResult('barcode', code);
+    });
+    window.quaggaCallbackRegistered = true;
+  }
 }
 
 // Iniciar OCR en paralelo con Quagga
@@ -1581,10 +1936,11 @@ function processOCRResult(rutText, fichaText) {
     }
   }
 
-  // Procesar Ficha del OCR
+  // Procesar Ficha del OCR - soporta fichas de 6 a 10 dígitos
   if (fichaText) {
     var cleanFicha = fichaText.replace(/\s/g, '');
-    var fichaMatch = cleanFicha.match(/(\d{6})/);
+    // Aceptar fichas de 6 a 10 dígitos (algunas fichas modernas tienen 8 dígitos)
+    var fichaMatch = cleanFicha.match(/(\d{6,10})/);
     if (fichaMatch) {
       document.getElementById('scan-ficha').value = fichaMatch[1];
       updated = true;
@@ -1604,6 +1960,8 @@ function processOCRResult(rutText, fichaText) {
 
 // Procesar código de barras: separar RUT-FICHA y calcular DV
 function processBarcode(code) {
+  console.log('Procesando barcode raw:', code, 'longitud:', code.length);
+  
   var parts = code.split('-');
   var rutNumeros = '';
   var ficha = '';
@@ -1612,12 +1970,21 @@ function processBarcode(code) {
     rutNumeros = parts[0];
     ficha = parts[parts.length - 1];
   } else if (parts.length === 1) {
-    rutNumeros = parts[0];
-    ficha = '';
+    // Si el código es solo números y tiene 6-10 dígitos, asumir que es ficha
+    var soloNumeros = parts[0].replace(/\D/g, '');
+    if (soloNumeros.length >= 6 && soloNumeros.length <= 10) {
+      ficha = soloNumeros;
+      rutNumeros = '';
+    } else {
+      rutNumeros = parts[0];
+      ficha = '';
+    }
   } else {
     rutNumeros = code;
     ficha = '';
   }
+  
+  console.log('Barcode parseado - RUT:', rutNumeros, 'Ficha:', ficha);
 
   // Calcular DV y formatear RUT
   var rut = formatearRUTConDV(rutNumeros);

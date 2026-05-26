@@ -21,6 +21,7 @@
 
 
 	$formulario=htmlentities(addslashes($_POST['lista_v']));
+	$fecha_ingreso=isset($_POST['fecha_ingreso']) ? htmlentities(addslashes($_POST['fecha_ingreso'])) : '1970-01-01';
 		//ENVIA EL POST VISTA CON LA VARIABLE FORMULARIO PARA CANCELAR
 			$boton_toggler="<form method='post' action='vista_paciente.php'><button class='d-sm-block d-sm-none admin-back-btn' type='submit' name='vista' value='$formulario'><i class='fa fa-chevron-left'></i>Atrás</button></form>";
 			$titulo_navbar="<span>Visitas</span>";
@@ -45,7 +46,7 @@
 
 	<?php
 
-	$consulta_a="SELECT `nombre_paciente_v` FROM `visita_diaria` WHERE `rut_v` = '$formulario'";
+	$consulta_a="SELECT `nombre_paciente_v` FROM `visita_diaria` WHERE `rut_v` = '$formulario' AND `fecha_v` >= '$fecha_ingreso'";
 	
 	$busqueda_a=$conexion->query($consulta_a);
 
@@ -66,7 +67,7 @@
 
 	<?php 
 
-	$consulta_b="SELECT `fecha_v`,`editor_v`,`rut_v` FROM `visita_diaria` WHERE `rut_v` = '$formulario'";
+	$consulta_b="SELECT `fecha_v`,`editor_v`,`rut_v` FROM `visita_diaria` WHERE `rut_v` = '$formulario' AND `fecha_v` >= '$fecha_ingreso'";
 	
 	$busqueda=$conexion->query($consulta_b);
 
@@ -75,7 +76,7 @@
 		$phpdate = strtotime( $fila['fecha_v'] );
 		$fecha = date( 'd-m-y H:i', $phpdate );
 
-			echo "<form action='vista_visitas.php' method='post'><button class='bitacora-entry-card w-100 text-start border-0' type='submit' value='Submit'><input type='hidden' name='fecha_v' id='fecha_v' value='".app_h_text($fila['fecha_v'])."'><input type='hidden' name='rut_v' id='rut_v' value='".app_h_text($fila['rut_v'])."'><div class='bitacora-entry-body'><h5 class='mb-1'>".app_h_text($fecha)."</h5><small class='text-black-50'>".app_h_text($fila['editor_v'])."</small></div></button></form>";
+			echo "<form action='vista_visitas.php' method='post'><button class='bitacora-entry-card w-100 text-start border-0' type='submit' value='Submit'><input type='hidden' name='fecha_v' value='".app_h_text($fila['fecha_v'])."'><input type='hidden' name='rut_v' value='".app_h_text($fila['rut_v'])."'><input type='hidden' name='fecha_ingreso' value='".app_h_text($fecha_ingreso)."'><div class='bitacora-entry-body'><h5 class='mb-1'>".app_h_text($fecha)."</h5><small style='color:var(--app-muted,#6c757d)'>".app_h_text($fila['editor_v'])."</small></div></button></form>";
 
 	} 
 

@@ -66,11 +66,11 @@ $tipo_mensaje = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar_paciente'])) {
 
-    $rut_init = trim($_POST['rut_init'] ?? '');
-    $rut = strtolower(dbtxt($_POST['rut'] ?? ''));
+    $rut_init        = trim($_POST['rut_init'] ?? '');
+    $rut             = strtolower(dbtxt($_POST['rut'] ?? ''));
     $nombre_paciente = dbtxt($_POST['nombre_paciente'] ?? '');
-    $ficha = dbtxt($_POST['ficha'] ?? '');
-    $de_alta = isset($_POST['de_alta']) && $_POST['de_alta'] === "1" ? 1 : 0;
+    $ficha           = dbtxt($_POST['ficha'] ?? '');
+    $tabla_origen    = $_POST['tabla_origen'] ?? 'pacientes'; // 'pacientes' o 'pacientes_alta'
 
     if ($rut_init === "" || $rut === "" || $nombre_paciente === "" || $ficha === "") {
 
@@ -79,61 +79,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar_paciente'])) 
 
     } else {
 
-        $stmt_check = $conexion->prepare("
-            SELECT COUNT(*) AS total
-            FROM `pacientes`
-            WHERE `rut` = ?
-              AND `rut` <> ?
+        $tabla = ($tabla_origen === 'pacientes_alta') ? 'pacientes_alta' : 'pacientes';
+        $id_col = ($tabla === 'pacientes_alta') ? '`id` = ?' : '`rut` = ?';
+        $id_val = ($tabla === 'pacientes_alta') ? intval($_POST['rut_init_id'] ?? 0) : $rut_init;
+
+        $stmt_update = $conexion->prepare("
+            UPDATE `$tabla`
+            SET `nombre_paciente` = ?, `ficha` = ?, `rut` = ?
+            WHERE $id_col
+            LIMIT 1
         ");
-        $stmt_check->bind_param("ss", $rut, $rut_init);
-        $stmt_check->execute();
-        $res_check = $stmt_check->get_result();
-        $row_check = $res_check->fetch_assoc();
 
-        if (intval($row_check['total']) > 0) {
-
-            $tipo_mensaje = "warning";
-            $mensaje = "No se guard&oacute;: ya existe otro paciente con el RUT " . h($rut) . ".";
-
+        if ($tabla === 'pacientes_alta') {
+            $stmt_update->bind_param("sssi", $nombre_paciente, $ficha, $rut, $id_val);
         } else {
+            $stmt_update->bind_param("ssss", $nombre_paciente, $ficha, $rut, $id_val);
+        }
 
-            $stmt_update = $conexion->prepare("
-                UPDATE `pacientes`
-                SET
-                    `nombre_paciente` = ?,
-                    `ficha` = ?,
-                    `rut` = ?,
-                    `de_alta` = ?
-                WHERE `rut` = ?
-                LIMIT 1
-            ");
-
-            $stmt_update->bind_param(
-                "sssis",
-                $nombre_paciente,
-                $ficha,
-                $rut,
-                $de_alta,
-                $rut_init
-            );
-
-            if ($stmt_update->execute()) {
-
-                $tipo_mensaje = "success";
-                $estado_txt = $de_alta === 1 ? "De alta" : "Seguimiento activo";
-
-                $mensaje = "
-                    <strong>Paciente actualizado correctamente.</strong><br>
-                    " . h($nombre_paciente) . "<br>
-                    <span class='text-muted'>RUT:</span> " . h($rut) . " &middot;
-                    <span class='text-muted'>Ficha:</span> " . h($ficha) . " &middot;
-                    <span class='text-muted'>Estado:</span> " . h($estado_txt);
-
-            } else {
-
-                $tipo_mensaje = "danger";
-                $mensaje = "Error al guardar. Contacta al administrador.";
-            }
+        if ($stmt_update->execute()) {
+            $tipo_mensaje = "success";
+            $mensaje = "<strong>Paciente actualizado correctamente.</strong><br>"
+                . h($nombre_paciente) . "<br>"
+                . "<span class='text-muted'>RUT:</span> " . h($rut)
+                . " &middot; <span class='text-muted'>Ficha:</span> " . h($ficha);
+        } else {
+            $tipo_mensaje = "danger";
+            $mensaje = "Error al guardar. Contacta al administrador.";
         }
     }
 }
@@ -154,51 +125,32 @@ $params = [];
 $types = "";
 
 if ($q !== "") {
-    $where[] = "(
-        `nombre_paciente` LIKE ?
-        OR `nombre_paciente` LIKE ?
-        OR `rut` LIKE ?
-        OR `ficha` LIKE ?
-    )";
-
     $like = "%" . $q . "%";
     $like_entities = "%" . htmlentities($q, ENT_QUOTES | ENT_HTML5, 'UTF-8') . "%";
-
-    $params[] = $like;
-    $params[] = $like_entities;
-    $params[] = $like;
-    $params[] = $like;
+    $where[] = "(`nombre_paciente` LIKE ? OR `nombre_paciente` LIKE ? OR `rut` LIKE ? OR `ficha` LIKE ?)";
+    $params[] = $like; $params[] = $like_entities; $params[] = $like; $params[] = $like;
     $types .= "ssss";
-}
-
-if ($filtro_estado === "activos") {
-    $where[] = "`de_alta` = 0";
-} elseif ($filtro_estado === "alta") {
-    $where[] = "`de_alta` = 1";
 }
 
 $where_sql = count($where) > 0 ? "WHERE " . implode(" AND ", $where) : "";
 
-$sql_pacientes = "
-    SELECT
-        `nombre_paciente`,
-        `rut`,
-        `ficha`,
-        `de_alta`
-    FROM `pacientes`
-    $where_sql
-    ORDER BY
-        `de_alta` ASC,
-        `nombre_paciente` ASC
-    LIMIT 150
-";
-
-$stmt_pacientes = $conexion->prepare($sql_pacientes);
-
-if (count($params) > 0) {
-    $stmt_pacientes->bind_param($types, ...$params);
+// Determinar qué tabla(s) consultar según filtro
+if ($filtro_estado === 'alta') {
+    $sql_pacientes = "SELECT `id`, `nombre_paciente`, `rut`, `ficha`, 'pacientes_alta' AS _tabla FROM `pacientes_alta` $where_sql ORDER BY `nombre_paciente` ASC LIMIT 150";
+} elseif ($filtro_estado === 'activos') {
+    $sql_pacientes = "SELECT 0 AS `id`, `nombre_paciente`, `rut`, `ficha`, 'pacientes' AS _tabla FROM `pacientes` $where_sql ORDER BY `nombre_paciente` ASC LIMIT 150";
+} else {
+    // todos: union de ambas tablas
+    $sql_pacientes = "(SELECT 0 AS `id`, `nombre_paciente`, `rut`, `ficha`, 'pacientes' AS _tabla FROM `pacientes` $where_sql)
+                      UNION ALL
+                      (SELECT `id`, `nombre_paciente`, `rut`, `ficha`, 'pacientes_alta' AS _tabla FROM `pacientes_alta` $where_sql)
+                      ORDER BY `nombre_paciente` ASC LIMIT 150";
+    // params duplicados para el UNION
+    if (count($params) > 0) { $params = array_merge($params, $params); $types .= $types; }
 }
 
+$stmt_pacientes = $conexion->prepare($sql_pacientes);
+if (count($params) > 0) { $stmt_pacientes->bind_param($types, ...$params); }
 $stmt_pacientes->execute();
 $tab_pacientes = $stmt_pacientes->get_result();
 
@@ -206,19 +158,9 @@ $tab_pacientes = $stmt_pacientes->get_result();
    CONTADORES
 ========================================================= */
 
-$res_total = $conexion->query("
-    SELECT
-        COUNT(*) AS total,
-        SUM(CASE WHEN `de_alta` = 0 THEN 1 ELSE 0 END) AS activos,
-        SUM(CASE WHEN `de_alta` = 1 THEN 1 ELSE 0 END) AS altas
-    FROM `pacientes`
-");
-
-$stats = $res_total->fetch_assoc();
-
-$total_pacientes = intval($stats['total'] ?? 0);
-$total_activos = intval($stats['activos'] ?? 0);
-$total_altas = intval($stats['altas'] ?? 0);
+$total_activos   = intval($conexion->query("SELECT COUNT(*) AS c FROM `pacientes`")->fetch_assoc()['c'] ?? 0);
+$total_altas     = intval($conexion->query("SELECT COUNT(*) AS c FROM `pacientes_alta`")->fetch_assoc()['c'] ?? 0);
+$total_pacientes = $total_activos + $total_altas;
 ?>
 
 <div class="col col-sm-9 col-xl-9 pb-5 app-main-col">
@@ -337,11 +279,10 @@ $total_altas = intval($stats['altas'] ?? 0);
                 $nombre_paciente = html_entity_decode($nombre_paciente_raw, ENT_QUOTES | ENT_HTML5, 'UTF-8');
                 $rut = html_entity_decode($rut_raw, ENT_QUOTES | ENT_HTML5, 'UTF-8');
                 $ficha = html_entity_decode($ficha_raw, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-                $de_alta = intval($row['de_alta'] ?? 0);
-
-                $checked = $de_alta === 1 ? "checked" : "";
-                $badge_class = $de_alta === 1 ? "status-alta" : "status-active";
-                $badge_text = $de_alta === 1 ? "De alta" : "Seguimiento activo";
+                $tabla_row   = $row['_tabla'] ?? 'pacientes';
+                $id_row      = intval($row['id'] ?? 0);
+                $badge_class = ($tabla_row === 'pacientes_alta') ? "status-alta" : "status-active";
+                $badge_text  = ($tabla_row === 'pacientes_alta') ? "De alta" : "Seguimiento activo";
             ?>
 
                 <article class="patient-card">
@@ -364,6 +305,8 @@ $total_altas = intval($stats['altas'] ?? 0);
                         <form action="gestion_pacientes.php?<?php echo http_build_query(['q' => $q, 'estado' => $filtro_estado]); ?>" method="post">
                             <input type="hidden" name="guardar_paciente" value="1">
                             <input type="hidden" name="rut_init" value="<?php echo h_raw($rut_raw); ?>">
+                            <input type="hidden" name="tabla_origen" value="<?php echo h_raw($tabla_row); ?>">
+                            <input type="hidden" name="rut_init_id" value="<?php echo $id_row; ?>">
 
                             <div class="row g-3">
                                 <div class="col-12">
@@ -399,21 +342,6 @@ $total_altas = intval($stats['altas'] ?? 0);
                                     >
                                 </div>
 
-                                <div class="col-12">
-                                    <div class="form-check form-switch">
-                                        <input
-                                            class="form-check-input"
-                                            type="checkbox"
-                                            name="de_alta"
-                                            id="alta_<?php echo md5($rut_raw); ?>"
-                                            value="1"
-                                            <?php echo $checked; ?>
-                                        >
-                                        <label class="form-check-label" for="alta_<?php echo md5($rut_raw); ?>">
-                                            Paciente de alta
-                                        </label>
-                                    </div>
-                                </div>
 
                                 <div class="col-12 d-grid">
                                     <button type="submit" class="btn btn-admin-primary">
@@ -466,35 +394,6 @@ document.addEventListener("DOMContentLoaded", function () {
             formBuscar.submit();
         });
     }
-});
-</script>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-
-    document.querySelectorAll("form").forEach(function(form) {
-
-        form.addEventListener("submit", function(e) {
-
-            const altaSwitch = form.querySelector('input[name="de_alta"]');
-
-            if (!altaSwitch) return;
-
-            if (altaSwitch.checked) {
-                const confirmar = confirm(
-                    "¿Confirmas que deseas dar de alta a este paciente?\n\n" +
-                    "El paciente quedará marcado como de alta en el sistema de Dolor."
-                );
-
-                if (!confirmar) {
-                    e.preventDefault();
-                    return false;
-                }
-            }
-
-        });
-
-    });
-
 });
 </script>
 <?php require("footer.php"); ?>

@@ -43,10 +43,20 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         $verified_email_us = isset($_POST['verified_email']) ? 1 : 0;
         $admin_us = isset($_POST['admin']) ? 1 : 0;
         $staff_us = isset($_POST['staff']) ? 1 : 0;
+        $docente_us = ($staff_us && isset($_POST['docente'])) ? 1 : 0;
         $becad_us = isset($_POST['becad']) ? 1 : 0;
         $intern_us = isset($_POST['intern']) ? 1 : 0;
         $becad_otro_us = isset($_POST['becad_otro']) ? 1 : 0;
         $external_us = isset($_POST['external']) ? 1 : 0;
+        
+        // Nivel de residencia (r1, r2, r3) solo válido si es becad@
+        $nivel_residencia_us = null;
+        if($becad_us && isset($_POST['nivel_residencia'])){
+            $nivel_raw = strtolower(trim($_POST['nivel_residencia']));
+            if(in_array($nivel_raw, array('r1', 'r2', 'r3'), true)){
+                $nivel_residencia_us = $nivel_raw;
+            }
+        }
 
         if($email_init === '' || $email_us === '' || $nombre_us === ''){
             $mensaje_error = 'Faltan datos obligatorios para guardar el usuario.';
@@ -60,12 +70,14 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                     `verified_email` = ?,
                     `admin` = ?,
                     `staff_` = ?,
+                    `docente_` = ?,
                     `becad_` = ?,
                     `becad_otro` = ?,
                     `intern_` = ?,
                     `external_` = ?,
                     `link_minicex` = ?,
-                    `anio_residencia` = ?
+                    `anio_residencia` = ?,
+                    `nivel_residencia` = ?
                 WHERE `email_usuario` = ?
                 LIMIT 1");
 
@@ -73,19 +85,21 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 $mensaje_error = 'Error preparando el guardado: ' . $conexion->error;
             }else{
                 $stmt_update->bind_param(
-                    'ssiiiiiiiisis',
+                    'ssiiiiiiiiissss',
                     $nombre_us,
                     $email_us,
                     $verified_us,
                     $verified_email_us,
                     $admin_us,
                     $staff_us,
+                    $docente_us,
                     $becad_us,
                     $becad_otro_us,
                     $intern_us,
                     $external_us,
                     $link_minicex,
                     $anio_residencia,
+                    $nivel_residencia_us,
                     $email_init
                 );
 
@@ -144,6 +158,8 @@ $resumen = array(
     'total' => 0,
     'pendientes' => 0,
     'admins' => 0,
+    'staff' => 0,
+    'docente' => 0,
     'becados' => 0,
     'internos' => 0,
     'pasantes' => 0,
@@ -161,9 +177,11 @@ $res_resumen = $conexion->query("SELECT
     SUM(CASE WHEN `intern_` = 1 THEN 1 ELSE 0 END) AS internos,
     SUM(CASE WHEN `becad_otro` = 1 THEN 1 ELSE 0 END) AS pasantes,
     SUM(CASE WHEN `external_` = 1 THEN 1 ELSE 0 END) AS externos,
-    SUM(CASE WHEN `becad_` = 1 AND `anio_residencia` = 1 THEN 1 ELSE 0 END) AS r1,
-    SUM(CASE WHEN `becad_` = 1 AND `anio_residencia` = 2 THEN 1 ELSE 0 END) AS r2,
-    SUM(CASE WHEN `becad_` = 1 AND `anio_residencia` = 3 THEN 1 ELSE 0 END) AS r3
+    SUM(CASE WHEN `staff_` = 1 THEN 1 ELSE 0 END) AS staff,
+    SUM(CASE WHEN `staff_` = 1 AND `docente_` = 1 THEN 1 ELSE 0 END) AS docente,
+    SUM(CASE WHEN `nivel_residencia` = 'r1' THEN 1 ELSE 0 END) AS r1,
+    SUM(CASE WHEN `nivel_residencia` = 'r2' THEN 1 ELSE 0 END) AS r2,
+    SUM(CASE WHEN `nivel_residencia` = 'r3' THEN 1 ELSE 0 END) AS r3
     FROM `usuarios_dolor`");
 
 if($res_resumen){
@@ -174,7 +192,7 @@ if($res_resumen){
 }
 
 $usuarios = array();
-$con_users = "SELECT `ID`, `nombre_usuario`, `email_usuario`, `verified`, `verified_email`, `admin`, `staff_`, `becad_`, `intern_`, `becad_otro`, `external_`, `link_minicex`, `anio_residencia`
+$con_users = "SELECT `ID`, `nombre_usuario`, `email_usuario`, `verified`, `verified_email`, `admin`, `staff_`, `becad_`, `intern_`, `becad_otro`, `external_`, `link_minicex`, `anio_residencia`, `nivel_residencia`, `docente_`
               FROM `usuarios_dolor`
               ORDER BY `verified` ASC, `nombre_usuario` ASC";
 $tab_users = $conexion->query($con_users);
@@ -238,6 +256,14 @@ if($tab_users){
                 <div class="user-stat-num"><?= (int)$resumen['externos'] ?></div>
                 <div class="user-stat-label">Externos</div>
             </button>
+            <button type="button" class="user-stat user-filter-btn" data-filter-group="staff">
+                <div class="user-stat-num"><?= (int)$resumen['staff'] ?></div>
+                <div class="user-stat-label">Staff</div>
+            </button>
+            <button type="button" class="user-stat user-filter-btn" data-filter-group="docente">
+                <div class="user-stat-num"><?= (int)$resumen['docente'] ?></div>
+                <div class="user-stat-label">Docentes</div>
+            </button>
             <button type="button" class="user-stat user-filter-btn" data-filter-group="r1">
                 <div class="user-stat-num"><?= (int)$resumen['r1'] ?></div>
                 <div class="user-stat-label">Residentes 1°</div>
@@ -272,6 +298,8 @@ if($tab_users){
                 $email = (string)$row_user['email_usuario'];
                 $link_minicex = (string)$row_user['link_minicex'];
                 $anio_residencia = isset($row_user['anio_residencia']) ? (int)$row_user['anio_residencia'] : 0;
+                $nivel_residencia = isset($row_user['nivel_residencia']) ? $row_user['nivel_residencia'] : '';
+                $docente = isset($row_user['docente_']) ? (int)$row_user['docente_'] : 0;
                 $is_self = strtolower($email) === strtolower($check_usuario);
                 $grupos_usuario = ['all'];
                 if((int)$row_user['verified'] !== 1){ $grupos_usuario[] = 'pendientes'; }
@@ -280,11 +308,13 @@ if($tab_users){
                 if((int)$row_user['intern_'] === 1){ $grupos_usuario[] = 'internos'; }
                 if((int)$row_user['becad_otro'] === 1){ $grupos_usuario[] = 'pasantes'; }
                 if((int)$row_user['external_'] === 1){ $grupos_usuario[] = 'externos'; }
-                if((int)$row_user['becad_'] === 1 && $anio_residencia === 1){ $grupos_usuario[] = 'r1'; }
-                if((int)$row_user['becad_'] === 1 && $anio_residencia === 2){ $grupos_usuario[] = 'r2'; }
-                if((int)$row_user['becad_'] === 1 && $anio_residencia === 3){ $grupos_usuario[] = 'r3'; }
+                if($nivel_residencia === 'r1'){ $grupos_usuario[] = 'r1'; }
+                if($nivel_residencia === 'r2'){ $grupos_usuario[] = 'r2'; }
+                if($nivel_residencia === 'r3'){ $grupos_usuario[] = 'r3'; }
+                if((int)$row_user['staff_'] === 1){ $grupos_usuario[] = 'staff'; }
+                if((int)$row_user['staff_'] === 1 && $docente === 1){ $grupos_usuario[] = 'docente'; }
             ?>
-                <div class="user-card user-item" data-groups="<?= h(implode(' ', $grupos_usuario)) ?>" data-search="<?= h(strtolower($user . ' ' . $email . ' r' . $anio_residencia . ' ' . $anio_residencia . ' año')) ?>">
+                <div class="user-card user-item" data-groups="<?= h(implode(' ', $grupos_usuario)) ?>" data-search="<?= h(strtolower($user . ' ' . $email . ' ' . ($nivel_residencia ?: 'r' . $anio_residencia) . ' ' . ($nivel_residencia ? str_replace('r', '', $nivel_residencia) : $anio_residencia) . ' año')) ?>">
                     <form action="gestion_usuarios.php" method="post">
                         <input type="hidden" name="accion" value="guardar_usuario">
                         <input type="hidden" name="email_init" value="<?= h($email) ?>">
@@ -317,7 +347,8 @@ if($tab_users){
                             <label class="user-check"><input class="form-check-input" type="checkbox" name="verified" value="1" <?= ((int)$row_user['verified'] === 1 ? 'checked' : '') ?>> Verificado</label>
                             <label class="user-check"><input class="form-check-input" type="checkbox" name="verified_email" value="1" <?= ((int)$row_user['verified_email'] === 1 ? 'checked' : '') ?>> Email verificado</label>
                             <label class="user-check"><input class="form-check-input" type="checkbox" name="admin" value="1" <?= ((int)$row_user['admin'] === 1 ? 'checked' : '') ?>> Administrador</label>
-                            <label class="user-check"><input class="form-check-input" type="checkbox" name="staff" value="1" <?= ((int)$row_user['staff_'] === 1 ? 'checked' : '') ?>> Staff</label>
+                            <label class="user-check"><input class="form-check-input js-staff-check" type="checkbox" name="staff" value="1" <?= ((int)$row_user['staff_'] === 1 ? 'checked' : '') ?>> Staff</label>
+                            <label class="user-check js-docente-wrap <?= ((int)$row_user['staff_'] === 1 ? '' : 'is-hidden') ?>"><input class="form-check-input" type="checkbox" name="docente" value="1" <?= ((int)$docente === 1 ? 'checked' : '') ?>> Docente</label>
                             <label class="user-check"><input class="form-check-input js-becad-anestesia" type="checkbox" name="becad" value="1" <?= ((int)$row_user['becad_'] === 1 ? 'checked' : '') ?>> Becad@ Anestesia</label>
                             <label class="user-check"><input class="form-check-input" type="checkbox" name="intern" value="1" <?= ((int)$row_user['intern_'] === 1 ? 'checked' : '') ?>> Intern@</label>
                             <label class="user-check"><input class="form-check-input" type="checkbox" name="becad_otro" value="1" <?= ((int)$row_user['becad_otro'] === 1 ? 'checked' : '') ?>> Becad@ Pasante</label>
@@ -326,12 +357,12 @@ if($tab_users){
 
                         <div class="resident-year-wrap <?= ((int)$row_user['becad_'] === 1 ? 'is-visible' : '') ?>">
                             <div class="resident-year-inner">
-                                <label class="user-label" for="anio_residencia<?= (int)$i ?>">Año residencia <span class="text-danger">*</span></label>
-                                <select class="form-select js-anio-residencia" name="anio_residencia" id="anio_residencia<?= (int)$i ?>" <?= ((int)$row_user['becad_'] === 1 ? 'required' : '') ?>>
-                                    <option value="" <?= ($anio_residencia < 1 || $anio_residencia > 3 ? 'selected' : '') ?>>Seleccionar año</option>
-                                    <option value="1" <?= ($anio_residencia === 1 ? 'selected' : '') ?>>1° año</option>
-                                    <option value="2" <?= ($anio_residencia === 2 ? 'selected' : '') ?>>2° año</option>
-                                    <option value="3" <?= ($anio_residencia === 3 ? 'selected' : '') ?>>3° año</option>
+                                <label class="user-label" for="nivel_residencia<?= (int)$i ?>">Nivel Residencia <span class="text-danger">*</span></label>
+                                <select class="form-select js-nivel-residencia" name="nivel_residencia" id="nivel_residencia<?= (int)$i ?>" <?= ((int)$row_user['becad_'] === 1 ? 'required' : '') ?>>
+                                    <option value="" <?= ($nivel_residencia === '' ? 'selected' : '') ?>>Seleccionar</option>
+                                    <option value="r1" <?= ($nivel_residencia === 'r1' ? 'selected' : '') ?>>R1 - 1° año</option>
+                                    <option value="r2" <?= ($nivel_residencia === 'r2' ? 'selected' : '') ?>>R2 - 2° año</option>
+                                    <option value="r3" <?= ($nivel_residencia === 'r3' ? 'selected' : '') ?>>R3 - 3° año</option>
                                 </select>
                                 <div class="user-subtle mt-1">Obligatorio solo para Becad@ Anestesia.</div>
                             </div>
@@ -487,7 +518,9 @@ document.addEventListener('DOMContentLoaded', function(){
     document.querySelectorAll('.user-item form').forEach(function(form){
         var becad = form.querySelector('.js-becad-anestesia');
         var wrap = form.querySelector('.resident-year-wrap');
-        var select = form.querySelector('.js-anio-residencia');
+        var select = form.querySelector('.js-nivel-residencia');
+        var staff = form.querySelector('.js-staff-check');
+        var docenteWrap = form.querySelector('.js-docente-wrap');
 
         function toggleResidentYear(){
             if(!becad || !wrap || !select){
@@ -504,9 +537,30 @@ document.addEventListener('DOMContentLoaded', function(){
             }
         }
 
+        function toggleDocente(){
+            if(!staff || !docenteWrap){
+                return;
+            }
+
+            if(staff.checked){
+                docenteWrap.classList.remove('is-hidden');
+            }else{
+                docenteWrap.classList.add('is-hidden');
+                var docenteCheck = docenteWrap.querySelector('input[name="docente"]');
+                if(docenteCheck){
+                    docenteCheck.checked = false;
+                }
+            }
+        }
+
         if(becad){
             becad.addEventListener('change', toggleResidentYear);
             toggleResidentYear();
+        }
+
+        if(staff){
+            staff.addEventListener('change', toggleDocente);
+            toggleDocente();
         }
     });
 
@@ -537,6 +591,13 @@ document.addEventListener('DOMContentLoaded', function(){
     });
 });
 </script>
+
+<style>
+/* Helper class for showing/hiding elements */
+.user-check.is-hidden {
+    display: none !important;
+}
+</style>
 
 <?php
 require('footer.php');

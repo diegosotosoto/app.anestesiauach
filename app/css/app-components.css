@@ -141,6 +141,39 @@ body.theme-dark .app-hero-admin .app-hero-pill{
   transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
 }
 
+/* Solo aplicar estilos específicos de modo al radio group de interfaz */
+.ui-mode-grid[aria-label="Modo de interfaz"] .ui-mode-option:has(.ui-preview-normal){
+  background: #ffffff;
+  color: #1b2430;
+  border-color: #dfe7f2;
+}
+
+.ui-mode-grid[aria-label="Modo de interfaz"] .ui-mode-option:has(.ui-preview-normal):has(input:checked){
+  border-color: var(--app-blue);
+  box-shadow: 0 0 0 3px rgba(31, 95, 191, .12);
+}
+
+.ui-mode-grid[aria-label="Modo de interfaz"] .ui-mode-option:has(.ui-preview-normal) .ui-mode-copy strong,
+.ui-mode-grid[aria-label="Modo de interfaz"] .ui-mode-option:has(.ui-preview-normal) .ui-mode-copy{
+  color: #1b2430 !important;
+}
+
+.ui-mode-grid[aria-label="Modo de interfaz"] .ui-mode-option:has(.ui-preview-nocturno){
+  background: #0f172a;
+  color: #e5edf8;
+  border-color: rgba(147, 197, 253, .28);
+}
+
+.ui-mode-grid[aria-label="Modo de interfaz"] .ui-mode-option:has(.ui-preview-nocturno):has(input:checked){
+  border-color: var(--app-blue);
+  box-shadow: 0 0 0 3px rgba(31, 95, 191, .12);
+}
+
+.ui-mode-grid[aria-label="Modo de interfaz"] .ui-mode-option:has(.ui-preview-nocturno) .ui-mode-copy strong,
+.ui-mode-grid[aria-label="Modo de interfaz"] .ui-mode-option:has(.ui-preview-nocturno) .ui-mode-copy{
+  color: #e5edf8 !important;
+}
+
 .ui-mode-option:hover,
 .ui-mode-option:focus-within{
   border-color: var(--app-blue);
@@ -173,15 +206,26 @@ body.theme-dark .app-hero-admin .app-hero-pill{
 }
 
 .ui-preview-normal{
-  background: #1f5fbf;
+  background: #ffffff;
+  color: #1b2430;
+  border: 2px solid #dfe7f2;
 }
 
 .ui-preview-nocturno{
   background: #0f172a;
+  color: #e5edf8;
+  border: 2px solid rgba(147, 197, 253, .28);
 }
 
 .ui-preview-daltonico{
   background: #0057b8;
+}
+
+/* Para botones de posición de menú, usar círculo azul */
+.ui-mode-grid[aria-label="Posición del menú"] .ui-mode-option:has(.ui-preview-normal) .ui-mode-icon{
+  background: #1f5fbf;
+  color: #ffffff;
+  border: none;
 }
 
 .ui-mode-copy{
@@ -294,9 +338,9 @@ body.theme-dark .app-hero-admin .app-hero-pill{
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--app-blue);
+  background: var(--app-danger);
   color: #ffffff;
-  border: 0;
+  border: 2px solid var(--app-danger);
   outline: 0;
   font-size: .78rem;
   font-weight: 800;
@@ -2546,6 +2590,22 @@ input.texto-seguro{
   flex: 0 0 auto;
   max-width: 40%;
   text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: .3rem;
+}
+
+.pain-patient-days{
+  display: inline-block;
+  background: var(--app-bg, #f1f5f9);
+  color: var(--app-muted, #64748b);
+  font-size: .75rem;
+  font-weight: 600;
+  padding: .2rem .5rem;
+  border-radius: 9999px;
+  border: 1px solid var(--app-border, #e2e8f0);
+  white-space: nowrap;
 }
 
 .patient-summary-stack{

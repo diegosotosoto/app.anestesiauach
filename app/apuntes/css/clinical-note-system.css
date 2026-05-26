@@ -461,6 +461,28 @@ body.ui-nocturno .drug-label-prefix i{
   min-height:56px;
 }
 
+/* Drug card selection style - applies when radio/checkbox is checked */
+.note-check:checked + .drug-card,
+.note-check:checked + .drug-card-sm,
+.choice-check:checked + .drug-card,
+.choice-check:checked + .drug-card-sm{
+  box-shadow:0 0 0 3px rgba(47,128,237,.14), 0 8px 18px rgba(15,23,42,.10);
+  border:4px solid var(--note-selected);
+  transform:translateY(-1px);
+}
+
+/* Dark mode for selected drug cards */
+body.theme-dark .note-check:checked + .drug-card,
+body.theme-dark .note-check:checked + .drug-card-sm,
+body.theme-dark .choice-check:checked + .drug-card,
+body.theme-dark .choice-check:checked + .drug-card-sm,
+body.ui-nocturno .note-check:checked + .drug-card,
+body.ui-nocturno .note-check:checked + .drug-card-sm,
+body.ui-nocturno .choice-check:checked + .drug-card,
+body.ui-nocturno .choice-check:checked + .drug-card-sm{
+  box-shadow:0 0 0 3px rgba(111,174,255,.14), 0 8px 18px rgba(0,0,0,.2);
+}
+
 /* ==========================================================================
    Drug Label Consistent Sizing - Prevents height differences when text wraps
    ============================================================================ */

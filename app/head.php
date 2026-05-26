@@ -405,6 +405,8 @@ if ($is_apuntes_context) {
 	<link rel="stylesheet" href="<?= app_path('css/accessibility.css') ?>?v=<?= @filemtime($app_root_dir . '/css/accessibility.css') ?: time() ?>"/>
 	<script src="<?= app_path('js/jquery-3.6.1.min.js') ?>"></script>
 	<script src="<?= app_path('js/app-core.js') ?>"></script>
+	<script src="<?= app_path('js/offline-handler.js') ?>"></script>
+	<script src="<?= app_path('index.js') ?>"></script>
 </head>
 <body class="<?= app_ui_body_classes($app_ui_modo, $app_ui_nav_posicion) ?>">
 
@@ -762,36 +764,6 @@ function aplicarEstiloWhatsappSidebar(){
 aplicarEstiloWhatsappSidebar();
 document.addEventListener('DOMContentLoaded', aplicarEstiloWhatsappSidebar);
 window.addEventListener('resize', aplicarEstiloWhatsappSidebar);
-
-document.addEventListener('click', function(e){
-  const item = e.target.closest('.notif-item[data-destinatario-id]');
-  if(!item) return;
-
-  const destinatarioId = item.dataset.destinatarioId;
-  if(!destinatarioId) return;
-
-  if (item.dataset.esSistema === '1') return;
-
-  const body = new URLSearchParams();
-  body.append('destinatario_id', destinatarioId);
-  body.append('accion', 'leer');
-
-  if (navigator.sendBeacon) {
-    const blob = new Blob([body.toString()], {
-      type: 'application/x-www-form-urlencoded; charset=UTF-8'
-    });
-    navigator.sendBeacon('<?= app_path('notificacion_accion_ajax.php') ?>', blob);
-  } else {
-    fetch('<?= app_path('notificacion_accion_ajax.php') ?>', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-      },
-      body: body.toString(),
-      keepalive: true
-    }).catch(() => {});
-  }
-});
 </script>
 
 <script>

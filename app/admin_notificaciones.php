@@ -295,7 +295,11 @@ $error = "";
 $grupos_disponibles = [
     'admin' => 'Admins',
     'staff_' => 'Staff',
-    'becad_' => 'Becad@ Anestesia',
+    'docente_' => 'Docentes',
+    'r1' => 'R1 - 1° año',
+    'r2' => 'R2 - 2° año',
+    'r3' => 'R3 - 3° año',
+    'becad_' => 'Becad@ Anestesia (todos)',
     'becad_otro' => 'Becad@ Pasante',
     'intern_' => 'Internos',
     'external_' => 'Externos',
@@ -632,6 +636,18 @@ if(isset($_POST['crear_notificacion']) && $_POST['crear_notificacion'] === '1'){
                         break;
                     case 'staff_':
                         $where_grupo = "`verified` = 1 AND `staff_` = 1";
+                        break;
+                    case 'docente_':
+                        $where_grupo = "`verified` = 1 AND `staff_` = 1 AND `docente_` = 1";
+                        break;
+                    case 'r1':
+                        $where_grupo = "`verified` = 1 AND `nivel_residencia` = 'r1'";
+                        break;
+                    case 'r2':
+                        $where_grupo = "`verified` = 1 AND `nivel_residencia` = 'r2'";
+                        break;
+                    case 'r3':
+                        $where_grupo = "`verified` = 1 AND `nivel_residencia` = 'r3'";
                         break;
                     case 'becad_':
                         $where_grupo = "`verified` = 1 AND `becad_` = 1";
