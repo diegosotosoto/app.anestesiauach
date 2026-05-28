@@ -384,9 +384,9 @@ if ($is_apuntes_context) {
 	<meta name="theme-color" content="#27458f">
 	<meta http-equiv="Cache-control" content="no-cache">
 	<title>App Anestesia UACH</title>
-	<link rel="icon" type="image/png" href="<?= app_path('images/logo192.png') ?>">
-	<link rel="manifest" href="<?= app_path('manifest.json') ?>"/>
-	<link rel="apple-touch-icon" href="<?= app_path('images/logo192.png') ?>"/>	
+	<link rel="icon" type="image/png" href="<?= app_path('images/logo192.png') ?>?v=<?= @filemtime($app_root_dir . '/images/logo192.png') ?: time() ?>">
+	<link rel="manifest" href="<?= app_path('manifest.json') ?>?v=<?= @filemtime($app_root_dir . '/manifest.json') ?: time() ?>"/>
+	<link rel="apple-touch-icon" href="<?= app_path('images/logo192.png') ?>?v=<?= @filemtime($app_root_dir . '/images/logo192.png') ?: time() ?>"/>	
     <link href="<?= app_path('css/bootstrap.min.css') ?>" rel="stylesheet"/>
 	<link rel="stylesheet" href="<?= app_path('css/all.css') ?>"/>
 	<link rel="stylesheet" href="<?= app_path('style.css') ?>"/>

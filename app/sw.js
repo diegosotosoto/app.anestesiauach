@@ -1,4 +1,4 @@
-const CACHE_NAME = "app-static-v14";
+const CACHE_NAME = "app-static-v16";
 
 const STATIC_ASSETS = [
   "/",
@@ -27,7 +27,7 @@ const STATIC_ASSETS = [
   "/js/offline-handler.js",
   "/js/push-notifications.js",
   "/js/index.js",
-  "/images/logo192.png",
+  "/images/logo192.png?v=2025",
   "/images/IMG0001.jpeg",
   "/images/austral.png",
   "/index.php",
@@ -129,32 +129,41 @@ self.addEventListener("fetch", (event) => {
   const isSemiStatic = pathname.match(/(apuntes|links|telefonos|correos|calendario|vista_epa)\.php$/i) || pathname.match(/^\/apuntes\/.*\.php$/i);
 
   if (isStatic) {
-    // Cache-first: servir del cache, actualizar en background
-    event.respondWith(
-      caches.match(event.request).then((cachedResponse) => {
-        const networkFetch = fetch(event.request)
-          .then((networkResponse) => {
-            if (networkResponse && networkResponse.ok) {
-              const responseClone = networkResponse.clone();
-              caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
-            }
-            return networkResponse;
-          })
-          .catch(() => cachedResponse);
-
-        if (cachedResponse) {
-          console.log('[SW] Static asset from cache:', pathname);
-          networkFetch.catch(() => {}); // Background update
-          return cachedResponse;
+    // Network-first con timeout: intentar red primero, fallback a cache si falla o es lento
+    // Esto garantiza que siempre se vean las actualizaciones cuando hay conexión
+    const networkFetch = fetch(event.request)
+      .then((networkResponse) => {
+        if (networkResponse && networkResponse.ok) {
+          // Actualizar cache con versión fresca
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+          console.log('[SW] Static asset from network:', pathname);
         }
-        
-        return networkFetch.then(response => {
-          if (!response) {
-            return new Response('Error cargando recurso.', { status: 503, statusText: 'Service Unavailable' });
+        return networkResponse;
+      });
+
+    // Timeout de 3 segundos - si la red es lenta, usar cache
+    const timeoutPromise = new Promise((resolve) => {
+      setTimeout(() => {
+        caches.match(event.request).then(cached => {
+          if (cached) {
+            console.log('[SW] Static asset from cache (timeout):', pathname);
+            resolve(cached);
           }
-          return response;
         });
-      })
+      }, 3000);
+    });
+
+    event.respondWith(
+      Promise.race([networkFetch, timeoutPromise])
+        .catch(() => {
+          // Sin conexión: usar cache
+          console.log('[SW] Static asset fallback to cache:', pathname);
+          return caches.match(event.request).then(cached => {
+            if (cached) return cached;
+            return new Response('Error: Sin conexion y sin cache.', { status: 503 });
+          });
+        })
     );
     return;
   }
@@ -266,8 +275,8 @@ self.addEventListener("push", (event) => {
   const title = data.title || "Anestesia UACH";
   const options = {
     body: data.body || data.message || "Tienes una nueva notificación.",
-    icon: data.icon || "/images/logo192.png",
-    badge: data.badge || "/images/logo192.png",
+    icon: data.icon || "/images/logo192.png?v=2025",
+    badge: data.badge || "/images/logo192.png?v=2025",
     data: {
       url: data.url || "/",
       notificacion_id: data.notificacion_id || null
