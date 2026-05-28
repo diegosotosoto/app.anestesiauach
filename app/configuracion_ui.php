@@ -501,7 +501,7 @@ $usuario = $usuario_configuracion;
             <div class="app-card-title">
                 <span class="app-icon-circle"><i class="fa-solid fa-bell"></i></span>
                 <div>
-                    <h3>Notificaciones push</h3>
+                    <h3>Notificaciones</h3>
                     <p>Activa o desactiva las notificaciones en este dispositivo y personaliza qué tipos quieres recibir.</p>
                 </div>
             </div>
@@ -586,6 +586,20 @@ $usuario = $usuario_configuracion;
 
             <div id="notifPermBanner" class="notif-perm-banner" style="display:none;"></div>
 
+            <div id="notifActivateBox" class="notif-activate-box" style="display:none;">
+                <button type="button" id="btnActivarNotif" class="btn btn-app-primary">
+                    <i class="fa-solid fa-bell"></i> Activar notificaciones del navegador
+                </button>
+                <span class="notif-activate-help">Requiere permiso del navegador para enviar notificaciones push.</span>
+            </div>
+
+            <div id="notifBlockedBox" class="notif-blocked-box" style="display:none;">
+                <button type="button" id="btnAyudaNotif" class="btn btn-outline-warning">
+                    <i class="fa-solid fa-circle-question"></i> ¿Cómo activar las notificaciones?
+                </button>
+                <span class="notif-blocked-help">Las notificaciones están bloqueadas en este dispositivo.</span>
+            </div>
+
             <div class="admin-actions">
                 <button type="submit" class="btn btn-app-primary" id="notifSaveBtn">
                     <i class="fa-solid fa-floppy-disk"></i> Guardar preferencias
@@ -616,13 +630,151 @@ $usuario = $usuario_configuracion;
 
     syncSubPane();
 
+    const activateBox = document.getElementById('notifActivateBox');
+    const blockedBox = document.getElementById('notifBlockedBox');
+    const btnActivar = document.getElementById('btnActivarNotif');
+    const btnAyuda = document.getElementById('btnAyudaNotif');
+
+    function detectarEstadoNotificaciones() {
+        if (!('Notification' in window) || !('serviceWorker' in navigator)) {
+            banner.textContent = 'Tu navegador no soporta notificaciones push.';
+            banner.className = 'notif-perm-banner notif-perm-warn';
+            banner.style.display = '';
+            activateBox.style.display = 'none';
+            blockedBox.style.display = 'none';
+            return;
+        }
+
+        const perm = Notification.permission;
+
+        if (perm === 'granted') {
+            banner.style.display = 'none';
+            activateBox.style.display = 'none';
+            blockedBox.style.display = 'none';
+            syncSubPane();
+        } else if (perm === 'denied') {
+            banner.innerHTML = '<i class="fa-solid fa-triangle-exclamation me-2"></i>Las notificaciones están bloqueadas en este navegador.';
+            banner.className = 'notif-perm-banner notif-perm-warn';
+            banner.style.display = '';
+            activateBox.style.display = 'none';
+            blockedBox.style.display = '';
+            master.checked = false;
+            syncSubPane();
+        } else {
+            // perm === 'default'
+            banner.innerHTML = '<i class="fa-solid fa-circle-info me-2"></i>Las notificaciones del navegador no están activadas.';
+            banner.className = 'notif-perm-banner notif-perm-info';
+            banner.style.display = '';
+            activateBox.style.display = '';
+            blockedBox.style.display = 'none';
+            master.checked = false;
+            syncSubPane();
+        }
+    }
+
+    function abrirModalAyuda() {
+        const ua = navigator.userAgent.toLowerCase();
+        const isIOS = /iphone|ipad|ipod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        const isAndroid = /android/.test(ua);
+
+        let contenido = '';
+        if (isIOS) {
+            contenido = `
+                <div class="text-center mb-3"><i class="fa-brands fa-apple fa-2x text-secondary"></i></div>
+                <h6 class="fw-bold">Para activar notificaciones en iPhone/iPad:</h6>
+                <ol class="small text-start">
+                    <li>Abre la app <strong>Configuración</strong> del iPhone/iPad</li>
+                    <li>Busca <strong>Notificaciones</strong> y selecciónala</li>
+                    <li>Busca <strong>Safari</strong> (o tu navegador) en la lista</li>
+                    <li>Activa <strong>Permitir notificaciones</strong></li>
+                    <li>Vuelve a esta app y presiona el botón de activar</li>
+                </ol>
+                <p class="small text-muted">Si usas Chrome, debes activarlo desde Configuración → Chrome → Notificaciones</p>
+            `;
+        } else if (isAndroid) {
+            contenido = `
+                <div class="text-center mb-3"><i class="fa-brands fa-android fa-2x text-success"></i></div>
+                <h6 class="fw-bold">Para activar notificaciones en Android:</h6>
+                <ol class="small text-start">
+                    <li>Abre la app <strong>Configuración</strong> del teléfono</li>
+                    <li>Ve a <strong>Aplicaciones</strong> o <strong>Apps</strong></li>
+                    <li>Busca tu navegador (Chrome, Samsung Internet, etc.)</li>
+                    <li>Toca <strong>Notificaciones</strong></li>
+                    <li>Activa las notificaciones para el navegador</li>
+                    <li>Vuelve a esta app y presiona el botón de activar</li>
+                </ol>
+                <p class="small text-muted">En Chrome también puedes ir a: Menú (⋮) → Configuración → Notificaciones</p>
+            `;
+        } else {
+            contenido = `
+                <div class="text-center mb-3"><i class="fa-solid fa-desktop fa-2x text-primary"></i></div>
+                <h6 class="fw-bold">Para activar notificaciones en tu navegador:</h6>
+                <ol class="small text-start">
+                    <li>Haz clic en el ícono de candado/info junto a la URL</li>
+                    <li>Busca <strong>Notificaciones</strong> o <strong>Permisos</strong></li>
+                    <li>Cambia el permiso a <strong>Permitir</strong></li>
+                    <li>Recarga la página y vuelve a intentarlo</li>
+                </ol>
+                <p class="small text-muted">Alternativa: Configuración del navegador → Privacidad → Notificaciones → Agregar excepción</p>
+            `;
+        }
+
+        const modalHTML = `
+            <div class="modal fade" id="modalAyudaNotif" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"><i class="fa-solid fa-bell me-2"></i>Activar Notificaciones</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                        </div>
+                        <div class="modal-body">${contenido}</div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Entendido</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Eliminar modal anterior si existe
+        const prevModal = document.getElementById('modalAyudaNotif');
+        if (prevModal) prevModal.remove();
+
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        const modal = new bootstrap.Modal(document.getElementById('modalAyudaNotif'));
+        modal.show();
+    }
+
+    function solicitarPermiso() {
+        if (!('Notification' in window)) return;
+
+        Notification.requestPermission().then(function (result) {
+            if (result === 'granted') {
+                banner.style.display = 'none';
+                activateBox.style.display = 'none';
+                blockedBox.style.display = 'none';
+                master.checked = true;
+                syncSubPane();
+                if (typeof AppPushNotifications !== 'undefined') {
+                    AppPushNotifications.subscribe().catch(function () {});
+                }
+            } else if (result === 'denied') {
+                detectarEstadoNotificaciones();
+            }
+        });
+    }
+
+    btnActivar.addEventListener('click', solicitarPermiso);
+    btnAyuda.addEventListener('click', abrirModalAyuda);
+
     master.addEventListener('change', function () {
         if (!master.checked) {
             syncSubPane();
             return;
         }
 
-        if (!('Notification' in window) || !('serviceWorker' in navigator)) {
+        // Si activa el toggle, verificar permiso y solicitarlo si es necesario
+        if (!('Notification' in window)) {
             banner.textContent = 'Tu navegador no soporta notificaciones push.';
             banner.className = 'notif-perm-banner notif-perm-warn';
             banner.style.display = '';
@@ -634,49 +786,26 @@ $usuario = $usuario_configuracion;
         const perm = Notification.permission;
 
         if (perm === 'granted') {
-            syncSubPane();
+            // Ya tiene permiso, solo sincronizar UI
             banner.style.display = 'none';
-            return;
-        }
-
-        if (perm === 'denied') {
-            banner.innerHTML = '<i class="fa-solid fa-triangle-exclamation me-2"></i>El navegador bloqueó los permisos. Actívalos en <strong>Configuración del navegador → Privacidad → Notificaciones</strong> para este sitio.';
-            banner.className = 'notif-perm-banner notif-perm-warn';
-            banner.style.display = '';
-            master.checked = false;
+            activateBox.style.display = 'none';
+            blockedBox.style.display = 'none';
             syncSubPane();
-            return;
-        }
-
-        Notification.requestPermission().then(function (result) {
-            if (result === 'granted') {
-                syncSubPane();
-                banner.style.display = 'none';
-                if (typeof AppPushNotifications !== 'undefined') {
-                    AppPushNotifications.subscribe().catch(function () {});
-                }
-            } else {
-                banner.innerHTML = '<i class="fa-solid fa-triangle-exclamation me-2"></i>Permiso denegado. Para recibirlas, activa las notificaciones en la configuración de tu navegador o sistema operativo.';
-                banner.className = 'notif-perm-banner notif-perm-warn';
-                banner.style.display = '';
-                master.checked = false;
-                syncSubPane();
+            // Suscribir al push si no está suscrito
+            if (typeof AppPushNotifications !== 'undefined') {
+                AppPushNotifications.subscribe().catch(function () {});
             }
-        });
+        } else if (perm === 'denied') {
+            // Está bloqueado, mostrar ayuda
+            detectarEstadoNotificaciones();
+        } else {
+            // default - solicitar permiso inmediatamente
+            solicitarPermiso();
+        }
     });
 
-    <?php if ($push_prefs['push_enabled']): ?>
-    if ('Notification' in window && Notification.permission === 'default') {
-        banner.innerHTML = '<i class="fa-solid fa-circle-info me-2"></i>Tienes las notificaciones activadas pero no has concedido el permiso en este navegador. Haz clic en el switch para que aparezca el diálogo.';
-        banner.className = 'notif-perm-banner notif-perm-info';
-        banner.style.display = '';
-    }
-    if ('Notification' in window && Notification.permission === 'denied') {
-        banner.innerHTML = '<i class="fa-solid fa-triangle-exclamation me-2"></i>El permiso está bloqueado en este navegador. Para activarlas, ve a <strong>Configuración del navegador → Notificaciones</strong> y permite este sitio.';
-        banner.className = 'notif-perm-banner notif-perm-warn';
-        banner.style.display = '';
-    }
-    <?php endif; ?>
+    // Detectar estado al cargar la página
+    detectarEstadoNotificaciones();
 })();
 </script>
 
@@ -810,6 +939,83 @@ $usuario = $usuario_configuracion;
     padding: 0;
     box-sizing: border-box;
     box-shadow: 0 0 0 4px rgba(245, 158, 11, .18), 0 16px 30px rgba(15, 23, 42, .22);
+}
+
+.notif-activate-box,
+.notif-blocked-box {
+    background: #f8fafc;
+    border: 1px dashed rgba(15, 23, 42, .22);
+    border-radius: 10px;
+    padding: 1rem;
+    margin: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    align-items: flex-start;
+}
+
+.notif-blocked-box {
+    background: #fff7ed;
+    border-color: rgba(249, 115, 22, .3);
+}
+
+.notif-activate-help,
+.notif-blocked-help {
+    font-size: .85rem;
+    color: #64748b;
+}
+
+.notif-blocked-help {
+    color: #c2410c;
+}
+
+.notif-perm-banner {
+    padding: .75rem 1rem;
+    border-radius: 8px;
+    margin: .5rem 0;
+    font-size: .9rem;
+}
+
+.notif-perm-warn {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+}
+
+.notif-perm-info {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    color: #1e40af;
+}
+
+body.theme-dark .notif-activate-box {
+    background: #172033;
+    border-color: rgba(147, 197, 253, .25);
+}
+
+body.theme-dark .notif-blocked-box {
+    background: rgba(249, 115, 22, .15);
+    border-color: rgba(251, 146, 60, .3);
+}
+
+body.theme-dark .notif-activate-help {
+    color: #94a3b8;
+}
+
+body.theme-dark .notif-blocked-help {
+    color: #fdba74;
+}
+
+body.theme-dark .notif-perm-warn {
+    background: rgba(239, 68, 68, .15);
+    border-color: rgba(248, 113, 113, .3);
+    color: #fca5a5;
+}
+
+body.theme-dark .notif-perm-info {
+    background: rgba(59, 130, 246, .15);
+    border-color: rgba(96, 165, 250, .3);
+    color: #93c5fd;
 }
 
 @media (max-width: 575.98px) {

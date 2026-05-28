@@ -384,9 +384,13 @@ if ($is_apuntes_context) {
 	<meta name="theme-color" content="#27458f">
 	<meta http-equiv="Cache-control" content="no-cache">
 	<title>App Anestesia UACH</title>
-	<link rel="icon" type="image/png" href="<?= app_path('images/logo192.png') ?>?v=<?= @filemtime($app_root_dir . '/images/logo192.png') ?: time() ?>">
+	<link rel="icon" type="image/png" href="<?= app_path('images/icon-192.png') ?>?v=<?= @filemtime($app_root_dir . '/images/icon-192.png') ?: time() ?>">
 	<link rel="manifest" href="<?= app_path('manifest.json') ?>?v=<?= @filemtime($app_root_dir . '/manifest.json') ?: time() ?>"/>
-	<link rel="apple-touch-icon" href="<?= app_path('images/logo192.png') ?>?v=<?= @filemtime($app_root_dir . '/images/logo192.png') ?: time() ?>"/>	
+	<link rel="apple-touch-icon" href="<?= app_path('images/icon-192.png') ?>?v=<?= @filemtime($app_root_dir . '/images/icon-192.png') ?: time() ?>">
+	<!-- iOS PWA specific meta tags to force icon refresh -->
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<meta name="apple-mobile-web-app-title" content="Anestesia UACH">	
     <link href="<?= app_path('css/bootstrap.min.css') ?>" rel="stylesheet"/>
 	<link rel="stylesheet" href="<?= app_path('css/all.css') ?>"/>
 	<link rel="stylesheet" href="<?= app_path('style.css') ?>"/>
@@ -407,6 +411,137 @@ if ($is_apuntes_context) {
 	<script src="<?= app_path('js/app-core.js') ?>"></script>
 	<script src="<?= app_path('js/offline-handler.js') ?>"></script>
 	<script src="<?= app_path('index.js') ?>"></script>
+	<script>
+	(function() {
+		// Detectar si está en modo standalone (añadida a pantalla de inicio)
+		const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+		if (isStandalone) return; // Ya está instalada, no mostrar nada
+
+		// Detectar plataforma
+		const ua = navigator.userAgent.toLowerCase();
+		const isIOS = /iphone|ipad|ipod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+		const isAndroid = /android/.test(ua);
+
+		if (!isIOS && !isAndroid) return; // Solo móviles
+
+		// Crear estilos del toast
+		const style = document.createElement('style');
+		style.textContent = `
+			.pwa-install-toast {
+				position: fixed;
+				bottom: 20px;
+				right: 20px;
+				max-width: 320px;
+				background: #1e293b;
+				color: #fff;
+				border-radius: 12px;
+				padding: 16px;
+				box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+				z-index: 9999;
+				font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+				font-size: 14px;
+				line-height: 1.4;
+				animation: toastSlideIn 0.3s ease;
+			}
+			.pwa-install-toast.ios {
+				background: #0f172a;
+				border: 1px solid #334155;
+			}
+			.pwa-install-toast.android {
+				background: #1a237e;
+			}
+			.pwa-install-toast-header {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				margin-bottom: 10px;
+				font-weight: 600;
+			}
+			.pwa-install-toast-header i {
+				font-size: 18px;
+			}
+			.pwa-install-toast-close {
+				position: absolute;
+				top: 8px;
+				right: 10px;
+				background: none;
+				border: none;
+				color: #94a3b8;
+				cursor: pointer;
+				font-size: 16px;
+				padding: 4px;
+			}
+			.pwa-install-toast ol {
+				margin: 0 0 0 18px;
+				padding: 0;
+				font-size: 13px;
+				color: #cbd5e1;
+			}
+			.pwa-install-toast li {
+				margin-bottom: 6px;
+			}
+			.pwa-install-toast strong {
+				color: #60a5fa;
+			}
+			@keyframes toastSlideIn {
+				from { transform: translateX(100%); opacity: 0; }
+				to { transform: translateX(0); opacity: 1; }
+			}
+			@media (max-width: 480px) {
+				.pwa-install-toast {
+					right: 10px;
+					left: 10px;
+					max-width: none;
+				}
+			}
+		`;
+		document.head.appendChild(style);
+
+		// Crear contenido según plataforma
+		let content = '';
+		if (isIOS) {
+			content = `
+				<div class="pwa-install-toast ios">
+					<button class="pwa-install-toast-close" onclick="this.parentElement.remove()">&times;</button>
+					<div class="pwa-install-toast-header">
+						<i class="fa-brands fa-apple"></i>
+						<span>Instala esta app en tu iPhone/iPad</span>
+					</div>
+					<ol>
+						<li>Presiona el botón <strong>Compartir</strong> <i class="fa-solid fa-arrow-up-from-bracket"></i> en la barra de Safari</li>
+					<li>Desplázate hacia abajo y toca <strong>"Agregar a pantalla de inicio"</strong></li>
+					<li>Presiona <strong>Agregar</strong> en la esquina superior derecha</li>
+					</ol>
+				</div>
+			`;
+		} else if (isAndroid) {
+			content = `
+				<div class="pwa-install-toast android">
+					<button class="pwa-install-toast-close" onclick="this.parentElement.remove()">&times;</button>
+					<div class="pwa-install-toast-header">
+						<i class="fa-brands fa-android"></i>
+						<span>Instala esta app en tu Android</span>
+					</div>
+					<ol>
+						<li>Presiona el menú <strong>⋮</strong> (tres puntos) en Chrome</li>
+						<li>Selecciona <strong>"Agregar a pantalla de inicio"</strong> o <strong>"Instalar app"</strong></li>
+						<li>Confirma presionando <strong>Agregar/Instalar</strong></li>
+					</ol>
+					<p style="margin:8px 0 0 0;font-size:12px;color:#94a3b8;">También puede aparecer un banner de instalación automático</p>
+				</div>
+			`;
+		}
+
+		// Insertar toast cuando el DOM esté listo
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', function() {
+				document.body.insertAdjacentHTML('beforeend', content);
+			});
+		} else {
+			document.body.insertAdjacentHTML('beforeend', content);
+		}
+	})();
+	</script>
 </head>
 <body class="<?= app_ui_body_classes($app_ui_modo, $app_ui_nav_posicion) ?>">
 
