@@ -111,6 +111,25 @@ if ($stmt) {
     $stmt->close();
 }
 
+function ui_get_push_prefs(mysqli $conn, int $uid): array {
+    $defaults = ['push_enabled'=>1,'notif_calendario'=>1,'notif_bitacora'=>1,'notif_dolor'=>1,'notif_sistema'=>1];
+    $stmt = $conn->prepare("SELECT `push_enabled`,`notif_calendario`,`notif_bitacora`,`notif_dolor`,`notif_sistema` FROM `user_push_prefs` WHERE `usuario_id`=? LIMIT 1");
+    if (!$stmt) return $defaults;
+    $stmt->bind_param('i',$uid);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $row = $res->fetch_assoc();
+    $stmt->close();
+    if (!$row) return $defaults;
+    return [
+        'push_enabled'     => (int)$row['push_enabled'],
+        'notif_calendario' => (int)$row['notif_calendario'],
+        'notif_bitacora'   => (int)$row['notif_bitacora'],
+        'notif_dolor'      => (int)$row['notif_dolor'],
+        'notif_sistema'    => (int)$row['notif_sistema'],
+    ];
+}
+
 $modo_actual = in_array((string)($usuario['ui_modo'] ?? 'normal'), ui_modos_validos(), true) ? (string)$usuario['ui_modo'] : 'normal';
 $nav_actual = in_array((string)($usuario['ui_nav_posicion'] ?? 'left'), ['left', 'right'], true) ? (string)$usuario['ui_nav_posicion'] : 'left';
 $es_admin_ui = (int)($usuario['admin'] ?? 0) === 1;
@@ -118,6 +137,8 @@ $iconos_permitidos_usuario = $es_admin_ui ? array_merge(ui_iconos_validos(), ui_
 $icono_actual = in_array((string)($usuario['ui_icono'] ?? 'fa-user-doctor'), $iconos_permitidos_usuario, true) ? (string)$usuario['ui_icono'] : 'fa-user-doctor';
 $icono_color_actual = in_array((string)($usuario['ui_icono_color'] ?? 'green'), ui_colores_icono_validos(), true) ? (string)$usuario['ui_icono_color'] : 'green';
 $icono_actual_admin = $es_admin_ui;
+
+$push_prefs = ui_get_push_prefs($conexion_ui, (int)$usuario['ID']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $accion = (string)($_POST['config_action'] ?? '');
@@ -187,6 +208,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 $stmt->close();
             }
+        }
+    }
+
+    if ($accion === 'notif') {
+        $uid_notif = (int)$usuario['ID'];
+        $push_enabled_post     = isset($_POST['push_enabled'])     ? 1 : 0;
+        $notif_calendario_post = isset($_POST['notif_calendario']) ? 1 : 0;
+        $notif_bitacora_post   = isset($_POST['notif_bitacora'])   ? 1 : 0;
+        $notif_dolor_post      = isset($_POST['notif_dolor'])      ? 1 : 0;
+        $notif_sistema_post    = isset($_POST['notif_sistema'])    ? 1 : 0;
+
+        $stmt_notif = $conexion_ui->prepare("
+            INSERT INTO `user_push_prefs`
+                (`usuario_id`,`push_enabled`,`notif_calendario`,`notif_bitacora`,`notif_dolor`,`notif_sistema`)
+            VALUES (?,?,?,?,?,?)
+            ON DUPLICATE KEY UPDATE
+                `push_enabled`=VALUES(`push_enabled`),
+                `notif_calendario`=VALUES(`notif_calendario`),
+                `notif_bitacora`=VALUES(`notif_bitacora`),
+                `notif_dolor`=VALUES(`notif_dolor`),
+                `notif_sistema`=VALUES(`notif_sistema`)
+        ");
+        if ($stmt_notif) {
+            $stmt_notif->bind_param('iiiiii',$uid_notif,$push_enabled_post,$notif_calendario_post,$notif_bitacora_post,$notif_dolor_post,$notif_sistema_post);
+            if ($stmt_notif->execute()) {
+                $push_prefs = [
+                    'push_enabled'     => $push_enabled_post,
+                    'notif_calendario' => $notif_calendario_post,
+                    'notif_bitacora'   => $notif_bitacora_post,
+                    'notif_dolor'      => $notif_dolor_post,
+                    'notif_sistema'    => $notif_sistema_post,
+                ];
+                $mensaje_ok = 'Preferencias de notificaciones guardadas.';
+                if ($push_enabled_post === 0) {
+                    $stmt_dis = $conexion_ui->prepare("UPDATE `push_subscriptions` SET `enabled`=0, `updated_at`=NOW() WHERE `usuario_id`=?");
+                    if ($stmt_dis) { $stmt_dis->bind_param('i',$uid_notif); $stmt_dis->execute(); $stmt_dis->close(); }
+                }
+            } else {
+                $mensaje_error = 'No fue posible guardar las preferencias de notificaciones.';
+            }
+            $stmt_notif->close();
+        } else {
+            $mensaje_error = 'Error preparando la consulta de preferencias.';
         }
     }
 
@@ -431,8 +495,190 @@ $usuario = $usuario_configuracion;
                 </button>
             </div>
         </form>
+
+        <form method="post" action="configuracion_ui.php" class="app-card ui-settings-card" id="notifPrefsForm">
+            <input type="hidden" name="config_action" value="notif">
+            <div class="app-card-title">
+                <span class="app-icon-circle"><i class="fa-solid fa-bell"></i></span>
+                <div>
+                    <h3>Notificaciones push</h3>
+                    <p>Activa o desactiva las notificaciones en este dispositivo y personaliza qué tipos quieres recibir.</p>
+                </div>
+            </div>
+
+            <div class="notif-prefs-list">
+
+                <div class="notif-pref-row notif-pref-master">
+                    <div class="notif-pref-info">
+                        <span class="notif-pref-icon"><i class="fa-solid fa-bell"></i></span>
+                        <div>
+                            <strong>Notificaciones activadas</strong>
+                            <span class="notif-pref-desc">Permite que la app te envíe notificaciones en este dispositivo.</span>
+                        </div>
+                    </div>
+                    <label class="notif-toggle" id="masterToggleLabel">
+                        <input type="checkbox" name="push_enabled" id="pushMasterSwitch" <?= $push_prefs['push_enabled'] ? 'checked' : '' ?> value="1">
+                        <span class="notif-toggle-slider"></span>
+                    </label>
+                </div>
+
+                <div id="notifSubPrefs" class="notif-subprefs <?= $push_prefs['push_enabled'] ? '' : 'notif-subprefs-disabled' ?>">
+
+                    <div class="notif-pref-row">
+                        <div class="notif-pref-info">
+                            <span class="notif-pref-icon notif-pref-icon-cal"><i class="fa-regular fa-calendar"></i></span>
+                            <div>
+                                <strong>Calendario</strong>
+                                <span class="notif-pref-desc">Recordatorios de eventos próximos en tu calendario académico.</span>
+                            </div>
+                        </div>
+                        <label class="notif-toggle">
+                            <input type="checkbox" name="notif_calendario" <?= $push_prefs['notif_calendario'] ? 'checked' : '' ?> value="1" class="notif-sub-check">
+                            <span class="notif-toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="notif-pref-row">
+                        <div class="notif-pref-info">
+                            <span class="notif-pref-icon notif-pref-icon-bit"><i class="fa-solid fa-clipboard-list"></i></span>
+                            <div>
+                                <strong>Bitácora</strong>
+                                <span class="notif-pref-desc">Avisos cuando un residente ingresa un procedimiento para tu revisión.</span>
+                            </div>
+                        </div>
+                        <label class="notif-toggle">
+                            <input type="checkbox" name="notif_bitacora" <?= $push_prefs['notif_bitacora'] ? 'checked' : '' ?> value="1" class="notif-sub-check">
+                            <span class="notif-toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="notif-pref-row">
+                        <div class="notif-pref-info">
+                            <span class="notif-pref-icon notif-pref-icon-dolor"><i class="fa-solid fa-hospital-user"></i></span>
+                            <div>
+                                <strong>Pacientes Dolor</strong>
+                                <span class="notif-pref-desc">Recordatorio diario de pacientes activos en manejo de dolor agudo.</span>
+                            </div>
+                        </div>
+                        <label class="notif-toggle">
+                            <input type="checkbox" name="notif_dolor" <?= $push_prefs['notif_dolor'] ? 'checked' : '' ?> value="1" class="notif-sub-check">
+                            <span class="notif-toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="notif-pref-row">
+                        <div class="notif-pref-info">
+                            <span class="notif-pref-icon notif-pref-icon-sis"><i class="fa-solid fa-bullhorn"></i></span>
+                            <div>
+                                <strong>Avisos del sistema</strong>
+                                <span class="notif-pref-desc">Notificaciones enviadas por el administrador a todo el equipo.</span>
+                            </div>
+                        </div>
+                        <label class="notif-toggle">
+                            <input type="checkbox" name="notif_sistema" <?= $push_prefs['notif_sistema'] ? 'checked' : '' ?> value="1" class="notif-sub-check">
+                            <span class="notif-toggle-slider"></span>
+                        </label>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div id="notifPermBanner" class="notif-perm-banner" style="display:none;"></div>
+
+            <div class="admin-actions">
+                <button type="submit" class="btn btn-app-primary" id="notifSaveBtn">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar preferencias
+                </button>
+            </div>
+        </form>
+
     </main>
 </div>
+
+<script>
+(function () {
+    const master  = document.getElementById('pushMasterSwitch');
+    const subPane = document.getElementById('notifSubPrefs');
+    const banner  = document.getElementById('notifPermBanner');
+    const form    = document.getElementById('notifPrefsForm');
+    const subChecks = document.querySelectorAll('.notif-sub-check');
+
+    function syncSubPane() {
+        if (master.checked) {
+            subPane.classList.remove('notif-subprefs-disabled');
+            subChecks.forEach(c => c.disabled = false);
+        } else {
+            subPane.classList.add('notif-subprefs-disabled');
+            subChecks.forEach(c => c.disabled = true);
+        }
+    }
+
+    syncSubPane();
+
+    master.addEventListener('change', function () {
+        if (!master.checked) {
+            syncSubPane();
+            return;
+        }
+
+        if (!('Notification' in window) || !('serviceWorker' in navigator)) {
+            banner.textContent = 'Tu navegador no soporta notificaciones push.';
+            banner.className = 'notif-perm-banner notif-perm-warn';
+            banner.style.display = '';
+            master.checked = false;
+            syncSubPane();
+            return;
+        }
+
+        const perm = Notification.permission;
+
+        if (perm === 'granted') {
+            syncSubPane();
+            banner.style.display = 'none';
+            return;
+        }
+
+        if (perm === 'denied') {
+            banner.innerHTML = '<i class="fa-solid fa-triangle-exclamation me-2"></i>El navegador bloqueó los permisos. Actívalos en <strong>Configuración del navegador → Privacidad → Notificaciones</strong> para este sitio.';
+            banner.className = 'notif-perm-banner notif-perm-warn';
+            banner.style.display = '';
+            master.checked = false;
+            syncSubPane();
+            return;
+        }
+
+        Notification.requestPermission().then(function (result) {
+            if (result === 'granted') {
+                syncSubPane();
+                banner.style.display = 'none';
+                if (typeof AppPushNotifications !== 'undefined') {
+                    AppPushNotifications.subscribe().catch(function () {});
+                }
+            } else {
+                banner.innerHTML = '<i class="fa-solid fa-triangle-exclamation me-2"></i>Permiso denegado. Para recibirlas, activa las notificaciones en la configuración de tu navegador o sistema operativo.';
+                banner.className = 'notif-perm-banner notif-perm-warn';
+                banner.style.display = '';
+                master.checked = false;
+                syncSubPane();
+            }
+        });
+    });
+
+    <?php if ($push_prefs['push_enabled']): ?>
+    if ('Notification' in window && Notification.permission === 'default') {
+        banner.innerHTML = '<i class="fa-solid fa-circle-info me-2"></i>Tienes las notificaciones activadas pero no has concedido el permiso en este navegador. Haz clic en el switch para que aparezca el diálogo.';
+        banner.className = 'notif-perm-banner notif-perm-info';
+        banner.style.display = '';
+    }
+    if ('Notification' in window && Notification.permission === 'denied') {
+        banner.innerHTML = '<i class="fa-solid fa-triangle-exclamation me-2"></i>El permiso está bloqueado en este navegador. Para activarlas, ve a <strong>Configuración del navegador → Notificaciones</strong> y permite este sitio.';
+        banner.className = 'notif-perm-banner notif-perm-warn';
+        banner.style.display = '';
+    }
+    <?php endif; ?>
+})();
+</script>
 
 <style>
 .ui-avatar-picker {
@@ -633,6 +879,179 @@ body.theme-dark .password-toggle-btn {
     color: #dbeafe;
     border-color: var(--app-border);
 }
+
+/* ── Notif prefs ── */
+.notif-prefs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1.5px solid var(--app-border, rgba(15,23,42,.12));
+    border-radius: 14px;
+    overflow: hidden;
+    margin-top: .25rem;
+}
+
+.notif-pref-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .9rem 1.1rem;
+    border-bottom: 1px solid var(--app-border, rgba(15,23,42,.08));
+    background: transparent;
+    transition: background .15s;
+}
+
+.notif-pref-row:last-child { border-bottom: none; }
+.notif-pref-master { background: var(--app-blue-soft, #eef5ff); }
+
+.notif-pref-info {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    min-width: 0;
+}
+
+.notif-pref-info > div {
+    display: flex;
+    flex-direction: column;
+    gap: .15rem;
+}
+
+.notif-pref-info strong {
+    font-size: .93rem;
+    line-height: 1.3;
+}
+
+.notif-pref-desc {
+    font-size: .78rem;
+    color: var(--app-muted, #64748b);
+    line-height: 1.35;
+}
+
+.notif-pref-icon {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 9px;
+    display: grid;
+    place-items: center;
+    font-size: .95rem;
+    background: var(--app-blue-soft, #eef5ff);
+    color: var(--app-blue, #2563eb);
+}
+
+.notif-pref-icon-cal  { background: #e0f2fe; color: #0284c7; }
+.notif-pref-icon-bit  { background: #fef9c3; color: #a16207; }
+.notif-pref-icon-dolor{ background: #fce7f3; color: #be185d; }
+.notif-pref-icon-sis  { background: #dcfce7; color: #15803d; }
+
+.notif-subprefs { transition: opacity .2s; }
+.notif-subprefs-disabled { opacity: .38; pointer-events: none; }
+
+/* Toggle switch */
+.notif-toggle {
+    position: relative;
+    display: inline-block;
+    width: 46px;
+    height: 26px;
+    min-width: 46px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.notif-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+.notif-toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: #cbd5e1;
+    border-radius: 999px;
+    transition: background .18s;
+}
+
+.notif-toggle-slider::before {
+    content: '';
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 1px 4px rgba(15,23,42,.18);
+    transition: transform .18s;
+}
+
+.notif-toggle input:checked + .notif-toggle-slider {
+    background: #2563eb;
+}
+
+.notif-toggle input:checked + .notif-toggle-slider::before {
+    transform: translateX(20px);
+}
+
+/* Banner */
+.notif-perm-banner {
+    border-radius: 10px;
+    padding: .7rem 1rem;
+    font-size: .84rem;
+    margin-top: .75rem;
+    line-height: 1.45;
+}
+
+.notif-perm-info { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+.notif-perm-warn { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+
+/* Dark mode */
+body.theme-dark .notif-prefs-list,
+body.ui-nocturno .notif-prefs-list {
+    border-color: rgba(147,197,253,.2) !important;
+}
+
+body.theme-dark .notif-pref-master,
+body.ui-nocturno .notif-pref-master {
+    background: rgba(37,99,235,.12) !important;
+}
+
+body.theme-dark .notif-pref-row,
+body.ui-nocturno .notif-pref-row {
+    border-color: rgba(147,197,253,.12) !important;
+}
+
+body.theme-dark .notif-pref-desc,
+body.ui-nocturno .notif-pref-desc {
+    color: #94a3b8 !important;
+}
+
+body.theme-dark .notif-pref-icon,
+body.ui-nocturno .notif-pref-icon {
+    background: rgba(37,99,235,.18) !important;
+    color: #93c5fd !important;
+}
+
+body.theme-dark .notif-pref-icon-cal,
+body.ui-nocturno .notif-pref-icon-cal  { background: rgba(2,132,199,.18) !important; color: #7dd3fc !important; }
+body.theme-dark .notif-pref-icon-bit,
+body.ui-nocturno .notif-pref-icon-bit  { background: rgba(161,98,7,.18) !important; color: #fde68a !important; }
+body.theme-dark .notif-pref-icon-dolor,
+body.ui-nocturno .notif-pref-icon-dolor{ background: rgba(190,24,93,.18) !important; color: #fbcfe8 !important; }
+body.theme-dark .notif-pref-icon-sis,
+body.ui-nocturno .notif-pref-icon-sis  { background: rgba(21,128,61,.18) !important; color: #86efac !important; }
+
+body.theme-dark .notif-toggle-slider,
+body.ui-nocturno .notif-toggle-slider { background: #334155; }
+
+body.theme-dark .notif-perm-info,
+body.ui-nocturno .notif-perm-info { background: rgba(37,99,235,.14); color: #93c5fd; border-color: rgba(147,197,253,.25); }
+
+body.theme-dark .notif-perm-warn,
+body.ui-nocturno .notif-perm-warn { background: rgba(194,65,12,.14); color: #fca5a5; border-color: rgba(252,165,110,.25); }
 </style>
 
 <script>

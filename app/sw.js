@@ -1,4 +1,4 @@
-const CACHE_NAME = "app-static-v13";
+const CACHE_NAME = "app-static-v14";
 
 const STATIC_ASSETS = [
   "/",
@@ -25,6 +25,7 @@ const STATIC_ASSETS = [
   "/js/jquery-3.6.1.min.js",
   "/js/app-core.js",
   "/js/offline-handler.js",
+  "/js/push-notifications.js",
   "/js/index.js",
   "/images/logo192.png",
   "/images/IMG0001.jpeg",
@@ -249,6 +250,53 @@ self.addEventListener("fetch", (event) => {
           return new Response('Sin conexion y sin cache disponible.', { status: 503 });
         });
       })
+  );
+});
+
+self.addEventListener("push", (event) => {
+  let data = {};
+  if (event.data) {
+    try {
+      data = event.data.json();
+    } catch (err) {
+      data = { title: "Anestesia UACH", body: event.data.text() };
+    }
+  }
+
+  const title = data.title || "Anestesia UACH";
+  const options = {
+    body: data.body || data.message || "Tienes una nueva notificación.",
+    icon: data.icon || "/images/logo192.png",
+    badge: data.badge || "/images/logo192.png",
+    data: {
+      url: data.url || "/",
+      notificacion_id: data.notificacion_id || null
+    },
+    tag: data.tag || "app-anestesia-uach",
+    renotify: Boolean(data.renotify),
+    requireInteraction: Boolean(data.requireInteraction)
+  };
+
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const targetUrl = event.notification.data && event.notification.data.url ? event.notification.data.url : "/";
+
+  event.waitUntil(
+    clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
+      const absoluteUrl = new URL(targetUrl, self.location.origin).href;
+      for (const client of clientList) {
+        if (client.url === absoluteUrl && "focus" in client) {
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow(targetUrl);
+      }
+      return null;
+    })
   );
 });
 

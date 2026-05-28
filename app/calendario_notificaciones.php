@@ -4,6 +4,11 @@
  * Se usa en calendario.php y index.php
  */
 
+if (!function_exists('app_push_send_to_users')) {
+    $__push_helpers = __DIR__ . '/app_push_helpers.php';
+    if (is_readable($__push_helpers)) require_once $__push_helpers;
+}
+
 // Verificar si ya existe notificación para este evento y usuario
 function cal_notif_existe($conexion, $calendar_id, $event_id, $tipo_notif, $fecha_evento = null, $usuario_id = 0) {
     if ($fecha_evento !== null) {
@@ -178,6 +183,11 @@ function cal_notif_procesar_eventos($conexion, $usuario_id, $calendarios, $event
 
         // Registrar evento como notificado (por usuario)
         cal_notif_registrar_evento($conexion, $calendar_id_google, $event_id, $tipo_notif, $notif_id, $fecha_evento, $usuario_id);
+
+        // Enviar push
+        if (function_exists('app_push_send_to_users')) {
+            app_push_send_to_users($conexion, [$usuario_id], $titulo_notif, $mensaje, '/calendario.php', '', 'notif_calendario');
+        }
 
         $notif_creadas++;
     }

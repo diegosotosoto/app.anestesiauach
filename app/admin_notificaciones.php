@@ -3,6 +3,7 @@
 // Conexión
 require("conectar.php");
 require_once __DIR__ . '/app_security.php';
+require_once __DIR__ . '/app_push_helpers.php';
 
 $smtp_config_path = __DIR__ . '/secure_config/smtp_config.php';
 if(file_exists($smtp_config_path)){
@@ -695,6 +696,19 @@ if(isset($_POST['crear_notificacion']) && $_POST['crear_notificacion'] === '1'){
 
             $conexion->commit();
             $mensaje = "Notificación creada correctamente.";
+
+            $push_destinatarios = app_push_get_destinatarios($conexion, $notificacion_id);
+            if (!empty($push_destinatarios)) {
+                app_push_send_to_users(
+                    $conexion,
+                    $push_destinatarios,
+                    $titulo,
+                    $mensaje_notif,
+                    $url_destino ?: '/',
+                    $icono,
+                    'notif_sistema'
+                );
+            }
 
             if($enviar_email === 1){
                 $destinatarios_email = obtener_emails_destinatarios_notificacion($conexion, $notificacion_id);

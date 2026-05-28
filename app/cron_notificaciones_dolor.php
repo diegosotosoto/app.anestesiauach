@@ -17,6 +17,7 @@ if (file_exists(__DIR__ . '/app_text_helpers.php')) {
     require_once __DIR__ . '/app_text_helpers.php';
 }
 require_once __DIR__ . '/app_security.php';
+require_once __DIR__ . '/app_push_helpers.php';
 
 $conexion = new mysqli($db_host, $db_usuario, $db_contra, $db_nombre);
 $conexion->set_charset('utf8mb4');
@@ -196,6 +197,7 @@ function procesar_notificaciones_dolor($conexion) {
         $notif_id = crear_notificacion_dolor($conexion, $titulo, $mensaje, $uid);
         if ($notif_id) {
             asignar_destinatario_notif($conexion, $notif_id, $uid);
+            app_push_send_to_users($conexion, [$uid], $titulo, $mensaje, '/hoja_dolor.php', 'fa-solid fa-bell-medical', 'notif_dolor');
             log_dolor("Notificación creada para usuario #{$uid} ({$cantidad} pacientes)");
             $notif_creadas++;
         } else {

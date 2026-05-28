@@ -2,6 +2,7 @@
 //Conexión
 require("conectar.php");
 require_once __DIR__ . '/app_security.php';
+require_once __DIR__ . '/app_push_helpers.php';
 date_default_timezone_set('America/Santiago');
 $conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
 $conexion->set_charset("utf8");
@@ -181,6 +182,18 @@ if(isset($_POST['rut_b']) && $_POST['rut_b'] !== ''){
           <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
           <strong>Info!</strong> Registro guardado.
         </div>";
+
+        $push_stmt = $conexion->prepare("SELECT `ID` FROM `usuarios_dolor` WHERE `email_usuario` = ? AND (`staff_` = 1 OR `admin` = 1) LIMIT 1");
+        if ($push_stmt) {
+          $push_stmt->bind_param('s', $staff_b);
+          $push_stmt->execute();
+          $push_res = $push_stmt->get_result();
+          if ($push_row = $push_res->fetch_assoc()) {
+            $nombre_becado = function_exists('app_decode_text') ? app_decode_text($usuario['nombre_usuario']) : html_entity_decode($usuario['nombre_usuario'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            app_push_send_to_users($conexion, [(int)$push_row['ID']], 'Bitácora pendiente de aprobación', $nombre_becado . ' ingresó un procedimiento para tu revisión.', '/bitacora_autoriza.php', 'fa-solid fa-clipboard-check', 'notif_bitacora');
+          }
+          $push_stmt->close();
+        }
       }
     }
   }

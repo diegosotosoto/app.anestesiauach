@@ -53,6 +53,21 @@ require("../head.php");
           @media (max-width:768px){.analg-choice-grid.analg-grid-3,.analg-choice-grid.analg-grid-4,.analg-choice-grid.analg-grid-5,.analg-drug-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
           @media (max-width:420px){.analg-choice-grid,.analg-choice-grid.analg-grid-3,.analg-choice-grid.analg-grid-4,.analg-choice-grid.analg-grid-5,.analg-drug-grid{grid-template-columns:1fr;}.prem-table td{display:block;border-radius:0!important;border-left:1px solid var(--note-line);border-right:1px solid var(--note-line);}.prem-table td:first-child{border-radius:.75rem .75rem 0 0!important;}.prem-table td:last-child{border-radius:0 0 .75rem .75rem!important;border-top:0;}}
 
+          /* UMSS Grid Styles - Horizontal layout */
+          .umss-info-grid{display:grid;grid-template-columns:1fr;gap:.6rem;}
+          .umss-cell{display:flex;flex-direction:row;align-items:flex-start;justify-content:flex-start;text-align:left;padding:.9rem 1rem;border-radius:1rem;border:2px solid var(--note-line);background:#fff;transition:.15s ease;gap:.9rem;}
+          .umss-cell-num{font-size:1.35rem;font-weight:800;line-height:1;color:var(--note-text);min-width:2rem;text-align:center;}
+          .umss-cell-lbl{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.02em;min-width:5rem;margin-top:.15rem;}
+          .umss-cell-desc{font-size:.78rem;line-height:1.4;color:var(--note-muted);flex:1;margin-top:.05rem;}
+          .umss-info-0{background:#f8fafc;border-color:#cbd5e1;}
+          .umss-info-0 .umss-cell-lbl{color:#64748b;}
+          .umss-info-1{background:#ecfdf5;border-color:#6ee7b7;}
+          .umss-info-1 .umss-cell-lbl{color:#059669;}
+          .umss-info-3{background:#fff7ed;border-color:#fdba74;}
+          .umss-info-3 .umss-cell-lbl{color:#ea580c;}
+          .umss-info-4{background:#fef2f2;border-color:#fca5a5;}
+          .umss-info-4 .umss-cell-lbl{color:#dc2626;}
+
           /* Dark mode overrides */
           body.theme-dark .analg-option,
           body.ui-nocturno .analg-option{
@@ -95,8 +110,30 @@ require("../head.php");
             background:rgba(217,45,32,.15)!important;
             border-color:rgba(217,45,32,.3)!important;
           }
+
+          /* UMSS Dark mode */
+          body.theme-dark .umss-cell,
+          body.ui-nocturno .umss-cell{background:var(--app-card);border-color:var(--app-border);}
+          body.theme-dark .umss-info-0,
+          body.ui-nocturno .umss-info-0{background:rgba(100,116,139,.15);border-color:rgba(148,163,184,.35);}
+          body.theme-dark .umss-info-0 .umss-cell-lbl,
+          body.ui-nocturno .umss-info-0 .umss-cell-lbl{color:#94a3b8;}
+          body.theme-dark .umss-info-1,
+          body.ui-nocturno .umss-info-1{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.35);}
+          body.theme-dark .umss-info-1 .umss-cell-lbl,
+          body.ui-nocturno .umss-info-1 .umss-cell-lbl{color:#6ee7b7;}
+          body.theme-dark .umss-info-3,
+          body.ui-nocturno .umss-info-3{background:rgba(249,115,22,.15);border-color:rgba(251,146,60,.35);}
+          body.theme-dark .umss-info-3 .umss-cell-lbl,
+          body.ui-nocturno .umss-info-3 .umss-cell-lbl{color:#fdba74;}
+          body.theme-dark .umss-info-4,
+          body.ui-nocturno .umss-info-4{background:rgba(220,38,38,.15);border-color:rgba(248,113,113,.35);}
+          body.theme-dark .umss-info-4 .umss-cell-lbl,
+          body.ui-nocturno .umss-info-4 .umss-cell-lbl{color:#fca5a5;}
+          body.theme-dark .umss-cell-desc,
+          body.ui-nocturno .umss-cell-desc{color:var(--app-muted);border-color:var(--app-border);}
         </style>
-<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>">
+<link rel="stylesheet" href="../css/module-calculos-apuntes.css?v=<?= @filemtime($app_root_dir . '/css/module-calculos-apuntes.css') ?: time() ?>&umss=1">
 
         <div class="note-hero mb-3">
           <div class="note-hero-kicker">APP CLÍNICA · PREMEDICACIÓN PEDIÁTRICA</div>
@@ -264,6 +301,11 @@ require("../head.php");
           </div>
         </div>
 
+
+
+
+
+
         <div id="algoBox" class="note-interpretation mb-3">
           <div class="note-interpretation-label">Interpretación clínica</div>
           <div class="note-result-secondary mb-2">Contexto clínico: candidato regular ASA I–II, niño que coopera.</div>
@@ -282,6 +324,47 @@ require("../head.php");
 
         <div class="note-success mb-3"><strong>Objetivo práctico:</strong><div class="mt-2">Lograr UMSS 1–2: niño tranquilo, cooperador y seguro, sin comprometer vía aérea ni ventilación.</div></div>
 
+
+        <div class="note-card mb-3">
+          <div class="note-card-body">
+            <div class="note-section-label">
+              <span>Objetivo de sedación UMSS</span>
+            </div>
+
+              <div class="note-result-secondary mb-2">Escala UMSS para valoración del nivel de sedación en pediatría.</div>
+              <div class="umss-info-grid mb-2">
+                <div class="umss-cell umss-info-0">
+                  <div class="umss-cell-num">0</div>
+                  <div class="umss-cell-lbl">Alerta</div>
+                  <div class="umss-cell-desc">Niño activo, despierto, responde espontáneamente. Sedación insuficiente para procedimientos.</div>
+                </div>
+                <div class="umss-cell umss-info-1">
+                  <div class="umss-cell-num">1</div>
+                  <div class="umss-cell-lbl">Ideal</div>
+                  <div class="umss-cell-desc">Tranquilo, algo adormecido, responde fácilmente a estímulos verbales. Rango objetivo.</div>
+                </div>
+                <div class="umss-cell umss-info-1">
+                  <div class="umss-cell-num">2</div>
+                  <div class="umss-cell-lbl">Ideal</div>
+                  <div class="umss-cell-desc">Dormido pero responde a estímulos suaves (voz o tacto ligero). Rango objetivo.</div>
+                </div>
+                <div class="umss-cell umss-info-3">
+                  <div class="umss-cell-num">3</div>
+                  <div class="umss-cell-lbl">Excesiva</div>
+                  <div class="umss-cell-desc">Responde solo a estímulos más intensos o repetidos. Vigilancia estrecha requerida.</div>
+                </div>
+                <div class="umss-cell umss-info-4">
+                  <div class="umss-cell-num">4</div>
+                  <div class="umss-cell-lbl">Alarma</div>
+                  <div class="umss-cell-desc">Sin respuesta a estímulos. Sedación muy profunda. Tratar como alarma clínica.</div>
+                </div>
+              </div>
+              <div class="note-result-secondary">Rango útil: UMSS 1–2 (tranquilo/cooperador). UMSS ≥3 requiere vigilancia estrecha.</div>
+            </div>
+          </div>
+
+
+
         <div class="note-card mb-3">
           <div class="note-card-body">
             <div class="note-section-label">Complicaciones y manejo inicial</div>
@@ -293,23 +376,7 @@ require("../head.php");
           </div>
         </div>
 
-        <div class="note-card mb-3">
-          <div class="note-card-body">
-            <div class="note-section-label">
-              <span>Objetivo de sedación UMSS</span>
-            </div>
 
-              <div class="note-result-secondary mb-2">Escala UMSS para valoración del nivel de sedación en pediatría.</div>
-              <div class="umss-info-grid mb-2">
-                <div class="umss-cell umss-info-0"><div class="umss-cell-num">0</div><div class="umss-cell-lbl">Alerta</div></div>
-                <div class="umss-cell umss-info-1"><div class="umss-cell-num">1</div><div class="umss-cell-lbl">Ideal</div></div>
-                <div class="umss-cell umss-info-1"><div class="umss-cell-num">2</div><div class="umss-cell-lbl">Ideal</div></div>
-                <div class="umss-cell umss-info-3"><div class="umss-cell-num">3</div><div class="umss-cell-lbl">Excesiva</div></div>
-                <div class="umss-cell umss-info-4"><div class="umss-cell-num">4</div><div class="umss-cell-lbl">Alarma</div></div>
-              </div>
-              <div class="note-result-secondary">Rango útil: UMSS 1–2 (tranquilo/cooperador). UMSS ≥3 requiere vigilancia estrecha.</div>
-            </div>
-          </div>
         </div>
 
         <div class="note-teaching-wrap">
@@ -335,7 +402,7 @@ require("../head.php");
   const CNS = window.ClinicalNoteSystem || {};
 
   const DRUGS = {
-    dex_in:{nombre:'Dexmedetomidina IN', clase:'inductor', via:'Intranasal', doseUnit:'mcg/kg', min:1, max:2, absMax:null, inicio:'20–45 min', duracion:'60–120 min', safety:'Bradicardia, hipotensión y sedación prolongada dependiente de dosis. Baja depresión respiratoria significativa.', short:'Bradi / hipoTA', first:true},
+    dex_in:{nombre:'Dexmedetomidina IN', clase:'inductor', via:'Intranasal', doseUnit:'mcg/kg', min:1, max:2, absMax:null, inicio:'20–45 min', duracion:'60–120 min', safety:'Bradicardia, hipotensión y sedación prolongada dependiente de dosis. Bajo riesgo de depresión respiratoria significativa.', short:'Bradi / hipoTA', first:true},
     dex_oral:{nombre:'Dexmedetomidina VO', clase:'inductor', via:'Oral', doseUnit:'mcg/kg', min:2, max:4, absMax:null, inicio:'30–60 min', duracion:'90–150 min', safety:'Inicio más lento y duración mayor. Usar con líquido claro o SG5% según protocolo.', short:'Inicio lento'},
     mida_oral:{nombre:'Midazolam VO', clase:'opioid', via:'Oral', doseUnit:'mg/kg', min:0.25, max:0.5, absMax:20, inicio:'15–30 min', duracion:'60–90 min', safety:'Riesgo de depresión respiratoria, reacción paradójica y mayor delirium emergente comparado con dexmedetomidina.', short:'Depresión respiratoria'},
     mida_in:{nombre:'Midazolam IN', clase:'opioid', via:'Intranasal', doseUnit:'mg/kg', min:0.2, max:0.2, absMax:10, inicio:'10–15 min', duracion:'60–90 min', safety:'Puede irritar mucosa nasal. Vigilar ventilación y sedación.', short:'Vigilar ventilación'},

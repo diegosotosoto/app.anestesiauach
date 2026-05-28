@@ -2,6 +2,7 @@
 //Conexión
 require("conectar.php");
 require_once __DIR__ . '/app_security.php';
+require_once __DIR__ . '/app_push_helpers.php';
 $conexion=new mysqli($db_host,$db_usuario,$db_contra,$db_nombre);
 $conexion->set_charset("utf8");
 
@@ -134,6 +135,18 @@ if(isset($_POST['rut_i']) && $_POST['rut_i'] !== ''){
           <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
           <strong>Info!</strong> Registro Guardado.
         </div>";
+
+        $push_stmt = $conexion->prepare("SELECT `ID` FROM `usuarios_dolor` WHERE `email_usuario` = ? AND (`staff_` = 1 OR `admin` = 1) LIMIT 1");
+        if ($push_stmt) {
+          $push_stmt->bind_param('s', $staff_i);
+          $push_stmt->execute();
+          $push_res = $push_stmt->get_result();
+          if ($push_row = $push_res->fetch_assoc()) {
+            $nombre_interno = function_exists('app_decode_text') ? app_decode_text($usuario['nombre_usuario']) : html_entity_decode($usuario['nombre_usuario'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            app_push_send_to_users($conexion, [(int)$push_row['ID']], 'Bitácora pendiente de aprobación', $nombre_interno . ' ingresó un procedimiento para tu revisión.', '/bitacora_internos.php', 'fa-solid fa-user-check', 'notif_bitacora');
+          }
+          $push_stmt->close();
+        }
       }
     }
   }

@@ -3233,33 +3233,45 @@ body.ui-nocturno .analg-option-input:checked + .analg-option{
 
 .umss-info-grid{
   display:grid;
-  grid-template-columns:repeat(5,minmax(0,1fr));
+  grid-template-columns:1fr;
   gap:.6rem;
 }
 
 .umss-cell{
   display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
+  flex-direction:row;
+  align-items:flex-start;
+  justify-content:flex-start;
+  text-align:left;
   border-radius:.9rem;
-  padding:.6rem .4rem;
+  padding:.9rem 1rem;
   border:2px solid var(--note-line);
-  min-height:64px;
+  gap:.9rem;
 }
 
 .umss-cell-num{
-  font-size:1.1rem;
-  font-weight:900;
+  font-size:1.35rem;
+  font-weight:800;
   line-height:1;
+  min-width:2rem;
+  text-align:center;
 }
 
 .umss-cell-lbl{
   font-size:.78rem;
-  font-weight:600;
-  margin-top:.18rem;
-  line-height:1.1;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.02em;
+  min-width:5rem;
+  margin-top:.15rem;
+}
+
+.umss-cell-desc{
+  font-size:.78rem;
+  line-height:1.4;
+  color:var(--note-muted);
+  flex:1;
+  margin-top:.05rem;
 }
 
 .umss-info-0{background:#eef2f7;}

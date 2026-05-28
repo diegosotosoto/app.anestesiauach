@@ -164,6 +164,8 @@
 
 <script src="<?= function_exists('app_path') ? app_path('js/bootstrap.bundle.min.js') : 'js/bootstrap.bundle.min.js' ?>"></script>
 <script type="text/javascript" src="<?= function_exists('app_path') ? app_path('index.js') : 'index.js' ?>"></script>
+<script>window.APP_PUSH_ENDPOINT = window.location.origin + "/push_subscription.php";</script>
+<script type="text/javascript" src="<?= function_exists('app_path') ? app_path('js/push-notifications.js') : 'js/push-notifications.js' ?>"></script>
 
 </body>
 </html>
