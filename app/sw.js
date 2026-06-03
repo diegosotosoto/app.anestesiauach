@@ -1,4 +1,4 @@
-const CACHE_NAME = "app-static-v18";
+const CACHE_NAME = "app-static-v19";
 
 const STATIC_ASSETS = [
   "/",
@@ -299,11 +299,13 @@ self.addEventListener("push", (event) => {
     }
   }
 
-  const title = data.title || "Anestesia UACH";
+  const title = (data.title || "Anestesia UACH").trim();
+  const body  = (data.body || data.message || "Tienes una nueva notificación.").trim();
+
   const options = {
-    body: data.body || data.message || "Tienes una nueva notificación.",
-    icon: data.icon || "/images/icon-192.png",
-    badge: data.badge || "/images/icon-192.png",
+    body: body,
+    icon: "/images/icon-192.png",
+    badge: "/images/icon-192.png",
     data: {
       url: data.url || "/",
       notificacion_id: data.notificacion_id || null
