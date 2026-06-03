@@ -188,6 +188,20 @@ $stmt_apuntes->close();
             </div>
           </div>
         </section>
+
+        <!-- ── Buscador ───────────────────────────────────────────── -->
+        <div class="apuntes-search-wrap mb-3" id="apuntesSearchWrap">
+          <div class="apuntes-search-inner">
+            <i class="fa-solid fa-magnifying-glass apuntes-search-icon"></i>
+            <input type="search" id="apuntesSearch" class="apuntes-search-input"
+                   placeholder="Buscar apunte o calculadora…"
+                   autocomplete="off" autocorrect="off" spellcheck="false">
+          </div>
+        </div>
+
+        <!-- ── Resultados del buscador (oculto por defecto) ──────── -->
+        <div id="apuntesSearchResults" class="apuntes-list mb-3" style="display:none;"></div>
+
         <div class="accordion apuntes-accordion" id="accordionApuntes">
           <div class="accordion-item apuntes-standard" id="favoritosAccordionItem" <?= empty($favoritos) ? 'style="display:none;"' : '' ?>>
 
@@ -572,6 +586,88 @@ function escapeAttr(str) {
 
 }
 
+</script>
+<script>
+// ── Datos de notas para buscador (deduplicado por nota_id) ──────
+const APUNTES_DATA = (function(){
+  const map = {};
+  <?php
+  foreach ($categorias as $cat) {
+    foreach ($cat['notas'] as $nota) {
+      $id = (int)$nota['nota_id'];
+      echo 'map[' . $id . '] = ' . json_encode([
+        'nota_id'   => $id,
+        'titulo'    => $nota['titulo'],
+        'ruta'      => $nota['ruta'],
+        'icono_fa'  => $nota['icono_fa'],
+        'es_nueva'  => (int)$nota['es_nueva'],
+        'es_favorita' => (int)$nota['es_favorita'],
+      ], JSON_UNESCAPED_UNICODE) . ";\n";
+    }
+  }
+  ?>
+  return Object.values(map);
+})();
+
+(function(){
+  const input   = document.getElementById('apuntesSearch');
+  const results = document.getElementById('apuntesSearchResults');
+  const accordion = document.getElementById('accordionApuntes');
+  const MAX = 10;
+
+  function buildItem(nota) {
+    const div = document.createElement('div');
+    div.className = 'apuntes-link';
+    const favClass = nota.es_favorita ? 'is-active' : '';
+    const favIcon  = nota.es_favorita ? 'fa-solid' : 'fa-regular';
+    const badgeNew = nota.es_nueva
+      ? `<span class="apunte-badge-new" data-nota-id="${escapeAttr(String(nota.nota_id))}">New</span>`
+      : '';
+    div.innerHTML = `
+      <a href="${escapeAttr(nota.ruta)}" class="apuntes-link-main" data-nota-id="${escapeAttr(String(nota.nota_id))}">
+        <span class="apunte-icon-circle"><i class="${escapeAttr(nota.icono_fa)}"></i></span>
+        <span class="apunte-title">${escapeHtml(nota.titulo)}</span>
+      </a>
+      <span class="apunte-meta">
+        ${badgeNew}
+        <button type="button"
+          class="apunte-fav-btn ${favClass}"
+          data-nota-id="${escapeAttr(String(nota.nota_id))}"
+          data-titulo="${escapeAttr(nota.titulo)}"
+          data-ruta="${escapeAttr(nota.ruta)}"
+          data-icono="${escapeAttr(nota.icono_fa)}"
+          data-new="${nota.es_nueva ? '1' : '0'}"
+          aria-label="Toggle favorito" title="Favorito">
+          <i class="${favIcon} fa-star"></i>
+        </button>
+      </span>`;
+    return div;
+  }
+
+  function onInput() {
+    const q = input.value.trim();
+    if (q === '') {
+      results.style.display = 'none';
+      results.innerHTML = '';
+      accordion.style.display = '';
+      return;
+    }
+    accordion.style.display = 'none';
+    const lower = q.toLowerCase();
+    const matches = APUNTES_DATA
+      .filter(n => n.titulo.toLowerCase().includes(lower))
+      .slice(0, MAX);
+    results.innerHTML = '';
+    if (matches.length === 0) {
+      results.innerHTML = '<div class="apuntes-empty">Sin resultados para &ldquo;' + escapeHtml(q) + '&rdquo;</div>';
+    } else {
+      matches.forEach(n => results.appendChild(buildItem(n)));
+    }
+    results.style.display = '';
+  }
+
+  input.addEventListener('input', onInput);
+})();
 </script>
 <script>
 document.addEventListener('click', function(e) {

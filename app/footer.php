@@ -162,6 +162,82 @@
 })();
 </script>
 
+<!-- ── Botón volver arriba ─────────────────────────────────────── -->
+<button id="scroll-top-btn" aria-label="Volver arriba" title="Volver arriba">
+  <i class="fa-solid fa-chevron-up"></i>
+</button>
+<style>
+  #scroll-top-btn {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.25rem;
+    z-index: 500;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    border: none;
+    background: #27458f;
+    color: #fff;
+    font-size: 1rem;
+    box-shadow: 0 4px 16px rgba(39,69,143,.35);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(8px);
+    transition: opacity .22s ease, transform .22s ease;
+  }
+  #scroll-top-btn.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+  #scroll-top-btn:hover {
+    background: #3559b7;
+  }
+  body.sidebar-right #scroll-top-btn {
+    right: auto;
+    left: 1.25rem;
+  }
+  /* En desktop el sidebar ocupa espacio lateral — alejar un poco */
+  @media (min-width: 576px) {
+    body.sidebar-left #scroll-top-btn  { right: 1.75rem; }
+    body.sidebar-right #scroll-top-btn { left: 1.75rem; }
+  }
+</style>
+<script>
+(function () {
+  // ── Variable CSS global para offset sticky ────────────────────
+  function setAppStickyTop() {
+    var navbar = document.querySelector('.app-shell-left');
+    var navH = (navbar && window.innerWidth < 576) ? navbar.getBoundingClientRect().height : 0;
+    var offset = navH > 0 ? (navH + 6) + 'px' : '.65rem';
+    document.documentElement.style.setProperty('--app-sticky-top', offset);
+  }
+  setAppStickyTop();
+  window.addEventListener('resize', setAppStickyTop, { passive: true });
+})();
+
+(function () {
+  var btn = document.getElementById('scroll-top-btn');
+  if (!btn) return;
+
+  window.addEventListener('scroll', function () {
+    if ((window.scrollY || window.pageYOffset) > 200) {
+      btn.classList.add('visible');
+    } else {
+      btn.classList.remove('visible');
+    }
+  }, { passive: true });
+
+  btn.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+</script>
+
 <script src="<?= function_exists('app_path') ? app_path('js/bootstrap.bundle.min.js') : 'js/bootstrap.bundle.min.js' ?>"></script>
 <script type="text/javascript" src="<?= function_exists('app_path') ? app_path('index.js') : 'index.js' ?>"></script>
 <script>window.APP_PUSH_ENDPOINT = window.location.origin + "/push_subscription.php";</script>

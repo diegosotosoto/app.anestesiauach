@@ -133,6 +133,7 @@ function ui_get_push_prefs(mysqli $conn, int $uid): array {
 $modo_actual = in_array((string)($usuario['ui_modo'] ?? 'normal'), ui_modos_validos(), true) ? (string)$usuario['ui_modo'] : 'normal';
 $nav_actual = in_array((string)($usuario['ui_nav_posicion'] ?? 'left'), ['left', 'right'], true) ? (string)$usuario['ui_nav_posicion'] : 'left';
 $es_admin_ui = (int)($usuario['admin'] ?? 0) === 1;
+$es_staff_ui = (int)($usuario['staff_'] ?? 0) === 1;
 $iconos_permitidos_usuario = $es_admin_ui ? array_merge(ui_iconos_validos(), ui_iconos_admin_validos()) : ui_iconos_validos();
 $icono_actual = in_array((string)($usuario['ui_icono'] ?? 'fa-user-doctor'), $iconos_permitidos_usuario, true) ? (string)$usuario['ui_icono'] : 'fa-user-doctor';
 $icono_color_actual = in_array((string)($usuario['ui_icono_color'] ?? 'green'), ui_colores_icono_validos(), true) ? (string)$usuario['ui_icono_color'] : 'green';
@@ -538,6 +539,7 @@ $usuario = $usuario_configuracion;
                         </label>
                     </div>
 
+                    <?php if ($es_staff_ui): ?>
                     <div class="notif-pref-row">
                         <div class="notif-pref-info">
                             <span class="notif-pref-icon notif-pref-icon-bit"><i class="fa-solid fa-clipboard-list"></i></span>
@@ -551,7 +553,9 @@ $usuario = $usuario_configuracion;
                             <span class="notif-toggle-slider"></span>
                         </label>
                     </div>
+                    <?php endif; ?>
 
+                    <?php if ($es_staff_ui || (int)($usuario['becad_'] ?? 0) === 1): ?>
                     <div class="notif-pref-row">
                         <div class="notif-pref-info">
                             <span class="notif-pref-icon notif-pref-icon-dolor"><i class="fa-solid fa-hospital-user"></i></span>
@@ -565,6 +569,7 @@ $usuario = $usuario_configuracion;
                             <span class="notif-toggle-slider"></span>
                         </label>
                     </div>
+                    <?php endif; ?>
 
                     <div class="notif-pref-row">
                         <div class="notif-pref-info">

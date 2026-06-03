@@ -1,4 +1,4 @@
-const CACHE_NAME = "app-static-v17";
+const CACHE_NAME = "app-static-v18";
 
 const STATIC_ASSETS = [
   "/",
@@ -57,7 +57,34 @@ const STATIC_ASSETS = [
   "/apuntes/regional_ped.php",
   "/apuntes/score_lee.php",
   "/apuntes/tdl_algoritmo.php",
-  "/apuntes/us_gastrico.php"
+  "/apuntes/us_gastrico.php",
+  "/apuntes/premedicacion_ped.php",
+  "/apuntes/stop_bang.php",
+  "/apuntes/clinical_frailty_scale.php",
+  "/apuntes/dermatomas.php",
+  "/apuntes/img_apuntes/osteotomas_inferior.jpeg",
+  "/apuntes/img_apuntes/osteotomas_superior.jpeg",
+  "/apuntes/img_apuntes/dermatomas_dorsal.jpeg",
+  "/apuntes/img_apuntes/dermatomas_frontal.jpeg",
+  "/apuntes/img_apuntes/us_gastrico.jpeg",
+  "/apuntes/img_apuntes/4.jpg",
+  "/apuntes/img_apuntes/3.jpg",
+  "/apuntes/img_apuntes/2b.jpg",
+  "/apuntes/img_apuntes/2a.jpg",
+  "/apuntes/img_apuntes/1.jpg",
+  "/apuntes/img_apuntes/IMG_5528.jpg",
+  "/apuntes/img_apuntes/IMG_5527.jpg",
+  "/apuntes/img_apuntes/TABLE_5.jpeg",
+  "/apuntes/img_apuntes/IMG_0036.png",
+  "/apuntes/img_apuntes/NUMERO.png",
+  "/apuntes/img_apuntes/Coronary.jpeg",
+  "/apuntes/img_apuntes/estomago_vacio.jpg",
+  "/apuntes/img_apuntes/liquido_claro.jpg",
+  "/apuntes/img_apuntes/solido_fluido.jpg",
+  "/apuntes/img_apuntes/solido_reciente.jpg",
+  "/apuntes/img_apuntes/malampatti-scale.png",
+  "/apuntes/img_apuntes/no_change_in_rate.jpeg",
+  "/apuntes/img_apuntes/plexo_cervical.jpeg"
 ];
 
 self.addEventListener("install", (event) => {

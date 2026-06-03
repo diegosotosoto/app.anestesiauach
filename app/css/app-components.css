@@ -866,6 +866,43 @@ body.theme-dark .app-hero-admin .app-hero-pill{
   color: var(--app-text);
 }
 
+/* ── Buscador de apuntes ──────────────────────────────────────── */
+.apuntes-search-wrap{
+  padding: .5rem 0 .25rem;
+}
+.apuntes-search-inner{
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.apuntes-search-icon{
+  position: absolute;
+  left: .85rem;
+  color: var(--app-muted, #94a3b8);
+  font-size: .95rem;
+  pointer-events: none;
+}
+.apuntes-search-input{
+  width: 100%;
+  padding: .55rem 1rem .55rem 2.4rem;
+  border-radius: 2rem;
+  border: 1.5px solid var(--app-border, #e2e8f0);
+  background: var(--app-surface, #fff);
+  color: var(--app-text, #1e293b);
+  font-size: .95rem;
+  outline: none;
+  transition: border-color .18s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.apuntes-search-input:focus{
+  border-color: #27458f;
+  box-shadow: 0 0 0 3px rgba(39,69,143,.12);
+}
+.apuntes-search-input::placeholder{ color: var(--app-muted, #94a3b8); }
+/* quitar X nativa del type=search en webkit */
+.apuntes-search-input::-webkit-search-cancel-button{ -webkit-appearance:none; }
+
 .apuntes-list{
   display: grid;
   gap: .65rem;

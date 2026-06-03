@@ -1721,7 +1721,7 @@ body.theme-dark .score-btn-plain{
 /* Simple emergency checklist progress block */
 .note-checklist-progress-block{
   position:sticky;
-  top:.65rem;
+  top:var(--app-sticky-top, .65rem);
   z-index:20;
   background:var(--note-card);
   border:1px solid var(--note-line);
@@ -1862,7 +1862,7 @@ body.theme-dark .score-btn-plain{
 
 .note-checklist-progress-block{
   position:sticky;
-  top:.65rem;
+  top:var(--app-sticky-top, .65rem);
   z-index:20;
   background:var(--note-card);
   border:1px solid var(--note-line);

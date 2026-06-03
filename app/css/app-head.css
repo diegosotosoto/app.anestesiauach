@@ -1072,7 +1072,8 @@ background:var(--app-gradient) !important;
   }
 
   .app-shell-left .navbar > .container-fluid{
-    padding-bottom:14px!important;
+    padding-top:10px!important;
+    padding-bottom:10px!important;
     margin-bottom:0!important;
   }
 
@@ -1085,6 +1086,15 @@ background:var(--app-gradient) !important;
   .dashboard-surface{
     padding-top:9px!important;
     margin-top:0!important;
+  }
+}
+
+/* ── Navbar sticky en móvil ─────────────────────────────────────── */
+@media (max-width:575.98px){
+  .app-shell-left{
+    position: sticky;
+    top: 0;
+    z-index: 200;
   }
 }
 
