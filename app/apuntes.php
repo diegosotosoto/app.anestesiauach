@@ -644,6 +644,10 @@ const APUNTES_DATA = (function(){
     return div;
   }
 
+  function normalize(str) {
+    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  }
+
   function onInput() {
     const q = input.value.trim();
     if (q === '') {
@@ -653,9 +657,9 @@ const APUNTES_DATA = (function(){
       return;
     }
     accordion.style.display = 'none';
-    const lower = q.toLowerCase();
+    const lower = normalize(q);
     const matches = APUNTES_DATA
-      .filter(n => n.titulo.toLowerCase().includes(lower))
+      .filter(n => normalize(n.titulo).includes(lower))
       .slice(0, MAX);
     results.innerHTML = '';
     if (matches.length === 0) {
